@@ -1,0 +1,1164 @@
+<!doctype html>
+<html lang="so">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hagaha Kulliyadda</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--tx:#14213d;--mut:#5f6b85;--line:#e3e8f2;--pri:#1f3a93;--pri2:#2a4ba0;--h1:#14213d;--h2:#2a4ba0;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--card:#18213a;--tx:#eef2fb;--mut:#a3aec8;--line:#2a3555;--pri:#7c9cff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1424;--card:#18213a;--tx:#eef2fb;--mut:#a3aec8;--line:#2a3555;--pri:#7c9cff;color-scheme:dark}
+.tg{position:fixed;z-index:20;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;border:1px solid var(--line);background:var(--card);color:var(--tx);border-radius:99px;padding:6px 12px;font:600 13px system-ui;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}.cell{font-size:14px}.cm{text-align:center;margin-top:18px}
+select{width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--tx);font:inherit}
+.hero{background:linear-gradient(135deg,var(--h1),var(--h2))!important}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:560px;margin:0 auto;padding:0 0 32px}
+.hero{color:#fff;padding:36px 24px 32px;border-radius:0 0 32px 32px}
+.hero h1{margin:12px 0 8px;font-size:32px;line-height:1.1}.hero p{margin:0 0 20px;opacity:.85}
+.pill{display:inline-block;background:rgba(255,255,255,.16);border-radius:99px;padding:6px 12px;font-size:13px;margin:0 6px 6px 0}
+.sec{padding:22px 24px 6px;font-weight:700}
+.strip{display:flex;gap:12px;overflow-x:auto;padding:0 24px 6px}
+.strip .ban{flex:0 0 150px;border-radius:16px}
+.ban{position:relative;overflow:hidden;color:#fff}
+.ban i{position:absolute;border-radius:50%;background:rgba(255,255,255,.12)}
+.c1{width:140px;height:140px;right:-30px;top:-30px}.c2{width:120px;height:120px;left:-40px;bottom:-50px;background:rgba(255,255,255,.08)!important}
+.em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
+.lab{position:absolute;left:12px;bottom:10px;font-weight:700;font-size:14px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.badge{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.35);border-radius:99px;padding:3px 12px;font-size:13px;font-weight:700}
+.btn{display:block;width:calc(100% - 48px);margin:22px 24px 0;border:0;border-radius:16px;background:var(--pri2);color:#fff;font-size:17px;font-weight:700;padding:16px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--pri);border:1.5px solid var(--line)}
+.q{padding:20px}.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin:8px 0 22px}
+.bar b{display:block;height:100%;background:var(--pri2);border-radius:8px;transition:width .35s}
+.q h2{font-size:21px;line-height:1.3;margin:0 0 18px}.mut{color:var(--mut);font-size:14px}
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);color:var(--tx);border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;font:inherit;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--pri)}.opt.on{border-color:var(--pri);background:color-mix(in srgb,var(--pri) 14%,var(--card))}
+.opt span{flex:0 0 32px;height:32px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-weight:700;font-size:14px}
+.opt.on span{background:var(--pri2);color:#fff}
+.skip{display:block;width:100%;background:none;border:1.5px dashed var(--line);color:var(--mut);border-radius:14px;padding:12px;font:inherit;cursor:pointer;margin:4px 0 8px}.skip:hover{color:var(--pri);border-color:var(--pri)}
+.back{background:none;border:0;color:var(--pri);font:inherit;padding:8px 0;cursor:pointer}
+.res{padding:20px 16px 0}.res h2{margin:0 8px 4px;font-size:26px}
+.card{background:var(--card);border-radius:20px;overflow:hidden;margin:16px 0;box-shadow:0 2px 12px rgba(20,33,61,.1);animation:up .5s both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+.cb{padding:16px}.row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.row h3{margin:0;font-size:18px;line-height:1.25}.pct{font-size:32px;font-weight:800;line-height:1}
+.meter{height:10px;border-radius:10px;overflow:hidden;margin:12px 0}.meter b{display:block;height:100%;width:0;border-radius:10px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.chip{display:inline-block;border-radius:99px;padding:4px 10px;font-size:12.5px;margin:0 6px 6px 0}
+.tips,.steps{margin:4px 0 0;padding-left:20px;font-size:14.5px}.tips li::marker{color:var(--c)}.tips li,.steps li{margin:4px 0}.foot{text-align:center;color:var(--mut);font-size:12.5px;padding:24px 24px 0}
+.h{font-weight:700;margin:12px 0 6px;font-size:14px}.note{margin:8px 12px 0;font-size:13px}
+</style>
+</head>
+<body>
+<button class="tg" id="tg" onclick="toggleTheme()"></button>
+<div id="app"></div>
+<script>
+const F=[
+ {
+  "id": "law",
+  "short": "Law",
+  "en": "Sharia & Law",
+  "so": "Kulliyadda Shari’ada iyo Sharciga",
+  "emoji": "⚖️",
+  "color": "#5B3F8C",
+  "depts": [
+   "Sharia & Law",
+   "Sharia",
+   "Law"
+  ],
+  "desc": "Waxay u habboon tahay ardayga jecel cadaalada, doodda iyo fahamka xeerarka diinta iyo dalka.",
+  "jobs": [
+   "Garsoore",
+   "Qareen",
+   "Xeer-ilaalin",
+   "La-taliye sharci"
+  ],
+  "tips": [
+   "Ku dar akhriska Dastuurka iyo Xeerka Madaniga si aad u hesho aasaas.",
+   "Ku celceli hadalka iyo doodda (debate club ama koox ardayda).",
+   "Is-barbar dhig labada waaxood: Sharia & Law iyo Law, oo weydii ardayda jirta kala duwanaanshaha."
+  ],
+  "dark": "#32224D"
+ },
+ {
+  "id": "edu",
+  "short": "Education",
+  "en": "Education & Humanities",
+  "so": "Kulliyadda Waxbarashada iyo Aadanaha",
+  "emoji": "🎓",
+  "color": "#C2410C",
+  "depts": [
+   "History & Geography",
+   "English & History",
+   "English & Geography",
+   "Social Work",
+   "Math & Physics",
+   "Biology & Chemistry",
+   "Arabic Language & Islamic Studies"
+  ],
+  "desc": "Waxay u habboon tahay ardayga jecel barista, luuqadaha, cilmiga bulshada iyo dhisidda jiilka cusub.",
+  "jobs": [
+   "Macallin",
+   "Hawlwadeen bulsho",
+   "Cilmi-baare",
+   "Maamule dugsi"
+  ],
+  "tips": [
+   "Door waaxda aad macallinka ka noqon doonto (tusaale Math & Physics ama Ingiriisi).",
+   "Iskaa u tijaabi barista: la shaqee carruur ama ardayda yar.",
+   "Ka fiirso baahida macallimiinta ee deegaankaaga si shaqo u hesho."
+  ],
+  "dark": "#6A2306"
+ },
+ {
+  "id": "econ",
+  "short": "Economics",
+  "en": "Economics & Management Sciences",
+  "so": "Kulliyadda Dhaqaalaha iyo Maaraynta",
+  "emoji": "📊",
+  "color": "#0F766E",
+  "depts": [
+   "Business Administration",
+   "International Trade and Business",
+   "Management Information Systems",
+   "Finance & Banking",
+   "Procurement & Logistics Management",
+   "Statistics & Planning",
+   "Project Management",
+   "Marketing",
+   "Accounting",
+   "Economics"
+  ],
+  "desc": "Waxay u habboon tahay ardayga jecel xisaabta, ganacsiga, lacagta iyo hoggaaminta.",
+  "jobs": [
+   "Xisaabiye",
+   "Bangi",
+   "Maareeye mashruuc",
+   "Ganacsade"
+  ],
+  "tips": [
+   "Bilow xisaab-hay'adeed iyo Excel hadda: waxay kaa horreysiinayaan.",
+   "Waaxda Accounting iyo Finance waxay leeyihiin baahi weyn; Marketing wuxuu u habboon yahay hal-abuurka.",
+   "Isku day inaad ganacsi yar bilowdo inta aad wax barato."
+  ],
+  "dark": "#08403C"
+ },
+ {
+  "id": "health",
+  "short": "Health Sci.",
+  "en": "Health Sciences",
+  "so": "Kulliyadda Sayniska Caafimaadka",
+  "emoji": "🩺",
+  "color": "#0E7490",
+  "depts": [
+   "Clinical Officer",
+   "Public Health",
+   "Midwifery",
+   "General Nursing",
+   "Micro-biology",
+   "Medical Laboratory Sciences",
+   "Nutrition and Dietetics"
+  ],
+  "desc": "Waxay u habboon tahay ardayga naxariista leh ee rabta inuu si toos ah u daryeelo bukaannada.",
+  "jobs": [
+   "Kalkaaliye",
+   "Umulisada",
+   "Farsamoyaqaan shaybaar",
+   "Khabiir nafaqo"
+  ],
+  "tips": [
+   "Waaxda ka dooro adigoo fiirinaya daryeelka toos ah (Nursing) iyo shaybaarka (Lab).",
+   "Booqo isbitaal si aad u aragto shaqada maalinlaha ah.",
+   "Diyaari Bayoloji iyo Kimistari si aad uga gudubto imtixaanka gelitaanka."
+  ],
+  "dark": "#073F4F"
+ },
+ {
+  "id": "cs",
+  "short": "Comp. Sci.",
+  "en": "Computer Science & Information Technology",
+  "so": "Kulliyadda Computer Science iyo IT",
+  "emoji": "💻",
+  "color": "#1D4ED8",
+  "depts": [
+   "Computer Science",
+   "Information Technology",
+   "Software Engineering",
+   "Enterprise Networking",
+   "Geography Information System (GIS)",
+   "Cybersecurity and Artificial Intelligence (AI)"
+  ],
+  "desc": "Waxay u habboon tahay ardayga jecel tignoolajiyada, barnaamijyada, amniga internetka iyo AI.",
+  "jobs": [
+   "Developer",
+   "Khabiir amni cyber",
+   "Injineer shabakad",
+   "Falanqeeye xog"
+  ],
+  "tips": [
+   "Bilow barashada barnaamijka hadda (Python ama JavaScript) oo bilaash ah.",
+   "Dhis mashruuc yar (website ama app) si aad portfolio u yeelato.",
+   "Cybersecurity iyo AI waa waaxaha ugu baahida badan mustaqbalka."
+  ],
+  "dark": "#0F2A76"
+ },
+ {
+  "id": "pol",
+  "short": "Political Sci.",
+  "en": "Political Science & Public Administration",
+  "so": "Kulliyadda Siyaasadda iyo Maamulka Dadweynaha",
+  "emoji": "🏛️",
+  "color": "#B91C1C",
+  "depts": [
+   "Political Science",
+   "Public Administration",
+   "International Relations",
+   "Journalism & Communication"
+  ],
+  "desc": "Waxay u habboon tahay ardayga jecel hoggaanka, dowladnimada, diblomaasiyadda iyo warbaahinta.",
+  "jobs": [
+   "Diblomaasi",
+   "Weriye",
+   "Madaxa waaxda",
+   "Falanqeeye siyaasad"
+  ],
+  "tips": [
+   "Akhri wargeysyada iyo falanqaynta siyaasadeed maalin kasta.",
+   "Ku biir koox ardayda ama golaha dhallinyarada si aad khibrad u hesho.",
+   "Journalism wuxuu u baahan yahay qoris badan: bilow blog ama podcast."
+  ],
+  "dark": "#650F0F"
+ },
+ {
+  "id": "eng",
+  "short": "Engineering",
+  "en": "Engineering",
+  "so": "Kulliyadda Injineerinka",
+  "emoji": "🏗️",
+  "color": "#B45309",
+  "depts": [
+   "Architecture",
+   "Civil Engineering",
+   "Electric & Electronic Engineering",
+   "Interior Design"
+  ],
+  "desc": "Waxay u habboon tahay ardayga xisaabta iyo naqshadaha jecel, ee rabta inuu wax dhiso.",
+  "jobs": [
+   "Naqshadeeye dhismo",
+   "Injineer dhismo",
+   "Injineer koronto",
+   "Naqshadeeye gudaha"
+  ],
+  "tips": [
+   "Xisaabta iyo Fiisigiska xoojii, waa aasaaska injineerinka.",
+   "Qiimee waaxda: naqshad (Architecture), dhismo (Civil) ama koronto (Electric).",
+   "Daawo mashaariicda dhismaha deegaankaaga si aad u aragto shaqada dhabta ah."
+  ],
+  "dark": "#632D04"
+ },
+ {
+  "id": "agri",
+  "short": "Agriculture",
+  "en": "Agriculture & Environmental Science",
+  "so": "Kulliyadda Beeraha iyo Sayniska Deegaanka",
+  "emoji": "🌱",
+  "color": "#3F7D20",
+  "depts": [
+   "Agriculture",
+   "Environmental Science"
+  ],
+  "desc": "Waxay u habboon tahay ardayga jecel dabiicadda, cuntada, beeraha iyo ilaalinta deegaanka.",
+  "jobs": [
+   "Khabiir beereed",
+   "Cilmi-baare deegaan",
+   "La-taliye beeraha",
+   "Maamule mashruuc cagaaran"
+  ],
+  "tips": [
+   "Booqo beer ama mashruuc beereed oo casri ah si aad u aragto fursadaha.",
+   "Ka fiirso baahida cuntada iyo isbeddelka cimilada: waa fursado waaweyn.",
+   "Isku day beerid yar (xitaa guriga) si aad u tijaabiso xiisahaaga."
+  ],
+  "dark": "#224411"
+ },
+ {
+  "id": "med",
+  "short": "Medicine",
+  "en": "Medicine",
+  "so": "Kulliyadda Dhakhtarnimada",
+  "emoji": "🏥",
+  "color": "#BE123C",
+  "depts": [
+   "Medicine & Surgery"
+  ],
+  "desc": "Waxay u habboon tahay ardayga aadka u dadaala ee rabta inuu daaweeyo oo badbaadiyo nolosha.",
+  "jobs": [
+   "Dhakhtar",
+   "Dhakhtar qalliin",
+   "Cilmi-baare caafimaad",
+   "Takhasus dhakhtar"
+  ],
+  "tips": [
+   "Waa barnaamij dheer oo adag: hubi inaad u diyaar tahay dadaal 6-7 sano ah.",
+   "Bayoloji iyo Kimistari ka dhig kuwa aad ugu xoogga badan tahay.",
+   "La hadal dhakhtar shaqeeya si aad u ogaato nolosha dhabta ah."
+  ],
+  "dark": "#680921"
+ },
+ {
+  "id": "vet",
+  "short": "Veterinary",
+  "en": "Veterinary Medicine",
+  "so": "Kulliyadda Dhakhtarnimada Xoolaha",
+  "emoji": "🐄",
+  "color": "#65752A",
+  "depts": [
+   "Health & Veterinary Care"
+  ],
+  "desc": "Waxay u habboon tahay ardayga jecel xoolaha, gaar ahaan dalka xoolaha ku tiirsan yahay.",
+  "jobs": [
+   "Dhakhtarka xoolaha",
+   "Kormeere caafimaad",
+   "Cilmi-baare",
+   "Ganacsi xoolo"
+  ],
+  "tips": [
+   "Booqo xoolo-dhaqato ama rugta xoolaha si aad u aragto shaqada.",
+   "Waa kulliyad leh baahi weyn, maadaama dalka xoolaha ku tiirsan yahay.",
+   "Bayoloji iyo daryeelka xoolaha ha ku jiraan diyaar-garowgaaga."
+  ],
+  "dark": "#374017"
+ },
+ {
+  "id": "dent",
+  "short": "Dentistry",
+  "en": "Dentistry",
+  "so": "Kulliyadda Ilkaha",
+  "emoji": "🦷",
+  "color": "#0284C7",
+  "depts": [
+   "Dentistry",
+   "Dental Assistant"
+  ],
+  "desc": "Waxay u habboon tahay ardayga gacan-fiican ee jecel daryeelka afka, ilkaha iyo sifaynta.",
+  "jobs": [
+   "Dhakhtarka ilkaha",
+   "Kaaliyaha ilkaha",
+   "Rugta ilkaha",
+   "Cilmi-baare"
+  ],
+  "tips": [
+   "Ka hubi inaad jeceshahay shaqo gacmeed oo sax ah (gacan degan).",
+   "Dentistry waa mid dheer, Dental Assistant waa mid ka gaaban: kala dooro.",
+   "La hadal dhakhtar ilkaha ah si aad u aragto maalinta shaqada."
+  ],
+  "dark": "#01486D"
+ },
+ {
+  "id": "avia",
+  "short": "Aviation",
+  "en": "Civil Aviation",
+  "so": "Kulliyadda Duulista Rayidka",
+  "emoji": "✈️",
+  "color": "#4338CA",
+  "depts": [
+   "Civil Aviation Management"
+  ],
+  "desc": "Waxay u habboon tahay ardayga jecel duullimaadka, garoomada iyo maaraynta hawada.",
+  "jobs": [
+   "Maareeye garoon",
+   "Hawlwadeen duullimaad",
+   "Xakameeye hawada",
+   "Maamule duulimaad"
+  ],
+  "tips": [
+   "Xisaabta iyo Ingiriisiga xoojii: waa luuqadda duulista caalamka.",
+   "Ka baro nidaamka garoonka diyaaradaha iyo amniga duulista.",
+   "Fursadaha shaqo waa kuwo xaddidan: is-barbar dhig kulliyad kale oo kuu dhow."
+  ],
+  "dark": "#241E6F"
+ }
+];
+const Q=[
+ {
+  "q": "Marka aad firaaqo hesho, maxaad ugu badan jeceshahay inaad sameyso?",
+  "o": [
+   {
+    "t": "Inaan kombuyuutar, app ama tignoolajiyad ku mashquulo",
+    "w": {
+     "cs": 3,
+     "eng": 1
+    }
+   },
+   {
+    "t": "Inaan dadka caafimaad u hayo oo ka caawiyo",
+    "w": {
+     "health": 3,
+     "med": 2,
+     "dent": 1
+    }
+   },
+   {
+    "t": "Inaan akhriyo, doodo ama wax qoro",
+    "w": {
+     "law": 2,
+     "pol": 2,
+     "edu": 1
+    }
+   },
+   {
+    "t": "Inaan beero, xayawaan ama deegaanka ku dhex mashquulo",
+    "w": {
+     "agri": 3,
+     "vet": 2
+    }
+   },
+   {
+    "t": "Inaan ganacsi, lacag iyo maaraynta ku mashquulo",
+    "w": {
+     "econ": 3,
+     "pol": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Maaddooyinkee ayaad dugsiga sare ugu fiicnayd?",
+  "o": [
+   {
+    "t": "Xisaab iyo Fiisigis",
+    "w": {
+     "eng": 3,
+     "cs": 2,
+     "avia": 1,
+     "edu": 1
+    }
+   },
+   {
+    "t": "Bayoloji iyo Kimistari",
+    "w": {
+     "med": 3,
+     "health": 2,
+     "dent": 2,
+     "vet": 2,
+     "agri": 1
+    }
+   },
+   {
+    "t": "Ingiriisi, Carabi, Taariikh iyo Juqraafi",
+    "w": {
+     "edu": 3,
+     "law": 1,
+     "pol": 1
+    }
+   },
+   {
+    "t": "Ganacsi iyo Dhaqaale",
+    "w": {
+     "econ": 3,
+     "pol": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Shaqadee ayaad rabtaa inaad mustaqbalka ku aragto naftaada?",
+  "o": [
+   {
+    "t": "Inaan bukaan daaweeyo ama qalliin sameeyo",
+    "w": {
+     "med": 3,
+     "dent": 2,
+     "health": 1
+    }
+   },
+   {
+    "t": "Inaan hormuud ka noqdo shirkad ama mashruuc ganacsi",
+    "w": {
+     "econ": 3,
+     "pol": 1
+    }
+   },
+   {
+    "t": "Inaan buundooyin, guryo ama nidaamyo naqshadeeyo",
+    "w": {
+     "eng": 3,
+     "avia": 1
+    }
+   },
+   {
+    "t": "Inaan sharci ka difaaco ama garsoore noqdo",
+    "w": {
+     "law": 3,
+     "pol": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Goobtee shaqo ayaa kuu raaxo badan?",
+  "o": [
+   {
+    "t": "Rugta caafimaadka, shaybaarka ama qolka qalliinka",
+    "w": {
+     "health": 3,
+     "med": 2,
+     "dent": 2,
+     "vet": 1
+    }
+   },
+   {
+    "t": "Xafiis casri ah oo kombuyuutar leh",
+    "w": {
+     "cs": 2,
+     "econ": 2,
+     "pol": 1
+    }
+   },
+   {
+    "t": "Garoonka diyaaradaha iyo hawada",
+    "w": {
+     "avia": 3,
+     "eng": 1
+    }
+   },
+   {
+    "t": "Beer, xoolo-dhaqasho ama dabiicadda bannaan",
+    "w": {
+     "agri": 3,
+     "vet": 3
+    }
+   }
+  ]
+ },
+ {
+  "q": "Marka dhibaato timaado, sidee u xalliyaa?",
+  "o": [
+   {
+    "t": "Waan falanqeeyaa xogta oo nidaam ama koodh ayaan ka sameeyaa",
+    "w": {
+     "cs": 3,
+     "econ": 1,
+     "eng": 1
+    }
+   },
+   {
+    "t": "Waan wada-hadlaa oo dadka isku afgaranayaa",
+    "w": {
+     "pol": 3,
+     "law": 2,
+     "edu": 1
+    }
+   },
+   {
+    "t": "Waxaan raadiyaa sababta caafimaad ee ka dambeysa",
+    "w": {
+     "med": 2,
+     "health": 3,
+     "dent": 1
+    }
+   },
+   {
+    "t": "Waxaan dhisaa qalab ama nidaam jireed oo xalinaya",
+    "w": {
+     "eng": 3,
+     "avia": 1,
+     "cs": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Shaqadee ayaad ugu faani lahayd?",
+  "o": [
+   {
+    "t": "Hoggaaminta iyo adeegga dadweynaha",
+    "w": {
+     "pol": 3,
+     "law": 1,
+     "econ": 1
+    }
+   },
+   {
+    "t": "Barista ardayda iyo dhisidda jiilka cusub",
+    "w": {
+     "edu": 3,
+     "law": 1
+    }
+   },
+   {
+    "t": "Badbaadinta nolosha dadka ama xoolaha",
+    "w": {
+     "med": 2,
+     "health": 2,
+     "vet": 2,
+     "dent": 1,
+     "avia": 1
+    }
+   },
+   {
+    "t": "Soo saarista cuntada iyo ilaalinta deegaanka",
+    "w": {
+     "agri": 3,
+     "health": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Sidee ku aragtaa dhiigga iyo qalliinka?",
+  "o": [
+   {
+    "t": "Waan qaabili karaa, xitaa waan jeclahay",
+    "w": {
+     "med": 3,
+     "vet": 2,
+     "dent": 1
+    }
+   },
+   {
+    "t": "Waxaan jeclahay daryeelka afka iyo ilkaha",
+    "w": {
+     "dent": 3,
+     "health": 1
+    }
+   },
+   {
+    "t": "Waan qaabili karaa laakiin ma door bidayo",
+    "w": {
+     "health": 2,
+     "dent": 1,
+     "agri": 1
+    }
+   },
+   {
+    "t": "Ma jecli, waxaan door bidayaa shaqo aan dhiig lahayn",
+    "w": {
+     "cs": 1,
+     "econ": 1,
+     "law": 1,
+     "pol": 1,
+     "eng": 1,
+     "edu": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Hawshee ayaa kuu raaxo badan?",
+  "o": [
+   {
+    "t": "Hal-abuur iyo naqshad (guri, gudaha, qaab)",
+    "w": {
+     "eng": 3,
+     "cs": 1
+    }
+   },
+   {
+    "t": "Xisaab, lacag iyo tirooyin",
+    "w": {
+     "econ": 3,
+     "cs": 1
+    }
+   },
+   {
+    "t": "Safar, duulimaad iyo nidaamka caalamka",
+    "w": {
+     "avia": 3,
+     "pol": 1,
+     "econ": 1
+    }
+   },
+   {
+    "t": "Wada-hadal, wargeys iyo warbaahin",
+    "w": {
+     "pol": 3,
+     "edu": 1,
+     "law": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Yaad door bidaysaa inaad la shaqayso?",
+  "o": [
+   {
+    "t": "Mashiinno, koronto iyo qalab farsamo",
+    "w": {
+     "eng": 3,
+     "cs": 1,
+     "avia": 1
+    }
+   },
+   {
+    "t": "Bukaanno iyo qoysas",
+    "w": {
+     "health": 3,
+     "med": 2,
+     "dent": 1
+    }
+   },
+   {
+    "t": "Ardayda iyo carruurta",
+    "w": {
+     "edu": 3,
+     "law": 1
+    }
+   },
+   {
+    "t": "Guddiyo, golayaal iyo sharciyo",
+    "w": {
+     "law": 2,
+     "pol": 3
+    }
+   }
+  ]
+ },
+ {
+  "q": "Qiimaha kuugu weyn shaqada?",
+  "o": [
+   {
+    "t": "Cadaalad iyo xaq",
+    "w": {
+     "law": 3,
+     "pol": 1
+    }
+   },
+   {
+    "t": "Daryeel iyo naxariis",
+    "w": {
+     "health": 3,
+     "med": 1,
+     "dent": 1,
+     "vet": 1
+    }
+   },
+   {
+    "t": "Hal-abuur iyo tignoolajiyad",
+    "w": {
+     "cs": 3,
+     "eng": 2
+    }
+   },
+   {
+    "t": "Guul dhaqaale iyo hoggaamin",
+    "w": {
+     "econ": 3,
+     "pol": 1,
+     "avia": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Intee in le’eg ayaad diyaar u tahay inaad wax barato?",
+  "o": [
+   {
+    "t": "Waqti dheer (6-7 sano) iyo dadaal weyn",
+    "w": {
+     "med": 3,
+     "dent": 2,
+     "vet": 1
+    }
+   },
+   {
+    "t": "4-5 sano oo adag oo farsamo leh",
+    "w": {
+     "eng": 2,
+     "vet": 2,
+     "health": 1,
+     "cs": 1
+    }
+   },
+   {
+    "t": "Afar sano oo caadi ah",
+    "w": {
+     "econ": 1,
+     "law": 1,
+     "pol": 1,
+     "cs": 1,
+     "edu": 1
+    }
+   },
+   {
+    "t": "Barnaamij gaaban oo xirfad leh",
+    "w": {
+     "health": 2,
+     "dent": 1,
+     "agri": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Halkee ayaad jeceshahay inaad ka shaqeyso?",
+  "o": [
+   {
+    "t": "Isbitaal ama rugta caafimaadka",
+    "w": {
+     "med": 2,
+     "health": 3,
+     "dent": 2
+    }
+   },
+   {
+    "t": "Maxkamad, golaha ama xafiis dowladeed",
+    "w": {
+     "law": 3,
+     "pol": 3
+    }
+   },
+   {
+    "t": "Shirkad, bangi ama xarun IT",
+    "w": {
+     "econ": 3,
+     "cs": 3
+    }
+   },
+   {
+    "t": "Garoon, beer ama goob dhismo",
+    "w": {
+     "eng": 2,
+     "avia": 2,
+     "agri": 2,
+     "vet": 1
+    }
+   }
+  ]
+ },
+ {
+  "q": "Marka aad aragto qof dhaawac ah, maxaad sameyn lahayd?",
+  "o": [
+   {
+    "t": "Si degdeg ah ayaan gacan u siinayaa oo daaweyn bilaabayaa",
+    "w": {
+     "med": 3,
+     "health": 2
+    }
+   },
+   {
+    "t": "Waan la joogayaa, daryeelayaa oo qalbi qabowsiinayaa",
+    "w": {
+     "health": 3,
+     "med": 1
+    }
+   },
+   {
+    "t": "Waxaan raadinayaa sababta iyada oo la baadhayo",
+    "w": {
+     "health": 2,
+     "med": 2
+    }
+   },
+   {
+    "t": "Waxaan isku dayayaa inaan ogaado sida looga hortago",
+    "w": {
+     "health": 3,
+     "vet": 1
+    }
+   }
+  ],
+  "g": "health"
+ },
+ {
+  "q": "Nooca bukaannada aad jeceshahay inaad la shaqeyso?",
+  "o": [
+   {
+    "t": "Dumarka uurka leh iyo ilmaha dhasha",
+    "w": {
+     "health": 3,
+     "med": 1
+    }
+   },
+   {
+    "t": "Dadka waaweyn iyo kuwa jirran",
+    "w": {
+     "med": 3,
+     "health": 2
+    }
+   },
+   {
+    "t": "Bulshada oo dhan (ka hortag iyo wacyigelin)",
+    "w": {
+     "health": 3
+    }
+   },
+   {
+    "t": "Xoolaha iyo duur-joogta",
+    "w": {
+     "vet": 3,
+     "agri": 1
+    }
+   }
+  ],
+  "g": "health"
+ },
+ {
+  "q": "Qaybtee ayaad door bidaysaa?",
+  "o": [
+   {
+    "t": "Qalliin iyo daaweyn hore",
+    "w": {
+     "med": 3,
+     "dent": 1
+    }
+   },
+   {
+    "t": "Shaybaar, mikroskoob iyo baadhitaan",
+    "w": {
+     "health": 3,
+     "med": 1
+    }
+   },
+   {
+    "t": "Nafaqada iyo cuntada caafimaadka",
+    "w": {
+     "health": 3,
+     "agri": 1
+    }
+   },
+   {
+    "t": "Ilkaha iyo daryeelka afka",
+    "w": {
+     "dent": 3
+    }
+   }
+  ],
+  "g": "health"
+ },
+ {
+  "q": "Tayada kuugu xoogga badan?",
+  "o": [
+   {
+    "t": "Gacan sax ah oo degan",
+    "w": {
+     "dent": 3,
+     "med": 2
+    }
+   },
+   {
+    "t": "Degenaan marka xaalad degdeg ah jirto",
+    "w": {
+     "med": 3,
+     "health": 2
+    }
+   },
+   {
+    "t": "Samir iyo dhegeysi",
+    "w": {
+     "health": 3,
+     "dent": 1
+    }
+   },
+   {
+    "t": "Jacayl xayawaanka iyo dabiicadda",
+    "w": {
+     "vet": 3,
+     "agri": 2
+    }
+   }
+  ],
+  "g": "health"
+ },
+ {
+  "q": "Meesha shaqo ee aad ugu raaxo badan?",
+  "o": [
+   {
+    "t": "Isbitaal weyn oo wax kala duwan",
+    "w": {
+     "med": 3,
+     "health": 2
+    }
+   },
+   {
+    "t": "Rugta ilkaha ama rugta gaarka ah",
+    "w": {
+     "dent": 3,
+     "health": 1
+    }
+   },
+   {
+    "t": "Beero, xoolo-dhaqato ama bannaanka",
+    "w": {
+     "vet": 3,
+     "agri": 3
+    }
+   },
+   {
+    "t": "Xarun bulsho ama barnaamij ka hortag",
+    "w": {
+     "health": 3
+    }
+   }
+  ],
+  "g": "health"
+ },
+ {
+  "q": "Waqtiga waxbarasho ee aad doorbidayso?",
+  "o": [
+   {
+    "t": "6-7 sano oo adag (dhakhtar)",
+    "w": {
+     "med": 3,
+     "dent": 2,
+     "vet": 1
+    }
+   },
+   {
+    "t": "4 sano oo caadi ah",
+    "w": {
+     "health": 3,
+     "vet": 1,
+     "agri": 1
+    }
+   },
+   {
+    "t": "Barnaamij gaaban si aan dhakhso u shaqeeyo",
+    "w": {
+     "health": 2,
+     "dent": 1
+    }
+   },
+   {
+    "t": "5 sano oo ku saabsan xoolaha ama beeraha",
+    "w": {
+     "vet": 3,
+     "agri": 2
+    }
+   }
+  ],
+  "g": "health"
+ },
+ {
+  "q": "Maxaad ugu fiicantahay ganacsiga?",
+  "o": [
+   {
+    "t": "Xisaabinta iyo lacagta",
+    "w": {
+     "econ": 3
+    }
+   },
+   {
+    "t": "Iibinta iyo suuq-geynta",
+    "w": {
+     "econ": 3,
+     "pol": 1
+    }
+   },
+   {
+    "t": "Tignoolajiyada ganacsiga (e-commerce, nidaamyo)",
+    "w": {
+     "cs": 3,
+     "econ": 2
+    }
+   },
+   {
+    "t": "Maaraynta dadka iyo hoggaaminta",
+    "w": {
+     "pol": 3,
+     "econ": 2
+    }
+   }
+  ],
+  "g": "business"
+ },
+ {
+  "q": "Shaqada ganacsiga ee kuu raaxo badan?",
+  "o": [
+   {
+    "t": "Bangi iyo maaliyadda",
+    "w": {
+     "econ": 3
+    }
+   },
+   {
+    "t": "Logistics, soo-iibsiga iyo gaadiidka",
+    "w": {
+     "econ": 3,
+     "avia": 2
+    }
+   },
+   {
+    "t": "Maaraynta mashruuc iyo qorshaynta",
+    "w": {
+     "econ": 3,
+     "pol": 1
+    }
+   },
+   {
+    "t": "Shirkad duulimaad ama safar",
+    "w": {
+     "avia": 3,
+     "econ": 2
+    }
+   }
+  ],
+  "g": "business"
+ },
+ {
+  "q": "Sidee u hoggaamisaa?",
+  "o": [
+   {
+    "t": "Tirooyin iyo falanqayn",
+    "w": {
+     "econ": 3,
+     "cs": 1
+    }
+   },
+   {
+    "t": "Xiriirka dadka iyo wada-xaajood",
+    "w": {
+     "pol": 3,
+     "econ": 1
+    }
+   },
+   {
+    "t": "Hal-abuur iyo fikrado cusub",
+    "w": {
+     "econ": 2,
+     "cs": 2
+    }
+   },
+   {
+    "t": "Nidaam iyo hab-raac",
+    "w": {
+     "econ": 2,
+     "avia": 2,
+     "pol": 1
+    }
+   }
+  ],
+  "g": "business"
+ }
+];
+const A=document.getElementById("app");
+const fm={};F.forEach(f=>fm[f.id]=f);
+let s={v:"home",i:0,a:[],busy:false};
+function ban(f,h,o={}){return `<div class="ban" style="height:${h}px;background:linear-gradient(135deg,${f.color},${f.dark})"><i class="c1"></i><i class="c2"></i><div class="em" style="font-size:${h*.42}px">${f.emoji}</div>${o.badge?`<div class="badge">${o.badge}</div>`:""}${o.lab?`<div class="lab">${f.short}</div>`:""}</div>`}
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);document.getElementById("tg").textContent=t==="dark"?"☀️ Light":"🌙 Dark";try{localStorage.setItem("th2",t)}catch(e){}}
+function toggleTheme(){setTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")}
+function initTheme(){let t=null;try{t=localStorage.getItem("th2")}catch(e){}setTheme(t||"dark")}
+const OWNER="ShuaybAbdirahman";
+function foot(){return `<div class="foot">© 2026 ${OWNER}. Xuquuqdu way dhowrsan tahay.<br>Ma ahan in la koobiyeeyo, la beddelo ama la iibiyo ogolaansho la’aan.</div>`}
+function copyRes(b){const t="Natiijadayda Hagaha Kulliyadda:\n"+s.res.slice(0,3).map(m=>m.p+"% - "+m.f.so).join("\n");try{navigator.clipboard.writeText(t).then(()=>b.textContent="✅ Waa la koobiyeeyay")}catch(e){b.textContent="Koobiyee gacanta"}}
+const G={tech:["cs","eng","avia","edu","econ"],health:["health","med","dent","vet","agri"],society:["law","pol","edu","econ"],business:["econ","pol","cs","avia"]};
+const HG={cs:"tech",eng:"tech",avia:"tech",health:"health",med:"health",dent:"health",vet:"health",agri:"health",law:"society",pol:"society",edu:"society",econ:"business"};
+function grpOf(first){if(first<0)return null;let pr=null,t=0;const w=Q[0].o[first].w;for(const k in w)if(w[k]>t){t=w[k];pr=k}return HG[pr]||null}
+function plan(first){const all=Q.map((q,i)=>({q:i,o:q.o.map((_,k)=>k)})),gen=all.filter(x=>!Q[x.q].g);if(first<0)return gen;const grp=grpOf(first);if(!grp)return gen;const f=G[grp],p=[all[0]];for(let i=1;i<Q.length;i++){const g=Q[i].g;if(g){if(g===grp)p.push(all[i]);continue}const o=[];Q[i].o.forEach((x,k)=>{if(Object.keys(x.w).some(z=>f.includes(z)))o.push(k)});if(o.length>=2)p.push({q:i,o})}return p}
+function calc(){const sc={},bt={},rs={};s.n=0;s.p.forEach(st=>{const a=s.a[st.q];if(a<0)return;s.n++;const m={};st.o.forEach(k=>{const w=Q[st.q].o[k].w;for(const z in w)m[z]=Math.max(m[z]||0,w[z])});for(const z in m)bt[z]=(bt[z]||0)+m[z];const oo=Q[st.q].o[a],w=oo.w;for(const z in w){sc[z]=(sc[z]||0)+w[z];(rs[z]=rs[z]||[]).push({w:w[z],t:oo.t})}});
+return F.filter(f=>{const g=grpOf(s.a[0]);return !g||G[g].includes(f.id)}).map(f=>({f,r:(rs[f.id]||[]).filter(x=>x.w>=2).sort((x,y)=>y.w-x.w).slice(0,3).map(x=>x.t),s:sc[f.id]||0,p:bt[f.id]?Math.round(100*(sc[f.id]||0)/bt[f.id]):0})).sort((x,y)=>y.p-x.p||y.s-x.s)}
+function home(){A.innerHTML=`<div class="hero"><div style="font-size:42px">🎓</div><h1>Hagaha Kulliyadda</h1><p>Ma ku wareersan tahay kulliyadda aad dooran lahayd? Ka jawaab su’aalaha, oo hel 3-da kulliyadood ee kuugu habboon.</p><span class="pill">12 su’aalood</span><span class="pill">≈ 3 daqiiqo</span><span class="pill">Top 3 + boqolkiiba</span></div><div class="sec">12-ka kulliyadood</div><div class="strip">${F.map(f=>ban(f,110,{lab:1})).join("")}</div><button class="btn" onclick="start()">▶ Bilow imtixaanka</button>${foot()}`}
+function start(){s={v:"quiz",i:0,a:Q.map(()=>-1),p:plan(-1),busy:false};quiz()}
+function quiz(){const st=s.p[s.i],q=Q[st.q],n=s.p.length;A.innerHTML=`<div class="q"><div class="mut">Su’aal ${s.i+1} / ${n}${s.i>0&&s.a[0]>=0?" · lagu habeeyay doorashadaada":""}</div><div class="bar"><b style="width:${(s.i+1)/n*100}%"></b></div><h2>${q.q}</h2>${st.o.map((k,j)=>`<button class="opt ${s.a[st.q]===k?"on":""}" onclick="pick(${k})"><span>${"ABCDE"[j]}</span>${q.o[k].t}</button>`).join("")}<button class="skip" onclick="pick(-1)">⏭ Midna ma habboona: ka bood</button>${s.i?`<button class="back" onclick="back()">← Su’aashii hore</button>`:""}</div>`;scrollTo(0,0)}
+function pick(k){if(s.busy)return;const st=s.p[s.i];s.a[st.q]=k;s.busy=true;if(st.q===0)s.p=plan(k);quiz();setTimeout(()=>{s.busy=false;if(s.i<s.p.length-1){s.i++;quiz()}else{s.res=calc();result()}},260)}
+function startCmp(){s.c=[s.res[0].f.id,s.res[1].f.id];cmp()}
+function cmp(){const pc=id=>{const m=s.res.find(r=>r.f.id===id);return m?m.p+"%":"—"},sel=i=>`<select onchange="s.c[${i}]=this.value;cmp()">${F.map(f=>`<option value="${f.id}" ${f.id===s.c[i]?"selected":""}>${f.short}</option>`).join("")}</select>`,
+row=(t,fn)=>`<div class="h cm">${t}</div><div class="grid2">${s.c.map(id=>`<div class="cell">${fn(fm[id])}</div>`).join("")}</div>`;
+A.innerHTML=`<div class="res" style="padding-top:44px"><button class="back" onclick="result()">← Natiijada</button><h2 style="margin:0 0 12px">⚖️ Isbarbar-dhig</h2><div class="grid2">${sel(0)}${sel(1)}</div><div class="grid2" style="margin-top:14px">${s.c.map(id=>`<div class="card" style="margin:0">${ban(fm[id],100,{lab:1})}</div>`).join("")}</div>${row("Ku habboonaanta",f=>`<b style="color:${f.color};font-size:26px">${pc(f.id)}</b>`)}${row("Magaca",f=>`<b>${f.so}</b>`)}${row("Sharaxaad",f=>f.desc)}${row("Waaxyada",f=>f.depts.length+" waax: "+f.depts.join(", "))}${row("Shaqooyin",f=>f.jobs.join(" · "))}${row("💡 Talo koowaad",f=>f.tips[0])}<p class="mut note">Boqolkiiba “—” waxay la micno tahay in kulliyaddu aanay ku jirin kooxda doorashadaada.</p>${foot()}</div>`;scrollTo(0,0)}
+function back(){if(s.i>0&&!s.busy){s.i--;quiz()}}
+function result(){A.innerHTML=`<div class="res" style="padding-top:44px"><h2>Natiijadaada 🎯</h2><div class="mut" style="margin:0 8px">3-da kulliyadood ee kuugu habboon</div>${s.n<4?`<div class="card" style="padding:14px;background:color-mix(in srgb,#e11d48 14%,var(--card))">⚠️ Waxaad ka jawaabtay ${s.n} / ${s.p.length} su’aalood oo kaliya, sidaas darteed natiijadu kuma kalsoona tahay. Dib u bilow oo ka jawaab ugu yaraan 5 su’aalood.</div>`:""}${s.res.slice(0,3).map((m,i)=>{const f=m.f;return `<div class="card" style="animation-delay:${i*.15}s">${ban(f,i?140:190,{badge:i?"#"+(i+1):"🏆 Ku habboonaanta ugu sarreysa"})}<div class="cb"><div class="row"><div><h3>${f.so}</h3><div class="mut">${f.en}</div></div><div class="pct" style="color:${f.color}">${m.p}%</div></div><div class="meter" style="background:${f.color}26"><b data-w="${m.p}" style="background:${f.color}"></b></div><div>${f.desc}</div>${m.r.length?`<div class="h">🔍 Sababta natiijada</div><div class="mut">Waxaad dooratay:</div><ul class="tips" style="--c:${f.color}">${m.r.map(x=>`<li><i>“${x}”</i></li>`).join("")}</ul>`:""}<div class="h">Waaxyada</div>${f.depts.map(d=>`<span class="chip" style="background:${f.color}1c">${d}</span>`).join("")}<div class="h">Shaqooyin laga helo</div><div class="mut">${f.jobs.join(" · ")}</div><div class="h">💡 Talooyin</div><ul class="tips" style="--c:${f.color}">${f.tips.map(t=>`<li>${t}</li>`).join("")}</ul></div></div>`}).join("")}<div class="card" style="padding:16px;animation-delay:.5s"><b>🧭 Talaabooyinka xiga</b><ol class="steps"><li>La hadal ardayda hadda ku jirta kulliyadda 1-2-da ugu sarreysa.</li><li>U tag ama wac xafiiska diiwaangelinta: weydii shuruudaha, khidmadda iyo waqtiga imtixaanka.</li><li>Isbarbar dhig labada kulliyadood ee ugu sarreeya: waxbarasho, shaqo, iyo kharash.</li><li>Hal usbuuc sug ka hor go’aanka kama dambeysta ah, oo la tasho qoyskaaga.</li></ol></div><button class="btn" style="margin:12px 0 0;width:100%" onclick="startCmp()">⚖️ Isbarbar dhig kulliyadaha</button><button class="btn" style="margin:12px 0 0;width:100%;background:var(--card);color:var(--tx);border:1.5px solid var(--line)" onclick="copyRes(this)">📋 Koobiyee natiijada</button><p class="mut note">Boqolkiiba waa hage, ma aha go’aan. La hadal macallimiin, ardayda kulliyadda jirta iyo qoyskaaga ka hor intaadan dooran.</p><button class="btn ghost" style="margin:16px 0 0;width:100%" onclick="home()">↺ Dib u bilow</button>${foot()}</div>`;
+scrollTo(0,0);setTimeout(()=>document.querySelectorAll(".meter b").forEach(b=>b.style.width=b.dataset.w+"%"),80)}
+initTheme();home();
+</script>
+</body>
+</html>
