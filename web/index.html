@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+  <!--
+    Ku beddel YOUR-DOMAIN domain-kaaga runta ah (3 meelood: og:url, og:image, twitter:image). Haddii aad isticmaalayso GitHub Pages, .github/workflows/pages.yml ayaa si toos ah u beddela.
+    Tusaale: https://hagaha-kulliyadda.web.app
+    WhatsApp wuxuu u baahan yahay URL buuxa (https://...), ma aqbalo "og-image.jpg" oo kaliya.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0F1B3D">
+
+  <title>Hagaha Kulliyadda | Hel kulliyadda kuu ugu habboon</title>
+  <meta name="description" content="Su’aalo gaagaaban (ku dhawaad 8 daqiiqo) ayaa kaa caawinaya inaad garatid kulliyadda kuu ugu habboon.">
+
+  <!-- ===== Link preview (WhatsApp, Facebook, Telegram, iMessage) ===== -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Hagaha Kulliyadda">
+  <meta property="og:locale" content="so_SO">
+  <meta property="og:title" content="Hagaha Kulliyadda | Hel kulliyadda kuu ugu habboon">
+  <meta property="og:description" content="25-30 su’aalood, ku dhawaad 8 daqiiqo. Ogow kulliyadda kuu ugu habboon!">
+  <meta property="og:url" content="https://YOUR-DOMAIN/">
+  <meta property="og:image" content="https://YOUR-DOMAIN/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Hagaha Kulliyadda: hel kulliyadda kuu ugu habboon">
+
+  <!-- X / Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hagaha Kulliyadda | Hel kulliyadda kuu ugu habboon">
+  <meta name="twitter:description" content="25-30 su’aalood, ku dhawaad 8 daqiiqo. Ogow kulliyadda kuu ugu habboon!">
+  <meta name="twitter:image" content="https://YOUR-DOMAIN/og-image.jpg">
+
+  <!-- iOS / PWA -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Hagaha Kulliyadda">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    html, body { height: 100%; margin: 0; background: #0E1424; }
+    /* Splash yar intii app-ku soo kacayo (Flutter ayaa dusha ka saaraya markuu diyaar noqdo) */
+    #splash { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      background: linear-gradient(135deg, #0F1B3D 0%, #2A4BA0 55%, #6C4BDD 100%); color: #fff; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+    #splash .dot { width: 54px; height: 54px; border-radius: 50%; border: 3px solid rgba(255,255,255,.25); border-top-color: #FFD86B; animation: spin .9s linear infinite; }
+    #splash b { font-size: 20px; letter-spacing: .5px; font-weight: 700; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { #splash .dot { animation-duration: 3s; } }
+  </style>
+</head>
+<body>
+  <div id="splash"><div class="dot"></div><b>Hagaha Kulliyadda</b></div>
+  <script>
+    // Ka saar splash-ka marka app-ka uu sawirka ugu horreeya muujiyo
+    window.addEventListener('flutter-first-frame', function () {
+      var s = document.getElementById('splash');
+      if (s) s.remove();
+    });
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
