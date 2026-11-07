@@ -1,0 +1,6 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Xogta (data.dart) waa map-yo weyn; qaabkaas waa ujeedo.
+    avoid_dynamic_calls: false
