@@ -1,0 +1,74 @@
+# Dhis app-ka web-ka oo ku daabac GitHub Pages (domain looma baahna).
+# Link-ga: https://USERNAME.github.io/REPO/
+name: Deploy web to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Samee web/ (manifest, icons) laakiin ilaali index.html iyo og-image.jpg ee annaga
+      - name: Prepare web folder
+        run: |
+          mkdir -p /tmp/keep
+          cp web/index.html web/og-image.jpg /tmp/keep/
+          flutter create . --platforms=web --project-name kulliyad_guide
+          cp /tmp/keep/index.html web/index.html
+          cp /tmp/keep/og-image.jpg web/og-image.jpg
+
+      - run: flutter pub get
+
+      # Hubinta koodhka. Ma joojiso daabicidda (ogeysiis kaliya).
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+        continue-on-error: true
+
+      - name: Build
+        run: |
+          OWNER=$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')
+          REPO="${GITHUB_REPOSITORY#*/}"
+          if [ "$REPO" = "${OWNER}.github.io" ]; then
+            BASE_PATH="/"
+            BASE_URL="https://${REPO}"
+          else
+            BASE_PATH="/${REPO}/"
+            BASE_URL="https://${OWNER}.github.io/${REPO}"
+          fi
+          echo "Link-gaagu: ${BASE_URL}/"
+          # URL buuxa oo loo baahan yahay WhatsApp preview
+          sed -i "s#https://YOUR-DOMAIN#${BASE_URL}#g" web/index.html
+          flutter build web --release --base-href "${BASE_PATH}"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
