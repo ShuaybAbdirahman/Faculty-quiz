@@ -354,5 +354,37 @@ const Map<String, List<String>> ui = {
  "Lama diri karin. Hubi internetka oo mar kale isku day.": [
   "Could not send. Check your internet and try again.",
   "تعذّر الإرسال. تحقق من الإنترنت وحاول مرة أخرى."
+ ],
+ "Fariin ka timid aasaasaha": [
+  "A NOTE FROM THE FOUNDER",
+  "رسالة من المؤسس"
+ ],
+ "Aasaasaha Hagaha Kulliyadda": [
+  "Founder of Faculty Guide",
+  "مؤسس دليل الكليات"
+ ],
+ "Eng. Shuayb Abdirahman": [
+  "Eng. Shuayb Abdirahman",
+  "م. شعيب عبد الرحمن"
+ ],
+ "Soo dhawoow!": [
+  "Welcome!",
+  "أهلًا بك!"
+ ],
+ "Bilow su’aalaha": [
+  "Start the questions",
+  "ابدأ الأسئلة"
+ ],
+ "Ka bood": [
+  "Skip",
+  "تخطَّ"
+ ],
+ "Taabo si aad u dhammayso qoraalka": [
+  "Tap to show the full note",
+  "اضغط لإظهار الرسالة كاملة"
+ ],
+ "Asc! Waxaan ahay Shuayb. Arday badan oo dhammeeya dugsiga sare ayaa ku wareersan kulliyadda ay dooran lahaayeen, sidaas darteed waxaan dhisay Hagaha Kulliyadda. Waxay ku weydiinaysaa su’aalo gaagaaban oo ku saabsan waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah. Kadib waxay kuu soo bandhigaysaa saddexda kulliyadood ee kuugu habboon, boqolkiiba, sababta, waaxaha iyo shaqooyinka. Waa hage oo kaa caawinaya inaad si cad u fikirto, ma aha go’aan kama dambays ah, la tasho waalidkaa iyo macallimiinta. Guul!": [
+  "Hi! I’m Shuayb. Many high school graduates feel lost when choosing a faculty, so I built Faculty Guide. It asks you short questions about what you enjoy, what you have studied and what matters to you. Then it shows your top three faculties with a match percentage, the reason, the departments and the careers. It is a guide to help you think clearly, not a final decision, so talk it over with your family and teachers. Good luck!",
+  "مرحبًا! أنا شعيب. يشعر كثير من خريجي الثانوية بالحيرة عند اختيار الكلية، لذلك صممت «دليل الكليات». يسألك أسئلة قصيرة عمّا تحب وما درسته وما يهمك. ثم يعرض لك أفضل ثلاث كليات مع نسبة التوافق والسبب والأقسام والوظائف. إنه دليل يساعدك على التفكير بوضوح وليس قرارًا نهائيًا، فاستشر أسرتك ومعلميك. بالتوفيق!"
  ]
 };
