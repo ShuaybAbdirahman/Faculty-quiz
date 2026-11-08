@@ -27,14 +27,13 @@ jobs:
           channel: stable
           cache: true
 
-      # Samee web/ (manifest, icons) laakiin ilaali index.html iyo og-image.jpg ee annaga
+      # Samee web/ (Flutter), laakiin ilaali faylasha annaga (index, astaanta, manifest, sawirka)
       - name: Prepare web folder
         run: |
           mkdir -p /tmp/keep
-          cp web/index.html web/og-image.jpg /tmp/keep/
+          cp -r web/. /tmp/keep/
           flutter create . --platforms=web --project-name kulliyad_guide
-          cp /tmp/keep/index.html web/index.html
-          cp /tmp/keep/og-image.jpg web/og-image.jpg
+          cp -r /tmp/keep/. web/
 
       - run: flutter pub get
 
