@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'data.dart';
+import 'founder_intro.dart';
 import 'i18n.dart';
 import 'results_api.dart';
 import 'save_card.dart';
@@ -1096,7 +1097,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
               style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(58), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18))),
               onPressed: () {
                 FocusManager.instance.primaryFocus?.unfocus();
-                Navigator.push(context, fadeSlide(const QuizScreen()));
+                if (founderIntroSeen) {
+                  Navigator.push(context, fadeSlide(const QuizScreen()));
+                } else {
+                  // Hordhaca aasaasaha (hal mar), kadib su'aalaha
+                  Navigator.push(context, fadeSlide(FounderIntroScreen(onContinue: (ctx) => Navigator.pushReplacement(ctx, fadeSlide(const QuizScreen())))));
+                }
               },
               icon: const Icon(Icons.play_arrow_rounded),
               label: const Tr('Bilow', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
