@@ -18,9 +18,12 @@ Waxay u baahan tahay Flutter ≥ 3.27 (Dart ≥ 3.6).
 | Fayl | Waxa uu qabto |
 |---|---|
 | `lib/main.dart` | UI, xisaabta ku habboonaanta, animation-ka |
-| `lib/data.dart` | 12 kulliyadood, 67 su'aalood, kooxaha (3 luqadood) |
+| `lib/data.dart` | 14 kulliyadood (guud, dalka iyo caalamka), 67 su'aalood, kooxaha (3 luqadood) |
 | `lib/i18n.dart` | Turjumaadda UI (`tr`, `trf`, `tx`) |
 | `web/index.html`, `web/og-image.jpg` | Link preview (WhatsApp/Telegram) |
+| `lib/config.dart`, `results_api.dart`, `save_card.dart` | Backend (Supabase), ogolaansho iyo diris |
+| `backend/supabase/schema.sql` | Shaxanka, amniga (RLS) iyo dashboard SQL (+ `update_faculties.sql` oo loo isticmaalo isbeddelka kulliyadaha) |
+| `admin/index.html` | Bogga maamulaha (`/admin/`) |
 | `.github/workflows/pages.yml` | Dhis iyo daabac GitHub Pages |
 
 ## Daabac GitHub Pages (domain la'aan)
@@ -29,8 +32,11 @@ Waxay u baahan tahay Flutter ≥ 3.27 (Dart ≥ 3.6).
 3. Tab-ka **Actions**: sug workflow-ga (~3-5 daqiiqo). Link-gu waa `https://USERNAME.github.io/REPO/`.
 4. Haddii ay fashilanto, fur workflow-ga fashilmay oo koobi qoraalka khaladka.
 
+## Backend (ikhtiyaari)
+Eeg [`backend/README.md`](backend/README.md). Haddii `lib/config.dart` madhan yahay, app-ku wuu shaqeeyaa sidii hore oo kaarka diiwaangelinta wuu qarsoon yahay.
+
 ## Khusuusiga
-Magaca ardayga (ikhtiyaari) waa hambalyo oo kaliya, ku hadha xusuusta app-ka, lamana diro. Natiijadu waxay ku hadhaysaa qalabka. App-ku server ma isticmaalo; wax xog ah lama diro.
+Magaca ardayga (ikhtiyaari) waa hambalyo oo kaliya, wuxuu ku hadhaa xusuusta app-ka. Magaca waligiis lama diro. Natiijada waxaa la diiwaangelin karaa **magac la'aan** kaliya haddii ardaygu oggolaado.
 
 ## Link preview (WhatsApp)
 `web/index.html` (Open Graph) iyo `web/og-image.jpg` (1200×630). Workflow-gu si toos ah ayuu `YOUR-DOMAIN` ugu beddelaa link-gaaga runta ah. WhatsApp wuu keydiyaa preview-ga hore; si loo cusboonaysiiyo ku dar `?v=2` link-ga. Naqshadda: `design/og-image.html`.
