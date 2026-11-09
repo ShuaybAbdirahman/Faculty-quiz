@@ -70,7 +70,8 @@ const SUPABASE_URL = 'https://dmwhyltkdjvnehyhtjak.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_KJ3maGBUGCpUEn7vA464Ug_xUzJqGfU';
 // ==========================================================================================================
 
-const NAMES = {law:'Shari’ada iyo Sharciga',edu:'Waxbarashada iyo Aadanaha',econ:'Dhaqaalaha iyo Maaraynta',health:'Sayniska Caafimaadka',cs:'Sayniska Kombuyuutarka iyo IT',pol:'Cilmiga Siyaasadda iyo Maamulka',eng:'Injineerinka',agri:'Beeraha iyo Deegaanka',med:'Dhakhtarnimada',vet:'Dhakhtarnimada Xoolaha',dent:'Ilkaha',avia:'Duulista Rayidka'};
+const NAMES = {law:'Shari’ada iyo Sharciga',edu:'Waxbarashada',econ:'Dhaqaalaha iyo Maaraynta',health:'Sayniska Caafimaadka',cs:'Sayniska Kombuyuutarka iyo IT',pol:'Siyaasadda iyo Maamulka Dadweynaha',eng:'Injineerinka (Architecture ku jirta)',agri:'Beeraha iyo Deegaanka',med:'Dhakhtarnimada',vet:'Dhakhtarnimada Xoolaha',dent:'Ilkaha',pharm:'Farmashiyaha',sci:'Sayniska Dabiiciga ah',arts:'Farshaxanka, Aadanaha iyo Warbaahinta'};
+const LEGACY = {avia:'Duulista Rayidka (hore)', arch:'Naqshadda Dhismaha (hore)'};
 const $ = id => document.getElementById(id);
 const show = (id, on) => $(id).classList.toggle('hide', !on);
 let sb = null, last = null;
@@ -94,11 +95,12 @@ function render(d){
     ['Soomaali', l.so || 0], ['English', l.en || 0], ['العربية', l.ar || 0]
   ].map(([k, v]) => '<div class="stat"><b>' + esc(v) + '</b><span>' + esc(k) + '</span></div>').join('');
   const byId = Object.fromEntries((d.faculties || []).map(f => [f.id, f]));
-  const rows = Object.keys(NAMES).map(id => byId[id] || {id, first:0, top3:0, avg:null})
+  const ids = Object.keys(NAMES).concat(Object.keys(byId).filter(id => !(id in NAMES)));
+  const rows = ids.map(id => byId[id] || {id, first:0, top3:0, avg:null})
     .sort((a, b) => b.first - a.first || b.top3 - a.top3);
   const max = Math.max(1, ...rows.map(r => r.top3));
   $('list').innerHTML = rows.map(r =>
-    '<div class="row"><div>' + esc(NAMES[r.id] || r.id) + '</div>' +
+    '<div class="row"><div>' + esc(NAMES[r.id] || LEGACY[r.id] || r.id) + '</div>' +
     '<div class="bar"><i style="width:' + Math.round(r.top3 / max * 100) + '%"></i></div>' +
     '<div class="num"><b>' + esc(r.first) + '</b> koowaad · ' + esc(r.top3) + ' top 3' + (r.avg != null ? ' · ' + esc(r.avg) + '%' : '') + '</div></div>'
   ).join('');
@@ -145,7 +147,8 @@ function csvSafe(v){ v = String(v); if (/^[=+\-@]/.test(v)) v = "'" + v; return 
 $('csv').onclick = () => {
   if (!last) return;
   const lines = [['Kulliyad','Doorasho koowaad','Top 3','Celceliska %'].map(csvSafe).join(',')];
-  Object.keys(NAMES).forEach(id => { const f = (last.faculties || []).find(x => x.id === id) || {first:0, top3:0, avg:''}; lines.push([NAMES[id], f.first, f.top3, f.avg ?? ''].map(csvSafe).join(',')); });
+  const csvIds = Object.keys(NAMES).concat((last.faculties || []).map(x => x.id).filter(id => !(id in NAMES)));
+  csvIds.forEach(id => { const f = (last.faculties || []).find(x => x.id === id) || {first:0, top3:0, avg:''}; lines.push([NAMES[id] || LEGACY[id] || id, f.first, f.top3, f.avg ?? ''].map(csvSafe).join(',')); });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['\ufeff' + lines.join('\n')], {type:'text/csv;charset=utf-8'}));
   a.download = 'kulliyadaha-' + new Date().toISOString().slice(0, 10) + '.csv'; a.click();
