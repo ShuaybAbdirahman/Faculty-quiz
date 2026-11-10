@@ -22,6 +22,8 @@ Waxay u baahan tahay Flutter ≥ 3.27 (Dart ≥ 3.6).
 | `lib/i18n.dart` | Turjumaadda UI (`tr`, `trf`, `tx`) |
 | `web/index.html`, `web/og-image.jpg` | Link preview (WhatsApp/Telegram) |
 | `lib/config.dart`, `results_api.dart`, `save_card.dart` | Backend (Supabase), ogolaansho iyo diris |
+| `lib/prefs.dart`, `settings_screen.dart` | Xusuusta dejinta iyo bogga Dejinta |
+| `lib/reviews_api.dart`, `reviews_ui.dart` | Fikirrada ardayda (xiddigo + qoraal) |
 | `backend/supabase/schema.sql` | Shaxanka, amniga (RLS) iyo dashboard SQL (+ `update_faculties.sql` oo loo isticmaalo isbeddelka kulliyadaha) |
 | `admin/index.html` | Bogga maamulaha (`/admin/`) |
 | `.github/workflows/pages.yml` | Dhis iyo daabac GitHub Pages |
