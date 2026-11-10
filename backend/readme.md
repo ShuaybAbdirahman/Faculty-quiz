@@ -46,3 +46,7 @@ Ka-hortagga spam: hash la gooyay (md5 + erayga sirta ah) oo ka yimid IP, lama ke
 5. Fikirrada la ansixiyay waxay ka soo muuqdaan bogga hore (**Waxa ay yiraahdaan ardayda**) iyo bogga **Fikirrada ardayda** (Dejinta).
 
 Amniga: dadweynuhu ma gaadhi karo shaxanka; server-ku wuu diidaa xidhiidhada (link), lambarrada taleefanka iyo qoraal dheer; xaddidaad 3 fikir / saacad qof kasta.
+
+## Jaantus maalin-maalin
+1. Supabase -> SQL Editor -> New query: paste-garee `backend/supabase/daily_stats.sql` -> Run (mar keliya).
+2. Gal `/admin/`: kaarka **Ardayda maalin kasta** wuxuu muujiyaa 7 / 30 / 90 maalmood. Maalinta waxaa lagu xisaabiyaa waqtiga Muqdisho.
