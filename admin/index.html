@@ -32,6 +32,17 @@ button:disabled{opacity:.5;cursor:default}
 .err{color:var(--bad);min-height:1.4em}
 .mut{color:var(--mut);font-size:13px}
 .hide{display:none}
+
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tab,.seg button{background:transparent;color:var(--tx);border:1px solid var(--bd);border-radius:99px;padding:9px 16px;font-weight:600}
+.tab.on,.seg button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.seg{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.rev{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:10px}
+.rev .st{color:#f5a300;letter-spacing:2px;font-size:18px}
+.rev p{margin:8px 0;white-space:pre-wrap;word-break:break-word}
+.rev .meta{color:var(--mut);font-size:13px}
+.mini{padding:8px 14px;border-radius:10px;font-size:14px;margin:8px 8px 0 0;background:var(--bd);color:var(--tx)}
+.mini.ok{background:#1a7f4b;color:#fff}.mini.bad{background:var(--bad);color:#fff}
 @media (max-width:560px){.row{grid-template-columns:1fr auto}.row .bar{grid-column:1/-1;order:3}}
 </style>
 </head>
@@ -53,6 +64,8 @@ button:disabled{opacity:.5;cursor:default}
   <div id="setup" class="card hide err">Supabase lama habeynin. Ku qor <code>SUPABASE_URL</code> iyo <code>SUPABASE_ANON_KEY</code> gudaha faylkan.</div>
 
   <div id="dash" class="hide">
+    <div class="tabs"><button class="tab on" id="tabRes">Natiijooyinka</button><button class="tab" id="tabRev">Fikirrada <span id="pendBadge"></span></button></div>
+    <div id="panelRes">
     <div class="stats" id="stats"></div>
     <div class="card" style="margin-top:14px">
       <b>Kulliyad kasta: immisa arday ayay ku soo baxday?</b>
@@ -60,6 +73,12 @@ button:disabled{opacity:.5;cursor:default}
       <div id="list" style="margin-top:8px"></div>
     </div>
     <div class="mut">Xogtu waa magac la'aan. Magac, telefoon ama meel lama keydiyo.</div>
+    </div>
+    <div id="panelRev" class="hide">
+      <div class="seg"><button id="stPending" class="on">Sugaya</button><button id="stApproved">La ansixiyay</button><button id="stHidden">La qariyay</button></div>
+      <div id="revList"></div>
+      <div class="mut">Ansixi kaliya fikirrada runta ah oo aan aflagaado lahayn. Fikirrada xun (laakiin edebta leh) ha qarin, si app-ku u noqdo mid daacad ah.</div>
+    </div>
   </div>
 </main>
 
@@ -85,7 +104,7 @@ async function load(){
     if (/forbidden/i.test(error.message)) { await logout('Akoonkan maamule ma aha.'); return; }
     $('stats').innerHTML = '<div class="err">Khalad: ' + esc(error.message) + '</div>'; return;
   }
-  last = data; render(data); armIdle();
+  last = data; render(data); armIdle(); refreshBadge();
 }
 
 function render(d){
@@ -128,7 +147,7 @@ async function logout(msg){
   last = null;
   try { await sb.auth.signOut(); } catch (e) {}
   purgeOldSessions();
-  $('list').innerHTML = ''; $('stats').innerHTML = '';
+  $('list').innerHTML = ''; $('stats').innerHTML = ''; $('revList').innerHTML = ''; showTab('res');
   showLogin(msg || '');
 }
 
@@ -164,6 +183,50 @@ $('go').onclick = async () => {
 $('pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('go').click(); });
 $('refresh').onclick = load;
 $('logout').onclick = () => logout('');
+
+
+// ---------------- Fikirrada ardayda (ansixin ka hor) ----------------
+let revStatus = 'pending';
+function showTab(which){
+  show('panelRes', which === 'res'); show('panelRev', which === 'rev');
+  $('tabRes').classList.toggle('on', which === 'res'); $('tabRev').classList.toggle('on', which === 'rev');
+  if (which === 'rev') loadReviews();
+}
+function revStars(n){ n = Math.max(0, Math.min(5, Number(n) || 0)); return '★'.repeat(n) + '☆'.repeat(5 - n); }
+function revBtn(r, a, label, cls){ return '<button class="mini ' + (cls || '') + '" data-id="' + esc(r.id) + '" data-a="' + a + '">' + label + '</button>'; }
+function revHtml(r){
+  const fac = NAMES[r.faculty] || LEGACY[r.faculty] || '';
+  const acts = r.status === 'pending' ? revBtn(r, 'approve', 'Ansix', 'ok') + revBtn(r, 'hide', 'Qari') + revBtn(r, 'delete', 'Tirtir', 'bad')
+    : r.status === 'approved' ? revBtn(r, 'hide', 'Qari') + revBtn(r, 'delete', 'Tirtir', 'bad')
+    : revBtn(r, 'approve', 'Ansix', 'ok') + revBtn(r, 'delete', 'Tirtir', 'bad');
+  return '<div class="rev"><div class="st">' + revStars(r.rating) + '</div>' +
+    '<p>' + (r.comment ? esc(r.comment) : '<span class="mut">(xiddigo kaliya)</span>') + '</p>' +
+    '<div class="meta">' + esc(r.name || 'Arday') + (fac ? ' · ' + esc(fac) : '') + ' · ' + esc(String(r.lang || '')) + ' · ' + esc(new Date(r.created_at).toLocaleString()) + '</div>' + acts + '</div>';
+}
+async function loadReviews(){
+  $('revList').innerHTML = '<div class="mut">Waa la soo rarayaa…</div>';
+  const { data, error } = await sb.rpc('admin_reviews', { p_status: revStatus, p_limit: 100 });
+  if (error) { $('revList').innerHTML = '<div class="err">Khalad: ' + esc(error.message) + ' (ma orodday reviews.sql?)</div>'; return; }
+  $('pendBadge').textContent = data.pending ? '(' + data.pending + ')' : '';
+  const items = data.items || [];
+  $('revList').innerHTML = items.length ? items.map(revHtml).join('') : '<div class="mut">Wax fikir ah ma jiraan halkan.</div>';
+}
+async function refreshBadge(){
+  try { const { data } = await sb.rpc('admin_reviews', { p_status: 'pending', p_limit: 1 }); if (data) $('pendBadge').textContent = data.pending ? '(' + data.pending + ')' : ''; } catch (e) {}
+}
+$('tabRes').onclick = () => showTab('res');
+$('tabRev').onclick = () => showTab('rev');
+[['stPending','pending'],['stApproved','approved'],['stHidden','hidden']].forEach(([id, st]) => {
+  $(id).onclick = () => { revStatus = st; ['stPending','stApproved','stHidden'].forEach(x => $(x).classList.toggle('on', x === id)); loadReviews(); };
+});
+$('revList').addEventListener('click', async e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  if (b.dataset.a === 'delete' && !confirm('Ma hubtaa inaad tirtirto fikirkan?')) return;
+  b.disabled = true;
+  const { error } = await sb.rpc('admin_review_set', { p_id: b.dataset.id, p_action: b.dataset.a });
+  if (error) { alert('Khalad: ' + error.message); b.disabled = false; return; }
+  loadReviews();
+});
 
 (async () => {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !window.supabase) { show('setup', true); return; }
