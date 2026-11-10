@@ -7,18 +7,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'data.dart';
 import 'founder_intro.dart';
 import 'i18n.dart';
+import 'prefs.dart';
 import 'results_api.dart';
+import 'reviews_ui.dart';
 import 'save_card.dart';
+import 'settings_screen.dart';
 
-void main() => runApp(const GuideApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Prefs.init();
+  runApp(const GuideApp());
+}
 
 // ---------------------------------------------------------------- App & mawduuc
-/// Mugdi (dark) waa caadi. Badhanka Iftiin/Mugdi ayaa beddela.
-final ValueNotifier<bool> darkMode = ValueNotifier(true);
-
-/// Magaca ardayga (ikhtiyaari). Waxaa loo isticmaalaa hambalyada oo kaliya; wuxuu ku hadhaa xusuusta app-ka (lama keydiyo, lama diro).
-/// Waa global si uusan u lumin marka luqadda la beddelo (app-ku dib ayuu u dhismaa).
-final ValueNotifier<String> userName = ValueNotifier('');
+// darkMode, userName, animationsOn iyo textScale waxay ku jiraan prefs.dart (waxay ku xusuusan yihiin qalabka).
 
 String cleanName(String s) => s.replaceAll(RegExp(r'\s+'), ' ').trim();
 
@@ -61,11 +63,24 @@ class GuideApp extends StatelessWidget {
             title: tr('Hagaha Kulliyadda'),
             theme: _theme(dark),
             // Shaashadaha waaweyn (web/laptop): app-ka waxaa lagu hagaajiyaa bartamaha, ballac ugu badnaan 720px.
-            builder: (context, child) => Directionality(
-              textDirection: lang == 'ar' ? TextDirection.rtl : TextDirection.ltr,
-              child: ColoredBox(
-                color: dark ? const Color(0xFF080C16) : const Color(0xFFE4E9F2),
-                child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 720), child: child!)),
+            builder: (context, child) => ValueListenableBuilder<bool>(
+              valueListenable: animationsOn,
+              builder: (context, anim, _) => ValueListenableBuilder<double>(
+                valueListenable: textScale,
+                builder: (context, scale, _) {
+                  final mq = MediaQuery.of(context);
+                  return MediaQuery(
+                    // Dejinta: dhaqdhaqaaqa (animation) iyo cabbirka qoraalka ee ardayga waxay saameeyaan app-ka oo dhan.
+                    data: mq.copyWith(disableAnimations: mq.disableAnimations || !anim, textScaler: TextScaler.linear(scale * mq.textScaler.scale(1.0))),
+                    child: Directionality(
+                      textDirection: lang == 'ar' ? TextDirection.rtl : TextDirection.ltr,
+                      child: ColoredBox(
+                        color: dark ? const Color(0xFF080C16) : const Color(0xFFE4E9F2),
+                        child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 720), child: child!)),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             home: const WelcomeScreen(),
@@ -788,8 +803,13 @@ class _NameFieldState extends State<_NameField> with TickerProviderStateMixin {
     setState(() {});
   }
 
+  bool _invalid = false;
+
   void _changed(String v) {
-    userName.value = cleanName(v);
+    final n = cleanName(v);
+    // Magac khaldan (tusaale "7" ama "b9") lama aqbalo; magaca waa la keydiyaa kaliya marka uu sax yahay.
+    _invalid = n.isNotEmpty && !isValidName(n);
+    userName.value = (n.isEmpty || _invalid) ? '' : n;
     setState(() {});
   }
 
@@ -838,7 +858,10 @@ class _NameFieldState extends State<_NameField> with TickerProviderStateMixin {
                 onSubmitted: (_) => _focus.unfocus(),
                 textCapitalization: TextCapitalization.words,
                 textInputAction: TextInputAction.done,
-                inputFormatters: [LengthLimitingTextInputFormatter(20)],
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r"[\p{L}\p{M}\s'’\-]", unicode: true)),
+                  LengthLimitingTextInputFormatter(20),
+                ],
                 cursorColor: _gold,
                 style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
@@ -867,11 +890,17 @@ class _NameFieldState extends State<_NameField> with TickerProviderStateMixin {
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 260),
           child: name.isEmpty
-              ? const Padding(
-                  key: ValueKey('hint'),
-                  padding: EdgeInsets.only(top: 10),
-                  child: Tr('Ku qor magacaaga si hambalyadaada ugu soo baxdo.', style: TextStyle(color: Colors.white70, fontSize: 13)),
-                )
+              ? (_invalid
+                  ? const Padding(
+                      key: ValueKey('bad'),
+                      padding: EdgeInsets.only(top: 10),
+                      child: Tr('Magaca waa inuu ahaadaa ugu yaraan 2 xaraf, xarfo kaliya (tiro iyo calaamado lama oggola).', style: TextStyle(color: Color(0xFFFFB4AB), fontSize: 13)),
+                    )
+                  : const Padding(
+                      key: ValueKey('hint'),
+                      padding: EdgeInsets.only(top: 10),
+                      child: Tr('Ku qor magacaaga si hambalyadaada ugu soo baxdo.', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                    ))
               : Padding(
                   key: const ValueKey('hello'),
                   padding: const EdgeInsets.only(top: 12),
@@ -1020,9 +1049,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   const Icon(Icons.school_rounded, color: Colors.white, size: 44),
-                  const Row(mainAxisSize: MainAxisSize.min, children: [
-                    _LangPicker(color: Colors.white),
-                    _ThemeToggle(color: Colors.white),
+                  Row(mainAxisSize: MainAxisSize.min, children: [
+                    const _LangPicker(color: Colors.white),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: darkMode,
+                      builder: (_, dark, __) => IconButton(
+                        tooltip: tr(dark ? 'Iftiin' : 'Mugdi'),
+                        color: Colors.white,
+                        onPressed: () => darkMode.value = !dark,
+                        icon: Icon(dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: tr('Dejinta'),
+                      color: Colors.white,
+                      onPressed: () => Navigator.push(context, fadeSlide(const SettingsScreen())),
+                      icon: const Icon(Icons.settings_outlined),
+                    ),
                   ]),
                 ]),
                 const SizedBox(height: 16),
@@ -1082,6 +1125,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
             ),
           ),
         ),
+        const ReviewsSection(),
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1452,6 +1496,8 @@ class _ResultScreenState extends State<ResultScreen> {
             delay: next(),
             child: SaveResultCard(ids: [for (final m in top) m.f['id'] as String], pcts: [for (final m in top) m.percent]),
           ),
+          const SizedBox(height: 12),
+          Reveal(delay: next(), child: ReviewCard(facultyId: top.first.f['id'] as String)),
         ],
         const SizedBox(height: 16),
         Reveal(delay: next(), child: const _NextSteps()),
