@@ -386,5 +386,133 @@ const Map<String, List<String>> ui = {
  "Asc! Waxaan ahay Shuayb. Arday badan oo dhammeeya dugsiga sare ayaa ku wareersan kulliyadda ay dooran lahaayeen, sidaas darteed waxaan dhisay Hagaha Kulliyadda. Waxay ku weydiinaysaa su’aalo gaagaaban oo ku saabsan waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah. Kadib waxay kuu soo bandhigaysaa saddexda kulliyadood ee kuugu habboon, boqolkiiba, sababta, waaxaha iyo shaqooyinka. Waa hage oo kaa caawinaya inaad si cad u fikirto, ma aha go’aan kama dambays ah, la tasho waalidkaa iyo macallimiinta. Guul!": [
   "Hi! I’m Shuayb. Many high school graduates feel lost when choosing a faculty, so I built Faculty Guide. It asks you short questions about what you enjoy, what you have studied and what matters to you. Then it shows your top three faculties with a match percentage, the reason, the departments and the careers. It is a guide to help you think clearly, not a final decision, so talk it over with your family and teachers. Good luck!",
   "مرحبًا! أنا شعيب. يشعر كثير من خريجي الثانوية بالحيرة عند اختيار الكلية، لذلك صممت «دليل الكليات». يسألك أسئلة قصيرة عمّا تحب وما درسته وما يهمك. ثم يعرض لك أفضل ثلاث كليات مع نسبة التوافق والسبب والأقسام والوظائف. إنه دليل يساعدك على التفكير بوضوح وليس قرارًا نهائيًا، فاستشر أسرتك ومعلميك. بالتوفيق!"
+ ],
+ "Magaca waa inuu ahaadaa ugu yaraan 2 xaraf, xarfo kaliya (tiro iyo calaamado lama oggola).": [
+  "Your name must be at least 2 letters, letters only (no numbers or symbols).",
+  "يجب أن يتكون الاسم من حرفين على الأقل، حروف فقط (بدون أرقام أو رموز)."
+ ],
+ "Waxa ay yiraahdaan ardayda": [
+  "What students say",
+  "ماذا يقول الطلاب"
+ ],
+ "Eeg dhammaan": [
+  "See all",
+  "عرض الكل"
+ ],
+ "Fikirrada ardayda": [
+  "Student reviews",
+  "آراء الطلاب"
+ ],
+ "Arday": [
+  "Student",
+  "طالب"
+ ],
+ "Weli fikir ma jiro.": [
+  "No reviews yet.",
+  "لا توجد آراء بعد."
+ ],
+ "Lama soo qaadi karin. Hubi internetka oo mar kale isku day.": [
+  "Could not load. Check your internet and try again.",
+  "تعذر التحميل. تحقق من الإنترنت وحاول مرة أخرى."
+ ],
+ "Isku day mar kale": [
+  "Try again",
+  "حاول مرة أخرى"
+ ],
+ "{n} fikir": [
+  "{n} reviews",
+  "{n} رأي"
+ ],
+ "Fikirkaaga (ikhtiyaari)": [
+  "Your review (optional)",
+  "رأيك (اختياري)"
+ ],
+ "Fikirkaaga wuxuu caawin doonaa ardayda kale. Waa la hubinayaa ka hor intaan la muujin.": [
+  "Your review will help other students. It is checked before it is shown.",
+  "رأيك سيساعد الطلاب الآخرين. تتم مراجعته قبل عرضه."
+ ],
+ "Waxa aad ka qabto app-ka (ikhtiyaari)": [
+  "What you think of the app (optional)",
+  "ما رأيك في التطبيق (اختياري)"
+ ],
+ "Waan oggolahay in fikirkayga la muujiyo marka la ansixiyo (magaca koowaad kaliya, haddii aad gelisay).": [
+  "I agree to my review being shown once approved (first name only, if you entered one).",
+  "أوافق على عرض رأيي بعد الموافقة عليه (الاسم الأول فقط إن أدخلته)."
+ ],
+ "Dir fikirka": [
+  "Send review",
+  "أرسل الرأي"
+ ],
+ "Mahadsanid! Fikirkaaga waa la hubinayaa, marka la ansixiyo ayaa la muujin doonaa.": [
+  "Thank you! Your review will be checked and shown once approved.",
+  "شكرًا! سيتم فحص رأيك وعرضه بعد الموافقة عليه."
+ ],
+ "Dejinta": [
+  "Settings",
+  "الإعدادات"
+ ],
+ "Beddelka luqadda wuxuu ku celinayaa bogga hore.": [
+  "Changing the language takes you back to the start page.",
+  "تغيير اللغة يعيدك إلى الصفحة الرئيسية."
+ ],
+ "Muuqaalka": [
+  "Appearance",
+  "المظهر"
+ ],
+ "Dhaqdhaqaaqyada (animation)": [
+  "Animations",
+  "الحركات"
+ ],
+ "Cabbirka qoraalka": [
+  "Text size",
+  "حجم النص"
+ ],
+ "Magacaaga": [
+  "Your name",
+  "اسمك"
+ ],
+ "Keydi": [
+  "Save",
+  "حفظ"
+ ],
+ "Tirtir magacayga": [
+  "Remove my name",
+  "احذف اسمي"
+ ],
+ "Magaca waa la keydiyay.": [
+  "Name saved.",
+  "تم حفظ الاسم."
+ ],
+ "Ku saabsan": [
+  "About",
+  "حول التطبيق"
+ ],
+ "Fariinta aasaasaha": [
+  "Message from the founder",
+  "رسالة من المؤسس"
+ ],
+ "Xog-ilaalinta": [
+  "Privacy",
+  "الخصوصية"
+ ],
+ "Dib u deji dejinta": [
+  "Reset settings",
+  "إعادة ضبط الإعدادات"
+ ],
+ "Dejinta waa la dib u dejiyay.": [
+  "Settings were reset.",
+  "تمت إعادة ضبط الإعدادات."
+ ],
+ "Nooca app-ka": [
+  "App version",
+  "إصدار التطبيق"
+ ],
+ "Xidh": [
+  "Close",
+  "إغلاق"
+ ],
+ "Magacaaga (ikhtiyaari) wuxuu ku hadhaa qalabkaaga oo kaliya, lamana diro waligeed. Natiijadaada waxaa la diiwaangelin karaa magac la’aan, kaliya haddii aad oggolaato. Fikirkaaga waxaa la muujin karaa kaliya marka aad oggolaato oo la ansixiyo (magaca koowaad ee ikhtiyaariga ah kaliya). Dejinta (luqadda, mugdiga, cabbirka qoraalka) waxay ku xusuusan tahay qalabkaaga.": [
+  "Your name (optional) stays on your device only and is never sent. Your result can be saved anonymously, only if you agree. Your review can be shown only if you agree and it is approved (first name only, if you entered one). Your settings (language, theme, text size) are remembered on your device.",
+  "اسمك (اختياري) يبقى على جهازك فقط ولا يُرسل أبدًا. يمكن حفظ نتيجتك دون هوية، فقط إذا وافقت. يمكن عرض رأيك فقط إذا وافقت وتمت الموافقة عليه (الاسم الأول فقط إن أدخلته). تُحفظ إعداداتك (اللغة والمظهر وحجم النص) على جهازك."
  ]
 };
