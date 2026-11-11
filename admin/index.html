@@ -64,7 +64,7 @@ button:disabled{opacity:.5;cursor:default}
   <div id="setup" class="card hide err">Supabase lama habeynin. Ku qor <code>SUPABASE_URL</code> iyo <code>SUPABASE_ANON_KEY</code> gudaha faylkan.</div>
 
   <div id="dash" class="hide">
-    <div class="tabs"><button class="tab on" id="tabRes">Natiijooyinka</button><button class="tab" id="tabRev">Fikirrada <span id="pendBadge"></span></button></div>
+    <div class="tabs"><button class="tab on" id="tabRes">Natiijooyinka</button><button class="tab" id="tabRev">Fikirrada <span id="pendBadge"></span></button><button class="tab" id="tabQr">QR code</button></div>
     <div id="panelRes">
     <div class="stats" id="stats"></div>
     <div class="card" style="margin-top:14px">
@@ -80,6 +80,18 @@ button:disabled{opacity:.5;cursor:default}
       <div id="list" style="margin-top:8px"></div>
     </div>
     <div class="mut">Xogtu waa magac la'aan. Magac, telefoon ama meel lama keydiyo.</div>
+    </div>
+    <div id="panelQr" class="hide">
+      <div class="card" style="text-align:center">
+        <b>QR code ee app-ka</b>
+        <div class="mut" style="margin:4px 0 12px">Ardaygu wuxuu iskaan-gareyn karaa kamaradiisa si uu app-ka u furo.</div>
+        <div id="qrBox" style="display:inline-block;background:#fff;border-radius:18px;padding:12px;box-shadow:0 6px 24px rgba(0,0,0,.12)"></div>
+        <div class="mut" id="qrUrl" style="margin:12px 0;word-break:break-all"></div>
+        <div class="seg" style="justify-content:center;margin:0">
+          <button id="qrPng">Soo deji PNG</button><button id="qrSvg">Soo deji SVG</button><button id="qrCopy">Koobi link-ga</button>
+        </div>
+        <div class="mut" style="margin-top:12px">Ku daabac xayeysiinta ama bannaanka. Hubi inuu si cad u muuqdo (ugu yaraan 3 cm).</div>
+      </div>
     </div>
     <div id="panelRev" class="hide">
       <div class="seg"><button id="stPending" class="on">Sugaya</button><button id="stApproved">La ansixiyay</button><button id="stHidden">La qariyay</button></div>
@@ -231,11 +243,37 @@ $('chartSeg').addEventListener('click', e => {
   renderChart();
 });
 
+
+// ---------------- QR code (la sameeyay ka hor; ma u baahna internet ama maktabad) ----------------
+const QR_URL = "https://shuaybabdirahman.github.io/Faculty-quiz/";
+const QR_ROWS = ["1111111010000110101111000000101111111", "1000001000110110001011011001101000001", "1011101000110101010011110011101011101", "1011101000110101110010110110001011101", "1011101011110010100000110100001011101", "1000001010101001110011001111101000001", "1111111010101010101010101010101111111", "0000000000000011011011100100100000000", "0111111100010101111100101010100110001", "0111010111000011100010110101001111100", "0001111000010111001001000111101010011", "0100110111001010000001110011001110011", "0011111101101110011000001111011010111", "1000010111101011100111010010110101100", "0111011000110011000101000001001101011", "1100100001010001101011100010100010011", "0001001101100100000011000111011110101", "1100110011001000000000101000100101000", "1110011000100000111111000101010101111", "0110000110011010000011101011010010001", "1010101111001011010010100110001111101", "1010000110100100001001010010000101000", "1101111110011110110101101001001001111", "0111000000111110001001000010011101011", "0100011110001101001110111000001001111", "1011100001111010000110010011111001110", "1010011110010100100001101100001111111", "1001000010110100100001110010110111001", "1010001111001001110110110110111111100", "0000000010011011000000110101100010000", "1111111011000100111110101111101011011", "1000001011101000111110001000100010000", "1011101010111110110111111101111110101", "1011101010100001010001000000101010010", "1011101011000010010011011010110101001", "1000001011100110011001110011101010001", "1111111000100100001010111110011111111"];
+function qrSvgString(px){
+  const n = QR_ROWS.length, q = 4, size = n + 2 * q; let d = '';
+  QR_ROWS.forEach((row, y) => { for (let x = 0; x < n; x++) if (row[x] === '1') d += 'M' + (x + q) + ' ' + (y + q) + 'h1v1h-1z'; });
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + size + ' ' + size + '"' + (px ? ' width="' + px + '" height="' + px + '"' : '') + ' shape-rendering="crispEdges"><rect width="' + size + '" height="' + size + '" fill="#fff"/><path d="' + d + '" fill="#0B1533"/></svg>';
+}
+function downloadBlob(blob, name){ const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
+function renderQr(){ $('qrBox').innerHTML = qrSvgString(240); $('qrUrl').textContent = QR_URL; }
+$('qrSvg').onclick = () => downloadBlob(new Blob([qrSvgString(1080)], { type: 'image/svg+xml' }), 'hagaha-kulliyadda-qr.svg');
+$('qrPng').onclick = () => {
+  const n = QR_ROWS.length, q = 4, k = 24, size = (n + 2 * q) * k, c = document.createElement('canvas');
+  c.width = c.height = size; const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, size, size); g.fillStyle = '#0B1533';
+  QR_ROWS.forEach((row, y) => { for (let x = 0; x < n; x++) if (row[x] === '1') g.fillRect((x + q) * k, (y + q) * k, k, k); });
+  c.toBlob(b => b && downloadBlob(b, 'hagaha-kulliyadda-qr.png'), 'image/png');
+};
+$('qrCopy').onclick = async () => {
+  try { await navigator.clipboard.writeText(QR_URL); $('qrCopy').textContent = 'La koobiyay ✓'; setTimeout(() => $('qrCopy').textContent = 'Koobi link-ga', 1800); }
+  catch (e) { prompt('Koobi link-ga:', QR_URL); }
+};
+$('tabQr').onclick = () => showTab('qr');
+renderQr();
+
 // ---------------- Fikirrada ardayda (ansixin ka hor) ----------------
 let revStatus = 'pending';
 function showTab(which){
-  show('panelRes', which === 'res'); show('panelRev', which === 'rev');
-  $('tabRes').classList.toggle('on', which === 'res'); $('tabRev').classList.toggle('on', which === 'rev');
+  show('panelRes', which === 'res'); show('panelRev', which === 'rev'); show('panelQr', which === 'qr');
+  $('tabRes').classList.toggle('on', which === 'res'); $('tabRev').classList.toggle('on', which === 'rev'); $('tabQr').classList.toggle('on', which === 'qr');
   if (which === 'rev') loadReviews();
 }
 function revStars(n){ n = Math.max(0, Math.min(5, Number(n) || 0)); return '★'.repeat(n) + '☆'.repeat(5 - n); }
