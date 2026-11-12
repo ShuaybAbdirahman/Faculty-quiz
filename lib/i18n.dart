@@ -83,7 +83,7 @@ const Map<String, List<String>> ui = {
   "Order & numbers",
   "تنظيم وحساب"
  ],
- "Su’aalo gaagaaban ayaa kaa caawinaya inaad garatid kulliyadda kuu ugu habboon, adigoo ku saleynaya waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah.": [
+ "Su’aalo gaagaaban ayaa kaa caawinaya inaad garatid kulliyadda kugu habboon, adigoo ku saleynaya waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah.": [
   "Short questions help you find the faculty that suits you best, based on what you enjoy, what you have studied, and what matters to you.",
   "أسئلة قصيرة تساعدك على معرفة الكلية الأنسب لك، بناءً على ما تحبه وما درسته وما يهمّك."
  ],
@@ -139,7 +139,7 @@ const Map<String, List<String>> ui = {
   "Your result",
   "نتيجتك"
  ],
- "Saddexda kulliyadood ee kuu ugu habboon": [
+ "Saddexda kulliyadood ee kugu habboon": [
   "Your three best-matching faculties",
   "الكليات الثلاث الأنسب لك"
  ],
@@ -187,7 +187,7 @@ const Map<String, List<String>> ui = {
   "Congratulations!",
   "مبروك!"
  ],
- "Kulliyadda kuu ugu habboon waa": [
+ "Kulliyadda kugu habboon waa": [
   "Your best-matching faculty is",
   "الكلية الأنسب لك هي"
  ],
@@ -199,7 +199,7 @@ const Map<String, List<String>> ui = {
   "See the details",
   "عرض التفاصيل"
  ],
- "Kuu ugu habboon": [
+ "Kugu habboon": [
   "Best match",
   "الأنسب لك"
  ],
@@ -383,7 +383,7 @@ const Map<String, List<String>> ui = {
   "Tap to show the full note",
   "اضغط لإظهار الرسالة كاملة"
  ],
- "Asc! Waxaan ahay Shuayb. Arday badan oo dhammeeya dugsiga sare ayaa ku wareersan kulliyadda ay dooran lahaayeen, sidaas darteed waxaan dhisay Hagaha Kulliyadda. Waxay ku weydiinaysaa su’aalo gaagaaban oo ku saabsan waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah. Kadib waxay kuu soo bandhigaysaa saddexda kulliyadood ee kuugu habboon, boqolkiiba, sababta, waaxaha iyo shaqooyinka. Waa hage oo kaa caawinaya inaad si cad u fikirto, ma aha go’aan kama dambays ah, la tasho waalidkaa iyo macallimiinta. Guul!": [
+ "Asc! Waxaan ahay Shuayb. Arday badan oo dhammeysa dugsiga sare ayaa ku wareersan kulliyadda ay dooran lahaayeen, sidaas darteed waxaan dhisay Hagaha Kulliyadda. Waxay ku weydiinaysaa su’aalo gaagaaban oo ku saabsan waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah. Kadib waxay kuu soo bandhigaysaa saddexda kulliyadood ee kuugu habboon, boqolkiiba, sababta, waaxaha iyo shaqooyinka. Waa hage oo kaa caawinaya inaad si cad u fikirto, ma aha go’aan kama dambays ah, la tasho waalidkaaga iyo macallimiintaada. Guul!": [
   "Hi! I’m Shuayb. Many high school graduates feel lost when choosing a faculty, so I built Faculty Guide. It asks you short questions about what you enjoy, what you have studied and what matters to you. Then it shows your top three faculties with a match percentage, the reason, the departments and the careers. It is a guide to help you think clearly, not a final decision, so talk it over with your family and teachers. Good luck!",
   "مرحبًا! أنا شعيب. يشعر كثير من خريجي الثانوية بالحيرة عند اختيار الكلية، لذلك صممت «دليل الكليات». يسألك أسئلة قصيرة عمّا تحب وما درسته وما يهمك. ثم يعرض لك أفضل ثلاث كليات مع نسبة التوافق والسبب والأقسام والوظائف. إنه دليل يساعدك على التفكير بوضوح وليس قرارًا نهائيًا، فاستشر أسرتك ومعلميك. بالتوفيق!"
  ],
