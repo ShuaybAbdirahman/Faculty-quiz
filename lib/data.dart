@@ -228,8 +228,8 @@ const List<Map<String, dynamic>> items = [
    "so": [
     "Cudur ama xanuun dadka ku dhaca",
     "Nidaam, qalab ama barnaamij aan shaqaynayn",
-    "Xaq la’aan ama isku-dhac bulshada ku dhex jira",
-    "Ganacsi ama shirkad lacag waayay",
+    "Xaq la’aan ama isku-dhac bulshada ka dhex jirta",
+    "Ganacsi ama shirkad lacag waysey",
     "Abaar, cunto yaraan ama xoolo dhimanaya"
    ],
    "en": [
@@ -615,7 +615,7 @@ const List<Map<String, dynamic>> items = [
   ],
   "deep": true,
   "t": {
-   "so": "Inaan dugsi ka dhigo ama dadka tababaro si joogto ah",
+   "so": "Inaan dugsi dhigo ama dadka tababaro si joogto ah",
    "en": "Teaching at a school or training people regularly",
    "ar": "التدريس في مدرسة أو تدريب الناس بانتظام"
   }
@@ -1104,14 +1104,14 @@ const List<Map<String, dynamic>> items = [
   "a": 1,
   "d": 1,
   "t": {
-   "so": "Faadumo caadi ahaan waxay timaaddaa dugsiga ka hor gambaleelka. Maanta way hurdo hadhay, sidaas awgeed way daahday.\n\nMaxaa sababay in Faadumo daahdo maanta?",
+   "so": "Faadumo caadi ahaan waxay timaaddaa dugsiga gambaleelka ka hor. Maanta hurdada way ku dheeraatey, sidaas awgeed way daahday.\n\nMaxaa sababay in Faadumo daahdo maanta?",
    "en": "Fadumo usually arrives at school before the bell. Today she overslept, so she was late.\n\nWhy was Fadumo late today?",
    "ar": "عادةً تصل فاطمة إلى المدرسة قبل الجرس. اليوم استيقظت متأخرة، فتأخرت.\n\nلماذا تأخرت فاطمة اليوم؟"
   },
   "o": {
    "so": [
     "Way buka",
-    "Way hurdo hadhay",
+    "Hurdada way ku dheeraatey",
     "Dugsigu wuu xidhnaa",
     "Waxay illowday buugaagteeda"
    ],
@@ -1357,7 +1357,7 @@ const List<Map<String, dynamic>> items = [
   "s": 4,
   "type": "l",
   "t": {
-   "so": "Waan diyaar u ahay inaan waxbarasho dheer oo adag sii wado dhowr sano",
+   "so": "Waxaan diyaar u ahay inaan waxbarasho dheer oo adag sii wado dhowr sano",
    "en": "I am ready to continue demanding study for several years",
    "ar": "أنا مستعد لمواصلة دراسة طويلة وصعبة لعدة سنوات"
   },
