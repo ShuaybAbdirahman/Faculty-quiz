@@ -1073,7 +1073,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                 const SizedBox(height: 8),
                 Reveal(
                   delay: 120,
-                  child: Tr('Su’aalo gaagaaban ayaa kaa caawinaya inaad garatid kulliyadda kuu ugu habboon, adigoo ku saleynaya waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah.',
+                  child: Tr('Su’aalo gaagaaban ayaa kaa caawinaya inaad garatid kulliyadda kugu habboon, adigoo ku saleynaya waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah.',
                     style: t.bodyLarge?.copyWith(color: Colors.white70, height: 1.4),
                   ),
                 ),
@@ -1442,7 +1442,7 @@ class _ResultScreenState extends State<ResultScreen> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Tr('Natiijadaada', style: t.headlineMedium?.copyWith(fontWeight: FontWeight.w800)),
               const SizedBox(height: 4),
-              Tr('Saddexda kulliyadood ee kuu ugu habboon', style: t.bodyMedium),
+              Tr('Saddexda kulliyadood ee kugu habboon', style: t.bodyMedium),
             ]),
           ),
         ),
@@ -1682,7 +1682,7 @@ class _CelebrationState extends State<_Celebration> with TickerProviderStateMixi
                       _nameLine(userName.value, reduce),
                     ],
                     const SizedBox(height: 6),
-                    _enter(.4, .7, const Tr('Kulliyadda kuu ugu habboon waa', style: TextStyle(color: Colors.white70, fontSize: 15))),
+                    _enter(.4, .7, const Tr('Kulliyadda kugu habboon waa', style: TextStyle(color: Colors.white70, fontSize: 15))),
                     const SizedBox(height: 6),
                     _enter(.5, .8, Text(tx(f['name']), textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700, height: 1.25))),
                     const SizedBox(height: 12),
@@ -1729,7 +1729,7 @@ class _ResultCard extends StatelessWidget {
       shadowColor: c.withValues(alpha: .45),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        FacultyBanner(f: f, height: rank == 1 ? 200 : 146, badge: rank == 1 ? tr('Kuu ugu habboon') : '#$rank', float: true),
+        FacultyBanner(f: f, height: rank == 1 ? 200 : 146, badge: rank == 1 ? tr('Kugu habboon') : '#$rank', float: true),
         Padding(
           padding: const EdgeInsets.all(16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
