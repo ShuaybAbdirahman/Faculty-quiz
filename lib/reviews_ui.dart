@@ -11,7 +11,10 @@ const _starColor = Color(0xFFFFB703);
 String _facultyName(String? id) {
   if (id == null) return '';
   for (final f in faculties) {
-    if (f['id'] == id) return tx(f['name']);
+    if (f['id'] == id) {
+      // Ka saar erayga hore ("Kulliyadda", "Faculty of", "كلية") si magaca u gaabto oo uusan go'in.
+      return tx(f['name']).replaceFirst(RegExp(r'^(Kulliyadda|Faculty of|كلية)\s+'), '');
+    }
   }
   return '';
 }
@@ -78,14 +81,16 @@ class _ReviewsSectionState extends State<ReviewsSection> {
           Text('${d.avg.toStringAsFixed(1)}  ·  ${trf('{n} fikir', {'n': d.count})}', style: t.bodyMedium),
         ]),
       ),
-      SizedBox(
-        height: 190,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          itemCount: shown.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 12),
-          itemBuilder: (_, i) => SizedBox(width: 290, child: ReviewTile(item: shown[i], maxLines: 4)),
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: IntrinsicHeight(
+          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            for (var i = 0; i < shown.length; i++) ...[
+              if (i > 0) const SizedBox(width: 12),
+              SizedBox(width: 290, child: ReviewTile(item: shown[i], maxLines: 5)),
+            ],
+          ]),
         ),
       ),
       Padding(
@@ -117,25 +122,33 @@ class ReviewTile extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide(color: cs.outlineVariant)),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: maxLines == null ? MainAxisSize.min : MainAxisSize.max, children: [
-          Stars(item.rating.toDouble(), size: 18),
-          const SizedBox(height: 8),
-          if (maxLines == null)
-            Text(item.comment.trim(), style: t.bodyMedium?.copyWith(height: 1.4))
-          else
-            Expanded(child: Text(item.comment.trim(), maxLines: maxLines, overflow: TextOverflow.ellipsis, style: t.bodyMedium?.copyWith(height: 1.4))),
-          const SizedBox(height: 10),
-          Row(children: [
-            CircleAvatar(radius: 14, backgroundColor: cs.primaryContainer, child: Text(String.fromCharCode(name.runes.first).toUpperCase(), style: TextStyle(color: cs.onPrimaryContainer, fontWeight: FontWeight.w800, fontSize: 13))),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: t.labelLarge?.copyWith(fontWeight: FontWeight.w700)),
-                if (fac.isNotEmpty) Text(fac, maxLines: 1, overflow: TextOverflow.ellipsis, style: t.bodySmall),
-              ]),
-            ),
-          ]),
-        ]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: maxLines == null ? MainAxisSize.min : MainAxisSize.max,
+          children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Stars(item.rating.toDouble(), size: 18),
+              const SizedBox(height: 8),
+              Text(item.comment.trim(), maxLines: maxLines, overflow: maxLines == null ? TextOverflow.visible : TextOverflow.ellipsis, style: t.bodyMedium?.copyWith(height: 1.4)),
+            ]),
+            const SizedBox(height: 12),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              CircleAvatar(
+                radius: 14,
+                backgroundColor: cs.primaryContainer,
+                child: Text(String.fromCharCode(name.runes.first).toUpperCase(), style: TextStyle(color: cs.onPrimaryContainer, fontWeight: FontWeight.w800, fontSize: 13)),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: t.labelLarge?.copyWith(fontWeight: FontWeight.w700)),
+                  if (fac.isNotEmpty) Text(fac, maxLines: 2, overflow: TextOverflow.ellipsis, style: t.bodySmall),
+                ]),
+              ),
+            ]),
+          ],
+        ),
       ),
     );
   }
