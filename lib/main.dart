@@ -12,6 +12,7 @@ import 'prefs.dart';
 import 'results_api.dart';
 import 'reviews_ui.dart';
 import 'save_card.dart';
+import 'share_card.dart';
 import 'settings_screen.dart';
 
 Future<void> main() async {
@@ -376,11 +377,19 @@ class _Heading extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) => Row(children: [
-        Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
-        const SizedBox(width: 8),
-        Tr(text, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700)),
-      ]);
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Row(children: [
+      Container(
+        width: 26,
+        height: 26,
+        decoration: BoxDecoration(color: cs.primary.withValues(alpha: .12), borderRadius: BorderRadius.circular(8)),
+        child: Icon(icon, size: 16, color: cs.primary),
+      ),
+      const SizedBox(width: 10),
+      Tr(text, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700)),
+    ]);
+  }
 }
 
 class _Footer extends StatelessWidget {
@@ -398,16 +407,28 @@ class _Footer extends StatelessWidget {
 }
 
 Widget _bar(BuildContext context, String label, int v, Color c) => Padding(
-      padding: const EdgeInsets.only(top: 6),
+      padding: const EdgeInsets.only(top: 8),
       child: Row(children: [
         SizedBox(width: 64, child: Tr(label, style: Theme.of(context).textTheme.bodySmall)),
         Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: LinearProgressIndicator(value: v / 100, minHeight: 7, color: c, backgroundColor: c.withValues(alpha: .15)),
+          child: TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0, end: v / 100),
+            duration: const Duration(milliseconds: 1100),
+            curve: Curves.easeOutCubic,
+            builder: (context, t, _) => Container(
+              height: 9,
+              decoration: BoxDecoration(color: c.withValues(alpha: .15), borderRadius: BorderRadius.circular(9)),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: FractionallySizedBox(
+                  widthFactor: min(1.0, max(0.0, t)),
+                  child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(9), gradient: LinearGradient(colors: [c.withValues(alpha: .65), c]))),
+                ),
+              ),
+            ),
           ),
         ),
-        SizedBox(width: 42, child: Text('$v%', textAlign: TextAlign.right, style: Theme.of(context).textTheme.bodySmall)),
+        SizedBox(width: 42, child: Text('$v%', textAlign: TextAlign.right, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700))),
       ]),
     );
 
@@ -1506,6 +1527,18 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ),
           ),
+        Reveal(
+          delay: next(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 14),
+            child: ShareSection(
+              name: userName.value,
+              entries: [
+                for (final m in top) ShareEntry(name: plainFacultyName(tx(m.f['name'])), percent: m.percent, color: Color(m.f['color'] as int), icon: FacultyIcon(f: m.f, size: 28)),
+              ],
+            ),
+          ),
+        ),
         Reveal(
           delay: next(),
           child: Card(
