@@ -514,5 +514,45 @@ const Map<String, List<String>> ui = {
  "Magacaaga (ikhtiyaari) wuxuu ku hadhaa qalabkaaga oo kaliya, lamana diro waligeed. Natiijadaada waxaa la diiwaangelin karaa magac la’aan, kaliya haddii aad oggolaato. Fikirkaaga waxaa la muujin karaa kaliya marka aad oggolaato oo la ansixiyo (magaca koowaad ee ikhtiyaariga ah kaliya). Dejinta (luqadda, mugdiga, cabbirka qoraalka) waxay ku xusuusan tahay qalabkaaga.": [
   "Your name (optional) stays on your device only and is never sent. Your result can be saved anonymously, only if you agree. Your review can be shown only if you agree and it is approved (first name only, if you entered one). Your settings (language, theme, text size) are remembered on your device.",
   "اسمك (اختياري) يبقى على جهازك فقط ولا يُرسل أبدًا. يمكن حفظ نتيجتك دون هوية، فقط إذا وافقت. يمكن عرض رأيك فقط إذا وافقت وتمت الموافقة عليه (الاسم الأول فقط إن أدخلته). تُحفظ إعداداتك (اللغة والمظهر وحجم النص) على جهازك."
+ ],
+ "Wadaag natiijada": [
+  "Share result",
+  "شارك النتيجة"
+ ],
+ "Soo deji sawirka": [
+  "Save image",
+  "احفظ الصورة"
+ ],
+ "Sawirka waa la soo dejiyay": [
+  "Image saved",
+  "تم حفظ الصورة"
+ ],
+ "Lama wadaagi karin. Mar kale isku day.": [
+  "Could not share. Try again.",
+  "تعذرت المشاركة. حاول مرة أخرى."
+ ],
+ "Natiijadayda": [
+  "My result",
+  "نتيجتي"
+ ],
+ "Natiijada {n}": [
+  "{n}’s result",
+  "نتيجة {n}"
+ ],
+ "Ku habboonaan": [
+  "Match",
+  "التوافق"
+ ],
+ "Kulliyadda kugu habboon": [
+  "Your best-fit faculty",
+  "الكلية الأنسب لك"
+ ],
+ "Qaado imtixaanka Hagaha Kulliyadda": [
+  "Take the Faculty Guide test",
+  "جرّب اختبار دليل الكليات"
+ ],
+ "Natiijadayda ee Hagaha Kulliyadda: {f} ({p}%). Tijaabi adigu: {url}": [
+  "My Faculty Guide result: {f} ({p}%). Try it yourself: {url}",
+  "نتيجتي في دليل الكليات: {f} ({p}%). جرّب بنفسك: {url}"
  ]
 };
