@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'data.dart';
 import 'founder_intro.dart';
 import 'i18n.dart';
+import 'modern_ui.dart';
 import 'prefs.dart';
 import 'results_api.dart';
 import 'reviews_ui.dart';
@@ -41,12 +42,40 @@ List<String> _letters(String s) {
   return out;
 }
 
-ThemeData _theme(bool dark) => ThemeData(
-      useMaterial3: true,
-      brightness: dark ? Brightness.dark : Brightness.light,
-      colorSchemeSeed: const Color(0xFF1F3A93),
-      scaffoldBackgroundColor: dark ? const Color(0xFF0E1424) : const Color(0xFFF5F7FB),
-    );
+/// Font casri ah: Outfit (cinwaanno) + Plus Jakarta Sans (qoraal) Lataynka; Cairo Carabiga.
+TextTheme _textTheme(TextTheme b, String lang) {
+  final ar = lang == 'ar';
+  TextStyle? body(TextStyle? s, FontWeight w) => ar ? GoogleFonts.cairo(textStyle: s, fontWeight: w) : GoogleFonts.plusJakartaSans(textStyle: s, fontWeight: w);
+  TextStyle? head(TextStyle? s, FontWeight w) => ar ? GoogleFonts.cairo(textStyle: s, fontWeight: w) : GoogleFonts.outfit(textStyle: s, fontWeight: w);
+  return b.copyWith(
+    displayLarge: head(b.displayLarge, FontWeight.w700),
+    displayMedium: head(b.displayMedium, FontWeight.w700),
+    displaySmall: head(b.displaySmall, FontWeight.w700),
+    headlineLarge: head(b.headlineLarge, FontWeight.w700),
+    headlineMedium: head(b.headlineMedium, FontWeight.w700),
+    headlineSmall: head(b.headlineSmall, FontWeight.w700),
+    titleLarge: head(b.titleLarge, FontWeight.w700),
+    titleMedium: head(b.titleMedium, FontWeight.w700),
+    titleSmall: body(b.titleSmall, FontWeight.w600),
+    bodyLarge: body(b.bodyLarge, FontWeight.w400),
+    bodyMedium: body(b.bodyMedium, FontWeight.w400),
+    bodySmall: body(b.bodySmall, FontWeight.w400),
+    labelLarge: body(b.labelLarge, FontWeight.w600),
+    labelMedium: body(b.labelMedium, FontWeight.w600),
+    labelSmall: body(b.labelSmall, FontWeight.w600),
+  );
+}
+
+ThemeData _theme(bool dark, String lang) {
+  final base = ThemeData(
+    useMaterial3: true,
+    brightness: dark ? Brightness.dark : Brightness.light,
+    colorSchemeSeed: const Color(0xFF1F3A93),
+    scaffoldBackgroundColor: dark ? const Color(0xFF0E1424) : const Color(0xFFF5F7FB),
+  );
+  final tt = _textTheme(base.textTheme, lang);
+  return base.copyWith(textTheme: tt, primaryTextTheme: _textTheme(base.primaryTextTheme, lang), appBarTheme: base.appBarTheme.copyWith(titleTextStyle: tt.titleLarge?.copyWith(color: base.colorScheme.onSurface)));
+}
 
 class GuideApp extends StatelessWidget {
   const GuideApp({super.key});
@@ -61,7 +90,7 @@ class GuideApp extends StatelessWidget {
             key: ValueKey(lang),
             debugShowCheckedModeBanner: false,
             title: tr('Hagaha Kulliyadda'),
-            theme: _theme(dark),
+            theme: _theme(dark, lang),
             // Shaashadaha waaweyn (web/laptop): app-ka waxaa lagu hagaajiyaa bartamaha, ballac ugu badnaan 720px.
             builder: (context, child) => ValueListenableBuilder<bool>(
               valueListenable: animationsOn,
@@ -731,11 +760,16 @@ class _Pill extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(color: Colors.white.withValues(alpha: .16), borderRadius: BorderRadius.circular(99), border: Border.all(color: Colors.white24)),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [Colors.white.withValues(alpha: .24), Colors.white.withValues(alpha: .08)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+          borderRadius: BorderRadius.circular(99),
+          border: Border.all(color: Colors.white.withValues(alpha: .32)),
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: .12), blurRadius: 10, offset: const Offset(0, 4))],
+        ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(icon, size: 16, color: Colors.white),
           const SizedBox(width: 6),
-          Tr(text, style: const TextStyle(color: Colors.white, fontSize: 13)),
+          Tr(text, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
         ]),
       );
 }
@@ -1033,17 +1067,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
         AnimatedBuilder(
           animation: _bg,
           builder: (_, child) => Container(
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment(-1 + _bg.value * .8, -1),
                 end: Alignment(1, 1 - _bg.value * .8),
-                colors: const [Color(0xFF0F1B3D), Color(0xFF2A4BA0), Color(0xFF6C4BDD)],
+                colors: const [Color(0xFF070D26), Color(0xFF1B3A9E), Color(0xFF6A47E0)],
               ),
               borderRadius: const BorderRadius.vertical(bottom: Radius.circular(34)),
             ),
             child: child,
           ),
           child: Stack(children: [
+            Positioned.fill(child: AuroraBackground(t: _bg)),
             Padding(
               padding: EdgeInsets.fromLTRB(24, top + 28, 24, 32),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1107,7 +1143,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
             ),
           ]),
         ),
-        Padding(padding: const EdgeInsets.fromLTRB(24, 24, 24, 10), child: Tr('Kulliyadaha', style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700))),
+        const Padding(padding: EdgeInsets.fromLTRB(24, 26, 24, 12), child: AccentTitle('Kulliyadaha')),
         SizedBox(
           height: 118,
           child: ListView.separated(
@@ -1136,21 +1172,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
         ),
         Padding(
           padding: const EdgeInsets.all(24),
-          child: Pulse(
-            child: FilledButton.icon(
-              style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(58), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18))),
-              onPressed: () {
-                FocusManager.instance.primaryFocus?.unfocus();
-                if (founderIntroSeen) {
-                  Navigator.push(context, fadeSlide(const QuizScreen()));
-                } else {
-                  // Hordhaca aasaasaha (hal mar), kadib su'aalaha
-                  Navigator.push(context, fadeSlide(FounderIntroScreen(onContinue: (ctx) => Navigator.pushReplacement(ctx, fadeSlide(const QuizScreen())))));
-                }
-              },
-              icon: const Icon(Icons.play_arrow_rounded),
-              label: const Tr('Bilow', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-            ),
+          child: ShinyButton(
+            label: 'Bilow',
+            onPressed: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+              if (founderIntroSeen) {
+                Navigator.push(context, fadeSlide(const QuizScreen()));
+              } else {
+                // Hordhaca aasaasaha (hal mar), kadib su'aalaha
+                Navigator.push(context, fadeSlide(FounderIntroScreen(onContinue: (ctx) => Navigator.pushReplacement(ctx, fadeSlide(const QuizScreen())))));
+              }
+            },
           ),
         ),
         const _Footer(),
