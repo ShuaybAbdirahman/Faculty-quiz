@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'data.dart';
 import 'i18n.dart';
+import 'modern_ui.dart';
 import 'prefs.dart';
 import 'results_api.dart';
 import 'reviews_api.dart';
@@ -68,10 +69,8 @@ class _ReviewsSectionState extends State<ReviewsSection> {
     final t = Theme.of(context).textTheme;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
-        padding: const EdgeInsets.fromLTRB(24, 26, 24, 4),
-        child: Row(children: [
-          Expanded(child: Tr('Waxa ay yiraahdaan ardayda', style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700))),
-        ]),
+        padding: const EdgeInsets.fromLTRB(24, 26, 24, 6),
+        child: AccentTitle('Waxa ay yiraahdaan ardayda'),
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 10),
