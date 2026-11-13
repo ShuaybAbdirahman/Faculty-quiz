@@ -67,10 +67,11 @@ class _DotsPainter extends CustomPainter {
 
 /// Badhanka ugu weyn: dahab, iftiin dul maraya (shimmer), iftiin garaacaya iyo dareen riixid.
 class ShinyButton extends StatefulWidget {
-  const ShinyButton({super.key, required this.label, required this.onPressed, this.icon = Icons.play_arrow_rounded});
+  const ShinyButton({super.key, required this.label, required this.onPressed, this.icon = Icons.play_arrow_rounded, this.showArrow = true});
   final String label;
   final VoidCallback onPressed;
   final IconData icon;
+  final bool showArrow;
 
   @override
   State<ShinyButton> createState() => _ShinyButtonState();
@@ -139,8 +140,10 @@ class _ShinyButtonState extends State<ShinyButton> with SingleTickerProviderStat
                       Icon(widget.icon, color: navy, size: 28),
                       const SizedBox(width: 8),
                       Tr(widget.label, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: navy, fontSize: 19, fontWeight: FontWeight.w800)),
-                      const SizedBox(width: 10),
-                      Transform.translate(offset: Offset(rtl ? -nudge : nudge, 0), child: Icon(rtl ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded, color: navy, size: 22)),
+                      if (widget.showArrow) ...[
+                        const SizedBox(width: 10),
+                        Transform.translate(offset: Offset(rtl ? -nudge : nudge, 0), child: Icon(rtl ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded, color: navy, size: 22)),
+                      ],
                     ]),
                   ]),
                 ),
