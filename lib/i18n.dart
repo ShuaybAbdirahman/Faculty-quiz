@@ -554,5 +554,73 @@ const Map<String, List<String>> ui = {
  "Natiijadayda ee Hagaha Kulliyadda: {f} ({p}%). Tijaabi adigu: {url}": [
   "My Faculty Guide result: {f} ({p}%). Try it yourself: {url}",
   "نتيجتي في دليل الكليات: {f} ({p}%). جرّب بنفسك: {url}"
+ ],
+ "Hagaha Waaxda": [
+  "Department Guide",
+  "دليل الأقسام"
+ ],
+ "Dooro waaxda saxda ah ee kulliyaddaada": [
+  "Find the right department in your faculty",
+  "اختر القسم المناسب في كليتك"
+ ],
+ "Ka dooro kulliyadda": [
+  "Choose a faculty",
+  "اختر الكلية"
+ ],
+ "Kala saar waaxaha ku habboon": [
+  "Rank the best-fit departments",
+  "رتّب الأقسام الأنسب لك"
+ ],
+ "Shaqooyinka waaxda kasta": [
+  "Careers for each department",
+  "الوظائف لكل قسم"
+ ],
+ "Xoojiso natiijada su’aalo yar": [
+  "Sharpen the result with a few questions",
+  "حسّن النتيجة ببضعة أسئلة"
+ ],
+ "Fur Hagaha Pro": [
+  "Open the Pro Guide",
+  "افتح الدليل المتقدم"
+ ],
+ "{n} waaxood oo la barbar dhigay": [
+  "{n} departments compared",
+  "{n} أقسام تمت مقارنتها"
+ ],
+ "Dhakhtarnimada waa waax keliya; kuwan waa waddooyinka takhasuska ee aad dooran karto kadib.": [
+  "Medicine is a single programme; these are the specialty paths you can choose later.",
+  "الطب برنامج واحد؛ هذه مسارات التخصص التي يمكنك اختيارها لاحقًا."
+ ],
+ "Waaxda ugu habboon": [
+  "Best-fit department",
+  "أنسب قسم"
+ ],
+ "Waxa ay kuugu habboon tahay": [
+  "Why it fits you",
+  "لماذا يناسبك"
+ ],
+ "Shaqooyin suurtagal ah": [
+  "Possible careers",
+  "وظائف محتملة"
+ ],
+ "Waaxaha loo kala saaray ku habboonaantaada": [
+  "Departments ranked for you",
+  "الأقسام مرتبة حسب ملاءمتك"
+ ],
+ "Xoojiso natiijada": [
+  "Refine your result",
+  "حسّن نتيجتك"
+ ],
+ "Ka jawaab su’aalahan yaryar si natiijada u sii saxnaato.": [
+  "Answer these short questions to sharpen the result.",
+  "أجب عن هذه الأسئلة القصيرة لتحسين دقة النتيجة."
+ ],
+ "Natiijadaada waa dhammaystiran tahay; wax su’aalo ah oo dheeraad ah looma baahna.": [
+  "Your result is complete; no extra questions are needed.",
+  "نتيجتك مكتملة؛ لا حاجة لأسئلة إضافية."
+ ],
+ "Waa hage, ma aha go’aan kama dambays ah. La tasho macallimiin ama arday jaamacad.": [
+  "This is a guide, not a final decision. Talk to a teacher or a university student.",
+  "هذا دليل وليس قرارًا نهائيًا. استشر معلمًا أو طالبًا جامعيًا."
  ]
 };
