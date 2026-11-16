@@ -8,6 +8,7 @@ import 'data.dart';
 import 'founder_intro.dart';
 import 'i18n.dart';
 import 'modern_ui.dart';
+import 'pro_guide.dart';
 import 'prefs.dart';
 import 'results_api.dart';
 import 'reviews_ui.dart';
@@ -1051,6 +1052,81 @@ class _HeroTitleState extends State<_HeroTitle> with TickerProviderStateMixin {
   }
 }
 
+/// Dhammaan kulliyadaha (14) oo si tartiib ah u dhaqaaqa. Isku-xigsiga iyo meesha uu ka bilaabmo way isbeddelaan mar kasta oo app-ka la furo.
+class _FacultyMarquee extends StatefulWidget {
+  const _FacultyMarquee();
+
+  @override
+  State<_FacultyMarquee> createState() => _FacultyMarqueeState();
+}
+
+class _FacultyMarqueeState extends State<_FacultyMarquee> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(seconds: 46))..repeat();
+  late final List<int> _order = List<int>.generate(faculties.length, (i) => i)..shuffle(Random());
+  late final double _start = Random().nextDouble();
+  static const double _cell = 56;
+  static const double _gap = 14;
+  static const List<double> _sizes = [52, 46, 56, 48, 54, 44];
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  Widget _item(int pos) {
+    final f = faculties[_order[pos % _order.length]];
+    final size = _sizes[pos % _sizes.length];
+    final color = Color(f['color'] as int);
+    return SizedBox(
+      width: _cell,
+      height: 76,
+      child: Center(
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(colors: [color.withValues(alpha: .6), color.withValues(alpha: .22)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+            border: Border.all(color: Colors.white.withValues(alpha: .35)),
+            boxShadow: [BoxShadow(color: color.withValues(alpha: .35), blurRadius: 14)],
+          ),
+          child: Center(child: FacultyIcon(f: f, size: size * .5)),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final n = faculties.length;
+    const slot = _cell + _gap;
+    final cycle = n * slot;
+    if (MediaQuery.disableAnimationsOf(context)) {
+      return SizedBox(height: 76, child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [for (var i = 0; i < 5; i++) _item(i)]));
+    }
+    return SizedBox(
+      height: 76,
+      child: ShaderMask(
+        blendMode: BlendMode.dstIn,
+        shaderCallback: (r) => const LinearGradient(colors: [Colors.transparent, Colors.black, Colors.black, Colors.transparent], stops: [0.0, 0.07, 0.93, 1.0]).createShader(r),
+        child: ClipRect(
+          child: AnimatedBuilder(
+            animation: _c,
+            builder: (context, _) {
+              final dx = ((_c.value + _start) % 1.0) * cycle;
+              return Stack(clipBehavior: Clip.hardEdge, children: [
+                for (var k = 0; k < 2 * n; k++) Positioned(left: k * slot - dx, top: 0, child: _item(k)),
+              ]);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
 
@@ -1145,19 +1221,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                 ),
                 const SizedBox(height: 18),
                 // Astaamaha kulliyadaha: safka u gaar ah, ma dul fadhiyaan qoraalka.
-                Reveal(
-                  delay: 300,
-                  child: SizedBox(
-                    height: 76,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      _bubble(4, 52, 0),
-                      _bubble(8, 46, 1),
-                      _bubble(6, 56, 2),
-                      _bubble(0, 46, 3),
-                      _bubble(3, 52, 4),
-                    ]),
-                  ),
-                ),
+                const Reveal(delay: 300, child: _FacultyMarquee()),
                 const SizedBox(height: 14),
                 const Reveal(delay: 360, child: _NameField()),
               ]),
@@ -1259,6 +1323,7 @@ class _QuizScreenState extends State<QuizScreen> {
             answered: masked.where((x) => x > 0).length,
             planLen: _plan.length,
             profile: interestProfile(masked),
+            ratings: masked,
           )),
         );
       }
@@ -1437,11 +1502,12 @@ class _OptionTileState extends State<_OptionTile> {
 
 // ---------------------------------------------------------------- Natiijada iyo hambalyada
 class ResultScreen extends StatefulWidget {
-  const ResultScreen({super.key, required this.matches, required this.answered, required this.planLen, required this.profile});
+  const ResultScreen({super.key, required this.matches, required this.answered, required this.planLen, required this.profile, required this.ratings});
   final List<FacultyMatch> matches;
   final int answered;
   final int planLen;
   final List<String> profile;
+  final List<int> ratings; // jawaabaha ardayga (-1 = lama weydiin), loo isticmaalo Hagaha Waaxda (Pro)
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();
@@ -1539,6 +1605,18 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
           ),
         ),
+        if (widget.answered >= minNeeded(widget.planLen))
+          Reveal(
+            delay: next(),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 14),
+              child: ProEntryCard(
+                ratings: widget.ratings,
+                entries: [for (final m in top) ProFacultyRef(f: m.f, percent: m.percent)],
+                iconBuilder: (f, size) => FacultyIcon(f: f, size: size),
+              ),
+            ),
+          ),
         Reveal(
           delay: next(),
           child: Card(
