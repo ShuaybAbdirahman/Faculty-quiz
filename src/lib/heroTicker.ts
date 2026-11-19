@@ -67,9 +67,9 @@ export const baseHeroSlides: HeroTickerSlide[] = [
     id: "founder",
     tag: { so: "Aasaasaha", en: "Founder", ar: "المؤسس" },
     text: {
-      so: "Aasaasaha: Shuceyb Cabdiraxmaan",
-      en: "Founder: Shuceyb Abdirahman",
-      ar: "المؤسس: شعيب عبد الرحمن",
+      so: "Aasaasaha: ShuaybAbdirahman",
+      en: "Founder: ShuaybAbdirahman",
+      ar: "المؤسس: ShuaybAbdirahman",
     },
     accent: "gold",
   },

@@ -140,7 +140,7 @@ export function ProPaywallScreen({
       return;
     }
     const generatedRef = buildEvcTimeRef(ph, tm, plan);
-    const planLabel = plan === "languages" ? "EVC Plus (Luqadaha)" : "EVC Plus (Waaxaha & Xarunta)";
+    const planLabel = plan === "languages" ? "EVC Plus (Lang)" : "EVC Plus (Dept)";
 
     setSending(true);
     setReqMsg(null);
@@ -151,7 +151,7 @@ export function ProPaywallScreen({
         phone: ph,
         method: planLabel,
         txn: generatedRef,
-        amount: info.priceText,
+        amount: "$0.10",
         name: nm || undefined,
       });
       setPendingAt(Date.now());
