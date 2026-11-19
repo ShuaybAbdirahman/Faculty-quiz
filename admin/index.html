@@ -43,6 +43,12 @@ button:disabled{opacity:.5;cursor:default}
 .rev .meta{color:var(--mut);font-size:13px}
 .mini{padding:8px 14px;border-radius:10px;font-size:14px;margin:8px 8px 0 0;background:var(--bd);color:var(--tx)}
 .mini.ok{background:#1a7f4b;color:#fff}.mini.bad{background:var(--bad);color:#fff}
+
+.lbl{display:block;font-size:13px;color:var(--mut);margin-top:10px}
+.mrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.mrow input{margin:0}
+textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;min-height:90px;margin:8px 0}
+@media (max-width:560px){.mrow{grid-template-columns:1fr}}
 @media (max-width:560px){.row{grid-template-columns:1fr auto}.row .bar{grid-column:1/-1;order:3}}
 </style>
 </head>
@@ -64,7 +70,7 @@ button:disabled{opacity:.5;cursor:default}
   <div id="setup" class="card hide err">Supabase lama habeynin. Ku qor <code>SUPABASE_URL</code> iyo <code>SUPABASE_ANON_KEY</code> gudaha faylkan.</div>
 
   <div id="dash" class="hide">
-    <div class="tabs"><button class="tab on" id="tabRes">Natiijooyinka</button><button class="tab" id="tabRev">Fikirrada <span id="pendBadge"></span></button><button class="tab" id="tabQr">QR code</button></div>
+    <div class="tabs"><button class="tab on" id="tabRes">Natiijooyinka</button><button class="tab" id="tabRev">Fikirrada <span id="pendBadge"></span></button><button class="tab" id="tabQr">QR code</button><button class="tab" id="tabPro">Pro <span id="pendProBadge"></span></button></div>
     <div id="panelRes">
     <div class="stats" id="stats"></div>
     <div class="card" style="margin-top:14px">
@@ -80,6 +86,36 @@ button:disabled{opacity:.5;cursor:default}
       <div id="list" style="margin-top:8px"></div>
     </div>
     <div class="mut">Xogtu waa magac la'aan. Magac, telefoon ama meel lama keydiyo.</div>
+    </div>
+    <div id="panelPro" class="hide">
+      <div class="stats" id="proStats"></div>
+      <div class="card" style="margin-top:14px">
+        <b>Dejinta lacag-bixinta</b>
+        <div class="mut">Waxaa lagu muujiyaa bogga Pro ee ardayda. Ku qor kaliya xogta runta ah.</div>
+        <label class="lbl">Qiimaha (qoraal, tusaale: $3 / 6 bilood)</label><input id="pPrice" maxlength="60">
+        <label class="lbl">Maalmaha gelitaanka</label><input id="pDays" type="number" min="1" max="3650">
+        <label class="lbl">WhatsApp (lambar caalami ah, tusaale 2526XXXXXXXX)</label><input id="pWa" inputmode="numeric" maxlength="20">
+        <label class="lbl">Fariin dheeraad ah (ikhtiyaari)</label><input id="pNote" maxlength="300">
+        <label class="lbl">Habka lacag-bixinta (ugu badnaan 3): magac · lambar · magaca lambarka</label>
+        <div class="mrow pmrow"><input class="pm-n" placeholder="EVC Plus" maxlength="30"><input class="pm-x" placeholder="Lambar" maxlength="30"><input class="pm-h" placeholder="Magaca lambarka" maxlength="40"></div>
+        <div class="mrow pmrow"><input class="pm-n" placeholder="Zaad" maxlength="30"><input class="pm-x" placeholder="Lambar" maxlength="30"><input class="pm-h" placeholder="Magaca lambarka" maxlength="40"></div>
+        <div class="mrow pmrow"><input class="pm-n" placeholder="eDahab" maxlength="30"><input class="pm-x" placeholder="Lambar" maxlength="30"><input class="pm-h" placeholder="Magaca lambarka" maxlength="40"></div>
+        <button id="pSave" style="margin-top:12px">Keydi dejinta</button> <span id="pSaveMsg" class="mut"></span>
+      </div>
+      <div class="card">
+        <b>Codsiyada lacag-bixinta</b>
+        <div class="mut">Hubi lacagta inay dhab ahaan kuu timid (taariikhda mobile-money-gaaga) ka hor intaadan ansixin.</div>
+        <div class="seg" style="margin-top:10px"><button id="prPending" class="on">Sugaya</button><button id="prApproved">La ansixiyay</button><button id="prRejected">La diiday</button></div>
+        <div id="proReqs"></div>
+      </div>
+      <div class="card">
+        <b>Koodhyada</b>
+        <div class="mut">U iib koodh ardayga (WhatsApp, wakiil). Koodh kasta mar keliya ayaa la isticmaali karaa.</div>
+        <div class="mrow" style="grid-template-columns:1fr 1fr auto;align-items:end"><div><label class="lbl">Maalmaha</label><input id="pcDays" type="number" min="1" max="3650" value="180"></div><div><label class="lbl">Tirada (ugu badnaan 50)</label><input id="pcCount" type="number" min="1" max="50" value="5"></div><button id="pcMake">Samee</button></div>
+        <textarea id="pcOut" readonly placeholder="Koodhyada cusub waxay halkan ka soo muuqdaan"></textarea>
+        <div class="seg"><button id="pcNew" class="on">Cusub</button><button id="pcUsed">La isticmaalay</button><button id="pcVoid">La burburiyay</button></div>
+        <div id="proCodes"></div>
+      </div>
     </div>
     <div id="panelQr" class="hide">
       <div class="card" style="text-align:center">
@@ -167,7 +203,7 @@ async function logout(msg){
   last = null;
   try { await sb.auth.signOut(); } catch (e) {}
   purgeOldSessions();
-  $('list').innerHTML = ''; $('stats').innerHTML = ''; $('revList').innerHTML = ''; $('chart').innerHTML = ''; $('chartSum').textContent = ''; showTab('res');
+  $('list').innerHTML = ''; $('stats').innerHTML = ''; $('revList').innerHTML = ''; $('chart').innerHTML = ''; $('chartSum').textContent = ''; $('proReqs').innerHTML = ''; $('proCodes').innerHTML = ''; $('pcOut').value = ''; showTab('res');
   showLogin(msg || '');
 }
 
@@ -269,12 +305,97 @@ $('qrCopy').onclick = async () => {
 $('tabQr').onclick = () => showTab('qr');
 renderQr();
 
+
+// ---------------- Pro (lacag-bixin): dejin, codsiyo, koodhyo ----------------
+let proReqStatus = 'pending', proCodeStatus = 'new';
+async function loadPro(){
+  const { data, error } = await sb.rpc('pro_admin_overview');
+  if (error) { $('proStats').innerHTML = '<div class="err">Khalad: ' + esc(error.message) + ' (ma orodday pro.sql?)</div>'; return; }
+  $('proStats').innerHTML = [['Sugaya', data.pending], ['Furan hadda', data.active], ['Koodh aan la isticmaalin', data.codes_new], ['La ansixiyay', data.approved]]
+    .map(([k, v]) => '<div class="stat"><b>' + esc(v) + '</b><span>' + esc(k) + '</span></div>').join('');
+  $('pendProBadge').textContent = data.pending ? '(' + data.pending + ')' : '';
+  const st = data.settings || {};
+  $('pPrice').value = st.price_text || ''; $('pDays').value = st.days || '180'; $('pWa').value = st.whatsapp || ''; $('pNote').value = st.note || '';
+  let methods = []; try { methods = JSON.parse(st.methods || '[]'); } catch (e) {}
+  document.querySelectorAll('.pmrow').forEach((row, i) => {
+    const m = methods[i] || {};
+    row.querySelector('.pm-n').value = m.name || ''; row.querySelector('.pm-x').value = m.number || ''; row.querySelector('.pm-h').value = m.holder || '';
+  });
+  $('pcDays').value = st.days || '180';
+  loadProReqs(); loadProCodes();
+}
+$('pSave').onclick = async () => {
+  const methods = [...document.querySelectorAll('.pmrow')].map(r => ({ name: r.querySelector('.pm-n').value.trim(), number: r.querySelector('.pm-x').value.trim(), holder: r.querySelector('.pm-h').value.trim() })).filter(m => m.name && m.number);
+  const sets = [['price_text', $('pPrice').value.trim()], ['days', String(parseInt($('pDays').value, 10) || 180)], ['whatsapp', $('pWa').value.replace(/[^0-9]/g, '')], ['note', $('pNote').value.trim()], ['methods', JSON.stringify(methods)]];
+  $('pSaveMsg').textContent = 'Waa la keydinayaa…';
+  for (const [k, v] of sets) {
+    const { error } = await sb.rpc('pro_admin_set_setting', { p_key: k, p_value: v });
+    if (error) { $('pSaveMsg').textContent = 'Khalad: ' + error.message; return; }
+  }
+  $('pSaveMsg').textContent = 'La keydiyay ✓';
+};
+function proReqHtml(r){
+  const acts = r.status === 'pending'
+    ? '<input class="dayin" type="number" min="1" max="3650" value="' + esc($('pDays').value || 180) + '" style="width:92px;display:inline-block;margin:8px 8px 0 0;padding:8px"><button class="mini ok" data-a="approve" data-id="' + esc(r.id) + '">Ansix</button><button class="mini bad" data-a="reject" data-id="' + esc(r.id) + '">Diid</button>'
+    : '';
+  return '<div class="rev"><div><b>' + esc(r.method) + '</b> · ' + esc(r.phone) + '</div>' +
+    '<div class="meta">Lambarka xaqiijinta: <b>' + esc(r.txn_ref) + '</b>' + (r.amount ? ' · ' + esc(r.amount) : '') + (r.name ? ' · ' + esc(r.name) : '') + ' · ' + esc(new Date(r.created_at).toLocaleString()) + '</div>' + acts + '</div>';
+}
+async function loadProReqs(){
+  $('proReqs').innerHTML = '<div class="mut">Waa la soo rarayaa…</div>';
+  const { data, error } = await sb.rpc('pro_admin_requests', { p_status: proReqStatus });
+  if (error) { $('proReqs').innerHTML = '<div class="err">Khalad: ' + esc(error.message) + '</div>'; return; }
+  $('proReqs').innerHTML = (data || []).length ? data.map(proReqHtml).join('') : '<div class="mut">Wax codsi ah ma jiraan halkan.</div>';
+}
+[['prPending', 'pending'], ['prApproved', 'approved'], ['prRejected', 'rejected']].forEach(([id, st]) => {
+  $(id).onclick = () => { proReqStatus = st; ['prPending', 'prApproved', 'prRejected'].forEach(x => $(x).classList.toggle('on', x === id)); loadProReqs(); };
+});
+$('proReqs').addEventListener('click', async e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  let days = null;
+  if (b.dataset.a === 'approve') {
+    days = parseInt(b.parentElement.querySelector('.dayin').value, 10) || null;
+    if (!confirm('Ma hubtaa inaad ansixiso? Hubi in lacagta ay dhab ahaan kuu timid.')) return;
+  } else if (!confirm('Ma hubtaa inaad diido codsigan?')) return;
+  b.disabled = true;
+  const { error } = await sb.rpc('pro_admin_decide', { p_id: b.dataset.id, p_action: b.dataset.a, p_days: days });
+  if (error) { alert('Khalad: ' + error.message); b.disabled = false; return; }
+  loadPro();
+});
+$('pcMake').onclick = async () => {
+  const days = parseInt($('pcDays').value, 10), count = parseInt($('pcCount').value, 10);
+  const { data, error } = await sb.rpc('pro_admin_make_codes', { p_days: days, p_count: count });
+  if (error) { alert('Khalad: ' + error.message); return; }
+  $('pcOut').value = (data || []).join('\n'); loadProCodes();
+};
+function proCodeHtml(c, status){
+  return '<div class="rev" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div><b style="letter-spacing:1px">' + esc(c.code) + '</b><div class="meta">' + esc(c.days) + ' maalmood · ' + esc(new Date(c.created_at).toLocaleDateString()) + '</div></div>' +
+    (status === 'new' ? '<button class="mini bad" data-void="' + esc(c.code) + '">Burburi</button>' : '') + '</div>';
+}
+async function loadProCodes(){
+  const { data, error } = await sb.rpc('pro_admin_codes', { p_status: proCodeStatus });
+  if (error) { $('proCodes').innerHTML = '<div class="err">Khalad: ' + esc(error.message) + '</div>'; return; }
+  $('proCodes').innerHTML = (data || []).length ? data.map(c => proCodeHtml(c, proCodeStatus)).join('') : '<div class="mut">Wax koodh ah ma jiraan halkan.</div>';
+}
+[['pcNew', 'new'], ['pcUsed', 'used'], ['pcVoid', 'void']].forEach(([id, st]) => {
+  $(id).onclick = () => { proCodeStatus = st; ['pcNew', 'pcUsed', 'pcVoid'].forEach(x => $(x).classList.toggle('on', x === id)); loadProCodes(); };
+});
+$('proCodes').addEventListener('click', async e => {
+  const b = e.target.closest('button[data-void]'); if (!b) return;
+  if (!confirm('Ma hubtaa inaad burburiso koodhkan?')) return;
+  const { error } = await sb.rpc('pro_admin_code_void', { p_code: b.dataset.void });
+  if (error) { alert('Khalad: ' + error.message); return; }
+  loadPro();
+});
+$('tabPro').onclick = () => showTab('pro');
+
 // ---------------- Fikirrada ardayda (ansixin ka hor) ----------------
 let revStatus = 'pending';
 function showTab(which){
-  show('panelRes', which === 'res'); show('panelRev', which === 'rev'); show('panelQr', which === 'qr');
-  $('tabRes').classList.toggle('on', which === 'res'); $('tabRev').classList.toggle('on', which === 'rev'); $('tabQr').classList.toggle('on', which === 'qr');
+  show('panelRes', which === 'res'); show('panelRev', which === 'rev'); show('panelQr', which === 'qr'); show('panelPro', which === 'pro');
+  $('tabRes').classList.toggle('on', which === 'res'); $('tabRev').classList.toggle('on', which === 'rev'); $('tabQr').classList.toggle('on', which === 'qr'); $('tabPro').classList.toggle('on', which === 'pro');
   if (which === 'rev') loadReviews();
+  if (which === 'pro') loadPro();
 }
 function revStars(n){ n = Math.max(0, Math.min(5, Number(n) || 0)); return '★'.repeat(n) + '☆'.repeat(5 - n); }
 function revBtn(r, a, label, cls){ return '<button class="mini ' + (cls || '') + '" data-id="' + esc(r.id) + '" data-a="' + a + '">' + label + '</button>'; }
