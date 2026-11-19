@@ -1266,5 +1266,17 @@ export const uiTranslations: Record<string, [string, string]> = {
   "Fur Pro si aad u aragto kulliyadaha, faahfaahinta, iyo website-ka rasmiga ah.": [
     "Unlock Pro to view faculties, details, and the official university website.",
     "فعّل Pro لعرض الكليات والتفاصيل والموقع الرسمي للجامعة."
+  ],
+  "Su'aal Gaar ah": [
+    "Quick Spark",
+    "سؤال سريع"
+  ],
+  "Dir": [
+    "Send",
+    "إرسال"
+  ],
+  "Jawaabtaada:": [
+    "Your answer:",
+    "إجابتك:"
   ]
 };

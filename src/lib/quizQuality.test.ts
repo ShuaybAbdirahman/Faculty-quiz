@@ -155,3 +155,20 @@ describe("Hero Spotlight Ticker & Automatic Friday Salawat", () => {
     assert.equal(buildHeroTickerSlides(fri0700)[0].id, "friday_day_salawat");
   });
 });
+
+import { facultyFunPrompts, getFacultyFunPrompt } from "../data/facultyFunPrompts";
+
+describe("Smart-Witty Faculty Fun Prompts", () => {
+  it("provides a complete trilingual prompt with quick options and insight for all 14 faculties", () => {
+    assert.equal(Object.keys(facultyFunPrompts).length, 14);
+    for (const f of faculties) {
+      const p = getFacultyFunPrompt(f.id);
+      assert.equal(p.facultyId, f.id, `Missing fun prompt for ${f.id}`);
+      assert.ok(p.question.so.length > 15 && p.question.en.length > 15 && p.question.ar.length > 15);
+      assert.ok(p.quickOptions.so.length >= 3 && p.quickOptions.en.length >= 3 && p.quickOptions.ar.length >= 3);
+      assert.ok(p.insight.so.length > 30 && p.insight.en.length > 30 && p.insight.ar.length > 30);
+    }
+    assert.ok(facultyFunPrompts.cs.question.so.toLowerCase().includes("gamers"));
+    assert.ok(facultyFunPrompts.eng.question.so.includes("1 + 1"));
+  });
+});

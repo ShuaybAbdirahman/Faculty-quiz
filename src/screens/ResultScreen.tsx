@@ -31,6 +31,7 @@ import {
 import { ShareSection } from "../components/ShareCard";
 import { SaveResultCard } from "../components/SaveResultCard";
 import { ReviewCard } from "../components/ReviewsComponents";
+import { FacultyFunPromptCard } from "../components/FacultyFunPromptCard";
 import { ProEntryCard } from "./ProGuideScreen";
 
 function Heading({ icon, label }: { icon: React.ReactNode; label: string }) {
@@ -356,6 +357,9 @@ export function ResultScreen({
             </p>
           </div>
         )}
+
+        {/* Smart-Witty Faculty Icebreaker right under Congratulations */}
+        {top.length > 0 && <FacultyFunPromptCard top={top} />}
 
         {/* Top Row: Share Card + Pro Entry Card Side-by-Side on Desktop */}
         {top.length > 0 && (
