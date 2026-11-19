@@ -123,8 +123,8 @@ export function WorldPioneersSection({
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        {filtered.map((p, idx) => {
-          const locked = !isPro && idx >= 2;
+        {filtered.map((p) => {
+          const locked = !isPro;
           return (
             <article
               key={p.id}
@@ -143,15 +143,18 @@ export function WorldPioneersSection({
                   <GraduationCap className="w-5 h-5 text-[#FFD86B] shrink-0 mt-1" />
                 </div>
 
-                <p className="text-xs font-semibold text-sky-200/90">{tx(p.degree)}</p>
-
                 {locked ? (
-                  <div className="rounded-xl p-3 bg-white/[0.04] border border-white/10 text-xs text-white/65 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={onUnlock}
+                    className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
+                  >
                     <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
                     <span>{tr("Fur Pro si aad u akhrido guusha, casharka ardayga, iyo isha rasmiga ah.")}</span>
-                  </div>
+                  </button>
                 ) : (
                   <>
+                    <p className="text-xs font-semibold text-sky-200/90">{tx(p.degree)}</p>
                     <p className="text-sm text-white/85 leading-relaxed">{tx(p.achievement)}</p>
                     <div className="rounded-xl p-3 bg-emerald-500/10 border border-emerald-400/25 text-xs text-emerald-100 leading-relaxed">
                       <strong className="text-emerald-300">{tr("Casharka Ardayga:")} </strong>
@@ -221,8 +224,8 @@ export function FutureJobsNewsSection({
       </div>
 
       <div className="space-y-3.5">
-        {futureJobsNews.map((job, idx) => {
-          const locked = !isPro && idx >= 2;
+        {futureJobsNews.map((job) => {
+          const locked = !isPro;
           return (
             <article
               key={job.id}
@@ -243,10 +246,14 @@ export function FutureJobsNewsSection({
               </div>
 
               {locked ? (
-                <div className="rounded-xl p-3 bg-white/[0.04] border border-white/10 text-xs text-white/65 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={onUnlock}
+                  className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
+                >
                   <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
                   <span>{tr("Fur Pro si aad u aragto falanqaynta suuqa Soomaaliya, xirfadaha loo baahan yahay, iyo isha warbixinta.")}</span>
-                </div>
+                </button>
               ) : (
                 <>
                   <p className="text-sm text-white/85 leading-relaxed">{tx(job.summary)}</p>
@@ -304,8 +311,8 @@ export function HighIncomeSkillsSection({
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        {highIncomeSkills.map((skill, idx) => {
-          const locked = !isPro && idx >= 1;
+        {highIncomeSkills.map((skill) => {
+          const locked = !isPro;
           return (
             <article
               key={skill.id}
@@ -321,26 +328,30 @@ export function HighIncomeSkillsSection({
                   </h3>
                 </div>
 
-                <p className="text-sm text-white/85 leading-relaxed">{tx(skill.whyNow)}</p>
-
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {skill.tools.map((tool) => (
-                    <span
-                      key={tool}
-                      className="px-2.5 py-1 rounded-lg bg-[#FFC93C]/12 border border-[#FFC93C]/30 text-[11px] font-bold text-[#FFE599]"
-                    >
-                      {tool}
-                    </span>
-                  ))}
-                </div>
-
                 {locked ? (
-                  <div className="rounded-xl p-3 bg-white/[0.04] border border-white/10 text-xs text-white/65 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={onUnlock}
+                    className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
+                  >
                     <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
                     <span>{tr("Fur Pro si aad u aragto qorshaha 30-ka maalmood, sida lacag looga sameeyo, iyo koorsada bilaashka ah.")}</span>
-                  </div>
+                  </button>
                 ) : (
                   <>
+                    <p className="text-sm text-white/85 leading-relaxed">{tx(skill.whyNow)}</p>
+
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {skill.tools.map((tool) => (
+                        <span
+                          key={tool}
+                          className="px-2.5 py-1 rounded-lg bg-[#FFC93C]/12 border border-[#FFC93C]/30 text-[11px] font-bold text-[#FFE599]"
+                        >
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+
                     <div className="space-y-1.5">
                       <div className="text-xs font-bold text-white/75">{tr("Qorshaha 30-ka Maalmood:")}</div>
                       {skill.monthPlan.map((step, sIdx) => (
@@ -402,8 +413,8 @@ export function SomaliaGrowthSection({
       </div>
 
       <div className="space-y-4">
-        {somaliaStudentGrowthPillars.map((pillar, idx) => {
-          const locked = !isPro && idx >= 1;
+        {somaliaStudentGrowthPillars.map((pillar) => {
+          const locked = !isPro;
           return (
             <article
               key={pillar.id}
@@ -412,17 +423,21 @@ export function SomaliaGrowthSection({
               <h3 className="font-head font-extrabold text-lg text-white">
                 {tx(pillar.title)}
               </h3>
-              <p className="text-xs sm:text-sm text-[#FFE599] bg-[#FFC93C]/10 border border-[#FFC93C]/25 rounded-xl p-3 leading-relaxed">
-                {tx(pillar.evidenceStat)}
-              </p>
 
               {locked ? (
-                <div className="rounded-xl p-3 bg-white/[0.04] border border-white/10 text-xs text-white/65 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={onUnlock}
+                  className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
+                >
                   <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
                   <span>{tr("Fur Pro si aad u aragto istiraatiijiyadda iyo xiriirrada rasmiga ah ee deeqaha waxbarasho.")}</span>
-                </div>
+                </button>
               ) : (
                 <>
+                  <p className="text-xs sm:text-sm text-[#FFE599] bg-[#FFC93C]/10 border border-[#FFC93C]/25 rounded-xl p-3 leading-relaxed">
+                    {tx(pillar.evidenceStat)}
+                  </p>
                   <div className="space-y-2">
                     {pillar.strategy.map((st, sIdx) => (
                       <div key={sIdx} className="flex items-start gap-2.5 text-sm text-white/90 leading-relaxed">
@@ -453,8 +468,12 @@ export function SomaliaGrowthSection({
 }
 
 export function SomaliaUniversitiesSection({
+  isPro,
+  onUnlock,
   initialFacultyId,
 }: {
+  isPro: boolean;
+  onUnlock: () => void;
   initialFacultyId?: string;
 }) {
   const { tr, tx } = useApp();
@@ -559,40 +578,57 @@ export function SomaliaUniversitiesSection({
                 <span>{u.city}</span>
               </div>
 
-              <p className="text-xs sm:text-sm text-white/80 leading-relaxed">{tx(u.note)}</p>
+              {!isPro ? (
+                <button
+                  type="button"
+                  onClick={onUnlock}
+                  className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
+                >
+                  <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
+                  <span>{tr("Fur Pro si aad u aragto kulliyadaha, faahfaahinta, iyo website-ka rasmiga ah.")}</span>
+                </button>
+              ) : (
+                <>
+                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed">{tx(u.note)}</p>
 
-              <div className="flex items-center gap-1.5 flex-wrap pt-1">
-                {u.facultyIds.slice(0, 6).map((fid) => {
-                  const fac = faculties.find((f) => f.id === fid);
-                  if (!fac) return null;
-                  return (
-                    <span
-                      key={fid}
-                      className={`px-2 py-0.5 rounded-md text-[10.5px] font-semibold border ${
-                        facultyFilter === fid
-                          ? "bg-[#FFC93C]/20 border-[#FFC93C]/50 text-[#FFE599]"
-                          : "bg-white/6 border-white/12 text-white/75"
-                      }`}
-                    >
-                      {tx(fac.name).split("(")[0].trim()}
-                    </span>
-                  );
-                })}
-                {u.facultyIds.length > 6 && (
-                  <span className="text-[10.5px] text-white/55 font-semibold">
-                    +{u.facultyIds.length - 6}
-                  </span>
-                )}
+                  <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                    {u.facultyIds.slice(0, 6).map((fid) => {
+                      const fac = faculties.find((f) => f.id === fid);
+                      if (!fac) return null;
+                      return (
+                        <span
+                          key={fid}
+                          className={`px-2 py-0.5 rounded-md text-[10.5px] font-semibold border ${
+                            facultyFilter === fid
+                              ? "bg-[#FFC93C]/20 border-[#FFC93C]/50 text-[#FFE599]"
+                              : "bg-white/6 border-white/12 text-white/75"
+                          }`}
+                        >
+                          {tx(fac.name).split("(")[0].trim()}
+                        </span>
+                      );
+                    })}
+                    {u.facultyIds.length > 6 && (
+                      <span className="text-[10.5px] text-white/55 font-semibold">
+                        +{u.facultyIds.length - 6}
+                      </span>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {isPro && (
+              <div className="pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">
+                <span className="text-[11px] text-white/55">{tr("Khidmadda & gelitaanka:")}</span>
+                <SourceBadge name={u.website.replace(/^https?:\/\//, "")} url={u.website} />
               </div>
-            </div>
-
-            <div className="pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">
-              <span className="text-[11px] text-white/55">{tr("Khidmadda & gelitaanka:")}</span>
-              <SourceBadge name={u.website.replace(/^https?:\/\//, "")} url={u.website} />
-            </div>
+            )}
           </article>
         ))}
       </div>
+
+      {!isPro && <ProLockedFooter onUnlock={onUnlock} />}
     </section>
   );
 }

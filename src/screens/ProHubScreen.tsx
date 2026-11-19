@@ -135,7 +135,11 @@ export function ProHubScreen({
           />
         )}
         {tab === "universities" && (
-          <SomaliaUniversitiesSection initialFacultyId={initialFacultyId} />
+          <SomaliaUniversitiesSection
+            isPro={proActive}
+            onUnlock={onOpenPaywall}
+            initialFacultyId={initialFacultyId}
+          />
         )}
         {tab === "pioneers" && (
           <WorldPioneersSection isPro={proActive} onUnlock={onOpenPaywall} />

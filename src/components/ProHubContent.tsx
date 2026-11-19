@@ -194,8 +194,8 @@ export function ProRoadmapsExplorer({
 
         {/* Stages Timeline */}
         <div className="space-y-4">
-          {activeRoadmap.stages.map((stage, stageIdx) => {
-            const isStageLocked = locked && stageIdx > 0;
+          {activeRoadmap.stages.map((stage) => {
+            const isStageLocked = locked;
             return (
               <div
                 key={stage.id}
@@ -380,9 +380,9 @@ export function SomaliaChallengesHub({
       </div>
 
       <div className="space-y-3">
-        {somaliaChallenges.map((item, idx) => {
+        {somaliaChallenges.map((item) => {
           const isOpen = openId === item.id;
-          const isLocked = locked && idx > 0;
+          const isLocked = locked;
           return (
             <div
               key={item.id}
@@ -508,27 +508,35 @@ export function ReadinessTracker({
 
       <div className="grid sm:grid-cols-2 gap-3">
         {readinessChecklist.map((item) => {
-          const checked = Boolean(checkedMap[item.id]);
+          const checked = !locked && Boolean(checkedMap[item.id]);
           return (
             <button
               key={item.id}
               type="button"
               onClick={() => toggle(item.id)}
               className={`text-start rounded-2xl p-4 border transition-all cursor-pointer flex items-start gap-3 ${
-                checked
+                locked
+                  ? "bg-[#091233]/75 border-white/12 hover:border-[#FFC93C]/45"
+                  : checked
                   ? "bg-emerald-500/15 border-emerald-400/40"
                   : "bg-[#091233]/80 border-white/15 hover:border-white/30"
               }`}
             >
-              <span
-                className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5 border ${
-                  checked
-                    ? "bg-emerald-400 border-emerald-400 text-[#050A1C]"
-                    : "border-white/30 text-transparent"
-                }`}
-              >
-                <Check className="w-4 h-4 stroke-[3]" />
-              </span>
+              {locked ? (
+                <span className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5 border border-[#FFC93C]/40 bg-[#FFC93C]/12 text-[#FFD86B]">
+                  <Lock className="w-3.5 h-3.5" />
+                </span>
+              ) : (
+                <span
+                  className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5 border ${
+                    checked
+                      ? "bg-emerald-400 border-emerald-400 text-[#050A1C]"
+                      : "border-white/30 text-transparent"
+                  }`}
+                >
+                  <Check className="w-4 h-4 stroke-[3]" />
+                </span>
+              )}
               <div className="min-w-0">
                 <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#FFD86B]">
                   {item.category}
@@ -540,7 +548,13 @@ export function ReadinessTracker({
                 >
                   {item.title}
                 </div>
-                <p className="text-xs text-white/65 mt-1 leading-relaxed">{item.detail}</p>
+                {locked ? (
+                  <p className="text-[11.5px] text-[#FFE599]/80 mt-1">
+                    {tr("Fur Pro ($0.10 · Abid) si aad u aragto faahfaahinta iyo calaamadaynta.")}
+                  </p>
+                ) : (
+                  <p className="text-xs text-white/65 mt-1 leading-relaxed">{item.detail}</p>
+                )}
               </div>
             </button>
           );

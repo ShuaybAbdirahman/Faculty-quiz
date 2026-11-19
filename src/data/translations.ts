@@ -1258,5 +1258,13 @@ export const uiTranslations: Record<string, [string, string]> = {
   "Scan garee QR-ka oo tijaabi 3 daqiiqo (Bilaash)": [
     "Scan the QR code and test in 3 minutes (Free)",
     "امسح رمز QR وجرّب في 3 دقائق (مجاناً)"
+  ],
+  "Fur Pro ($0.10 · Abid) si aad u aragto faahfaahinta iyo calaamadaynta.": [
+    "Unlock Pro ($0.10 · Lifetime) to view step details and track your checklist.",
+    "فعّل Pro (0.10$ مدى الحياة) لعرض تفاصيل الخطوات وتتبع قائمة الاستعداد."
+  ],
+  "Fur Pro si aad u aragto kulliyadaha, faahfaahinta, iyo website-ka rasmiga ah.": [
+    "Unlock Pro to view faculties, details, and the official university website.",
+    "فعّل Pro لعرض الكليات والتفاصيل والموقع الرسمي للجامعة."
   ]
 };
