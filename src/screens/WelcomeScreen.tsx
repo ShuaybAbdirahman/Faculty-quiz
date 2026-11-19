@@ -9,6 +9,7 @@ import {
   Globe,
   GraduationCap,
   HelpCircle,
+  Image as ImageIcon,
   Lightbulb,
   Lock,
   Map,
@@ -33,6 +34,8 @@ import {
   ShinyButton,
 } from "../components/ModernUI";
 import { ReviewsSection } from "../components/ReviewsComponents";
+import { PromoPosterModal } from "../components/PromoPosterModal";
+import promoPosterThumb from "../assets/images/hagaha_kulliyadda_promo_1795079553879.jpg";
 
 function NameField() {
   const { tr, userName, setUserName } = useApp();
@@ -114,6 +117,7 @@ export function WelcomeScreen({
   const { lang, setLang, darkMode, setDarkMode, tr, trf, tx, txl, proActive } = useApp();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [peekFaculty, setPeekFaculty] = useState<Faculty | null>(null);
+  const [promoOpen, setPromoOpen] = useState(false);
 
   const featuredFaculties = useMemo(() => faculties.slice(0, 6), []);
 
@@ -154,6 +158,16 @@ export function WelcomeScreen({
             </div>
 
             <nav className="flex items-center gap-1.5" aria-label="App Controls">
+              <button
+                type="button"
+                onClick={() => setPromoOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/18 border border-white/20 text-white text-xs font-bold cursor-pointer transition-colors"
+                title={tr("Sawirka Xayeysiinta")}
+              >
+                <ImageIcon className="w-4 h-4 text-[#FFD86B]" />
+                <span className="hidden md:inline">{tr("Sawirka Xayeysiinta")}</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => onOpenProHub("roadmaps")}
@@ -492,11 +506,59 @@ export function WelcomeScreen({
           </div>
         </section>
 
+        {/* Promo Poster Showcase Card (View & Download with Real QR) */}
+        <section
+          className={`rounded-3xl p-5 sm:p-6 border flex flex-col sm:flex-row items-center gap-6 ${
+            darkMode
+              ? "bg-[#101831] border-white/12"
+              : "bg-white border-slate-200 shadow-xs"
+          }`}
+        >
+          <button
+            type="button"
+            onClick={() => setPromoOpen(true)}
+            className="w-40 sm:w-44 shrink-0 rounded-2xl overflow-hidden border border-white/15 shadow-lg hover:scale-[1.02] transition-transform cursor-pointer"
+          >
+            <img
+              src={promoPosterThumb}
+              alt="Hagaha Kulliyadda Promo Poster"
+              referrerPolicy="no-referrer"
+              className="w-full h-auto block"
+            />
+          </button>
+          <div className="flex-1 text-center sm:text-start space-y-2.5">
+            <div className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#D97706] dark:text-[#FFD86B]">
+              <ImageIcon className="w-4 h-4" />
+              <span>{tr("Sawirka Xayeysiinta")}</span>
+            </div>
+            <h3 className="font-head font-extrabold text-xl sm:text-2xl leading-tight">
+              {tr("La wadaag asxaabtaada iyo ardayda dugsiga sare")}
+            </h3>
+            <p className="text-xs sm:text-sm opacity-75 leading-relaxed max-w-xl">
+              {tr(
+                "Sawir xayeysiin ah oo diyaarsan oo leh QR code dhab ah iyo link-ga rasmiga ah, hal mar riix si aad u soo degsato."
+              )}
+            </p>
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => setPromoOpen(true)}
+                className="px-5 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-sm inline-flex items-center gap-2 cursor-pointer transition-colors"
+              >
+                <ImageIcon className="w-4 h-4" />
+                <span>{tr("Eeg & Soo Degso")}</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* Public Student Reviews */}
         <div className="-mx-6">
           <ReviewsSection onViewAll={onOpenReviews} />
         </div>
       </main>
+
+      {promoOpen && <PromoPosterModal onClose={() => setPromoOpen(false)} />}
 
       {/* Interactive Faculty Quick-Peek Modal */}
       {peekFaculty && (

@@ -950,5 +950,33 @@ export const uiTranslations: Record<string, [string, string]> = {
   "Af-Soomaaligu waa luqad cilmi iyo horumar ah, sidaas darteed barnaamijkan Af-Soomaali waa bilaash boqolkiiba boqol. Luqadaha Ingiriisiga iyo Carabiga waxaa lagu furtaa qaybta Pro ($0.10, hal mar oo keliya).": [
     "Somali is a language of science and progress, which is why Somali is 100% free here. English and Arabic are unlocked in Pro ($0.10, one-time).",
     "اللغة الصومالية لغة علم وتقدم، ولذلك فإن استخدام التطبيق بالصومالية مجاني بالكامل. الإنجليزية والعربية متوفرتان في Pro (0.10$ مرة واحدة)."
+  ],
+  "Sawirka Xayeysiinta": [
+    "Promo Poster",
+    "ملصق إعلاني"
+  ],
+  "Sawirka Xayeysiinta (QR Dhab ah)": [
+    "Promo Poster (Real QR Code)",
+    "الملصق الإعلاني (رمز QR حقيقي)"
+  ],
+  "Soo degso Sawirka": [
+    "Download Poster (PNG)",
+    "تحميل الملصق (PNG)"
+  ],
+  "Sawirka waa la soo dejiyay!": [
+    "Poster downloaded!",
+    "تم تحميل الملصق!"
+  ],
+  "La wadaag asxaabtaada iyo ardayda dugsiga sare": [
+    "Share with friends and high school students",
+    "شاركه مع أصدقائك وطلاب الثانوية"
+  ],
+  "Sawir xayeysiin ah oo diyaarsan oo leh QR code dhab ah iyo link-ga rasmiga ah, hal mar riix si aad u soo degsato.": [
+    "A ready-to-share promotional poster with a real scannable QR code and official link. Click once to view or download in HD.",
+    "ملصق إعلاني جاهز للمشاركة يحتوي على رمز QR حقيقي قابل للمسح والرابط الرسمي. اضغط للعرض أو التحميل بجودة عالية."
+  ],
+  "Eeg & Soo Degso": [
+    "View & Download",
+    "عرض وتحميل"
   ]
 };
