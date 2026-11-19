@@ -3,13 +3,17 @@ import {
   ArrowLeft,
   ArrowRight,
   ChevronRight,
+  Copy,
   Globe,
   Info,
   Lock,
+  LogOut,
   MessageSquareText,
   Moon,
   Palette,
+  RefreshCw,
   RotateCcw,
+  ShieldCheck,
   Sun,
   User,
   UserCheck,
@@ -17,19 +21,22 @@ import {
 import type { Lang } from "../data/quizData";
 import { cleanName, isValidName, useApp } from "../context/AppContext";
 import { langNames } from "../lib/i18n";
+import { formatShortDeviceId } from "../lib/proSecurity";
 
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "2.0.0";
 
 export function SettingsScreen({
   onBack,
   onOpenFounderIntro,
   onOpenReviews,
   onLangChanged,
+  onOpenPaywall,
 }: {
   onBack: () => void;
   onOpenFounderIntro: () => void;
   onOpenReviews: () => void;
   onLangChanged: () => void;
+  onOpenPaywall: () => void;
 }) {
   const {
     lang,
@@ -43,6 +50,10 @@ export function SettingsScreen({
     setTextScale,
     userName,
     setUserName,
+    proActive,
+    deviceId,
+    refreshPro,
+    resetDeviceSession,
     resetAllPrefs,
     tr,
     showToast,
@@ -51,6 +62,9 @@ export function SettingsScreen({
   const [nameInput, setNameInput] = useState(userName);
   const [nameError, setNameError] = useState<string | null>(null);
   const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [checkingPro, setCheckingPro] = useState(false);
+
+  const shortDev = formatShortDeviceId(deviceId);
 
   const handleSaveName = () => {
     const cleaned = cleanName(nameInput);
@@ -76,6 +90,23 @@ export function SettingsScreen({
     setNameError(null);
   };
 
+  const handleVerifyPro = async () => {
+    setCheckingPro(true);
+    try {
+      const ok = await refreshPro();
+      showToast(ok ? tr("Pro waa la furay!") : tr("Weli lama xaqiijin. Fadlan sug ama la xiriir maamulaha."));
+    } finally {
+      setCheckingPro(false);
+    }
+  };
+
+  const handleSwitchStudent = () => {
+    resetDeviceSession();
+    setNameInput("");
+    setNameError(null);
+    showToast(tr("Qalabka waa la nadiifiyay, arday cusub ayaa hadda isticmaali kara."));
+  };
+
   const Section = ({
     icon,
     title,
@@ -86,13 +117,13 @@ export function SettingsScreen({
     children: React.ReactNode;
   }) => (
     <section
-      className={`mt-3 rounded-[20px] p-4 border ${
+      className={`mt-4 rounded-2xl p-5 border ${
         darkMode
-          ? "bg-[#151D33]/90 border-white/10"
+          ? "bg-[#121A30] border-white/10"
           : "bg-white border-slate-200 shadow-xs"
       }`}
     >
-      <div className="flex items-center gap-2.5 mb-3">
+      <div className="flex items-center gap-2.5 mb-3.5">
         <span className="text-[#5D7BFF]">{icon}</span>
         <h2 className="font-head font-bold text-[16px]">{tr(title)}</h2>
       </div>
@@ -124,43 +155,113 @@ export function SettingsScreen({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="px-4 py-3 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={onBack}
-          className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer"
-        >
-          {rtl ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
-        </button>
-        <h1 className="font-head font-bold text-[19px]">{tr("Dejinta")}</h1>
+      <header
+        className={`border-b ${
+          darkMode ? "border-white/10 bg-[#0B1226]/90" : "border-slate-200 bg-white/90"
+        } backdrop-blur-md sticky top-0 z-20`}
+      >
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Back"
+            className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer"
+          >
+            {rtl ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
+          </button>
+          <h1 className="font-head font-bold text-[19px]">{tr("Dejinta")}</h1>
+        </div>
       </header>
 
-      <main className="px-4 pb-10">
+      <main className="max-w-2xl w-full mx-auto px-4 pb-12">
+        {/* Pro & Device Security Card */}
+        <Section icon={<ShieldCheck className="w-5 h-5" />} title="Pro iyo Amniga Qalabka">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <div className="text-sm font-bold flex items-center gap-2">
+                <span>{tr("Xaaladda Pro:")}</span>
+                <span className={proActive ? "text-emerald-400" : "opacity-75"}>
+                  {tr(proActive ? "Waa furan yahay" : "Waa xiran yahay")}
+                </span>
+              </div>
+              <div className="mt-1 text-xs font-mono opacity-70">Device ID: {shortDev}</div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(shortDev);
+                    showToast(tr("Waa la koobiyeeyay"));
+                  } catch {
+                    // ignore
+                  }
+                }}
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-current/15 hover:bg-current/5 inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                <span>{tr("Koobi Aqoonsiga")}</span>
+              </button>
+              <button
+                type="button"
+                disabled={checkingPro}
+                onClick={handleVerifyPro}
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#3B5BDB] text-white hover:bg-[#324EC2] inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${checkingPro ? "animate-spin" : ""}`} />
+                <span>{tr("Hubi")}</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-3 pt-3 border-t border-current/10 flex items-center justify-between gap-3 flex-wrap">
+            <p className="text-xs opacity-70 max-w-sm leading-relaxed">
+              {tr(
+                "Haddii arday kale uu qalabkan isticmaalayo, riix badhanka si Pro loo xiro oo aqoonsi cusub loo sameeyo."
+              )}
+            </p>
+            <button
+              type="button"
+              onClick={handleSwitchStudent}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold border border-rose-400/40 text-rose-400 hover:bg-rose-500/10 inline-flex items-center gap-1.5 cursor-pointer"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>{tr("Beddel ardayga")}</span>
+            </button>
+          </div>
+        </Section>
         {/* Language */}
         <Section icon={<Globe className="w-5 h-5" />} title="Luqadda">
-          <div className="grid grid-cols-3 rounded-full p-1 border border-current/15 overflow-hidden">
+          <div className="grid grid-cols-3 rounded-full p-1 border border-current/15 overflow-hidden gap-1">
             {(Object.keys(langNames) as Lang[]).map((code) => {
               const active = code === lang;
+              const locked = code !== "so" && !proActive;
               return (
                 <button
                   key={code}
                   type="button"
                   onClick={() => {
-                    setLang(code);
-                    onLangChanged();
+                    const ok = setLang(code);
+                    if (ok) onLangChanged();
+                    else onOpenPaywall();
                   }}
-                  className={`py-2 px-2 rounded-full text-sm font-semibold cursor-pointer transition-colors ${
+                  className={`py-2 px-2 rounded-full text-sm font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1 ${
                     active
                       ? "bg-[#3B5BDB] text-white"
                       : "opacity-80 hover:opacity-100"
                   }`}
                 >
-                  {langNames[code]}
+                  <span>{langNames[code]}</span>
+                  {locked && <Lock className="w-3 h-3 text-[#FFC93C]" />}
                 </button>
               );
             })}
           </div>
-          <p className="mt-2 text-xs opacity-65">
+          <p className="mt-2 text-xs opacity-70">
+            {tr("Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Pro ($0.10, hal mar).")}
+          </p>
+          <p className="mt-1 text-xs opacity-55">
             {tr("Beddelka luqadda wuxuu ku celinayaa bogga hore.")}
           </p>
         </Section>

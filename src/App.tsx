@@ -10,6 +10,7 @@ import { SettingsScreen } from "./screens/SettingsScreen";
 import { ReviewsScreen } from "./screens/ReviewsScreen";
 import { ProGuideScreen } from "./screens/ProGuideScreen";
 import { ProPaywallScreen } from "./screens/ProPaywallScreen";
+import { ProHubScreen } from "./screens/ProHubScreen";
 
 type Route =
   | { name: "welcome" }
@@ -19,12 +20,23 @@ type Route =
   | { name: "compare"; outcome: QuizOutcome }
   | { name: "settings" }
   | { name: "reviews" }
+  | { name: "pro_hub"; tab?: "roadmaps" | "challenges" | "readiness"; facultyId?: string }
   | { name: "pro_guide"; faculty: Faculty; outcome: QuizOutcome }
-  | { name: "pro_paywall"; faculty: Faculty; outcome: QuizOutcome };
+  | { name: "pro_paywall"; faculty?: Faculty; outcome?: QuizOutcome };
+
+function initialStack(): Route[] {
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("autostart") === "1") {
+      return [{ name: "welcome" }, { name: "quiz" }];
+    }
+  }
+  return [{ name: "welcome" }];
+}
 
 function AppShell() {
-  const { darkMode, animationsOn, founderIntroSeen, proActive } = useApp();
-  const [stack, setStack] = useState<Route[]>([{ name: "welcome" }]);
+  const { darkMode, animationsOn, founderIntroSeen, proActive, refreshPro } = useApp();
+  const [stack, setStack] = useState<Route[]>(initialStack);
 
   const current = stack[stack.length - 1];
 
@@ -37,6 +49,15 @@ function AppShell() {
   const replace = (r: Route) => setStack((s) => [...s.slice(0, -1), r]);
   const resetToWelcome = () => setStack([{ name: "welcome" }]);
 
+  const handleOpenPro = async (faculty: Faculty, outcome: QuizOutcome) => {
+    const verified = proActive ? await refreshPro() : false;
+    if (verified) {
+      push({ name: "pro_guide", faculty, outcome });
+    } else {
+      push({ name: "pro_paywall", faculty, outcome });
+    }
+  };
+
   let screen: React.ReactNode = null;
   switch (current.name) {
     case "welcome":
@@ -48,6 +69,8 @@ function AppShell() {
           }}
           onOpenSettings={() => push({ name: "settings" })}
           onOpenReviews={() => push({ name: "reviews" })}
+          onOpenProHub={(tab, facultyId) => push({ name: "pro_hub", tab, facultyId })}
+          onOpenPaywall={() => push({ name: "pro_paywall" })}
         />
       );
       break;
@@ -79,11 +102,7 @@ function AppShell() {
           onCompare={() => push({ name: "compare", outcome: current.outcome })}
           onRestart={resetToWelcome}
           onOpenPro={(faculty) => {
-            if (proActive) {
-              push({ name: "pro_guide", faculty, outcome: current.outcome });
-            } else {
-              push({ name: "pro_paywall", faculty, outcome: current.outcome });
-            }
+            void handleOpenPro(faculty, current.outcome);
           }}
         />
       );
@@ -98,11 +117,22 @@ function AppShell() {
           onOpenFounderIntro={() => push({ name: "founder", after: "back" })}
           onOpenReviews={() => push({ name: "reviews" })}
           onLangChanged={resetToWelcome}
+          onOpenPaywall={() => push({ name: "pro_paywall" })}
         />
       );
       break;
     case "reviews":
       screen = <ReviewsScreen onBack={pop} />;
+      break;
+    case "pro_hub":
+      screen = (
+        <ProHubScreen
+          initialTab={current.tab}
+          initialFacultyId={current.facultyId}
+          onBack={pop}
+          onOpenPaywall={() => push({ name: "pro_paywall" })}
+        />
+      );
       break;
     case "pro_guide":
       screen = (
@@ -120,9 +150,13 @@ function AppShell() {
       screen = (
         <ProPaywallScreen
           onBack={pop}
-          onUnlocked={() =>
-            replace({ name: "pro_guide", faculty: current.faculty, outcome: current.outcome })
-          }
+          onUnlocked={() => {
+            if (current.faculty && current.outcome) {
+              replace({ name: "pro_guide", faculty: current.faculty, outcome: current.outcome });
+            } else {
+              replace({ name: "pro_hub", tab: "roadmaps" });
+            }
+          }}
         />
       );
       break;
@@ -130,17 +164,11 @@ function AppShell() {
 
   return (
     <div
-      className={`min-h-screen w-full transition-colors ${!animationsOn ? "no-anim" : ""} ${
-        darkMode ? "bg-[#080C16] text-[#EEF1FA]" : "bg-[#E4E9F2] text-[#14213D]"
+      className={`min-h-screen w-full transition-colors duration-200 ${!animationsOn ? "no-anim" : ""} ${
+        darkMode ? "bg-[#090F1E] text-[#EEF2FF]" : "bg-[#F6F8FC] text-[#0F172A]"
       }`}
     >
-      <div
-        className={`mx-auto max-w-[720px] min-h-screen shadow-2xl ${
-          darkMode ? "bg-[#0E1424]" : "bg-[#F5F7FB]"
-        }`}
-      >
-        {screen}
-      </div>
+      {screen}
     </div>
   );
 }

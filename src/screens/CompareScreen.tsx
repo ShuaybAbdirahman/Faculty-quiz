@@ -104,7 +104,7 @@ export function CompareScreen({
                 className="font-head font-extrabold text-[24px]"
                 style={{ color: argbToHex(f.color) }}
               >
-                {m?.inPool ? `${m.percent}%` : "—"}
+                {m?.inPool ? `${m.percent}%` : "-"}
               </p>
             )}
           />
@@ -112,7 +112,7 @@ export function CompareScreen({
             title="Xiisaha · Kartida · Qiimaha"
             render={(_, m) => (
               <p className="text-xs opacity-75">
-                {m?.inPool ? `${m.interest}% · ${m.aptitude}% · ${m.conditions}%` : "—"}
+                {m?.inPool ? `${m.interest}% · ${m.aptitude}% · ${m.conditions}%` : "-"}
               </p>
             )}
           />

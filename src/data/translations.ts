@@ -708,11 +708,247 @@ export const uiTranslations: Record<string, [string, string]> = {
     "رقم الهاتف غير صحيح."
   ],
   "Lambarka xaqiijinta waa khalad (4-40 xaraf ama tiro).": [
-    "The transaction ID is not valid (4–40 letters or digits).",
-    "رقم العملية غير صحيح (4–40 حرفًا أو رقمًا)."
+    "The transaction ID is not valid (4-40 letters or digits).",
+    "رقم العملية غير صحيح (4-40 حرفًا أو رقمًا)."
   ],
   "Wax khalad ah ayaa dhacay. Mar kale isku day.": [
     "Something went wrong. Please try again.",
     "حدث خطأ ما. حاول مرة أخرى."
+  ],
+  "Xarunta Pro · Khariidadaha": [
+    "Pro Hub · Roadmaps",
+    "مركز Pro · المسارات"
+  ],
+  "Xarunta Ardayga Pro": [
+    "Pro Student Hub",
+    "مركز الطالب المتقدم"
+  ],
+  "Khariidadaha": [
+    "Roadmaps",
+    "المسارات الدراسية"
+  ],
+  "Caqabadaha Soomaaliya": [
+    "Somalia Student Guide",
+    "تحديات الطالب والحلول"
+  ],
+  "Diyaargarowga": [
+    "90-Day Readiness",
+    "الاستعداد للجامعة"
+  ],
+  "Taabo kulliyad si aad u eegto": [
+    "Tap any faculty to explore",
+    "اضغط على أي كلية لاستكشافها"
+  ],
+  "Taabo mid kasta si aad u eegto": [
+    "Tap any card to explore",
+    "اضغط على أي كلية للتفاصيل"
+  ],
+  "waaxood": [
+    "departments",
+    "أقسام"
+  ],
+  "$0.10 Keliya · Hal mar (Abid)": [
+    "Only $0.10 · One-time (Lifetime)",
+    "فقط 0.10$ · مرة واحدة (مدى الحياة)"
+  ],
+  "Xarunta Ardayga Pro: Khariidadaha iyo Xalka Ardayga Soomaaliya": [
+    "Pro Student Hub: Verified Roadmaps & University Transition Guide",
+    "مركز Pro: المسارات المعتمدة ودليل الانتقال للجامعة"
+  ],
+  "Ka hel khariidado waxbarasho oo la hubiyay (AI, Injineernimada Korontada, Caafimaadka, Dhismaha, Maaliyadda iyo in ka badan), xalka caqabadaha dugsiga sare ilaa jaamacadda, iyo liiska diyaargarowga 90-ka maalmood.": [
+    "Access verified career roadmaps (AI, Electrical Engineering, Medicine, Civil, Finance & more), practical high-school-to-university solutions, and a 90-day readiness checklist.",
+    "احصل على مسارات معتمدة (الذكاء الاصطناعي، الهندسة الكهربائية، الطب، الهندسة المدنية، المالية والمزيد)، وحلول تحديات الانتقال للجامعة، وقائمة الاستعداد لـ 90 يوماً."
+  ],
+  "Eeg Khariidadaha": [
+    "Explore Roadmaps",
+    "استكشف المسارات"
+  ],
+  "Liiska 90-ka Maalmood": [
+    "90-Day Checklist",
+    "قائمة 90 يوماً"
+  ],
+  "Bilow (Ogow % ku habboonaanta)": [
+    "Start (See your % match)",
+    "ابدأ (اعرف نسبة توافقك)"
+  ],
+  "Fur Pro ($0.10 · Abid)": [
+    "Unlock Pro ($0.10 · Lifetime)",
+    "تفعيل Pro (0.10$ مدى الحياة)"
+  ],
+  "Fur Pro ($0.10)": [
+    "Unlock Pro ($0.10)",
+    "تفعيل Pro (0.10$)"
+  ],
+  "Pro waa furan yahay (Abid)": [
+    "Pro Active (Lifetime)",
+    "Pro مفعّل (مدى الحياة)"
+  ],
+  "Af-Soomaaligu waa bilaash. Fur Pro ($0.10, hal mar) si aad u hesho Ingiriisi iyo Carabi.": [
+    "Somali is 100% free. Unlock Pro ($0.10, one-time) to switch to English or Arabic.",
+    "اللغة الصومالية مجانية بالكامل. فعّل Pro (0.10$ مرة واحدة) لاستخدام الإنجليزية أو العربية."
+  ],
+  "Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Pro ($0.10, hal mar).": [
+    "Somali is free. English & Arabic are included in Pro ($0.10, one-time).",
+    "الصومالية مجانية. الإنجليزية والعربية ضمن Pro (0.10$ مرة واحدة)."
+  ],
+  "Hal mar bixi, abid ha kuu furnaado": [
+    "Pay once, unlocked forever",
+    "ادفع مرة واحدة، مفتوح للأبد"
+  ],
+  "Uma baahnid inaad mar walba lacag bixiso. $0.10 hal mar ah ayaad ku helaysaa dhammaan adeegyada Pro iyo kuwa cusub ee soo socda.": [
+    "No recurring subscriptions. Pay $0.10 once to unlock all Pro features, languages, and future roadmaps forever.",
+    "لا اشتراكات متكررة. ادفع 0.10$ مرة واحدة لتحصل على جميع مزايا Pro واللغات والمسارات الجديدة للأبد."
+  ],
+  "Luqadaha Ingiriisiga iyo Carabiga oo dhan": [
+    "Full English & Arabic app languages",
+    "تفعيل اللغتين الإنجليزية والعربية بالكامل"
+  ],
+  "Khariidado waxbarasho oo la hubiyay (AI, Injineernimada Korontada, Caafimaadka iyo in ka badan)": [
+    "Verified Faculty Roadmaps (AI, Electrical Eng, Medicine & more)",
+    "مسارات الكليات المعتمدة (الذكاء الاصطناعي، الهندسة الكهربائية، الطب والمزيد)"
+  ],
+  "Caqabadaha Ardayga Soomaaliya iyo Xalkooda (Dugsiga Sare ilaa Jaamacadda)": [
+    "High School to University Transition Challenges & Solutions",
+    "تحديات الطالب من الثانوية للجامعة وحلولها العملية"
+  ],
+  "Liiska Diyaargarowga Jaamacadda ee 90-ka Maalmood": [
+    "90-Day University Readiness Interactive Checklist",
+    "قائمة الاستعداد للجامعة (90 يوماً تفاعلية)"
+  ],
+  "Amniga Gelitaanka (1 Qalab = 1 Arday)": [
+    "Access Security (1 Device = 1 Student)",
+    "أمان الوصول (جهاز واحد = طالب واحد)"
+  ],
+  "Magaca:": [
+    "Account Holder:",
+    "اسم الحساب:"
+  ],
+  "La koobiyay": [
+    "Copied",
+    "تم النسخ"
+  ],
+  "Koobi Aqoonsiga": [
+    "Copy ID",
+    "نسخ المعرّف"
+  ],
+  "Pro iyo Amniga Qalabka": [
+    "Pro & Device Security",
+    "Pro وأمان الجهاز"
+  ],
+  "Xaaladda Pro:": [
+    "Pro Status:",
+    "حالة Pro:"
+  ],
+  "Waa furan yahay": [
+    "Active (Unlocked)",
+    "مفعّل (مفتوح)"
+  ],
+  "Waa xiran yahay": [
+    "Locked",
+    "مغلق"
+  ],
+  "Hubi": [
+    "Verify",
+    "تحقق"
+  ],
+  "Haddii arday kale uu qalabkan isticmaalayo, riix badhanka si Pro loo xiro oo aqoonsi cusub loo sameeyo.": [
+    "If another student is using this device, click here to lock Pro and issue a fresh device ID.",
+    "إذا كان طالب آخر يستخدم هذا الجهاز، اضغط هنا لقفل Pro وإنشاء معرّف جهاز جديد."
+  ],
+  "Beddel ardayga": [
+    "Switch Student",
+    "تبديل الطالب"
+  ],
+  "Qalabka waa la nadiifiyay, arday cusub ayaa hadda isticmaali kara.": [
+    "Device reset. A new student can now use this device.",
+    "تمت إعادة تعيين الجهاز. يمكن لطالب جديد استخدامه الآن."
+  ],
+  "Khariidadaha Kulliyadaha (La Hubiyay)": [
+    "Verified Faculty Roadmaps",
+    "مسارات الكليات المعتمدة"
+  ],
+  "Khariidado tallaabo-tallaabo ah oo ku salaysan halbeegyada caalamiga ah (roadmap.sh, IEEE, ABET, WHO). Calaamadee xirfadaha aad barato.": [
+    "Step-by-step roadmaps based on global standards (roadmap.sh, IEEE, ABET, WHO). Check off skills as you master them.",
+    "خرائط طريق خطوة بخطوة مبنية على المعايير العالمية (roadmap.sh, IEEE, ABET, WHO). ضع علامة على المهارات التي تتقنها."
+  ],
+  "Horumarkaaga:": [
+    "Your Progress:",
+    "تقدمك:"
+  ],
+  "Raadi khariidad: AI, Koronto, Caafimaad, Python, Dhisme...": [
+    "Search roadmaps: AI, Electrical, Medicine, Python, Civil...",
+    "ابحث في المسارات: AI، الكهرباء، الطب، Python، المدنية..."
+  ],
+  "Fur Pro ($0.10 · Abid) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan.": [
+    "Unlock Pro ($0.10 · Lifetime) to view skills, tools, and projects for this stage.",
+    "فعّل Pro (0.10$ مدى الحياة) لعرض المهارات والأدوات والمشاريع لهذه المرحلة."
+  ],
+  "Mashruuca Marxaladda:": [
+    "Stage Milestone Project:",
+    "مشروع هذه المرحلة:"
+  ],
+  "Ilaha Waxbarasho ee Bilaashka ah (La Hubiyay)": [
+    "Verified Free Learning Resources",
+    "مصادر تعليمية مجانية معتمدة"
+  ],
+  "Khariidado Cusub oo Soo Socda (Bilaash u ah Pro)": [
+    "Upcoming Roadmaps (Free for Pro Members)",
+    "مسارات جديدة قادمة (مجانية لمشتركي Pro)"
+  ],
+  "Dhawaan": [
+    "Coming Soon",
+    "قريباً"
+  ],
+  "Caqabadaha Ardayga Soomaaliya iyo Xalkooda": [
+    "University Transition Challenges & Solutions",
+    "تحديات الطالب الجامعي وحلولها العملية"
+  ],
+  "Hage dhab ah oo loogu talagalay ardayga ka baxaya dugsiga sare una gudbaya jaamacadaha Soomaaliya (luqadda, khidmadda, xirfadda shaqada, qoyska, iyo darajada).": [
+    "A practical playbook for high school graduates entering university (English transition, tuition & scholarships, skills vs. degree, family expectations, and GPA).",
+    "دليل عملي لخريجي الثانوية عند دخول الجامعة (اللغة الإنجليزية، الرسوم والمنح، المهارات العملية، التوقعات العائلية، والمعدل التراكمي)."
+  ],
+  "Caqabadda:": [
+    "The Challenge:",
+    "التحدي:"
+  ],
+  "Xalka Tallaabo-Tallaabo:": [
+    "Step-by-Step Solution:",
+    "الحل خطوة بخطوة:"
+  ],
+  "Talo Muhiim ah:": [
+    "Golden Tip:",
+    "نصيحة ذهبية:"
+  ],
+  "Diyaargarowga Jaamacadda (90 Maalmood)": [
+    "University Readiness (90-Day Checklist)",
+    "الاستعداد للجامعة (قائمة 90 يوماً)"
+  ],
+  "Calaamadee tallaabo kasta oo aad dhammayso ka hor inta uusan sannadka koowaad bilaaban si aad jaamacadda ugu gasho kalsooni buuxda.": [
+    "Check off each step you complete before Semester 1 begins so you start university with total confidence.",
+    "ضع علامة على كل خطوة تنجزها قبل بدء الفصل الدراسي الأول لتدخل الجامعة بثقة كاملة."
+  ],
+  "Fur dhammaan Khariidadaha Waxbarashada, Xalka Caqabadaha iyo Hagaha Waaxda": [
+    "Unlock All Roadmaps, Transition Solutions, Languages & Department Guide",
+    "افتح جميع المسارات والحلول واللغات ودليل الأقسام"
+  ],
+  "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waligaa Pro ayaad ahaanaysaa iyadoo adeegyo cusub ay bilaash kuugu soo kordhayaan.": [
+    "Pay $0.10 once (EVC Plus: 610999089 · Shuceyb Abdirahman) and enjoy Lifetime Pro access with all future updates included.",
+    "ادفع 0.10$ مرة واحدة (EVC Plus: 610999089 · Shuceyb Abdirahman) واحصل على Pro مدى الحياة مع جميع التحديثات القادمة."
+  ],
+  "Sharafka iyo Haybadda Afkeenna Hooyo": [
+    "Pride in Our Mother Tongue",
+    "فخرنا بلغتنا الأم الصومالية"
+  ],
+  "Afkaaga hooyo waa sharaftaada iyo aqoontaada. Ummad walba afkeeda ayay ku horumartaa.": [
+    "Your mother tongue is your dignity and your foundation of knowledge. Every nation advances through its own language.",
+    "لغتك الأم هي عزّتك وأساس علمك. كل أمة تنهض وتتقدم بلغتها."
+  ],
+  "Murti Soomaaliyeed": [
+    "Somali Wisdom",
+    "حكمة صومالية"
+  ],
+  "Af-Soomaaligu waa luqad cilmi iyo horumar ah, sidaas darteed barnaamijkan Af-Soomaali waa bilaash boqolkiiba boqol. Luqadaha Ingiriisiga iyo Carabiga waxaa lagu furtaa qaybta Pro ($0.10, hal mar oo keliya).": [
+    "Somali is a language of science and progress, which is why Somali is 100% free here. English and Arabic are unlocked in Pro ($0.10, one-time).",
+    "اللغة الصومالية لغة علم وتقدم، ولذلك فإن استخدام التطبيق بالصومالية مجاني بالكامل. الإنجليزية والعربية متوفرتان في Pro (0.10$ مرة واحدة)."
   ]
 };

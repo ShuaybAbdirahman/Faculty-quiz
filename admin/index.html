@@ -345,22 +345,22 @@ async function loadPro(){
     .map(([k, v]) => '<div class="stat"><b>' + esc(v) + '</b><span>' + esc(k) + '</span></div>').join('');
   $('pendProBadge').textContent = data.pending ? '(' + data.pending + ')' : '';
   const st = data.settings || {};
-  $('pPrice').value = st.price_text || '$3 / 6 bilood';
-  $('pDays').value = st.days || '180';
+  $('pPrice').value = st.price_text || '$0.10 · Abid (Hal mar)';
+  $('pDays').value = st.days || '3650';
   $('pWa').value = st.whatsapp || DEFAULT_WA_NUM;
   $('pNote').value = st.note || '';
 
   let methods = []; try { methods = JSON.parse(st.methods || '[]'); } catch (e) {}
   const evc = methods.find(m => /evc/i.test(m.name || '')) || methods[0] || {};
   const numClean = String(evc.number || '').replace(/\s+/g, '');
-  const isDummy = !numClean || numClean === '0612345678';
+  const isDummy = !numClean || numClean === '0612345678' || numClean === '252614632360';
   const hasExtra = methods.length > 1 || methods.some(m => /zaad|edahab/i.test(m.name || '')) || isDummy;
   show('pWarn', hasExtra);
 
   $('pmName').value = 'EVC Plus';
-  $('pmNum').value = isDummy ? DEFAULT_EVC_NUM : (evc.number || DEFAULT_EVC_NUM);
-  $('pmHolder').value = evc.holder || '';
-  $('pcDays').value = st.days || '180';
+  $('pmNum').value = isDummy ? '610999089' : (evc.number || '610999089');
+  $('pmHolder').value = isDummy ? 'Shuceyb Abdirahman' : (evc.holder || 'Shuceyb Abdirahman');
+  $('pcDays').value = st.days || '3650';
   loadProReqs(); loadProCodes();
 }
 $('pSave').onclick = async () => {

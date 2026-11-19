@@ -304,168 +304,178 @@ export function ResultScreen({
   };
 
   return (
-    <div className="min-h-screen px-4 pt-3 pb-8">
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={() => setDarkMode(!darkMode)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer"
-        >
-          {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          <span>{tr(darkMode ? "Iftiin" : "Mugdi")}</span>
-        </button>
-      </div>
-
-      <div className="px-2 mt-1">
-        <h1 className="font-head font-extrabold text-[28px] leading-tight">{tr("Natiijadaada")}</h1>
-        <p className="mt-1 text-sm opacity-75">{tr("Saddexda kulliyadood ee kugu habboon")}</p>
-      </div>
-
-      {!confident && (
-        <div
-          className={`mt-3 rounded-[16px] p-3.5 text-sm leading-relaxed border ${
-            darkMode
-              ? "bg-red-950/60 border-red-400/30 text-red-100"
-              : "bg-red-50 border-red-200 text-red-900"
-          }`}
-        >
-          {trf(
-            "Waxaad ka jawaabtay {a} / {b} su’aalood. Natiijadu waxay noqotaa mid kalsooni yar haddii su’aalo badan la boodo. Dib u bilow oo ka jawaab ugu yaraan {c} su’aalood.",
-            { a: answered, b: planLen, c: minNeeded(planLen) }
-          )}
+    <div className="min-h-screen flex flex-col">
+      <header
+        className={`border-b ${
+          darkMode ? "border-white/10 bg-[#0B1226]/90" : "border-slate-200 bg-white/90"
+        } backdrop-blur-md sticky top-0 z-20`}
+      >
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
+          <div>
+            <h1 className="font-head font-extrabold text-[22px] leading-tight">{tr("Natiijadaada")}</h1>
+            <p className="text-xs opacity-65">{tr("Saddexda kulliyadood ee kugu habboon")}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setDarkMode(!darkMode)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer transition-colors"
+          >
+            {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            <span>{tr(darkMode ? "Iftiin" : "Mugdi")}</span>
+          </button>
         </div>
-      )}
+      </header>
 
-      {unclear && (
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 pt-5 pb-10">
+        {!confident && (
+          <div
+            className={`mb-4 rounded-2xl p-4 text-sm leading-relaxed border ${
+              darkMode
+                ? "bg-red-950/60 border-red-400/30 text-red-100"
+                : "bg-red-50 border-red-200 text-red-900"
+            }`}
+          >
+            {trf(
+              "Waxaad ka jawaabtay {a} / {b} su’aalood. Natiijadu waxay noqotaa mid kalsooni yar haddii su’aalo badan la boodo. Dib u bilow oo ka jawaab ugu yaraan {c} su’aalood.",
+              { a: answered, b: planLen, c: minNeeded(planLen) }
+            )}
+          </div>
+        )}
+
+        {unclear && (
+          <div
+            className={`mb-4 rounded-2xl p-4 border ${
+              darkMode ? "bg-[#121A30] border-white/10" : "bg-white border-slate-200 shadow-xs"
+            }`}
+          >
+            <Heading icon={<HelpCircle className="w-4 h-4" />} label="Doorbidkaagu ma cadda" />
+            <p className="mt-1.5 text-sm opacity-85 leading-relaxed">
+              {tr(
+                "Saddexda kulliyadood waa isku dhow yihiin. Jawaabahaagu ma muujinayaan doorbid cad, sidaas awgeed isbarbar dhig dhammaan saddexda, oo la hadal qof ku aqaan."
+              )}
+            </p>
+          </div>
+        )}
+
+        {/* Top Row: Share Card + Pro Entry Card Side-by-Side on Desktop */}
+        {top.length > 0 && (
+          <div className="grid lg:grid-cols-12 gap-5 items-start">
+            <div className={confident ? "lg:col-span-6" : "lg:col-span-12"}>
+              <ShareSection
+                name={userName}
+                entries={top.map((m) => ({
+                  faculty: m.f,
+                  name: plainFacultyName(tx(m.f.name)),
+                  percent: m.percent,
+                }))}
+              />
+            </div>
+
+            {confident && (
+              <div className="lg:col-span-6">
+                <ProEntryCard
+                  entries={top.map((m) => ({ f: m.f, percent: m.percent }))}
+                  onOpenPro={onOpenPro}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Interest Profile Card */}
         <div
-          className={`mt-3 rounded-[16px] p-3.5 border ${
-            darkMode ? "bg-[#151D33] border-white/10" : "bg-white border-slate-200 shadow-xs"
+          className={`mt-5 rounded-2xl p-4 border ${
+            darkMode ? "bg-[#121A30] border-white/10" : "bg-white border-slate-200 shadow-xs"
           }`}
         >
-          <Heading icon={<HelpCircle className="w-4 h-4" />} label="Doorbidkaagu ma cadda" />
-          <p className="mt-1.5 text-sm opacity-85 leading-relaxed">
-            {tr(
-              "Saddexda kulliyadood waa isku dhow yihiin. Jawaabahaagu ma muujinayaan doorbid cad, sidaas awgeed isbarbar dhig dhammaan saddexda, oo la hadal qof ku aqaan."
-            )}
+          <Heading icon={<Compass className="w-4 h-4" />} label="Astaanta xiisahaaga" />
+          <p className="mt-1.5 text-sm font-medium opacity-90">
+            {profile.length === 0 ? "-" : profile.join(" · ")}
           </p>
         </div>
-      )}
 
-      {/* Share Card Section */}
-      {top.length > 0 && (
-        <div className="mt-4">
-          <ShareSection
-            name={userName}
-            entries={top.map((m) => ({
-              faculty: m.f,
-              name: plainFacultyName(tx(m.f.name)),
-              percent: m.percent,
-            }))}
-          />
-        </div>
-      )}
-
-      {/* Pro Entry Card */}
-      {confident && top.length > 0 && (
-        <div className="mt-4">
-          <ProEntryCard
-            entries={top.map((m) => ({ f: m.f, percent: m.percent }))}
-            onOpenPro={onOpenPro}
-          />
-        </div>
-      )}
-
-      {/* Interest Profile Card */}
-      <div
-        className={`mt-4 rounded-[16px] p-3.5 border ${
-          darkMode ? "bg-[#151D33] border-white/10" : "bg-white border-slate-200 shadow-xs"
-        }`}
-      >
-        <Heading icon={<Compass className="w-4 h-4" />} label="Astaanta xiisahaaga" />
-        <p className="mt-1.5 text-sm opacity-90">
-          {profile.length === 0 ? "—" : profile.join(" · ")}
-        </p>
-      </div>
-
-      {/* Top 3 Faculty Cards */}
-      {top.map((m, i) => (
-        <ResultCard key={m.f.id} rank={i + 1} m={m} />
-      ))}
-
-      {/* Anonymous Save + Review */}
-      {backendEnabled && confident && top.length > 0 && (
-        <div className="mt-4 space-y-3">
-          <SaveResultCard ids={top.map((m) => m.f.id)} pcts={top.map((m) => m.percent)} />
-          <ReviewCard facultyId={top[0].f.id} />
-        </div>
-      )}
-
-      {/* Next Steps */}
-      <div
-        className={`mt-4 rounded-[20px] p-4 border ${
-          darkMode ? "bg-[#151D33] border-white/10" : "bg-white border-slate-200 shadow-xs"
-        }`}
-      >
-        <Heading icon={<ListChecks className="w-4 h-4" />} label="Tallaabooyinka xiga" />
-        <ol className="mt-2.5 space-y-2.5">
-          {nextSteps.map((step, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-sm leading-snug">
-              <span
-                className={`w-[22px] h-[22px] rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
-                  darkMode ? "bg-[#24346B] text-[#C8D8FF]" : "bg-[#DCE4F7] text-[#1F3A93]"
-                }`}
-              >
-                {i + 1}
-              </span>
-              <span className="opacity-90">{tr(step)}</span>
-            </li>
+        {/* Top 3 Faculty Cards */}
+        <div className="mt-2">
+          {top.map((m, i) => (
+            <ResultCard key={m.f.id} rank={i + 1} m={m} />
           ))}
-        </ol>
-      </div>
+        </div>
 
-      {/* Action Buttons */}
-      <div className="mt-4 space-y-3">
-        <button
-          type="button"
-          onClick={onCompare}
-          className="w-full h-[52px] rounded-[16px] bg-[#3B5BDB] hover:bg-[#324EC2] text-white font-bold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors"
-        >
-          <ArrowLeftRight className="w-5 h-5" />
-          <span>{tr("Isbarbardhig kulliyadaha")}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={handleCopySummary}
-          className={`w-full h-[52px] rounded-[16px] font-bold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors ${
-            darkMode
-              ? "bg-[#222C47] text-[#C8D4FF] hover:bg-[#2B3759]"
-              : "bg-[#DCE4F7] text-[#1A2D6B] hover:bg-[#CFD9F4]"
-          }`}
-        >
-          <Copy className="w-5 h-5" />
-          <span>{tr("Nuqul ka samee natiijada")}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onRestart}
-          className={`w-full h-[52px] rounded-[16px] border font-bold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors ${
-            darkMode
-              ? "border-white/20 text-white hover:bg-white/5"
-              : "border-slate-300 text-slate-800 hover:bg-slate-100"
-          }`}
-        >
-          <RotateCcw className="w-5 h-5" />
-          <span>{tr("Dib u bilow")}</span>
-        </button>
-      </div>
-
-      <p className="mt-4 px-3 text-xs opacity-65 leading-relaxed">
-        {tr(
-          "Qiimeyntani waxay ku salaysan tahay qaab Holland RIASEC oo la fududeeyay. Ma aha imtixaan rasmi ah. U isticmaal hage, ma aha go’aan kama dambeys ah."
+        {/* Anonymous Save + Review */}
+        {backendEnabled && confident && top.length > 0 && (
+          <div className="mt-5 grid md:grid-cols-2 gap-4">
+            <SaveResultCard ids={top.map((m) => m.f.id)} pcts={top.map((m) => m.percent)} />
+            <ReviewCard facultyId={top[0].f.id} />
+          </div>
         )}
-      </p>
+
+        {/* Next Steps */}
+        <div
+          className={`mt-5 rounded-2xl p-5 border ${
+            darkMode ? "bg-[#121A30] border-white/10" : "bg-white border-slate-200 shadow-xs"
+          }`}
+        >
+          <Heading icon={<ListChecks className="w-4 h-4" />} label="Tallaabooyinka xiga" />
+          <ol className="mt-3 grid sm:grid-cols-2 gap-3">
+            {nextSteps.map((step, i) => (
+              <li key={i} className="flex items-start gap-2.5 text-sm leading-snug">
+                <span
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 tabular-nums ${
+                    darkMode ? "bg-[#24346B] text-[#C8D8FF]" : "bg-[#DCE4F7] text-[#1F3A93]"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <span className="opacity-90">{tr(step)}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="mt-5 grid sm:grid-cols-3 gap-3">
+          <button
+            type="button"
+            onClick={onCompare}
+            className="h-[52px] rounded-2xl bg-[#3B5BDB] hover:bg-[#324EC2] text-white font-bold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors"
+          >
+            <ArrowLeftRight className="w-5 h-5" />
+            <span>{tr("Isbarbardhig kulliyadaha")}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleCopySummary}
+            className={`h-[52px] rounded-2xl font-bold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+              darkMode
+                ? "bg-[#222C47] text-[#C8D4FF] hover:bg-[#2B3759]"
+                : "bg-[#DCE4F7] text-[#1A2D6B] hover:bg-[#CFD9F4]"
+            }`}
+          >
+            <Copy className="w-5 h-5" />
+            <span>{tr("Nuqul ka samee natiijada")}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onRestart}
+            className={`h-[52px] rounded-2xl border font-bold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+              darkMode
+                ? "border-white/20 text-white hover:bg-white/5"
+                : "border-slate-300 text-slate-800 hover:bg-slate-100"
+            }`}
+          >
+            <RotateCcw className="w-5 h-5" />
+            <span>{tr("Dib u bilow")}</span>
+          </button>
+        </div>
+
+        <p className="mt-5 text-xs opacity-65 leading-relaxed text-center max-w-2xl mx-auto">
+          {tr(
+            "Qiimeyntani waxay ku salaysan tahay qaab Holland RIASEC oo la fududeeyay. Ma aha imtixaan rasmi ah. U isticmaal hage, ma aha go’aan kama dambeys ah."
+          )}
+        </p>
+      </main>
 
       <Footer />
     </div>

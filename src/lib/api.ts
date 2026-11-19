@@ -1,5 +1,6 @@
 import { backendEnabled, supaHeaders, supabaseUrl } from "./config";
 import type { ProDeptData } from "./scoring";
+import { isValidDeviceId, normalizeProInfo } from "./proSecurity";
 
 // ---- Results API ----
 export async function submitResult(params: {
@@ -171,16 +172,17 @@ export async function fetchProInfo(): Promise<ProInfo> {
       holder: String(e.holder ?? ""),
     }))
     .filter((m) => m.name.length > 0 && m.number.length > 0);
-  return {
+  return normalizeProInfo({
     priceText: String(j?.price_text ?? ""),
     days: Number(j?.days ?? 180),
     whatsapp: String(j?.whatsapp ?? "").replace(/[^0-9]/g, ""),
     note: String(j?.note ?? ""),
     methods,
-  };
+  });
 }
 
 export async function fetchProStatus(deviceId: string): Promise<number> {
+  if (!isValidDeviceId(deviceId)) return 0;
   const j = (await rpc("pro_status", { p_device: deviceId })) as Record<string, unknown>;
   if (j?.active === true && typeof j.expires_at === "string") {
     return Date.parse(j.expires_at) || 0;
@@ -196,6 +198,7 @@ export async function submitProRequest(params: {
   amount?: string;
   name?: string;
 }): Promise<void> {
+  if (!isValidDeviceId(params.deviceId)) throw new ProApiError("bad_device");
   await rpc("pro_submit_request", {
     p_device: params.deviceId,
     p_phone: params.phone,
@@ -210,6 +213,7 @@ export async function redeemProCode(
   deviceId: string,
   code: string
 ): Promise<{ ok: boolean; expiresMs?: number; error?: string }> {
+  if (!isValidDeviceId(deviceId)) throw new ProApiError("bad_device");
   const j = (await rpc("pro_redeem", { p_device: deviceId, p_code: code })) as Record<
     string,
     unknown
@@ -222,6 +226,7 @@ export async function redeemProCode(
 }
 
 export async function fetchProContent(deviceId: string, facultyId: string): Promise<ProDeptData[]> {
+  if (!isValidDeviceId(deviceId)) throw new ProApiError("locked");
   const j = await rpc("pro_content", { p_device: deviceId, p_faculty: facultyId });
   if (!Array.isArray(j)) return [];
   return j as ProDeptData[];

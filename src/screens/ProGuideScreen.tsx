@@ -29,6 +29,11 @@ import {
   ProgressRing,
   ShinyButton,
 } from "../components/ModernUI";
+import {
+  ProRoadmapsExplorer,
+  ReadinessTracker,
+  SomaliaChallengesHub,
+} from "../components/ProHubContent";
 
 export interface ProFacultyRef {
   f: Faculty;
@@ -153,6 +158,7 @@ export function ProGuideScreen({
   const [extra, setExtra] = useState<Record<number, number>>({});
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"depts" | "roadmaps" | "challenges" | "readiness">("depts");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -212,22 +218,52 @@ export function ProGuideScreen({
         style={{ background: "radial-gradient(circle, rgba(106,71,224,0.35), transparent 70%)" }}
       />
 
-      <header className="relative z-10 px-4 py-3 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={onBack}
-          className="p-2 rounded-xl hover:bg-white/10 text-white cursor-pointer"
-        >
-          {rtl ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
-        </button>
-        <div className="flex items-center gap-2">
-          <h1 className="font-head font-extrabold text-[18px]">{tr("Hagaha Waaxda")}</h1>
-          <ProBadge small />
+      <header className="relative z-10 border-b border-white/10 bg-[#050A1E]/85 backdrop-blur-md sticky top-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Back"
+            className="p-2 rounded-xl hover:bg-white/10 text-white cursor-pointer transition-colors"
+          >
+            {rtl ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
+          </button>
+          <div className="flex items-center gap-2">
+            <h1 className="font-head font-extrabold text-[18px]">{tr("Hagaha Waaxda")}</h1>
+            <ProBadge small />
+          </div>
+        </div>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-3 flex items-center gap-2 overflow-x-auto hide-scrollbar">
+          {[
+            { id: "depts", label: tr("Waaxaha") },
+            { id: "roadmaps", label: tr("Khariidadaha") },
+            { id: "challenges", label: tr("Caqabadaha Soomaaliya") },
+            { id: "readiness", label: tr("Diyaargarowga") },
+          ].map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setActiveTab(t.id as typeof activeTab)}
+              className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border shrink-0 cursor-pointer transition-colors ${
+                activeTab === t.id
+                  ? "bg-[#FFC93C] text-[#050A1E] border-[#FFC93C]"
+                  : "bg-white/6 text-white/80 border-white/15 hover:bg-white/12"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
       </header>
 
-      <main className="relative z-10 flex-1 max-w-[640px] w-full mx-auto px-4 pt-1 pb-10">
-        {loading ? (
+      <main className="relative z-10 flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 pt-5 pb-12">
+        {activeTab === "roadmaps" ? (
+          <ProRoadmapsExplorer initialFacultyId={faculty.id} />
+        ) : activeTab === "challenges" ? (
+          <SomaliaChallengesHub />
+        ) : activeTab === "readiness" ? (
+          <ReadinessTracker />
+        ) : loading ? (
           <div className="py-24 flex justify-center">
             <Loader2 className="w-8 h-8 animate-spin text-[#FFC93C]" />
           </div>
