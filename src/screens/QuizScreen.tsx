@@ -7,17 +7,17 @@ import {
   Compass,
   GraduationCap,
   Heart,
+  Lock,
   Moon,
   Scale,
   SkipForward,
   Sun,
 } from "lucide-react";
-import { clusterNames, items, sections } from "../data/quizData";
+import { items, sections } from "../data/quizData";
 import { useApp } from "../context/AppContext";
 import {
   buildPlan,
   computeMatches,
-  focusClusters,
   interestProfile,
   ratingFor,
   screeningIdx,
@@ -55,12 +55,6 @@ export function QuizScreen({
   const opts = txl(it.type === "l" ? sec.sc : it.o);
   const adapt = plan.length > 3;
   const total = adapt ? plan.length : 28;
-
-  const focus = useMemo(() => {
-    if (!adapt) return [];
-    const scInPlan = screeningIdx().filter((i) => plan.includes(i));
-    return focusClusters(ratings, scInPlan);
-  }, [adapt, plan, ratings]);
 
   const SectionIcon = SECTION_ICONS[secIdx] ?? Compass;
 
@@ -191,11 +185,10 @@ export function QuizScreen({
           </div>
         </div>
 
-        {focus.length > 0 && (
-          <div className="mt-1 text-xs font-semibold text-[#5D7BFF]">
-            {trf("Su’aalaha waxaa lagu habeeyay: {c}", {
-              c: focus.map((c) => tr(clusterNames[c])).join(" · "),
-            })}
+        {adapt && (
+          <div className="mt-1 inline-flex items-center gap-1.5 text-xs font-semibold text-[#5D7BFF]">
+            <Lock className="w-3.5 h-3.5 shrink-0" />
+            <span>{tr("Natiijadaadu waa ay qarsoontahay ilaa dhamaadka")}</span>
           </div>
         )}
 

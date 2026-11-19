@@ -1246,7 +1246,7 @@ export const items: QuizItem[] = [
       "so": [
         "Inaan caawiyo ama daryeelo dadka buka",
         "Inaan hagaajiyo mashiinno, kombuyuutar ama dhismo",
-        "Inaan doodo, wax qoro ama dadka bar",
+        "Inaan doodo, wax qoro ama dadka wax baro",
         "Inaan wax iibiyo, ganacsi sameeyo ama koox hoggaamiyo",
         "Inaan beero, xoolaha ama dabeecadda ku mashquulo"
       ],
@@ -1445,7 +1445,7 @@ export const items: QuizItem[] = [
     ],
     "deep": true,
     "t": {
-      "so": "Inaan bukaan si toos ah u daryeelo maalin kasta, adigoo la hadlaya oo qalbi qabowsiinaya",
+      "so": "Inaan bukaan si toos ah u daryeelo maalin kasta, anigoo la hadlaya oo u naxariisanaya",
       "en": "Caring directly for a patient every day, talking with them and reassuring them",
       "ar": "رعاية مريض بشكل مباشر كل يوم، والتحدث معه وطمأنته"
     }
@@ -1928,7 +1928,7 @@ export const items: QuizItem[] = [
     "s": 1,
     "type": "l",
     "t": {
-      "so": "Xalinta xujooyin adag iyo ciyaaraha ay ku jirto fikir, sida chess",
+      "so": "Xallinta xujooyin adag iyo ciyaaraha u baahan fikir qoto dheer",
       "en": "Solving hard puzzles and thinking games, such as chess",
       "ar": "حل الألغاز الصعبة وألعاب التفكير، مثل الشطرنج"
     },
@@ -2106,30 +2106,30 @@ export const items: QuizItem[] = [
     "s": 3,
     "type": "m",
     "a": 1,
-    "d": 1,
+    "d": 2,
     "t": {
-      "so": "Waxaad iibsatay 3 buug, mid walbana waa 4 doolar. Waxaad bixisay wadar ahaan:",
-      "en": "You bought 3 books, each costing 4 dollars. How much did you pay in total?",
-      "ar": "اشتريت 3 كتب، ثمن كل كتاب 4 دولارات. كم دفعت في المجموع؟"
+      "so": "Shirkad bishii hore waxay heshay $4,000 oo dakhli ah. Bishan dakhligu wuxuu kordhay 15%, kadibna kharashka guud wuxuu noqday $3,100. Faa'iidada saafiga ah ee bishan waa:",
+      "en": "A company earned $4,000 last month. This month revenue rose by 15%, and total expenses were $3,100. What is this month's net profit?",
+      "ar": "حققت شركة إيرادات قدرها 4,000 دولار الشهر الماضي. هذا الشهر ارتفعت الإيرادات بنسبة 15%، وبلغت المصاريف 3,100 دولار. كم صافي الربح هذا الشهر؟"
     },
     "o": {
       "so": [
-        "7 doolar",
-        "12 doolar",
-        "10 doolar",
-        "16 doolar"
+        "$1,200",
+        "$1,500",
+        "$1,600",
+        "$900"
       ],
       "en": [
-        "7 dollars",
-        "12 dollars",
-        "10 dollars",
-        "16 dollars"
+        "$1,200",
+        "$1,500",
+        "$1,600",
+        "$900"
       ],
       "ar": [
-        "7 دولارات",
-        "12 دولاراً",
-        "10 دولارات",
-        "16 دولاراً"
+        "1,200 دولار",
+        "1,500 دولار",
+        "1,600 دولار",
+        "900 دولار"
       ]
     }
   },
@@ -2138,30 +2138,30 @@ export const items: QuizItem[] = [
     "s": 3,
     "type": "m",
     "a": 1,
-    "d": 1,
+    "d": 2,
     "t": {
-      "so": "Raac tirada: 2, 4, 6, 8, ?",
-      "en": "Follow the pattern: 2, 4, 6, 8, ?",
-      "ar": "أكمل النمط: 2، 4، 6، 8، ؟"
+      "so": "Barnaamij ayaa hubiya baasidda ardayga: haddii dhibcuhu yihiin 50 ama ka badan OO uusan ka maqnayn imtixaanka kama dambaysta ah, wuu baasay. Axmed wuxuu helay 68 balse wuu ka maqnaa imtixaanka kama dambaysta ah. Natiijada barnaamijku waa:",
+      "en": "A program checks if a student passed: score must be at least 50 AND final exam attended. Ahmed scored 68 but missed the final exam. What does the program output?",
+      "ar": "يتحقق برنامج من نجاح الطالب بشرطين معاً: درجة 50 فأكثر وحضور الاختبار النهائي. حصل أحمد على 68 لكنه تغيب عن الاختبار النهائي. ما نتيجة البرنامج؟"
     },
     "o": {
       "so": [
-        "9",
-        "10",
-        "12",
-        "14"
+        "Wuu baasay",
+        "Ma baasin",
+        "Dhibcaha ayaa kordhaya",
+        "Lama xisaabin karo"
       ],
       "en": [
-        "9",
-        "10",
-        "12",
-        "14"
+        "Passed",
+        "Failed",
+        "Score increases",
+        "Cannot be computed"
       ],
       "ar": [
-        "9",
-        "10",
-        "12",
-        "14"
+        "ناجح",
+        "راسب",
+        "تزداد الدرجة",
+        "لا يمكن الحساب"
       ]
     }
   },
@@ -2170,30 +2170,30 @@ export const items: QuizItem[] = [
     "s": 3,
     "type": "m",
     "a": 1,
-    "d": 1,
+    "d": 2,
     "t": {
-      "so": "Faadumo caadi ahaan waxay timaaddaa dugsiga gambaleelka ka hor. Maanta hurdada way ku dheeraatey, sidaas awgeed way daahday.\n\nMaxaa sababay in Faadumo daahdo maanta?",
-      "en": "Fadumo usually arrives at school before the bell. Today she overslept, so she was late.\n\nWhy was Fadumo late today?",
-      "ar": "عادةً تصل فاطمة إلى المدرسة قبل الجرس. اليوم استيقظت متأخرة، فتأخرت.\n\nلماذا تأخرت فاطمة اليوم؟"
+      "so": "Cilmi-baaris jaamacadeed ayaa muujisay in ardayda barta xirfadaha ficilka ah (sida xisaabta, barnaamij-qorista ama shaybaarka) inta ay jaamacadda dhigtaan ay shaqo helaan labo jeer ka degdeg badan kuwa buugaagta keliya akhriya.\n\nUjeeddada ugu weyn ee qoraalkan waa:",
+      "en": "University research shows that students who build practical skills (such as accounting, coding, or lab work) during university get hired twice as fast as those who only read textbooks.\n\nWhat is the main conclusion of this statement?",
+      "ar": "أظهر بحث جامعي أن الطلاب الذين يكتسبون مهارات عملية (مثل المحاسبة أو البرمجة أو العمل المخبري) أثناء الدراسة يحصلون على وظيفة أسرع بمرتين ممن يكتفون بقراءة الكتب.\n\nما الفكرة الرئيسية في هذا النص؟"
     },
     "o": {
       "so": [
-        "Way buka",
-        "Hurdada way ku dheeraatey",
-        "Dugsigu wuu xidhnaa",
-        "Waxay illowday buugaagteeda"
+        "In buugaagta jaamacadda aan loo baahnayn",
+        "In xirfadda ficilka ah ay kordhiso fursadda shaqo ee qalin-jabinta kadib",
+        "In dhammaan ardaydu bartaan barnaamij-qorista keliya",
+        "In shaqo la heli karo iyadoon jaamacad la gelin"
       ],
       "en": [
-        "She was ill",
-        "She overslept",
-        "The school was closed",
-        "She forgot her books"
+        "University textbooks are unnecessary",
+        "Practical skills significantly improve job prospects after graduation",
+        "Every student must study programming only",
+        "University education has no value"
       ],
       "ar": [
-        "كانت مريضة",
-        "استيقظت متأخرة",
-        "كانت المدرسة مغلقة",
-        "نسيت كتبها"
+        "الكتب الجامعية غير ضرورية",
+        "المهارات العملية تزيد بشكل كبير فرص التوظيف بعد التخرج",
+        "يجب على جميع الطلاب دراسة البرمجة فقط",
+        "لا فائدة من الدراسة الجامعية"
       ]
     }
   },
@@ -2204,28 +2204,28 @@ export const items: QuizItem[] = [
     "a": 1,
     "d": 2,
     "t": {
-      "so": "Qiimaha shay waa 80 doolar. Waxaa laga dhimay 25%. Qiimihiisa cusub waa:",
-      "en": "The price of an item is 80 dollars. It was reduced by 25%. What is the new price?",
-      "ar": "سعر سلعة 80 دولاراً. تم تخفيضه بنسبة 25٪. ما السعر الجديد؟"
+      "so": "Daawo ayaa loogu qoraa bukaan 5 mg halkii kiilogaraam oo miisaankiisa ah maalintii. Haddii bukaanku miisaankiisu yahay 60 kg, oo daawada loo qaybiyo 2 jeer maalintii, qiyaasta hal mar la siinayo waa:",
+      "en": "A medication dosage is 5 mg per kg of body weight per day. If a patient weighs 60 kg and takes it in 2 equal doses daily, what is each single dose?",
+      "ar": "جرعة دواء هي 5 ملغ لكل كيلوغرام من وزن المريض يومياً. إذا كان وزن المريض 60 كغ ويأخذ الدواء على جرعتين متساويتين يومياً، كم مقدار الجرعة الواحدة؟"
     },
     "o": {
       "so": [
-        "55 doolar",
-        "60 doolar",
-        "65 doolar",
-        "20 doolar"
+        "300 mg",
+        "150 mg",
+        "120 mg",
+        "60 mg"
       ],
       "en": [
-        "55 dollars",
-        "60 dollars",
-        "65 dollars",
-        "20 dollars"
+        "300 mg",
+        "150 mg",
+        "120 mg",
+        "60 mg"
       ],
       "ar": [
-        "55 دولاراً",
-        "60 دولاراً",
-        "65 دولاراً",
-        "20 دولاراً"
+        "300 ملغ",
+        "150 ملغ",
+        "120 ملغ",
+        "60 ملغ"
       ]
     },
     "c": [
@@ -2242,28 +2242,28 @@ export const items: QuizItem[] = [
     "a": 2,
     "d": 2,
     "t": {
-      "so": "Raac tirada: 2, 6, 18, 54, ?",
-      "en": "Follow the pattern: 2, 6, 18, 54, ?",
-      "ar": "أكمل النمط: 2، 6، 18، 54، ؟"
+      "so": "Nidaam xog-kaydin ah ayaa saacad kasta labanlaaba tirada faylasha uu habeeyo: 3, 6, 12, 24, ... Saacadda 6aad immisa fayl ayuu habeynayaa?",
+      "en": "A data system doubles the number of files it processes every hour: 3, 6, 12, 24, ... How many files will it process in hour 6?",
+      "ar": "نظام معالجة بيانات يضاعف عدد الملفات كل ساعة: 3، 6، 12، 24، ... كم ملفاً سيعالج في الساعة السادسة؟"
     },
     "o": {
       "so": [
-        "108",
-        "148",
-        "162",
-        "72"
+        "48",
+        "72",
+        "96",
+        "128"
       ],
       "en": [
-        "108",
-        "148",
-        "162",
-        "72"
+        "48",
+        "72",
+        "96",
+        "128"
       ],
       "ar": [
-        "108",
-        "148",
-        "162",
-        "72"
+        "48",
+        "72",
+        "96",
+        "128"
       ]
     },
     "c": [
@@ -2278,28 +2278,28 @@ export const items: QuizItem[] = [
     "a": 0,
     "d": 2,
     "t": {
-      "so": "Beeruhu marka ay soo saaraan wax badan oo la iibiyo, dakhliga dalku wuu kordhaa. Sidaa darteed, kordhinta beeraha waxay ugu horrayn caawisaa:",
-      "en": "When farms produce a lot that is sold, the country's income rises. So, expanding farming first helps:",
-      "ar": "عندما تنتج المزارع كثيراً ويُباع، يرتفع دخل الدولة. لذلك فإن توسيع الزراعة يساعد أولاً:"
+      "so": "Xeer jaamacadeed ayaa dhigaya: 'Ardaygii ka maqnaada in ka badan 25% fasallada ma geli karo imtixaanka, haddii uusan keenin warqad dhakhtar oo rasmi ah.' Arday ka maqnaaday 30% oo keenay warqad dhakhtar oo rasmi ah:",
+      "en": "A university rule states: 'Any student who misses more than 25% of classes cannot sit the final exam unless they submit an official medical certificate.' A student missed 30% and submitted an official medical certificate:",
+      "ar": "ينص نظام جامعي على أن: 'الطالب الذي يتغيب عن أكثر من 25% من المحاضرات يُحرم من الاختبار النهائي، إلا إذا قدّم تقريراً طبياً رسمياً'. طالب تغيب بنسبة 30% وقدّم تقريراً طبياً رسمياً:"
     },
     "o": {
       "so": [
-        "Dhaqaalaha dalka",
-        "Cimilada",
-        "Tirada dugsiyada",
-        "Dhererka waddooyinka"
+        "Wuu geli karaa imtixaanka maadaama uu buuxiyay shuruudda ka-reebista",
+        "Ma geli karo imtixaanka xaalad kasta",
+        "Waa inuu dib u dhigtaa sannadka oo dhan",
+        "Xeerku ma quseeyo ardaygaas"
       ],
       "en": [
-        "The national economy",
-        "The climate",
-        "The number of schools",
-        "The length of roads"
+        "May sit the exam because they met the exception condition",
+        "Cannot sit the exam under any circumstance",
+        "Must repeat the entire academic year",
+        "The rule does not mention medical cases"
       ],
       "ar": [
-        "اقتصاد البلاد",
-        "المناخ",
-        "عدد المدارس",
-        "طول الطرق"
+        "يحق له دخول الاختبار لأنه استوفى شرط الاستثناء",
+        "لا يحق له دخول الاختبار في جميع الأحوال",
+        "يجب عليه إعادة السنة الدراسية كاملة",
+        "النظام لا يذكر الحالات الطبية"
       ]
     }
   },
@@ -2310,28 +2310,28 @@ export const items: QuizItem[] = [
     "a": 1,
     "d": 2,
     "t": {
-      "so": "Giriyaha weyn ayaa u wareegaya dhanka saacadda. Giriyaha yar ee ku xiran wuxuu u wareegayaa:",
-      "en": "The big gear turns clockwise. The small gear connected to it turns:",
-      "ar": "الترس الكبير يدور باتجاه عقارب الساعة. الترس الصغير المتصل به يدور:"
+      "so": "Laba iska-caabbi (resistors) oo midkiiba yahay 10 Ohm ayaa si isku xigta (series) loogu xiray batari 20 Volt ah. Qulqulka korontada (Current = V / R_total) ee maraya wareegga waa:",
+      "en": "Two 10-Ohm resistors are connected in series to a 20-Volt battery. What is the electric current (Current = V / R_total) flowing through the circuit?",
+      "ar": "تم توصيل مقاومتين قيمة كل منهما 10 أوم على التوالي مع بطارية 20 فولت. ما شدة التيار الكهربائي (التيار = الجهد / المقاومة الكلية)؟"
     },
     "o": {
       "so": [
-        "Isla dhanka saacadda",
-        "Dhanka ka soo horjeeda saacadda",
-        "Waa taagan yahay",
-        "Kor iyo hoos"
+        "0.5 Ampere",
+        "1 Ampere",
+        "2 Ampere",
+        "4 Ampere"
       ],
       "en": [
-        "Clockwise too",
-        "Counter-clockwise",
-        "It stays still",
-        "Up and down"
+        "0.5 Ampere",
+        "1 Ampere",
+        "2 Ampere",
+        "4 Ampere"
       ],
       "ar": [
-        "باتجاه عقارب الساعة أيضاً",
-        "عكس اتجاه عقارب الساعة",
-        "يبقى ثابتاً",
-        "للأعلى والأسفل"
+        "0.5 أمبير",
+        "1 أمبير",
+        "2 أمبير",
+        "4 أمبير"
       ]
     },
     "c": [
@@ -2345,28 +2345,28 @@ export const items: QuizItem[] = [
     "a": 1,
     "d": 3,
     "t": {
-      "so": "Saddex shaqaale ayaa guri dhisa 12 maalmood. Lix shaqaale oo isku xawaare ah intee maalmood ayay qaadan lahaayeen?",
-      "en": "Three workers build a house in 12 days. How many days would six workers working at the same speed take?",
-      "ar": "ثلاثة عمال يبنون منزلاً في 12 يوماً. كم يوماً يحتاج ستة عمال بنفس السرعة؟"
+      "so": "Koox 4 injineer ah ayaa mashruuc dhammaystira 15 maalmood. Haddii 2 injineer oo kale oo isla xawaarahaas leh lagu soo daro bilowga, mashruucu wuxuu ku dhammaanayaa:",
+      "en": "A team of 4 engineers completes a project in 15 days. If 2 more engineers working at the same pace join from the start, how many days will the project take?",
+      "ar": "فريق من 4 مهندسين ينجز مشروعاً في 15 يوماً. إذا انضم إليهم مهندسان إضافيان بنفس السرعة منذ البداية، فكم يوماً يستغرق المشروع؟"
     },
     "o": {
       "so": [
-        "4",
-        "6",
-        "8",
-        "24"
+        "8 maalmood",
+        "10 maalmood",
+        "12 maalmood",
+        "20 maalmood"
       ],
       "en": [
-        "4",
-        "6",
-        "8",
-        "24"
+        "8 days",
+        "10 days",
+        "12 days",
+        "20 days"
       ],
       "ar": [
-        "4",
-        "6",
-        "8",
-        "24"
+        "8 أيام",
+        "10 أيام",
+        "12 يوماً",
+        "20 يوماً"
       ]
     },
     "c": [
@@ -2382,28 +2382,28 @@ export const items: QuizItem[] = [
     "a": 0,
     "d": 3,
     "t": {
-      "so": "Dhammaan ardayda fasalka A waa kuwo dadaal badan. Cali ma aha arday dadaal badan. Sidaas awgeed:",
-      "en": "All students in class A work hard. Ali is not a hard-working student. Therefore:",
-      "ar": "جميع طلاب الصف أ مجتهدون. علي ليس طالباً مجتهداً. إذن:"
+      "so": "Dhammaan shirkadaha ku guulaysta suuqa caalamiga ah waxay leeyihiin adeeg macmiil oo degdeg ah. Shirkadda X adeeggeeda macmiilku wuu gaabiyaa. Sidaas darteed:",
+      "en": "All companies that succeed globally have fast customer support. Company X has slow customer support. Therefore:",
+      "ar": "جميع الشركات الناجحة عالمياً تمتلك خدمة عملاء سريعة. خدمة العملاء في الشركة X بطيئة. بناءً على ذلك:"
     },
     "o": {
       "so": [
-        "Cali ma ahan arday fasalka A",
-        "Cali waa arday fasalka A",
-        "Fasalka A ma jiraan arday",
-        "Lama oga"
+        "Shirkadda X ma buuxin shuruudda guusha suuqa caalamiga ah",
+        "Shirkadda X way ku guulaysatay suuqa caalamiga ah",
+        "Adeegga macmiilku muhiim ma aha",
+        "Lama go'aamin karo"
       ],
       "en": [
-        "Ali is not in class A",
-        "Ali is in class A",
-        "There are no students in class A",
-        "Unknown"
+        "Company X does not meet the condition for global success",
+        "Company X has succeeded globally",
+        "Customer support is not important",
+        "Cannot be determined"
       ],
       "ar": [
-        "علي ليس في الصف أ",
-        "علي في الصف أ",
-        "لا يوجد طلاب في الصف أ",
-        "لا يمكن معرفة ذلك"
+        "الشركة X لا تستوفي شرط النجاح في السوق العالمي",
+        "الشركة X نجحت في السوق العالمي",
+        "خدمة العملاء غير مهمة",
+        "لا يمكن تحديد ذلك"
       ]
     }
   },

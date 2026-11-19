@@ -5,9 +5,12 @@ import {
   ArrowRight,
   Check,
   CheckCircle2,
+  Clock,
   Copy,
+  GraduationCap,
   Hourglass,
   KeyRound,
+  Languages,
   Loader2,
   Lock,
   MessageCircle,
@@ -53,10 +56,19 @@ function errKey(code: string): string {
   }
 }
 
+export type ProPlanType = "departments" | "languages";
+
+function currentHHMM(): string {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+}
+
 export function ProPaywallScreen({
+  initialPlan = "departments",
   onBack,
   onUnlocked,
 }: {
+  initialPlan?: ProPlanType;
   onBack: () => void;
   onUnlocked: () => void;
 }) {
@@ -68,9 +80,10 @@ export function ProPaywallScreen({
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [copiedNum, setCopiedNum] = useState(false);
   const [copiedDev, setCopiedDev] = useState(false);
+  const [plan, setPlan] = useState<ProPlanType>(initialPlan);
 
   const [phone, setPhone] = useState("");
-  const [txn, setTxn] = useState("");
+  const [payTime, setPayTime] = useState<string>(() => currentHHMM());
   const [name, setName] = useState(userName);
   const [code, setCode] = useState("");
 
@@ -106,26 +119,36 @@ export function ProPaywallScreen({
     onUnlocked();
   };
 
+  const buildEvcTimeRef = (phDigits: string, hhmm: string, selectedPlan: ProPlanType): string => {
+    const cleanTime = hhmm.replace(/[^0-9:]/g, "").replace(":", "") || currentHHMM().replace(":", "");
+    const tail = phDigits.replace(/\D/g, "").slice(-4) || "0000";
+    const tag = selectedPlan === "languages" ? "LANG" : "DEPT";
+    return `EVC-${tag}-${cleanTime}-${tail}`;
+  };
+
   const handleSendRequest = async () => {
     const ph = phone.replace(/[^0-9+]/g, "");
-    const txId = txn.trim();
+    const tm = payTime.trim();
     const nm = name.trim();
     if (ph.length < 6 || ph.length > 20) {
       setReqMsg({ key: "Lambarka taleefanka waa khalad.", ok: false });
       return;
     }
-    if (!/^[A-Za-z0-9 .:_-]{4,40}$/.test(txId)) {
-      setReqMsg({ key: "Lambarka xaqiijinta waa khalad (4-40 xaraf ama tiro).", ok: false });
+    if (!tm || tm.length < 3) {
+      setReqMsg({ key: "Fadlan geli saacadda aad lacagta dirtay.", ok: false });
       return;
     }
+    const generatedRef = buildEvcTimeRef(ph, tm, plan);
+    const planLabel = plan === "languages" ? "EVC Plus (Luqadaha)" : "EVC Plus (Waaxaha & Xarunta)";
+
     setSending(true);
     setReqMsg(null);
     try {
       await submitProRequest({
         deviceId,
         phone: ph,
-        method: EVC_PAYMENT_CONFIG.methodName,
-        txn: txId,
+        method: planLabel,
+        txn: generatedRef,
         amount: info.priceText,
         name: nm || undefined,
       });
@@ -277,7 +300,53 @@ export function ProPaywallScreen({
         </div>
       </header>
 
-      <main className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 pb-14 grid lg:grid-cols-12 gap-6 items-start">
+      <main className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 pb-14 space-y-5">
+        {/* Two-Package Pro Selector */}
+        <section className="grid sm:grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setPlan("departments")}
+            className={`text-start rounded-2xl p-4 border transition-all cursor-pointer ${
+              plan === "departments"
+                ? "border-[#FFC93C] bg-[#FFC93C]/12 shadow-lg"
+                : "border-white/15 bg-white/[0.04] hover:bg-white/[0.08]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-2 font-head font-extrabold text-sm text-white">
+                <GraduationCap className="w-4 h-4 text-[#FFD86B]" />
+                {tr("Xirmada 1: Waaxaha & Xarunta Pro")}
+              </span>
+              <span className="text-xs font-extrabold text-[#FFD86B] tabular-nums">$0.10</span>
+            </div>
+            <p className="mt-1.5 text-xs text-white/75 leading-relaxed">
+              {tr("Hagaha Waaxaha (14 kulliyadood + 70 su'aalood), Khariidadaha, Dadka Caanka ah, Wararka AI, Xirfadaha Dakhliga & Horumarinta Ardayga.")}
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setPlan("languages")}
+            className={`text-start rounded-2xl p-4 border transition-all cursor-pointer ${
+              plan === "languages"
+                ? "border-[#FFC93C] bg-[#FFC93C]/12 shadow-lg"
+                : "border-white/15 bg-white/[0.04] hover:bg-white/[0.08]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-2 font-head font-extrabold text-sm text-white">
+                <Languages className="w-4 h-4 text-[#FFD86B]" />
+                {tr("Xirmada 2: Luqadaha (English & Carabi)")}
+              </span>
+              <span className="text-xs font-extrabold text-[#FFD86B] tabular-nums">$0.10</span>
+            </div>
+            <p className="mt-1.5 text-xs text-white/75 leading-relaxed">
+              {tr("Fur luqadaha Ingiriisiga iyo Carabiga ee barnaamijka oo dhan (Af-Soomaaligu waa bilaash abid).")}
+            </p>
+          </button>
+        </section>
+
+        <div className="grid lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Value Proposition + Device Lock Guarantee */}
         <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-6">
           <div
@@ -293,8 +362,10 @@ export function ProPaywallScreen({
               <Lock className="w-5 h-5 text-[#FFD86B]" />
             </div>
 
-            <h2 className="mt-4 font-head font-extrabold text-[28px] leading-tight">
-              {tr("Hel Hagaha Waaxda Pro")}
+            <h2 className="mt-4 font-head font-extrabold text-[26px] leading-tight">
+              {plan === "languages"
+                ? tr("Pro Luqadaha (English & Carabi)")
+                : tr("Pro Waaxaha & Xarunta Ardayga")}
             </h2>
 
             <div className="mt-3 flex items-baseline gap-2 flex-wrap">
@@ -313,14 +384,22 @@ export function ProPaywallScreen({
             </p>
 
             <div className="mt-5 pt-5 border-t border-white/12 space-y-2.5">
-              {[
-                tr("Luqadaha Ingiriisiga iyo Carabiga oo dhan"),
-                tr("Kala saar waaxaha ku habboon") + " (14)",
-                tr("Khariidado waxbarasho oo la hubiyay (AI, Injineernimada Korontada, Caafimaadka iyo in ka badan)"),
-                tr("Caqabadaha Ardayga Soomaaliya iyo Xalkooda (Dugsiga Sare ilaa Jaamacadda)"),
-                tr("Liiska Diyaargarowga Jaamacadda ee 90-ka Maalmood"),
-                tr("Shaqooyinka waaxda kasta") + " & " + tr("Xoojiso natiijada su’aalo yar"),
-              ].map((label) => (
+              {(plan === "languages"
+                ? [
+                    tr("Luqadda Ingiriisiga (English) ee barnaamijka oo dhan"),
+                    tr("Luqadda Carabiga (العربية) oo leh qaabka saxda ah (RTL)"),
+                    tr("Af-Soomaaligu waa bilaash boqolkiiba boqol abid"),
+                    tr("Hal mar bixi, abid ha kuu furnaado"),
+                  ]
+                : [
+                    tr("Kala saar waaxaha ku habboon") + " (14 + 70 Pro)",
+                    tr("Khariidado waxbarasho oo la hubiyay (AI, Injineernimada Korontada, Caafimaadka iyo in ka badan)"),
+                    tr("Dadka Caanka ah ee Adduunka (Ilaha La Hubiyay)"),
+                    tr("Wararka Shaqooyinka Cusub (WEF 2025 - 2030)"),
+                    tr("Xirfadaha Dakhliga Sare (Baro Adigoo Arday ah)"),
+                    tr("Horumarinta Ardayga Soomaaliya (Qorshe La Hubiyay)"),
+                  ]
+              ).map((label) => (
                 <div key={label} className="flex items-start gap-2.5 text-[13.5px] text-white/90">
                   <CheckCircle2 className="w-4 h-4 text-[#FFC93C] shrink-0 mt-0.5" />
                   <span>{label}</span>
@@ -409,9 +488,13 @@ export function ProPaywallScreen({
                 <span>
                   {trf("Qiimaha: {p}", { p: info.priceText })}
                 </span>
-                <span className="font-mono text-[#FFD86B]">
-                  *712*{evcMethod.number}*{EVC_PAYMENT_CONFIG.ussdAmount}#
-                </span>
+                <a
+                  href={`tel:*712*${evcMethod.number}*${EVC_PAYMENT_CONFIG.ussdAmount}%23`}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FFC93C]/15 hover:bg-[#FFC93C]/25 border border-[#FFC93C]/35 font-mono text-[#FFD86B] transition-colors"
+                >
+                  <Phone className="w-3 h-3" />
+                  <span>*712*{evcMethod.number}*{EVC_PAYMENT_CONFIG.ussdAmount}#</span>
+                </a>
               </div>
             </div>
 
@@ -453,18 +536,31 @@ export function ProPaywallScreen({
               </div>
 
               <div>
-                <label htmlFor="evc-txn" className="block text-xs font-semibold text-white/75 mb-1.5">
-                  {tr("Lambarka xaqiijinta (Transaction ID)")}
-                </label>
+                <div className="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                  <label htmlFor="evc-time" className="inline-flex items-center gap-1.5 text-xs font-semibold text-white/75">
+                    <Clock className="w-3.5 h-3.5 text-[#FFD86B]" />
+                    <span>{tr("Saacadda aad lacagta dirtay (Waqtiga EVC Plus)")}</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setPayTime(currentHHMM())}
+                    className="text-[11.5px] font-semibold text-[#FFD86B] hover:underline cursor-pointer"
+                  >
+                    {tr("Waqtiga hadda")}
+                  </button>
+                </div>
                 <input
-                  id="evc-txn"
-                  type="text"
-                  value={txn}
-                  maxLength={40}
-                  onChange={(e) => setTxn(e.target.value.toUpperCase())}
-                  placeholder="Tusaale: REF123456"
-                  className="w-full rounded-xl px-4 py-3.5 text-[15px] font-mono bg-[#091233]/85 border border-white/20 outline-none focus:border-[#FFC93C] placeholder:text-white/35 placeholder:font-sans"
+                  id="evc-time"
+                  type="time"
+                  value={payTime}
+                  onChange={(e) => setPayTime(e.target.value)}
+                  className="w-full rounded-xl px-4 py-3.5 text-[16px] font-mono font-bold bg-[#091233]/85 border border-white/20 outline-none focus:border-[#FFC93C] text-white"
                 />
+                <p className="mt-1.5 text-[11.5px] text-white/60 leading-relaxed">
+                  {tr(
+                    "EVC Plus kuma soo diro Ref code; kaliya geli lambarkaaga iyo saacadda fariinta lacag-dirista (tusaale: 14:35) si degdeg ah loogu xaqiijiyo."
+                  )}
+                </p>
               </div>
 
               <div>
@@ -491,6 +587,24 @@ export function ProPaywallScreen({
             >
               {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : tr("Dir codsiga")}
             </button>
+
+            <a
+              href={`https://wa.me/${info.whatsapp}?text=${encodeURIComponent(
+                `${tr("Salaan, waxaan bixiyay lacagta Pro ($0.10).")}\n` +
+                  `Xirmo: ${plan === "languages" ? "Pro Luqadaha (English & Carabi)" : "Pro Waaxaha & Xarunta"}\n` +
+                  `Tel: ${phone || "-"}\n` +
+                  `Saacadda EVC: ${payTime || "-"}\n` +
+                  `Magac: ${name || "-"}\n` +
+                  `Device ID: ${shortDev}`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2.5 w-full h-11 rounded-2xl border border-emerald-400/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+            >
+              <MessageCircle className="w-4 h-4 text-emerald-400" />
+              <span>{tr("U dir caddaynta WhatsApp (Degdeg)")}</span>
+            </a>
+
             <MsgView msg={reqMsg} />
           </section>
 
@@ -541,6 +655,7 @@ export function ProPaywallScreen({
             </div>
             <MsgView msg={codeMsg} />
           </section>
+        </div>
         </div>
       </main>
     </div>

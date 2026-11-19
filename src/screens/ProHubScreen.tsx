@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
+  Award,
   ClipboardCheck,
   Lightbulb,
   Map,
+  Rocket,
   Sparkles,
+  TrendingUp,
+  Wrench,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { ProBadge } from "../components/ModernUI";
@@ -15,8 +19,21 @@ import {
   ReadinessTracker,
   SomaliaChallengesHub,
 } from "../components/ProHubContent";
+import {
+  FutureJobsNewsSection,
+  HighIncomeSkillsSection,
+  SomaliaGrowthSection,
+  WorldPioneersSection,
+} from "../components/ProWorldHubSections";
 
-type HubTab = "roadmaps" | "challenges" | "readiness";
+export type HubTab =
+  | "roadmaps"
+  | "pioneers"
+  | "future_jobs"
+  | "skills"
+  | "somalia_growth"
+  | "challenges"
+  | "readiness";
 
 export function ProHubScreen({
   initialTab = "roadmaps",
@@ -34,6 +51,10 @@ export function ProHubScreen({
 
   const tabs: { id: HubTab; label: string; icon: React.ReactNode }[] = [
     { id: "roadmaps", label: tr("Khariidadaha"), icon: <Map className="w-4 h-4" /> },
+    { id: "pioneers", label: tr("Dadka Caanka ah"), icon: <Award className="w-4 h-4" /> },
+    { id: "future_jobs", label: tr("Shaqooyinka Cusub"), icon: <TrendingUp className="w-4 h-4" /> },
+    { id: "skills", label: tr("Xirfadaha Dakhliga"), icon: <Wrench className="w-4 h-4" /> },
+    { id: "somalia_growth", label: tr("Horumarinta Ardayga"), icon: <Rocket className="w-4 h-4" /> },
     { id: "challenges", label: tr("Caqabadaha Soomaaliya"), icon: <Lightbulb className="w-4 h-4" /> },
     { id: "readiness", label: tr("Diyaargarowga"), icon: <ClipboardCheck className="w-4 h-4" /> },
   ];
@@ -85,7 +106,7 @@ export function ProHubScreen({
                 key={t.id}
                 type="button"
                 onClick={() => setTab(t.id)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold inline-flex items-center gap-2 border shrink-0 cursor-pointer transition-colors ${
+                className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold inline-flex items-center gap-1.5 border shrink-0 cursor-pointer transition-colors ${
                   active
                     ? "bg-[#FFC93C] text-[#050A1C] border-[#FFC93C]"
                     : "bg-white/6 text-white/80 border-white/15 hover:bg-white/12"
@@ -108,6 +129,18 @@ export function ProHubScreen({
             initialFacultyId={initialFacultyId}
             onUnlockClick={onOpenPaywall}
           />
+        )}
+        {tab === "pioneers" && (
+          <WorldPioneersSection isPro={proActive} onUnlock={onOpenPaywall} />
+        )}
+        {tab === "future_jobs" && (
+          <FutureJobsNewsSection isPro={proActive} onUnlock={onOpenPaywall} />
+        )}
+        {tab === "skills" && (
+          <HighIncomeSkillsSection isPro={proActive} onUnlock={onOpenPaywall} />
+        )}
+        {tab === "somalia_growth" && (
+          <SomaliaGrowthSection isPro={proActive} onUnlock={onOpenPaywall} />
         )}
         {tab === "challenges" && (
           <SomaliaChallengesHub locked={!proActive} onUnlockClick={onOpenPaywall} />

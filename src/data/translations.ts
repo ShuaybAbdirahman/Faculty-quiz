@@ -978,5 +978,233 @@ export const uiTranslations: Record<string, [string, string]> = {
   "Eeg & Soo Degso": [
     "View & Download",
     "عرض وتحميل"
+  ],
+  "Su'aalaha Gaarka ah ee Waaxda (Pro)": [
+    "Faculty-Specific Precision Questions (Pro)",
+    "أسئلة التخصص الدقيقة للكلية (Pro)"
+  ],
+  "Ka jawaab 5-tan su'aalood ee gaarka u ah kulliyaddaada si natiijada waaxdaada u noqoto mid aad u saxsan.": [
+    "Answer these 5 questions tailored to your faculty to sharpen your department match.",
+    "أجب عن هذه الأسئلة الخمسة المخصصة لكليتك لتحديد أنسب قسم لك بدقة أعلى."
+  ],
+  "Natiijadaadu waa ay qarsoontahay ilaa dhamaadka": [
+    "Your result stays hidden until the end",
+    "نتيجتك تبقى سرية حتى النهاية"
+  ],
+  "Ref ma arag? Isticmaal saacadda hadda": [
+    "No Ref code? Auto-fill current time",
+    "لا يوجد رقم مرجعي؟ استخدم الوقت الحالي"
+  ],
+  "Tusaale: REF123456 ama EVC-1430-6189": [
+    "Example: REF123456 or EVC-1430-6189",
+    "مثال: REF123456 أو EVC-1430-6189"
+  ],
+  "Ka eeg fariinta SMS-ka EVC Plus ee kuu soo dhacday, geli tixraaca (Ref). Haddii aadan arkin Ref, taabo badhanka kore si uu kuugu buuxiyo.": [
+    "Check your EVC Plus confirmation SMS and enter the Ref code. If you do not see a Ref, tap the button above to auto-fill it.",
+    "تحقق من رسالة تأكيد EVC Plus وأدخل الرقم المرجعي (Ref). إذا لم يظهر، اضغط الزر أعلاه لتعبئته تلقائياً."
+  ],
+  "Salaan, waxaan bixiyay lacagta Pro ($0.10).": [
+    "Hello, I just paid for Pro ($0.10).",
+    "مرحباً، لقد دفعت رسوم Pro ($0.10)."
+  ],
+  "U dir caddaynta WhatsApp (Degdeg)": [
+    "Send confirmation on WhatsApp (Fast)",
+    "أرسل التأكيد عبر واتساب (سريع)"
+  ],
+  "Fadlan geli saacadda aad lacagta dirtay.": [
+    "Please enter the time you sent the payment.",
+    "يرجى إدخال وقت إرسال الدفعة."
+  ],
+  "Xirmada 1: Waaxaha & Xarunta Pro": [
+    "Pack 1: Departments & Pro Career Hub",
+    "الباقة ١: الأقسام ومركز Pro المهني"
+  ],
+  "Hagaha Waaxaha (14 kulliyadood + 70 su'aalood), Khariidadaha, Dadka Caanka ah, Wararka AI, Xirfadaha Dakhliga & Horumarinta Ardayga.": [
+    "Department Guide (14 faculties + 70 questions), Roadmaps, World Pioneers, AI Jobs News, High-Income Skills & Somalia Student Growth.",
+    "دليل الأقسام (14 كلية + 70 سؤالاً)، المسارات، روّاد العالم، أخبار وظائف AI، المهارات المربحة، وتطوير الطالب الصومالي."
+  ],
+  "Xirmada 2: Luqadaha (English & Carabi)": [
+    "Pack 2: Languages (English & Arabic)",
+    "الباقة ٢: اللغات (الإنجليزية والعربية)"
+  ],
+  "Fur luqadaha Ingiriisiga iyo Carabiga ee barnaamijka oo dhan (Af-Soomaaligu waa bilaash abid).": [
+    "Unlock full English and Arabic across the entire app (Somali is 100% free forever).",
+    "افتح الإنجليزية والعربية بالكامل في التطبيق (الصومالية مجانية للأبد)."
+  ],
+  "Pro Luqadaha (English & Carabi)": [
+    "Pro Languages (English & Arabic)",
+    "Pro اللغات (الإنجليزية والعربية)"
+  ],
+  "Pro Waaxaha & Xarunta Ardayga": [
+    "Pro Departments & Student Hub",
+    "Pro الأقسام ومركز الطالب"
+  ],
+  "Luqadda Ingiriisiga (English) ee barnaamijka oo dhan": [
+    "Full English language across the app",
+    "اللغة الإنجليزية بالكامل في التطبيق"
+  ],
+  "Luqadda Carabiga (العربية) oo leh qaabka saxda ah (RTL)": [
+    "Full Arabic language with proper RTL layout",
+    "اللغة العربية بالكامل مع اتجاه النص الصحيح"
+  ],
+  "Af-Soomaaligu waa bilaash boqolkiiba boqol abid": [
+    "Somali remains 100% free forever",
+    "الصومالية مجانية 100% للأبد"
+  ],
+  "Saacadda aad lacagta dirtay (Waqtiga EVC Plus)": [
+    "Time you sent the payment (EVC Plus time)",
+    "وقت إرسال الدفعة (وقت EVC Plus)"
+  ],
+  "Waqtiga hadda": [
+    "Current time",
+    "الوقت الحالي"
+  ],
+  "EVC Plus kuma soo diro Ref code; kaliya geli lambarkaaga iyo saacadda fariinta lacag-dirista (tusaale: 14:35) si degdeg ah loogu xaqiijiyo.": [
+    "EVC Plus does not send a Ref code; simply enter your phone number and the exact transfer time (e.g., 14:35) for instant verification.",
+    "لا يرسل EVC Plus رمز Ref؛ فقط أدخل رقم هاتفك ووقت التحويل (مثال: 14:35) للتحقق السريع."
+  ],
+  "Dadka Caanka ah": [
+    "World Pioneers",
+    "روّاد العالم"
+  ],
+  "Shaqooyinka Cusub": [
+    "Future Jobs & AI",
+    "وظائف المستقبل"
+  ],
+  "Xirfadaha Dakhliga": [
+    "High-Income Skills",
+    "المهارات المربحة"
+  ],
+  "Horumarinta Ardayga": [
+    "Student Growth",
+    "تطوير الطالب"
+  ],
+  "Fur Pro Waaxaha & Xarunta ($0.10 · Abid) si aad u aragto dhammaan xogta, ilaha la hubiyay, iyo qorshayaasha.": [
+    "Unlock Pro Departments & Hub ($0.10 · Lifetime) to view all verified insights, sources, and action plans.",
+    "فعّل Pro الأقسام والمركز (0.10$ مدى الحياة) لعرض جميع المعلومات والمصادر الموثوقة وخطط العمل."
+  ],
+  "Dadka Caanka ah ee Adduunka (Ilaha La Hubiyay)": [
+    "World Faculty Pioneers (Verified Sources)",
+    "روّاد الكليات العالميون (مصادر موثوقة)"
+  ],
+  "Kulliyadaha iyo Dadka Heerka Sare ka Gaaray Adduunka": [
+    "Global Leaders Who Mastered Their Faculties",
+    "شخصيات عالمية تفوّقت في كلياتها"
+  ],
+  "Baro shakhsiyaad dhab ah oo adduunka iyo Soomaaliya magac ku yeeshay, shahaadadii ay qaateen, iyo casharka ardaygu ka baran karo.": [
+    "Explore real global and Somali pioneers, their exact university degrees, and the lessons every student can apply.",
+    "تعرّف على شخصيات عالمية وصومالية بارزة، وشهاداتهم الجامعية، والدروس العملية لكل طالب."
+  ],
+  "Dhammaan": [
+    "All",
+    "الكل"
+  ],
+  "Caafimaadka": [
+    "Medicine",
+    "الطب"
+  ],
+  "Injineernimada": [
+    "Engineering",
+    "الهندسة"
+  ],
+  "Dhaqaalaha": [
+    "Economics",
+    "الاقتصاد"
+  ],
+  "Sharciga": [
+    "Law",
+    "القانون"
+  ],
+  "Beeraha": [
+    "Agriculture",
+    "الزراعة"
+  ],
+  "Caaf. Bulshada": [
+    "Public Health",
+    "الصحة العامة"
+  ],
+  "Fur Pro si aad u akhrido guusha, casharka ardayga, iyo isha rasmiga ah.": [
+    "Unlock Pro to read the achievement, student lesson, and official source.",
+    "فعّل Pro لقراءة الإنجاز والدرس المستفاد والمصدر الرسمي."
+  ],
+  "Casharka Ardayga:": [
+    "Student Lesson:",
+    "الدرس للطالب:"
+  ],
+  "Isha la hubiyay:": [
+    "Verified Source:",
+    "المصدر الموثوق:"
+  ],
+  "Wararka Shaqooyinka Cusub (WEF 2025 - 2030)": [
+    "Future Jobs Report (WEF 2025 - 2030)",
+    "تقرير وظائف المستقبل (WEF 2025 - 2030)"
+  ],
+  "Shaqooyinka Ugu Kororka Badan Adduunka & Fursadda Soomaaliya": [
+    "Fastest-Growing Careers Globally & in Somalia",
+    "أسرع الوظائف نمواً عالمياً وفي الصومال"
+  ],
+  "Xog rasmi ah oo laga soo xigtay World Economic Forum (Future of Jobs Report 2025): 170 milyan oo shaqo cusub ayaa abuurmaya ka hor 2030, 86% shirkaduhuna waxay adeegsan doonaan AI.": [
+    "Verified data from the World Economic Forum Future of Jobs Report 2025: 170 million new roles will be created by 2030, and 86% of employers expect AI to transform their business.",
+    "بيانات رسمية من تقرير المنتدى الاقتصادي العالمي 2025: 170 مليون وظيفة جديدة بحلول 2030، و86% من الشركات ستتبنى الذكاء الاصطناعي."
+  ],
+  "Shaqooyin cusub (2030)": [
+    "New jobs by 2030",
+    "وظائف جديدة بحلول 2030"
+  ],
+  "Shirkadaha AI adeegsanaya": [
+    "Employers adopting AI",
+    "شركات تتبنى الذكاء الاصطناعي"
+  ],
+  "Kobaca Xogta & AI": [
+    "Big Data & AI growth",
+    "نمو البيانات والذكاء الاصطناعي"
+  ],
+  "Fur Pro si aad u aragto falanqaynta suuqa Soomaaliya, xirfadaha loo baahan yahay, iyo isha warbixinta.": [
+    "Unlock Pro to see the Somalia market analysis, required skills, and official report source.",
+    "فعّل Pro لعرض تحليل السوق الصومالي والمهارات المطلوبة ومصدر التقرير."
+  ],
+  "Fursadda Soomaaliya:": [
+    "Opportunity in Somalia:",
+    "الفرصة في الصومال:"
+  ],
+  "Xirfadaha Dakhliga Sare (Baro Adigoo Arday ah)": [
+    "High-Income Skills (Learn as a Student)",
+    "المهارات عالية الدخل (تعلّمها وأنت طالب)"
+  ],
+  "Xirfadaha Lacagta Laga Sameeyo (Video Editing, Design, Web & AI)": [
+    "Monetizable Digital Skills (Video Editing, Design, Web & AI)",
+    "مهارات رقمية مربحة (مونتاج الفيديو، التصميم، الويب وAI)"
+  ],
+  "Xirfado waxtar leh oo aad barbar baran karto jaamacadda, adigoo adeegsanaya koorsooyin bilaash ah oo rasmi ah si aad dakhli ugu samayso gudaha Soomaaliya iyo caalamkaba.": [
+    "Practical skills you can learn alongside university using official free courses to earn income locally and globally.",
+    "مهارات عملية يمكنك تعلمها بجانب الجامعة عبر دورات مجانية رسمية لتحقيق دخل محلياً وعالمياً."
+  ],
+  "Fur Pro si aad u aragto qorshaha 30-ka maalmood, sida lacag looga sameeyo, iyo koorsada bilaashka ah.": [
+    "Unlock Pro to view the 30-day roadmap, monetization steps, and official free course.",
+    "فعّل Pro لعرض خطة 30 يوماً وطرق تحقيق الدخل والدورة المجانية الرسمية."
+  ],
+  "Qorshaha 30-ka Maalmood:": [
+    "30-Day Starter Plan:",
+    "خطة البداية خلال 30 يوماً:"
+  ],
+  "Sida Ardaygu Lacag Uga Sameeyo:": [
+    "How Students Earn With This:",
+    "كيف يحقق الطالب دخلاً منها:"
+  ],
+  "Horumarinta Ardayga Soomaaliya (Qorshe La Hubiyay)": [
+    "Somalia Student Development Blueprint",
+    "خطة تطوير الطالب الصومالي (موثوقة)"
+  ],
+  "Sidee Ardayga Soomaaliya Heer Caalami ah u Gaari Karaa?": [
+    "How Somali Students Reach Global Excellence",
+    "كيف يصل الطالب الصومالي إلى التميز العالمي؟"
+  ],
+  "Tallaabooyin dhab ah oo ku salaysan warbixinnada Bangiga Adduunka (DE4A & Rajo Kaaba) iyo deeqaha waxbarasho ee rasmiga ah ee u furan ardayda Soomaaliya.": [
+    "Evidence-based strategies built on World Bank reports (DE4A & Rajo Kaaba) and verified international scholarships open to Somali students.",
+    "استراتيجيات عملية مبنية على تقارير البنك الدولي والمنح الدراسية الرسمية المتاحة للطلاب الصوماليين."
+  ],
+  "Fur Pro si aad u aragto istiraatiijiyadda iyo xiriirrada rasmiga ah ee deeqaha waxbarasho.": [
+    "Unlock Pro to view the full strategy and verified official scholarship portals.",
+    "فعّل Pro لعرض الاستراتيجية الكاملة وروابط المنح الدراسية الرسمية."
   ]
 };

@@ -300,21 +300,40 @@ export interface DeptScore {
   why: string[];
 }
 
-export function traitsFrom(ratings: number[], extra: Record<number, number>): Record<string, number> {
+export interface ProDeepAnswer {
+  k: string;
+  k2?: string;
+  v: number;
+}
+
+export function traitsFrom(
+  ratings: number[],
+  extra: Record<number, number>,
+  proAnswers: ProDeepAnswer[] = []
+): Record<string, number> {
   const sum: Record<string, number> = {};
   const cnt: Record<string, number> = {};
+  const addTrait = (k: string, v: number, weight = 1) => {
+    if (v <= 0 || !k) return;
+    sum[k] = (sum[k] ?? 0) + v * weight;
+    cnt[k] = (cnt[k] ?? 0) + weight;
+  };
   const add = (i: number, v: number) => {
     if (v <= 0 || !items[i] || items[i].type === "sc") return;
     const k = items[i].k;
     if (!k) return;
-    sum[k] = (sum[k] ?? 0) + v;
-    cnt[k] = (cnt[k] ?? 0) + 1;
+    addTrait(k, v, 1);
   };
   for (let i = 0; i < items.length && i < ratings.length; i++) {
     add(i, ratings[i]);
   }
   for (const [idxStr, val] of Object.entries(extra)) {
     add(Number(idxStr), val);
+  }
+  // Dedicated Pro precision questions carry higher signal for department ranking
+  for (const ans of proAnswers) {
+    addTrait(ans.k, ans.v, 1.8);
+    if (ans.k2) addTrait(ans.k2, ans.v, 0.9);
   }
   const out: Record<string, number> = {};
   for (const k of Object.keys(sum)) {

@@ -9,8 +9,8 @@ import { CompareScreen } from "./screens/CompareScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { ReviewsScreen } from "./screens/ReviewsScreen";
 import { ProGuideScreen } from "./screens/ProGuideScreen";
-import { ProPaywallScreen } from "./screens/ProPaywallScreen";
-import { ProHubScreen } from "./screens/ProHubScreen";
+import { ProPaywallScreen, type ProPlanType } from "./screens/ProPaywallScreen";
+import { ProHubScreen, type HubTab } from "./screens/ProHubScreen";
 
 type Route =
   | { name: "welcome" }
@@ -20,9 +20,9 @@ type Route =
   | { name: "compare"; outcome: QuizOutcome }
   | { name: "settings" }
   | { name: "reviews" }
-  | { name: "pro_hub"; tab?: "roadmaps" | "challenges" | "readiness"; facultyId?: string }
+  | { name: "pro_hub"; tab?: HubTab; facultyId?: string }
   | { name: "pro_guide"; faculty: Faculty; outcome: QuizOutcome }
-  | { name: "pro_paywall"; faculty?: Faculty; outcome?: QuizOutcome };
+  | { name: "pro_paywall"; faculty?: Faculty; outcome?: QuizOutcome; plan?: ProPlanType };
 
 function initialStack(): Route[] {
   if (typeof window !== "undefined") {
@@ -117,7 +117,7 @@ function AppShell() {
           onOpenFounderIntro={() => push({ name: "founder", after: "back" })}
           onOpenReviews={() => push({ name: "reviews" })}
           onLangChanged={resetToWelcome}
-          onOpenPaywall={() => push({ name: "pro_paywall" })}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "languages" })}
         />
       );
       break;
@@ -130,7 +130,7 @@ function AppShell() {
           initialTab={current.tab}
           initialFacultyId={current.facultyId}
           onBack={pop}
-          onOpenPaywall={() => push({ name: "pro_paywall" })}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "departments" })}
         />
       );
       break;
@@ -141,7 +141,7 @@ function AppShell() {
           ratings={current.outcome.ratings}
           onBack={pop}
           onLocked={() =>
-            replace({ name: "pro_paywall", faculty: current.faculty, outcome: current.outcome })
+            replace({ name: "pro_paywall", faculty: current.faculty, outcome: current.outcome, plan: "departments" })
           }
         />
       );
@@ -149,6 +149,7 @@ function AppShell() {
     case "pro_paywall":
       screen = (
         <ProPaywallScreen
+          initialPlan={current.plan ?? "departments"}
           onBack={pop}
           onUnlocked={() => {
             if (current.faculty && current.outcome) {

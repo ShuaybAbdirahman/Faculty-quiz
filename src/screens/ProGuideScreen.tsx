@@ -17,11 +17,12 @@ import {
 } from "lucide-react";
 import { items, sections, type Faculty } from "../data/quizData";
 import { proTraitLabels } from "../data/proData";
+import { getProQuestionsForFaculty } from "../data/proQuestions";
 import { useApp } from "../context/AppContext";
 import { fetchProContent, ProApiError } from "../lib/api";
 import { backendEnabled } from "../lib/config";
 import { argbToHex, hexToRgba, plainFacultyName } from "../lib/i18n";
-import { rankDepts, refineItems, traitsFrom, type ProDeptData } from "../lib/scoring";
+import { rankDepts, refineItems, traitsFrom, type ProDeepAnswer, type ProDeptData } from "../lib/scoring";
 import {
   AccentTitleLight,
   FacultyIcon,
@@ -156,9 +157,12 @@ export function ProGuideScreen({
   const [depts, setDepts] = useState<ProDeptData[] | null>(null);
   const [ask, setAsk] = useState<number[]>([]);
   const [extra, setExtra] = useState<Record<number, number>>({});
+  const [proAns, setProAns] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"depts" | "roadmaps" | "challenges" | "readiness">("depts");
+
+  const facultyProQuestions = useMemo(() => getProQuestionsForFaculty(faculty.id), [faculty.id]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -190,9 +194,12 @@ export function ProGuideScreen({
 
   const ranked = useMemo(() => {
     if (!depts) return [];
-    const raw = traitsFrom(ratings, extra);
+    const deepList: ProDeepAnswer[] = facultyProQuestions
+      .filter((q) => proAns[q.id] !== undefined)
+      .map((q) => ({ k: q.k, k2: q.k2, v: proAns[q.id] }));
+    const raw = traitsFrom(ratings, extra, deepList);
     return rankDepts(depts, raw);
-  }, [depts, ratings, extra]);
+  }, [depts, ratings, extra, facultyProQuestions, proAns]);
 
   const traitLabel = (k: string) => {
     const entry = proTraitLabels[k];
@@ -448,20 +455,81 @@ export function ProGuideScreen({
               </div>
             )}
 
-            {/* Refinement Questions */}
+            {/* Dedicated Faculty-Tailored Pro Precision Questions */}
             <div className="pt-2 space-y-3">
-              {ask.length > 0 ? (
-                <>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <AccentTitleLight label="Su'aalaha Gaarka ah ee Waaxda (Pro)" />
+                </div>
+                <span className="text-xs font-bold text-[#FFD86B] tabular-nums">
+                  {Object.keys(proAns).length}/{facultyProQuestions.length}
+                </span>
+              </div>
+              <p className="text-xs text-white/75 leading-relaxed">
+                {tr(
+                  "Ka jawaab 5-tan su'aalood ee gaarka u ah kulliyaddaada si natiijada waaxdaada u noqoto mid aad u saxsan."
+                )}
+              </p>
+
+              {facultyProQuestions.map((pq, n) => {
+                const opts = txl(sections[1].sc);
+                const selected = proAns[pq.id];
+                return (
+                  <div
+                    key={pq.id}
+                    className={`rounded-[20px] p-4 border transition-colors ${
+                      selected !== undefined ? "border-[#FFC93C]/60" : "border-white/20"
+                    }`}
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%)",
+                    }}
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <span
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0 ${
+                          selected !== undefined
+                            ? "bg-[#FFC93C] text-[#050A1E]"
+                            : "bg-white/16 text-white"
+                        }`}
+                      >
+                        {selected !== undefined ? <Check className="w-3.5 h-3.5" /> : n + 1}
+                      </span>
+                      <p className="text-sm font-semibold leading-snug">{tx(pq.t)}</p>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {opts.map((opt, oi) => {
+                        const isSel = selected === oi + 1;
+                        return (
+                          <button
+                            key={oi}
+                            type="button"
+                            onClick={() => setProAns((prev) => ({ ...prev, [pq.id]: oi + 1 }))}
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border cursor-pointer transition-colors ${
+                              isSel
+                                ? "bg-[#FFC93C] text-[#050A1E] border-[#FFC93C]"
+                                : "bg-white/8 text-white border-white/25 hover:bg-white/15"
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Optional extra unanswered free-quiz refinement items if any */}
+              {ask.length > 0 && (
+                <div className="pt-2 space-y-3">
                   <div className="flex items-center justify-between gap-2">
                     <AccentTitleLight label="Xoojiso natiijada" />
-                    <span className="text-xs font-bold text-[#FFD86B]">
+                    <span className="text-xs font-bold text-[#FFD86B] tabular-nums">
                       {Object.keys(extra).length}/{ask.length}
                     </span>
                   </div>
-                  <p className="text-xs text-white/75 leading-relaxed">
-                    {tr("Ka jawaab su’aalahan yaryar si natiijada u sii saxnaato.")}
-                  </p>
-                  {ask.map((qIdx, n) => {
+                  {ask.slice(0, 3).map((qIdx, n) => {
                     const it = items[qIdx];
                     const opts = txl(sections[it.s].sc);
                     const selected = extra[qIdx];
@@ -473,7 +541,7 @@ export function ProGuideScreen({
                         }`}
                         style={{
                           background:
-                            "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%)",
+                            "linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%)",
                         }}
                       >
                         <div className="flex items-start gap-2.5">
@@ -510,15 +578,6 @@ export function ProGuideScreen({
                       </div>
                     );
                   })}
-                </>
-              ) : (
-                <div className="rounded-[18px] p-3.5 border border-white/20 bg-white/8 flex items-center gap-2.5 text-xs text-white/85">
-                  <BadgeCheck className="w-5 h-5 text-[#FFD86B] shrink-0" />
-                  <span>
-                    {tr(
-                      "Natiijadaada waa dhammaystiran tahay; wax su’aalo ah oo dheeraad ah looma baahna."
-                    )}
-                  </span>
                 </div>
               )}
             </div>
