@@ -1,0 +1,1 @@
+ /app/applet/build/web/manifest.json /app/applet/build/web/og-image.jpg /app/applet/build/web/favicon.png:  /app/applet/web/manifest.json /app/applet/web/og-image.jpg /app/applet/web/index.html /app/applet/web/favicon.png

@@ -1,52 +1,40 @@
 # Hagaha Kulliyadda
 
-App Flutter ah (web + mobile) oo ardayda dhammeysatay dugsiga sare ka caawiya inay doortaan kulliyadda ugu habboon. 25-30 su'aalood (~8 daqiiqo) → saddex kulliyadood oo ugu habboon, boqolkiiba, sababta, waaxaha iyo shaqooyinka.
+A React + TypeScript + Vite web application that helps high school graduates choose the university faculty best suited to their interests, aptitudes, and priorities. 25–30 adaptive questions (~8 minutes) → top 3 matching faculties with percentages, breakdown, departments, careers, and tips.
 
-**Luqadaha:** Soomaali · English · العربية (RTL) &nbsp;|&nbsp; **Mawduuc:** Iftiin / Mugdi &nbsp;|&nbsp; **Falanqayn:** Holland RIASEC oo la fududeeyay (adaptive)
+**Languages:** Soomaali · English · العربية (RTL) &nbsp;|&nbsp; **Theme:** Light / Dark &nbsp;|&nbsp; **Scoring:** Adaptive simplified Holland RIASEC
 
-🔗 **Tijaabi:** `https://USERNAME.github.io/REPO/` (ku beddel magacaaga iyo magaca repo-ga)
+## Getting Started
 
-## Bilow degdeg ah
 ```bash
-flutter create . --platforms=web,android   # hal mar (abuura web/, android/)
-flutter pub get
-flutter run -d chrome
+npm install
+npm run dev
 ```
-Waxay u baahan tahay Flutter ≥ 3.27 (Dart ≥ 3.6).
 
-## Qaab dhismeedka
-| Fayl | Waxa uu qabto |
-|---|---|
-| `lib/main.dart` | UI, xisaabta ku habboonaanta, animation-ka |
-| `lib/data.dart` | 14 kulliyadood (guud, dalka iyo caalamka), 67 su'aalood, kooxaha (3 luqadood) |
-| `lib/i18n.dart` | Turjumaadda UI (`tr`, `trf`, `tx`) |
-| `web/index.html`, `web/og-image.jpg` | Link preview (WhatsApp/Telegram) |
-| `lib/config.dart`, `results_api.dart`, `save_card.dart` | Backend (Supabase), ogolaansho iyo diris |
-| `lib/prefs.dart`, `settings_screen.dart` | Xusuusta dejinta iyo bogga Dejinta |
-| `lib/reviews_api.dart`, `reviews_ui.dart` | Fikirrada ardayda (xiddigo + qoraal) |
-| `backend/supabase/schema.sql` | Shaxanka, amniga (RLS) iyo dashboard SQL (+ `update_faculties.sql` oo loo isticmaalo isbeddelka kulliyadaha) |
-| `admin/index.html` | Bogga maamulaha (`/admin/`) |
-| `.github/workflows/pages.yml` | Dhis iyo daabac GitHub Pages |
+The development server listens on `http://0.0.0.0:3000`.
 
-## Daabac GitHub Pages (domain la'aan)
-1. Ku soo rar mashruuca dhan GitHub (branch `main`).
-2. Repo → **Settings → Pages → Source: GitHub Actions**.
-3. Tab-ka **Actions**: sug workflow-ga (~3-5 daqiiqo). Link-gu waa `https://USERNAME.github.io/REPO/`.
-4. Haddii ay fashilanto, fur workflow-ga fashilmay oo koobi qoraalka khaladka.
+## Build & Type-Check
 
-## Backend (ikhtiyaari)
-Eeg [`backend/README.md`](backend/README.md). Haddii `lib/config.dart` madhan yahay, app-ku wuu shaqeeyaa sidii hore oo kaarka diiwaangelinta wuu qarsoon yahay.
+```bash
+npm run build
+npm run lint
+```
 
-## Khusuusiga
-Magaca ardayga (ikhtiyaari) waa hambalyo oo kaliya, wuxuu ku hadhaa xusuusta app-ka. Magaca waligiis lama diro. Natiijada waxaa la diiwaangelin karaa **magac la'aan** kaliya haddii ardaygu oggolaado.
+## Project Structure
 
-## Link preview (WhatsApp)
-`web/index.html` (Open Graph) iyo `web/og-image.jpg` (1200×630). Workflow-gu si toos ah ayuu `YOUR-DOMAIN` ugu beddelaa link-gaaga runta ah. WhatsApp wuu keydiyaa preview-ga hore; si loo cusboonaysiiyo ku dar `?v=2` link-ga. Naqshadda: `design/og-image.html`.
+- `src/App.tsx` — Navigation stack and responsive centered shell
+- `src/context/AppContext.tsx` — Preferences (`localStorage`), i18n, theme, animations, text scale, Pro status
+- `src/data/` — 14 faculties, 67 questions, 5 sections, 179 UI translations (Soomaali, English, Arabic), QR matrix, Pro trait labels, founder photo
+- `src/lib/scoring.ts` — Adaptive screening plan builder, RIASEC matching engine, and Pro department ranking
+- `src/lib/api.ts` — Supabase RPC client for anonymous result saving, student reviews, and Pro Department Guide
+- `src/screens/` — Welcome, Founder Intro, Quiz, Result (+ Celebration), Compare, Settings, Reviews, Pro Guide, and Pro Paywall screens
+- `src/components/` — Aurora hero, ShinyButton, FacultyBanner, ShareCard (with 1080×1440 PNG Canvas export), SaveResultCard, and Reviews UI
+- `admin/index.html` — Admin dashboard (preserved)
 
-## Xusuus
-- Turjumaadda English iyo Carabi waxaa qoray AI; ha la hubiyo qof afkaas ku hadla.
-- Sawirrada rasmiga ah ee kulliyadaha (ikhtiyaari): `assets/faculties/` (eeg `README.txt`).
-- Ma aha imtixaan rasmi ah; u isticmaal hage.
+## Privacy
 
-## Shatiga
-Xuquuqda oo dhan waa dhowran tahay. Eeg [`LICENSE`](LICENSE).
+The student's optional name stays in local browser storage and is never sent with quiz results. Quiz results can be saved anonymously only with explicit consent.
+
+## License
+
+All rights reserved. See [`LICENSE`](LICENSE).
