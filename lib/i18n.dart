@@ -622,5 +622,145 @@ const Map<String, List<String>> ui = {
  "Waa hage, ma aha go’aan kama dambays ah. La tasho macallimiin ama arday jaamacad.": [
   "This is a guide, not a final decision. Talk to a teacher or a university student.",
   "هذا دليل وليس قرارًا نهائيًا. استشر معلمًا أو طالبًا جامعيًا."
+ ],
+ "Hel Hagaha Waaxda Pro": [
+  "Get the Pro Department Guide",
+  "احصل على دليل الأقسام المتقدم"
+ ],
+ "Gelitaan {n} maalmood": [
+  "{n} days of access",
+  "وصول لمدة {n} يومًا"
+ ],
+ "Qiimaha: {p}": [
+  "Price: {p}",
+  "السعر: {p}"
+ ],
+ "Waaxaha 14-ka kulliyadood oo dhan": [
+  "Departments across all 14 faculties",
+  "أقسام الكليات الأربع عشرة كلها"
+ ],
+ "Fur Pro": [
+  "Unlock Pro",
+  "فعّل النسخة المتقدمة"
+ ],
+ "1. Bixi lacagta": [
+  "1. Make the payment",
+  "١. ادفع المبلغ"
+ ],
+ "2. Dir xogta lacag-bixinta": [
+  "2. Send your payment details",
+  "٢. أرسل بيانات الدفع"
+ ],
+ "3. Hubi xaaladda": [
+  "3. Check your status",
+  "٣. تحقق من حالتك"
+ ],
+ "Habka lacag-bixinta weli lama dejin. Fadlan mar dambe isku day ama la xiriir maamulaha.": [
+  "Payment methods are not set up yet. Please try later or contact the admin.",
+  "طرق الدفع غير مفعّلة بعد. حاول لاحقًا أو تواصل مع المسؤول."
+ ],
+ "Koobi lambarka": [
+  "Copy number",
+  "انسخ الرقم"
+ ],
+ "Lambarka waa la koobiyay": [
+  "Number copied",
+  "تم نسخ الرقم"
+ ],
+ "Habka lacag-bixinta": [
+  "Payment method",
+  "طريقة الدفع"
+ ],
+ "Lambarka taleefankaaga (kii aad ka bixisay)": [
+  "Your phone number (the one you paid from)",
+  "رقم هاتفك (الذي دفعت منه)"
+ ],
+ "Lambarka xaqiijinta (Transaction ID)": [
+  "Transaction ID",
+  "رقم العملية"
+ ],
+ "Dir codsiga": [
+  "Send request",
+  "أرسل الطلب"
+ ],
+ "Dooro habka lacag-bixinta.": [
+  "Choose a payment method.",
+  "اختر طريقة الدفع."
+ ],
+ "Codsigaaga waa la helay. Waan hubin doonaa, kadibna riix “Hubi xaaladda”.": [
+  "We received your request. We will verify it, then tap “Check status”.",
+  "استلمنا طلبك. سنتحقق منه، ثم اضغط «تحقق من الحالة»."
+ ],
+ "Codsi hore ayaa socda; sug xaqiijinta ama riix “Hubi xaaladda”.": [
+  "A request is already in progress; wait for verification or tap “Check status”.",
+  "هناك طلب قيد المعالجة؛ انتظر التحقق أو اضغط «تحقق من الحالة»."
+ ],
+ "Hubi xaaladda": [
+  "Check status",
+  "تحقق من الحالة"
+ ],
+ "Weli lama xaqiijin. Fadlan sug ama la xiriir maamulaha.": [
+  "Not verified yet. Please wait or contact the admin.",
+  "لم يتم التحقق بعد. انتظر أو تواصل مع المسؤول."
+ ],
+ "Pro waa la furay!": [
+  "Pro unlocked!",
+  "تم تفعيل النسخة المتقدمة!"
+ ],
+ "Koodh ma haysaa?": [
+  "Have a code?",
+  "هل لديك رمز؟"
+ ],
+ "Geli koodhka": [
+  "Enter code",
+  "أدخل الرمز"
+ ],
+ "Isticmaal koodhka": [
+  "Redeem code",
+  "استخدم الرمز"
+ ],
+ "Koodhku waa khalad.": [
+  "That code is not valid.",
+  "الرمز غير صحيح."
+ ],
+ "Koodhkan hore ayaa loo isticmaalay.": [
+  "This code has already been used.",
+  "تم استخدام هذا الرمز من قبل."
+ ],
+ "La xiriir WhatsApp": [
+  "Contact on WhatsApp",
+  "تواصل عبر واتساب"
+ ],
+ "Salaan, waxaan rabaa inaan furo Hagaha Waaxda Pro.": [
+  "Hello, I would like to unlock the Pro Department Guide.",
+  "مرحبًا، أريد تفعيل دليل الأقسام المتقدم."
+ ],
+ "Lacag-bixinta waxaa gacanta ku xaqiijiya maamulka (badanaa ilaa 24 saac). Gelitaanku wuxuu ku xidhan yahay qalabkan.": [
+  "Payments are verified by hand by the admin (usually within 24 hours). Access is tied to this device.",
+  "يتحقق المسؤول من المدفوعات يدويًا (عادةً خلال 24 ساعة). الوصول مرتبط بهذا الجهاز."
+ ],
+ "Lama xiriiri karo server-ka. Hubi internetka.": [
+  "Cannot reach the server. Check your internet.",
+  "تعذر الاتصال بالخادم. تحقق من الإنترنت."
+ ],
+ "Lambarka xaqiijinta hore ayaa loo isticmaalay.": [
+  "That transaction ID was already used.",
+  "رقم العملية هذا استُخدم من قبل."
+ ],
+ "Isku-day badan. Fadlan mar dambe isku day.": [
+  "Too many attempts. Please try again later.",
+  "محاولات كثيرة. حاول لاحقًا."
+ ],
+ "Lambarka taleefanka waa khalad.": [
+  "The phone number is not valid.",
+  "رقم الهاتف غير صحيح."
+ ],
+ "Lambarka xaqiijinta waa khalad (4-40 xaraf ama tiro).": [
+  "The transaction ID is not valid (4–40 letters or digits).",
+  "رقم العملية غير صحيح (4–40 حرفًا أو رقمًا)."
+ ],
+ "Wax khalad ah ayaa dhacay. Mar kale isku day.": [
+  "Something went wrong. Please try again.",
+  "حدث خطأ ما. حاول مرة أخرى."
  ]
 };
