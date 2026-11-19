@@ -35,6 +35,7 @@ import {
 } from "../components/ModernUI";
 import { ReviewsSection } from "../components/ReviewsComponents";
 import { PromoPosterModal } from "../components/PromoPosterModal";
+import { HeroSpotlightTicker } from "../components/HeroSpotlightTicker";
 import promoPosterThumb from "../assets/images/hagaha_kulliyadda_promo_1795079553879.jpg";
 
 function NameField() {
@@ -251,8 +252,11 @@ export function WelcomeScreen({
             </nav>
           </header>
 
+          {/* Animated Hero Spotlight Ticker (10 App Highlights + Automatic Friday Salawat) */}
+          <HeroSpotlightTicker />
+
           {/* Hero Two-Column Stage */}
-          <div className="mt-8 lg:mt-12 grid lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          <div className="mt-6 lg:mt-10 grid lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             {/* Left: Editorial Copy + Name Input + Primary CTA */}
             <div className="lg:col-span-7 space-y-5">
               <div>

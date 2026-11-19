@@ -120,3 +120,38 @@ describe("Verified Pro World Hub Data", () => {
     }
   });
 });
+
+import { baseHeroSlides, buildHeroTickerSlides, getFridaySalawatSlide } from "./heroTicker";
+
+describe("Hero Spotlight Ticker & Automatic Friday Salawat", () => {
+  it("contains 10 rich app highlight slides with trilingual copy", () => {
+    assert.equal(baseHeroSlides.length, 10);
+    for (const s of baseHeroSlides) {
+      assert.ok(s.text.so.length > 10 && s.text.en.length > 10 && s.text.ar.length > 10);
+    }
+  });
+
+  it("automatically switches between Friday Night (Thu 18:00 - Fri 06:59) and Friday Day (Fri 07:00 - Fri 17:59)", () => {
+    // 2026-11-19 is Thursday; 2026-11-20 is Friday; 2026-11-21 is Saturday
+    const thu1759 = new Date(2026, 10, 19, 17, 59, 0);
+    const thu1800 = new Date(2026, 10, 19, 18, 0, 0);
+    const fri0659 = new Date(2026, 10, 20, 6, 59, 0);
+    const fri0700 = new Date(2026, 10, 20, 7, 0, 0);
+    const fri1759 = new Date(2026, 10, 20, 17, 59, 0);
+    const fri1800 = new Date(2026, 10, 20, 18, 0, 0);
+
+    assert.equal(getFridaySalawatSlide(thu1759), null);
+    assert.equal(getFridaySalawatSlide(thu1800)?.id, "friday_night_salawat");
+    assert.ok(getFridaySalawatSlide(thu1800)?.arabicLine?.includes("اللَّهُمَّ صَلِّ"));
+    assert.equal(getFridaySalawatSlide(fri0659)?.id, "friday_night_salawat");
+    assert.equal(getFridaySalawatSlide(fri0700)?.id, "friday_day_salawat");
+    assert.equal(getFridaySalawatSlide(fri1759)?.id, "friday_day_salawat");
+    assert.equal(getFridaySalawatSlide(fri1800), null);
+
+    // Build slides prepends the Salawat slide during Friday Eve/Day (11 total) and keeps 10 otherwise
+    assert.equal(buildHeroTickerSlides(thu1759).length, 10);
+    assert.equal(buildHeroTickerSlides(thu1800).length, 11);
+    assert.equal(buildHeroTickerSlides(thu1800)[0].id, "friday_night_salawat");
+    assert.equal(buildHeroTickerSlides(fri0700)[0].id, "friday_day_salawat");
+  });
+});
