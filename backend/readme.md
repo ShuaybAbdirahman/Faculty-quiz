@@ -50,3 +50,23 @@ Amniga: dadweynuhu ma gaadhi karo shaxanka; server-ku wuu diidaa xidhiidhada (li
 ## Jaantus maalin-maalin
 1. Supabase -> SQL Editor -> New query: paste-garee `backend/supabase/daily_stats.sql` -> Run (mar keliya).
 2. Gal `/admin/`: kaarka **Ardayda maalin kasta** wuxuu muujiyaa 7 / 30 / 90 maalmood. Maalinta waxaa lagu xisaabiyaa waqtiga Muqdisho.
+
+## Pro (lacag-bixin) - Hagaha Waaxda
+Hagaha Waaxda waa **qayb lacag ku baahan**. Ardaygu wuxuu lacag ku bixiyaa mobile-money (EVC Plus, Zaad, eDahab...), kadibna adigu waad xaqiijisaa oo waad furtaa. Xogta waaxaha waxay ku jirtaa **server-ka** (ma ahan app-ka), sidaas darteed lama furi karo adigoon lacag bixin.
+
+### Dejinta (mar keliya)
+1. Supabase -> SQL Editor: paste-garee **`pro.sql`**. Xariiqda `salt constant text := '...'` ku qor isla erayga sirta ah ee hore. Run.
+2. SQL Editor: paste-garee **`pro_content_seed.sql`** (xogta 62-ka waax). Run.
+3. Gal `/admin/` -> tab-ka **Pro** -> buuxi **Dejinta lacag-bixinta**: qiimaha, maalmaha, WhatsApp, iyo lambarrada mobile-money -> **Keydi dejinta**.
+
+### Sida ay u shaqeyso
+- Ardayga: bogga natiijada -> kaarka Pro -> **Fur Pro** -> wuxuu arkaa qiimaha iyo lambarka lacag-bixinta -> wuu bixiyaa -> wuxuu geliyaa lambarkiisa iyo **Transaction ID** -> **Dir codsiga**.
+- Adiga: `/admin/` -> **Pro** -> **Codsiyada**. **Hubi taariikhda mobile-money-gaaga** inuu lambarka xaqiijinta iyo lacagta aad aragto, kadibna riix **Ansix** (waxaad dooran kartaa maalmaha). Haddii aan lacag timid, riix **Diid**.
+- Ardayga: **Hubi xaaladda** -> Pro wuu furmaa (ama si toos ah marka uu bogga dib u furo).
+- **Koodhyo:** Pro -> **Koodhyada** -> samee koodhyo (maalmaha + tirada) oo u iib ardayga (WhatsApp ama wakiil). Koodh kasta mar keliya ayaa la isticmaali karaa.
+
+### Amniga iyo xadka
+- Xogta Pro looma diro qalabka ilaa gelitaan Pro ah la xaqiijiyo (server-ka ayaa hubiya).
+- Gelitaanku wuxuu ku xidhan yahay **qalabka** (aqoonsi random ah). Haddii ardaygu tirtiro xogta browser-ka ama qalab cusub isticmaalo, wuxuu u baahan yahay inuu kuula xiriiro (adigu waad ku ansixin kartaa mar kale).
+- Isku-dayada koodhka khaldan waa la xaddiday (10 / 10 daqiiqo); Transaction ID mid hore loo isticmaalay lama aqbalo; 3 codsi / 24 saac.
+- Xaqiijintu waa **gacan**. Haddii aad rabto xaqiijin toos ah (API), waxay u baahan tahay akoon ganacsi oo mobile-money ah.
