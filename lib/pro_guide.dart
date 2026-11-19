@@ -6,7 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'data.dart';
 import 'i18n.dart';
 import 'modern_ui.dart';
+import 'prefs.dart';
+import 'pro_api.dart';
 import 'pro_data.dart';
+import 'pro_paywall.dart';
+import 'results_api.dart' show backendEnabled;
 import 'share_card.dart' show plainFacultyName;
 
 const _navy = Color(0xFF050A1E);
@@ -62,10 +66,9 @@ Map<String, double> traitsFrom(List<int> ratings, Map<int, int> extra) {
 }
 
 /// Waaxaha kulliyadda oo loo kala saaray ku habboonaanta. Haddii sifooyin badan aan la aqoon, natiijadu waxay u dhowaataa 50% (kalsooni yar).
-List<DeptScore> rankDepts(String fid, Map<String, double> raw) {
+List<DeptScore> rankDepts(List<Map<String, dynamic>> depts, Map<String, double> raw) {
   final out = <DeptScore>[];
-  for (final d in proDepts) {
-    if (d['f'] != fid) continue;
+  for (final d in depts) {
     final p = Map<String, dynamic>.from(d['p'] as Map);
     var acc = 0.0;
     var ws = 0.0;
@@ -96,11 +99,8 @@ List<DeptScore> rankDepts(String fid, Map<String, double> raw) {
 }
 
 /// Su'aalaha (likert) aan hore loo weydiin ee kala saara waaxaha kulliyadda: ugu badnaan 6.
-List<int> refineItems(String fid, List<int> ratings) {
-  final ds = [
-    for (final d in proDepts)
-      if (d['f'] == fid) Map<String, dynamic>.from(d['p'] as Map),
-  ];
+List<int> refineItems(List<Map<String, dynamic>> depts, List<int> ratings) {
+  final ds = [for (final d in depts) Map<String, dynamic>.from(d['p'] as Map)];
   final keys = <String>{for (final p in ds) ...p.keys};
   final spread = <String, double>{};
   for (final k in keys) {
@@ -251,14 +251,30 @@ class _ProEntryCardState extends State<ProEntryCard> with SingleTickerProviderSt
   int _sel = 0;
 
   @override
+  void initState() {
+    super.initState();
+    // Hubi gelitaanka server-ka (si aamusnaan ah); haddii internet la'aan yahay, xusuusta ayaa la isticmaalaa.
+    if (backendEnabled) refreshProStatus().then((_) {}, onError: (Object _) {});
+  }
+
+  @override
   void dispose() {
     _c.dispose();
     super.dispose();
   }
 
-  void _open() {
+  void _openGuide() {
+    if (!mounted) return;
     final f = widget.entries[_sel].f;
     Navigator.push(context, MaterialPageRoute<void>(builder: (_) => ProGuideScreen(faculty: f, ratings: widget.ratings, iconBuilder: widget.iconBuilder)));
+  }
+
+  void _open() {
+    if (proActive.value) {
+      _openGuide();
+    } else {
+      Navigator.push(context, MaterialPageRoute<void>(builder: (_) => ProPaywallScreen(onUnlocked: _openGuide)));
+    }
   }
 
   Widget _feat(IconData icon, String k) => Padding(
@@ -278,42 +294,53 @@ class _ProEntryCardState extends State<ProEntryCard> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     final calm = MediaQuery.disableAnimationsOf(context);
-    return AnimatedBuilder(
-      animation: _c,
-      builder: (context, child) => CustomPaint(foregroundPainter: _GoldBorder(calm ? 0 : _c.value * 2 * math.pi), child: child),
-      child: Container(
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: const LinearGradient(colors: [_navy, Color(0xFF16276F)], begin: Alignment.topLeft, end: Alignment.bottomRight),
-          boxShadow: [BoxShadow(color: _gold.withValues(alpha: .16), blurRadius: 30, offset: const Offset(0, 12))],
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [const ProBadge(), const Spacer(), const Icon(Icons.workspace_premium_rounded, color: _goldSoft)]),
-          const SizedBox(height: 12),
-          Tr('Hagaha Waaxda', style: _s(24, w: FontWeight.w800, head: true, h: 1.15)),
-          const SizedBox(height: 4),
-          Tr('Dooro waaxda saxda ah ee kulliyaddaada', style: _s(13.5, c: Colors.white.withValues(alpha: .78), h: 1.4)),
-          const SizedBox(height: 14),
-          Tr('Ka dooro kulliyadda', style: _s(11.5, w: FontWeight.w700, c: _goldSoft, ls: 1)),
-          const SizedBox(height: 8),
-          Wrap(spacing: 8, runSpacing: 8, children: [
-            for (var i = 0; i < widget.entries.length; i++)
-              _FacChip(
-                selected: i == _sel,
-                color: Color(widget.entries[i].f['color'] as int),
-                label: plainFacultyName(tx(widget.entries[i].f['name'])),
-                icon: widget.iconBuilder(widget.entries[i].f, 18),
-                onTap: () => setState(() => _sel = i),
-              ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: proActive,
+      builder: (context, active, _) => AnimatedBuilder(
+        animation: _c,
+        builder: (context, child) => CustomPaint(foregroundPainter: _GoldBorder(calm ? 0 : _c.value * 2 * math.pi), child: child),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: const LinearGradient(colors: [_navy, Color(0xFF16276F)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+            boxShadow: [BoxShadow(color: _gold.withValues(alpha: .16), blurRadius: 30, offset: const Offset(0, 12))],
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              const ProBadge(),
+              const Spacer(),
+              Icon(active ? Icons.verified_rounded : Icons.lock_rounded, color: _goldSoft),
+            ]),
+            const SizedBox(height: 12),
+            Tr('Hagaha Waaxda', style: _s(24, w: FontWeight.w800, head: true, h: 1.15)),
+            const SizedBox(height: 4),
+            Tr('Dooro waaxda saxda ah ee kulliyaddaada', style: _s(13.5, c: Colors.white.withValues(alpha: .78), h: 1.4)),
+            const SizedBox(height: 14),
+            Tr('Ka dooro kulliyadda', style: _s(11.5, w: FontWeight.w700, c: _goldSoft, ls: 1)),
+            const SizedBox(height: 8),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              for (var i = 0; i < widget.entries.length; i++)
+                _FacChip(
+                  selected: i == _sel,
+                  color: Color(widget.entries[i].f['color'] as int),
+                  label: plainFacultyName(tx(widget.entries[i].f['name'])),
+                  icon: widget.iconBuilder(widget.entries[i].f, 18),
+                  onTap: () => setState(() => _sel = i),
+                ),
+            ]),
+            const SizedBox(height: 10),
+            _feat(Icons.leaderboard_rounded, 'Kala saar waaxaha ku habboon'),
+            _feat(Icons.work_outline_rounded, 'Shaqooyinka waaxda kasta'),
+            _feat(Icons.tune_rounded, 'Xoojiso natiijada su’aalo yar'),
+            const SizedBox(height: 16),
+            ShinyButton(
+              label: active ? 'Fur Hagaha Pro' : 'Fur Pro',
+              icon: active ? Icons.auto_awesome : Icons.lock_open_rounded,
+              onPressed: _open,
+            ),
           ]),
-          const SizedBox(height: 10),
-          _feat(Icons.leaderboard_rounded, 'Kala saar waaxaha ku habboon'),
-          _feat(Icons.work_outline_rounded, 'Shaqooyinka waaxda kasta'),
-          _feat(Icons.tune_rounded, 'Xoojiso natiijada su’aalo yar'),
-          const SizedBox(height: 16),
-          ShinyButton(label: 'Fur Hagaha Pro', icon: Icons.auto_awesome, onPressed: _open),
-        ]),
+        ),
       ),
     );
   }
@@ -363,7 +390,92 @@ class ProGuideScreen extends StatefulWidget {
 
 class _ProGuideScreenState extends State<ProGuideScreen> {
   final Map<int, int> _extra = {};
-  late final List<int> _ask = refineItems(widget.faculty['id'] as String, widget.ratings);
+  List<Map<String, dynamic>>? _depts;
+  List<int> _ask = const [];
+  bool _loading = true;
+  String? _err;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _err = null;
+    });
+    try {
+      final d = await fetchProContent(widget.faculty['id'] as String);
+      if (!mounted) return;
+      if (d.isEmpty) {
+        setState(() {
+          _loading = false;
+          _err = 'empty';
+        });
+        return;
+      }
+      setState(() {
+        _depts = d;
+        _ask = refineItems(d, widget.ratings);
+        _loading = false;
+      });
+    } on ProApiException catch (e) {
+      if (!mounted) return;
+      if (e.locked) {
+        // Gelitaanku wuu dhammaaday ama lama hayo: tus bogga lacag-bixinta, kadibna dib u fur hagaha.
+        Prefs.setProUntil(0);
+        final nav = Navigator.of(context);
+        final faculty = widget.faculty;
+        final ratings = widget.ratings;
+        final iconBuilder = widget.iconBuilder;
+        nav.pushReplacement(MaterialPageRoute<void>(
+          builder: (_) => ProPaywallScreen(
+            onUnlocked: () => nav.push(MaterialPageRoute<void>(builder: (_) => ProGuideScreen(faculty: faculty, ratings: ratings, iconBuilder: iconBuilder))),
+          ),
+        ));
+        return;
+      }
+      setState(() {
+        _loading = false;
+        _err = e.code;
+      });
+    }
+  }
+
+  Widget _shell(Widget body) => Scaffold(
+        backgroundColor: _navy,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          foregroundColor: Colors.white,
+          title: Row(mainAxisSize: MainAxisSize.min, children: [Tr('Hagaha Waaxda', style: _s(18, w: FontWeight.w800, head: true)), const SizedBox(width: 8), const ProBadge(small: true)]),
+        ),
+        body: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [_navy, Color(0xFF0B1647), Color(0xFF1A1450)])),
+          child: body,
+        ),
+      );
+
+  Widget _errorView() => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(28),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.cloud_off_rounded, color: _goldSoft, size: 40),
+            const SizedBox(height: 12),
+            Tr('Lama soo qaadi karin. Hubi internetka oo mar kale isku day.', textAlign: TextAlign.center, style: _s(14, c: Colors.white.withValues(alpha: .85), h: 1.45)),
+            const SizedBox(height: 16),
+            FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: _gold, foregroundColor: _navy),
+              onPressed: _load,
+              child: Tr('Isku day mar kale', style: _s(14, w: FontWeight.w800, c: _navy)),
+            ),
+          ]),
+        ),
+      );
 
   Widget _chip(String text, {bool gold = false}) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -521,8 +633,10 @@ class _ProGuideScreenState extends State<ProGuideScreen> {
     final f = widget.faculty;
     final fid = f['id'] as String;
     final color = Color(f['color'] as int);
+    if (_loading) return _shell(const Center(child: CircularProgressIndicator(color: _gold)));
+    if (_err != null || _depts == null) return _shell(_errorView());
     final raw = traitsFrom(widget.ratings, _extra);
-    final ranked = rankDepts(fid, raw);
+    final ranked = rankDepts(_depts!, raw);
     return Scaffold(
       backgroundColor: _navy,
       appBar: AppBar(
