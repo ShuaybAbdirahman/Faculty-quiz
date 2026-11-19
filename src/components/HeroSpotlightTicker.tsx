@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, MoonStar, Sparkles } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { buildHeroTickerSlides, type TickerAccent } from "../lib/heroTicker";
@@ -46,9 +46,34 @@ const ACCENT_STYLES: Record<
 
 export function HeroSpotlightTicker() {
   const { tx, rtl } = useApp();
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [tickNow, setTickNow] = useState<Date>(() => new Date());
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [inView, setInView] = useState(true);
+
+  // Only animate/rotate while the top hero ticker is actually visible in the viewport
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        setInView(Boolean(entry?.isIntersecting && window.scrollY < 180));
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(el);
+
+    const onScroll = () => {
+      setInView(window.scrollY < 180);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   // Re-evaluate clock once every minute so 18:00 Thursday and 07:00 Friday transitions happen automatically
   useEffect(() => {
@@ -62,29 +87,30 @@ export function HeroSpotlightTicker() {
   const style = ACCENT_STYLES[current.accent];
 
   useEffect(() => {
-    if (paused) return;
-    const duration = current.arabicLine ? 6500 : 4600;
+    if (paused || !inView) return;
+    const duration = current.arabicLine ? 6200 : 3800;
     const t = window.setTimeout(() => {
       setIndex((i) => (i + 1) % slides.length);
     }, duration);
     return () => window.clearTimeout(t);
-  }, [safeIndex, paused, slides.length, current.arabicLine]);
+  }, [safeIndex, paused, inView, slides.length, current.arabicLine]);
 
   const goNext = () => setIndex((i) => (i + 1) % slides.length);
   const goPrev = () => setIndex((i) => (i - 1 + slides.length) % slides.length);
 
   return (
     <div
+      ref={containerRef}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       className={`mt-5 relative rounded-2xl border ${style.border} bg-gradient-to-r ${style.bg} overflow-hidden transition-colors duration-500`}
-      style={{ boxShadow: `0 12px 30px ${style.glow}` }}
+      style={{ boxShadow: `0 10px 26px ${style.glow}` }}
     >
-      <div className="px-4 py-3.5 sm:px-5 sm:py-4 flex items-center justify-between gap-3">
+      <div className="px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between gap-3">
         <div key={current.id} className="min-w-0 flex-1 animate-rise">
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2.5 flex-wrap">
             <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg border text-[11px] font-head font-extrabold uppercase tracking-wider ${style.badge}`}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg border text-[11px] font-head font-extrabold uppercase tracking-wider shrink-0 ${style.badge}`}
             >
               {current.arabicLine ? (
                 <MoonStar className="w-3.5 h-3.5 shrink-0" />
@@ -93,19 +119,16 @@ export function HeroSpotlightTicker() {
               )}
               <span>{tx(current.tag)}</span>
             </span>
-            <span className="text-[11px] font-mono text-white/50 tabular-nums">
-              {safeIndex + 1} / {slides.length}
-            </span>
-          </div>
 
-          <p className="mt-1.5 font-head font-bold text-[14.5px] sm:text-[16px] text-white leading-snug">
-            {tx(current.text)}
-          </p>
+            <p className="font-head font-extrabold text-[14.5px] sm:text-[16px] text-white leading-snug">
+              {tx(current.text)}
+            </p>
+          </div>
 
           {current.arabicLine && (
             <p
               dir="rtl"
-              className="mt-1 text-[17px] sm:text-[19px] font-bold text-[#FFE28A] leading-relaxed"
+              className="mt-1.5 text-[17px] sm:text-[19px] font-bold text-[#FFE28A] leading-relaxed"
               style={{ fontFamily: '"Amiri", "Cairo", serif' }}
             >
               {current.arabicLine}
