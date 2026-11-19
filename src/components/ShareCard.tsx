@@ -26,16 +26,21 @@ function QrSvg({ size = 60 }: { size?: number }) {
   );
 }
 
+export type ShareFormat = "post" | "story";
+
 async function renderShareCardPng(
   entries: ShareEntry[],
   userName: string,
   tr: (k: string) => string,
   trf: (k: string, a: Record<string, string | number>) => string,
-  rtl: boolean
+  rtl: boolean,
+  format: ShareFormat = "post"
 ): Promise<Blob | null> {
+  const isStory = format === "story";
   const W = 1080;
-  const H = 1440;
-  const S = 3; // 360x480 * 3
+  const H = isStory ? 1920 : 1440;
+  const S = 3; // 360x480 or 360x640 * 3
+  const yOff = isStory ? 52 * S : 0;
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
@@ -89,11 +94,11 @@ async function renderShareCardPng(
   ctx.textAlign = "center";
   ctx.fillStyle = "rgba(255,255,255,0.85)";
   ctx.font = `600 ${14 * S}px ${bodyFont}`;
-  ctx.fillText(title, W / 2, 68 * S);
+  ctx.fillText(title, W / 2, 68 * S + yOff);
 
   // Ring
   const cx = W / 2;
-  const cy = 142 * S;
+  const cy = 142 * S + yOff;
   const rr = 54.5 * S;
   ctx.lineWidth = 9 * S;
   ctx.strokeStyle = "rgba(255,255,255,0.2)";
@@ -122,11 +127,11 @@ async function renderShareCardPng(
   // Top faculty name
   ctx.fillStyle = "#FFFFFF";
   ctx.font = `800 ${(top.name.length > 36 ? 17 : 20) * S}px ${headFont}`;
-  ctx.fillText(top.name.slice(0, 44), cx, 232 * S);
+  ctx.fillText(top.name.slice(0, 44), cx, 232 * S + yOff);
 
   ctx.fillStyle = "#FFD86B";
   ctx.font = `700 ${11.5 * S}px ${bodyFont}`;
-  ctx.fillText(tr("Kulliyadda kugu habboon"), cx, 254 * S);
+  ctx.fillText(tr("Kulliyadda kugu habboon"), cx, 254 * S + yOff);
 
   // Other rows
   const drawRoundRect = (x: number, y: number, w: number, h: number, rad: number) => {
@@ -135,7 +140,7 @@ async function renderShareCardPng(
   };
 
   others.forEach((entry, idx) => {
-    const y = (270 + idx * 48) * S;
+    const y = (270 + idx * 48) * S + yOff;
     drawRoundRect(22 * S, y, 316 * S, 40 * S, 14 * S);
     ctx.fillStyle = "rgba(255,255,255,0.12)";
     ctx.fill();
@@ -164,19 +169,39 @@ async function renderShareCardPng(
     ctx.fillText(`${entry.percent}%`, 326 * S, y + 24.5 * S);
   });
 
+  if (isStory) {
+    // Viral Story Prompt Box
+    const py = 435 * S;
+    drawRoundRect(22 * S, py, 316 * S, 54 * S, 16 * S);
+    ctx.fillStyle = "rgba(255,201,60,0.14)";
+    ctx.fill();
+    ctx.lineWidth = 1.5 * S;
+    ctx.strokeStyle = "rgba(255,201,60,0.45)";
+    ctx.stroke();
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#FFD86B";
+    ctx.font = `800 ${13 * S}px ${headFont}`;
+    ctx.fillText(tr("Adigu kulliyaddee kugu habboon?"), W / 2, py + 23 * S);
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.font = `600 ${10.5 * S}px ${bodyFont}`;
+    ctx.fillText(tr("Scan garee QR-ka oo tijaabi 3 daqiiqo (Bilaash)"), W / 2, py + 41 * S);
+  }
+
   // Footer CTA + QR
+  const baseH = isStory ? 640 : 480;
   ctx.textAlign = "left";
   ctx.fillStyle = "#FFFFFF";
   ctx.font = `700 ${12 * S}px ${bodyFont}`;
-  ctx.fillText(tr("Qaado imtixaanka Hagaha Kulliyadda").slice(0, 36), 22 * S, 422 * S);
+  ctx.fillText(tr("Qaado imtixaanka Hagaha Kulliyadda").slice(0, 36), 22 * S, (baseH - 58) * S);
   ctx.fillStyle = "rgba(255,255,255,0.75)";
   ctx.font = `500 ${9.5 * S}px ${bodyFont}`;
-  ctx.fillText(qrDisplayUrl, 22 * S, 442 * S);
+  ctx.fillText(qrDisplayUrl, 22 * S, (baseH - 38) * S);
 
   // QR white box
-  const qSize = 70 * S;
-  const qx = (360 - 22 - 70) * S;
-  const qy = (480 - 16 - 70) * S;
+  const qSize = (isStory ? 84 : 70) * S;
+  const qx = (360 - 22 - (isStory ? 84 : 70)) * S;
+  const qy = (baseH - 18 - (isStory ? 84 : 70)) * S;
   drawRoundRect(qx, qy, qSize, qSize, 12 * S);
   ctx.fillStyle = "#FFFFFF";
   ctx.fill();
@@ -214,6 +239,7 @@ export function ShareSection({
 }) {
   const { tr, trf, rtl, darkMode, showToast } = useApp();
   const [busy, setBusy] = useState(false);
+  const [format, setFormat] = useState<ShareFormat>("story");
 
   const top = entries[0];
   const others = entries.slice(1, 3);
@@ -224,7 +250,7 @@ export function ShareSection({
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "hagaha-kulliyadda-natiijo.png";
+    a.download = format === "story" ? "hagaha-kulliyadda-status.png" : "hagaha-kulliyadda-natiijo.png";
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -236,7 +262,7 @@ export function ShareSection({
     if (busy) return;
     setBusy(true);
     try {
-      const blob = await renderShareCardPng(entries, name, tr, trf, rtl);
+      const blob = await renderShareCardPng(entries, name, tr, trf, rtl, format);
       if (!blob) {
         showToast(tr("Lama wadaagi karin. Mar kale isku day."));
         return;
@@ -250,7 +276,11 @@ export function ShareSection({
         p: top.percent,
         url: qrUrl,
       });
-      const file = new File([blob], "hagaha-kulliyadda-natiijo.png", { type: "image/png" });
+      const file = new File(
+        [blob],
+        format === "story" ? "hagaha-kulliyadda-status.png" : "hagaha-kulliyadda-natiijo.png",
+        { type: "image/png" }
+      );
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: tr("Hagaha Kulliyadda"),
@@ -275,9 +305,37 @@ export function ShareSection({
 
   return (
     <div className="flex flex-col items-center">
-      {/* 3:4 Share Card Preview */}
+      {/* Format Switcher: Status / TikTok 9:16 vs Post 3:4 */}
+      <div className="mb-3 inline-flex rounded-xl p-1 border border-slate-300/60 dark:border-white/15 bg-black/5 dark:bg-white/5">
+        <button
+          type="button"
+          onClick={() => setFormat("story")}
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+            format === "story"
+              ? "bg-[#4A6CF7] text-white shadow-sm"
+              : "opacity-75 hover:opacity-100"
+          }`}
+        >
+          {tr("WhatsApp Status / TikTok (9:16)")}
+        </button>
+        <button
+          type="button"
+          onClick={() => setFormat("post")}
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+            format === "post"
+              ? "bg-[#4A6CF7] text-white shadow-sm"
+              : "opacity-75 hover:opacity-100"
+          }`}
+        >
+          {tr("Kaar Caadi ah (3:4)")}
+        </button>
+      </div>
+
+      {/* Share Card Preview */}
       <div
-        className="relative w-full max-w-[360px] aspect-[3/4] rounded-[26px] overflow-hidden text-white select-none"
+        className={`relative w-full max-w-[360px] ${
+          format === "story" ? "aspect-[9/16]" : "aspect-[3/4]"
+        } rounded-[26px] overflow-hidden text-white select-none transition-all duration-200`}
         style={{
           background: "linear-gradient(135deg, #070D26 0%, #1B3A9E 52%, #6A47E0 100%)",
           boxShadow: "0 14px 28px rgba(106, 71, 224, 0.35)",
@@ -396,6 +454,17 @@ export function ShareSection({
               );
             })}
           </div>
+
+          {format === "story" && (
+            <div className="mt-4 rounded-2xl px-3.5 py-2.5 bg-[#FFC93C]/14 border border-[#FFC93C]/45 text-center">
+              <p className="font-head font-extrabold text-[13px] text-[#FFD86B]">
+                {tr("Adigu kulliyaddee kugu habboon?")}
+              </p>
+              <p className="text-[10.5px] font-semibold text-white/90 mt-0.5">
+                {tr("Scan garee QR-ka oo tijaabi 3 daqiiqo (Bilaash)")}
+              </p>
+            </div>
+          )}
 
           {/* Bottom QR Row */}
           <div className="mt-auto pt-2 flex items-center gap-3">

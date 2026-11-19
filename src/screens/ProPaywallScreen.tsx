@@ -31,6 +31,7 @@ import {
   EVC_PAYMENT_CONFIG,
   formatShortDeviceId,
   normalizeProInfo,
+  saveRequestedProScope,
 } from "../lib/proSecurity";
 import { AccentTitleLight, ProBadge } from "../components/ModernUI";
 
@@ -144,6 +145,7 @@ export function ProPaywallScreen({
     setSending(true);
     setReqMsg(null);
     try {
+      saveRequestedProScope(localStorage, deviceId, plan);
       await submitProRequest({
         deviceId,
         phone: ph,

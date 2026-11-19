@@ -137,3 +137,28 @@ test("Somali language is always free while English and Arabic require Pro", asyn
   assert.equal(canUseLanguage("ar", true), true);
   assert.equal(resolveAllowedLang("ar", true), "ar");
 });
+
+test("Pro Languages and Pro Departments packages stay cleanly separated and merge when both unlocked", async () => {
+  const {
+    hasLanguagesAccess,
+    hasDepartmentsAccess,
+    saveRequestedProScope,
+  } = await import("./proSecurity");
+
+  const storage = createMemoryStorage();
+  const deviceId = getOrCreateSecureDeviceId(storage);
+  const now = 1_700_000_000_000;
+  const future = now + 365 * 24 * 3600 * 1000;
+
+  // Unlock Languages pack only
+  saveRequestedProScope(storage, deviceId, "languages");
+  const langEnt = writeStoredEntitlement(storage, deviceId, future, now);
+  assert.equal(hasLanguagesAccess(langEnt, deviceId, now), true);
+  assert.equal(hasDepartmentsAccess(langEnt, deviceId, now), false);
+
+  // Also unlock Departments pack -> upgrades to full
+  saveRequestedProScope(storage, deviceId, "departments");
+  const fullEnt = writeStoredEntitlement(storage, deviceId, future, now);
+  assert.equal(hasLanguagesAccess(fullEnt, deviceId, now), true);
+  assert.equal(hasDepartmentsAccess(fullEnt, deviceId, now), true);
+});

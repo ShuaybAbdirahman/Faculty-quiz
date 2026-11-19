@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Award,
+  Building2,
   ClipboardCheck,
   Lightbulb,
   Map,
@@ -23,11 +24,13 @@ import {
   FutureJobsNewsSection,
   HighIncomeSkillsSection,
   SomaliaGrowthSection,
+  SomaliaUniversitiesSection,
   WorldPioneersSection,
 } from "../components/ProWorldHubSections";
 
 export type HubTab =
   | "roadmaps"
+  | "universities"
   | "pioneers"
   | "future_jobs"
   | "skills"
@@ -51,6 +54,7 @@ export function ProHubScreen({
 
   const tabs: { id: HubTab; label: string; icon: React.ReactNode }[] = [
     { id: "roadmaps", label: tr("Khariidadaha"), icon: <Map className="w-4 h-4" /> },
+    { id: "universities", label: tr("Jaamacadaha"), icon: <Building2 className="w-4 h-4" /> },
     { id: "pioneers", label: tr("Dadka Caanka ah"), icon: <Award className="w-4 h-4" /> },
     { id: "future_jobs", label: tr("Shaqooyinka Cusub"), icon: <TrendingUp className="w-4 h-4" /> },
     { id: "skills", label: tr("Xirfadaha Dakhliga"), icon: <Wrench className="w-4 h-4" /> },
@@ -129,6 +133,9 @@ export function ProHubScreen({
             initialFacultyId={initialFacultyId}
             onUnlockClick={onOpenPaywall}
           />
+        )}
+        {tab === "universities" && (
+          <SomaliaUniversitiesSection initialFacultyId={initialFacultyId} />
         )}
         {tab === "pioneers" && (
           <WorldPioneersSection isPro={proActive} onUnlock={onOpenPaywall} />

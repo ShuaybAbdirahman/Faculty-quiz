@@ -7,12 +7,14 @@ import {
   canUseLanguage,
   clearStoredEntitlement,
   getOrCreateSecureDeviceId,
-  isEntitlementValidForDevice,
+  hasDepartmentsAccess,
+  hasLanguagesAccess,
   readStoredEntitlement,
   resolveAllowedLang,
   rotateDeviceId,
   writeStoredEntitlement,
   type ProEntitlement,
+  type ProScope,
 } from "../lib/proSecurity";
 
 const NAME_RE = /^[\p{L}][\p{L}\p{M}\s'’-]{1,19}$/u;
@@ -46,8 +48,10 @@ interface AppContextValue {
   userName: string;
   setUserName: (v: string) => void;
   proActive: boolean;
+  proLanguagesActive: boolean;
+  proDepartmentsActive: boolean;
   proExpiresAt: number;
-  setProUntil: (ms: number) => void;
+  setProUntil: (ms: number, scope?: ProScope) => void;
   refreshPro: () => Promise<boolean>;
   deviceId: string;
   resetDeviceSession: () => void;
@@ -70,13 +74,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [entitlement, setEntitlement] = useState<ProEntitlement | null>(() =>
     readStoredEntitlement(localStorage, getOrCreateSecureDeviceId(localStorage))
   );
-  const proActive = isEntitlementValidForDevice(entitlement, deviceId);
-  const proExpiresAt = proActive && entitlement ? entitlement.expiresAt : 0;
+  const proLanguagesActive = hasLanguagesAccess(entitlement, deviceId);
+  const proDepartmentsActive = hasDepartmentsAccess(entitlement, deviceId);
+  const proActive = proDepartmentsActive;
+  const proExpiresAt = (proLanguagesActive || proDepartmentsActive) && entitlement ? entitlement.expiresAt : 0;
 
   const [langState, setLangState] = useState<Lang>(() =>
-    resolveAllowedLang(detectInitialLang(), proActive)
+    resolveAllowedLang(detectInitialLang(), proLanguagesActive)
   );
-  const lang: Lang = resolveAllowedLang(langState, proActive);
+  const lang: Lang = resolveAllowedLang(langState, proLanguagesActive);
 
   const [darkMode, setDarkModeState] = useState<boolean>(() => {
     const saved = localStorage.getItem("dark");
@@ -118,7 +124,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const setLang = useCallback(
     (l: Lang): boolean => {
-      if (!canUseLanguage(l, proActive)) {
+      if (!canUseLanguage(l, proLanguagesActive)) {
         setToast(trFn(lang, "Af-Soomaaligu waa bilaash. Fur Pro ($0.10, hal mar) si aad u hesho Ingiriisi iyo Carabi."));
         return false;
       }
@@ -126,7 +132,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("lang", l);
       return true;
     },
-    [proActive, lang]
+    [proLanguagesActive, lang]
   );
 
   const setDarkMode = useCallback((v: boolean) => {
@@ -151,8 +157,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setProUntil = useCallback(
-    (ms: number) => {
-      const saved = writeStoredEntitlement(localStorage, deviceId, ms);
+    (ms: number, scope?: ProScope) => {
+      const saved = writeStoredEntitlement(localStorage, deviceId, ms, Date.now(), scope);
       setEntitlement(saved);
     },
     [deviceId]
@@ -254,6 +260,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       userName,
       setUserName,
       proActive,
+      proLanguagesActive,
+      proDepartmentsActive,
       proExpiresAt,
       setProUntil,
       refreshPro,
@@ -283,6 +291,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       userName,
       setUserName,
       proActive,
+      proLanguagesActive,
+      proDepartmentsActive,
       proExpiresAt,
       setProUntil,
       refreshPro,

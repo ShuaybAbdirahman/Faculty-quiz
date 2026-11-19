@@ -15,13 +15,18 @@ export const LEGACY_DEVICE_ID_KEY = "device_id";
 export const ENTITLEMENT_STORAGE_KEY = "hk_pro_entitlement_v2";
 export const LEGACY_PRO_UNTIL_KEY = "pro_until";
 
+export const REQUESTED_SCOPE_STORAGE_KEY = "hk_pro_requested_scope_v2";
+
 /** Re-verify with Supabase if local cache is older than 15 minutes. */
 export const MAX_ENTITLEMENT_STALE_MS = 15 * 60 * 1000;
+
+export type ProScope = "full" | "departments" | "languages";
 
 export interface ProEntitlement {
   deviceId: string;
   expiresAt: number;
   verifiedAt: number;
+  scope?: ProScope;
 }
 
 export interface StorageLike {
@@ -106,10 +111,16 @@ export function readStoredEntitlement(
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw) as Partial<ProEntitlement>;
+    const rawScope = parsed.scope;
+    const scope: ProScope =
+      rawScope === "languages" || rawScope === "departments" || rawScope === "full"
+        ? rawScope
+        : "full";
     const ent: ProEntitlement = {
       deviceId: String(parsed.deviceId ?? ""),
       expiresAt: Number(parsed.expiresAt ?? 0),
       verifiedAt: Number(parsed.verifiedAt ?? 0),
+      scope,
     };
     if (!isEntitlementValidForDevice(ent, deviceId, now, maxStaleMs)) {
       // Do not trust mismatched or expired entitlements
@@ -125,21 +136,69 @@ export function readStoredEntitlement(
   }
 }
 
+export function saveRequestedProScope(storage: StorageLike, deviceId: string, scope: ProScope): void {
+  if (!isValidDeviceId(deviceId)) return;
+  storage.setItem(REQUESTED_SCOPE_STORAGE_KEY, JSON.stringify({ deviceId, scope }));
+}
+
+export function readRequestedProScope(storage: StorageLike, deviceId: string): ProScope | null {
+  const raw = storage.getItem(REQUESTED_SCOPE_STORAGE_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { deviceId?: string; scope?: string };
+    if (parsed.deviceId !== deviceId) return null;
+    if (parsed.scope === "languages" || parsed.scope === "departments" || parsed.scope === "full") {
+      return parsed.scope;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function mergeProScope(existing: ProScope | null, next: ProScope): ProScope {
+  if (!existing) return next;
+  if (existing === "full" || next === "full") return "full";
+  if (existing !== next) return "full";
+  return existing;
+}
+
+export function hasLanguagesAccess(ent: ProEntitlement | null, deviceId: string, now: number = Date.now()): boolean {
+  if (!isEntitlementValidForDevice(ent, deviceId, now)) return false;
+  const sc = ent?.scope ?? "full";
+  return sc === "languages" || sc === "full";
+}
+
+export function hasDepartmentsAccess(ent: ProEntitlement | null, deviceId: string, now: number = Date.now()): boolean {
+  if (!isEntitlementValidForDevice(ent, deviceId, now)) return false;
+  const sc = ent?.scope ?? "full";
+  return sc === "departments" || sc === "full";
+}
+
 export function writeStoredEntitlement(
   storage: StorageLike,
   deviceId: string,
   expiresAt: number,
-  now: number = Date.now()
+  now: number = Date.now(),
+  explicitScope?: ProScope
 ): ProEntitlement | null {
   storage.removeItem(LEGACY_PRO_UNTIL_KEY);
   if (!isValidDeviceId(deviceId) || !Number.isFinite(expiresAt) || expiresAt <= now) {
     storage.removeItem(ENTITLEMENT_STORAGE_KEY);
     return null;
   }
+  const existing = readStoredEntitlement(storage, deviceId, now, Number.MAX_SAFE_INTEGER);
+  const requested = readRequestedProScope(storage, deviceId);
+  const resolvedScope = explicitScope
+    ? mergeProScope(existing?.scope ?? null, explicitScope)
+    : requested
+    ? mergeProScope(existing?.scope ?? null, requested)
+    : existing?.scope ?? "full";
   const ent: ProEntitlement = {
     deviceId,
     expiresAt,
     verifiedAt: now,
+    scope: resolvedScope,
   };
   storage.setItem(ENTITLEMENT_STORAGE_KEY, JSON.stringify(ent));
   return ent;
@@ -148,6 +207,7 @@ export function writeStoredEntitlement(
 export function clearStoredEntitlement(storage: StorageLike): void {
   storage.removeItem(ENTITLEMENT_STORAGE_KEY);
   storage.removeItem(LEGACY_PRO_UNTIL_KEY);
+  storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
 }
 
 export function formatShortDeviceId(deviceId: string): string {

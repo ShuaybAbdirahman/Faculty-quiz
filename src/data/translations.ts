@@ -1206,5 +1206,57 @@ export const uiTranslations: Record<string, [string, string]> = {
   "Fur Pro si aad u aragto istiraatiijiyadda iyo xiriirrada rasmiga ah ee deeqaha waxbarasho.": [
     "Unlock Pro to view the full strategy and verified official scholarship portals.",
     "فعّل Pro لعرض الاستراتيجية الكاملة وروابط المنح الدراسية الرسمية."
+  ],
+  "Jaamacadaha": [
+    "Universities",
+    "الجامعات"
+  ],
+  "Hagaha Jaamacadaha Soomaaliya (Hage Guud)": [
+    "Somalia Universities Public Directory",
+    "دليل الجامعات الصومالية (دليل عام)"
+  ],
+  "Jaamacadaha Bixiya Kulliyaddaada": [
+    "Universities Offering Your Faculty",
+    "الجامعات التي تقدم كليتك"
+  ],
+  "Magaalada": [
+    "City",
+    "المدينة"
+  ],
+  "Kulliyadda": [
+    "Faculty",
+    "الكلية"
+  ],
+  "Dhammaan Kulliyadaha (14)": [
+    "All Faculties (14)",
+    "جميع الكليات (14)"
+  ],
+  "Dowli": [
+    "Public",
+    "حكومية"
+  ],
+  "Gaar ah": [
+    "Private",
+    "خاصة"
+  ],
+  "Khidmadda & gelitaanka:": [
+    "Fees & admissions:",
+    "الرسوم والقبول:"
+  ],
+  "WhatsApp Status / TikTok (9:16)": [
+    "WhatsApp Status / TikTok (9:16)",
+    "حالة واتساب / تيك توك (9:16)"
+  ],
+  "Kaar Caadi ah (3:4)": [
+    "Standard Card (3:4)",
+    "بطاقة عادية (3:4)"
+  ],
+  "Adigu kulliyaddee kugu habboon?": [
+    "Which faculty fits you best?",
+    "أي كلية تناسبك أكثر؟"
+  ],
+  "Scan garee QR-ka oo tijaabi 3 daqiiqo (Bilaash)": [
+    "Scan the QR code and test in 3 minutes (Free)",
+    "امسح رمز QR وجرّب في 3 دقائق (مجاناً)"
   ]
 };

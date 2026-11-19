@@ -2,23 +2,31 @@ import React, { useState } from "react";
 import {
   Award,
   Briefcase,
+  Building2,
   CheckCircle2,
   ExternalLink,
   Globe2,
   GraduationCap,
+  Info,
   Lock,
+  MapPin,
   Rocket,
   Sparkles,
   TrendingUp,
   Wrench,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
+import { faculties } from "../data/quizData";
 import {
   futureJobsNews,
   highIncomeSkills,
   somaliaStudentGrowthPillars,
   worldFacultyPioneers,
 } from "../data/proWorldData";
+import {
+  somaliaUniversities,
+  somaliaUniversitiesDisclaimer,
+} from "../data/somaliaUniversities";
 
 function SourceBadge({ name, url }: { name: string; url: string }) {
   return (
@@ -440,6 +448,151 @@ export function SomaliaGrowthSection({
       </div>
 
       {!isPro && <ProLockedFooter onUnlock={onUnlock} />}
+    </section>
+  );
+}
+
+export function SomaliaUniversitiesSection({
+  initialFacultyId,
+}: {
+  initialFacultyId?: string;
+}) {
+  const { tr, tx } = useApp();
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [facultyFilter, setFacultyFilter] = useState<string>(initialFacultyId || "all");
+
+  const cities = ["all", "Muqdisho", "Hargeysa", "Boorama", "Garowe", "Kismaayo", "Baydhabo"];
+
+  const filtered = somaliaUniversities.filter((u) => {
+    const matchCity = cityFilter === "all" || u.city.toLowerCase().includes(cityFilter.toLowerCase());
+    const matchFac = facultyFilter === "all" || u.facultyIds.includes(facultyFilter);
+    return matchCity && matchFac;
+  });
+
+  return (
+    <section className="space-y-4">
+      <div>
+        <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-300">
+          <Building2 className="w-4 h-4" />
+          <span>{tr("Hagaha Jaamacadaha Soomaaliya (Hage Guud)")}</span>
+        </div>
+        <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
+          {tr("Jaamacadaha Bixiya Kulliyaddaada")}
+        </h2>
+      </div>
+
+      {/* Clear Public Directory Non-Affiliation Disclaimer */}
+      <div className="rounded-2xl p-3.5 bg-sky-500/10 border border-sky-400/25 flex items-start gap-2.5 text-xs text-sky-100 leading-relaxed">
+        <Info className="w-4 h-4 text-sky-300 shrink-0 mt-0.5" />
+        <span>{tx(somaliaUniversitiesDisclaimer)}</span>
+      </div>
+
+      {/* Filters */}
+      <div className="grid sm:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-white/60 mb-1.5">
+            {tr("Magaalada")}
+          </label>
+          <div className="flex items-center gap-1.5 overflow-x-auto hide-scrollbar pb-1">
+            {cities.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setCityFilter(c)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold border shrink-0 cursor-pointer transition-colors ${
+                  cityFilter === c
+                    ? "bg-[#FFC93C] text-[#050A1C] border-[#FFC93C]"
+                    : "bg-white/6 text-white/80 border-white/15 hover:bg-white/12"
+                }`}
+              >
+                {c === "all" ? tr("Dhammaan") : c}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="uni-fac-filter" className="block text-[11px] font-bold uppercase tracking-wider text-white/60 mb-1.5">
+            {tr("Kulliyadda")}
+          </label>
+          <select
+            id="uni-fac-filter"
+            value={facultyFilter}
+            onChange={(e) => setFacultyFilter(e.target.value)}
+            className="w-full rounded-xl px-3.5 py-2 text-xs font-bold bg-[#091233] border border-white/20 text-white outline-none focus:border-[#FFC93C]"
+          >
+            <option value="all">{tr("Dhammaan Kulliyadaha (14)")}</option>
+            {faculties.map((f) => (
+              <option key={f.id} value={f.id}>
+                {tx(f.name)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* University Cards */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {filtered.map((u) => (
+          <article
+            key={u.id}
+            className="rounded-3xl p-5 border border-white/15 bg-white/[0.05] flex flex-col justify-between gap-3"
+          >
+            <div className="space-y-2">
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="font-head font-extrabold text-base sm:text-lg text-white leading-snug">
+                  {u.name}
+                </h3>
+                <span
+                  className={`px-2.5 py-0.5 rounded-lg text-[10.5px] font-bold shrink-0 ${
+                    u.type === "public"
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
+                      : "bg-white/10 text-white/80 border border-white/15"
+                  }`}
+                >
+                  {u.type === "public" ? tr("Dowli") : tr("Gaar ah")}
+                </span>
+              </div>
+
+              <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FFD86B]">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>{u.city}</span>
+              </div>
+
+              <p className="text-xs sm:text-sm text-white/80 leading-relaxed">{tx(u.note)}</p>
+
+              <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                {u.facultyIds.slice(0, 6).map((fid) => {
+                  const fac = faculties.find((f) => f.id === fid);
+                  if (!fac) return null;
+                  return (
+                    <span
+                      key={fid}
+                      className={`px-2 py-0.5 rounded-md text-[10.5px] font-semibold border ${
+                        facultyFilter === fid
+                          ? "bg-[#FFC93C]/20 border-[#FFC93C]/50 text-[#FFE599]"
+                          : "bg-white/6 border-white/12 text-white/75"
+                      }`}
+                    >
+                      {tx(fac.name).split("(")[0].trim()}
+                    </span>
+                  );
+                })}
+                {u.facultyIds.length > 6 && (
+                  <span className="text-[10.5px] text-white/55 font-semibold">
+                    +{u.facultyIds.length - 6}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">
+              <span className="text-[11px] text-white/55">{tr("Khidmadda & gelitaanka:")}</span>
+              <SourceBadge name={u.website.replace(/^https?:\/\//, "")} url={u.website} />
+            </div>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }
