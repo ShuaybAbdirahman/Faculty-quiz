@@ -324,27 +324,29 @@ export function ProRoadmapsExplorer({
       </div>
 
       {/* Coming Soon Roadmaps */}
-      <div className="rounded-3xl p-5 border border-white/12 bg-white/[0.03]">
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2">
-            <Compass className="w-4 h-4 text-[#FFD86B]" />
-            <h4 className="font-head font-bold text-sm text-white">
+      <div className="rounded-3xl p-4 sm:p-5 border border-white/12 bg-white/[0.03] min-w-0 overflow-hidden">
+        <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+          <div className="flex items-center gap-2 min-w-0">
+            <Compass className="w-4 h-4 text-[#FFD86B] shrink-0" />
+            <h4 className="font-head font-bold text-sm text-white leading-snug">
               {tr("Khariidado Cusub oo Soo Socda (Bilaash u ah Pro)")}
             </h4>
           </div>
-          <span className="text-[11px] font-bold text-[#FFD86B]">{tr("Dhawaan")}</span>
+          <span className="text-[11px] font-bold text-[#FFD86B] shrink-0">{tr("Dhawaan")}</span>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 min-w-0">
           {comingSoonRoadmaps.map((c) => (
             <div
               key={c.title}
-              className="rounded-xl p-3 bg-white/[0.04] border border-white/10 flex items-center justify-between gap-2"
+              className="min-w-0 w-full overflow-hidden rounded-xl p-3 bg-white/[0.04] border border-white/10 flex items-center justify-between gap-2.5"
             >
-              <div className="min-w-0">
-                <div className="text-xs font-bold text-white truncate">{c.title}</div>
-                <div className="text-[11px] text-white/60">{c.faculty}</div>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-bold text-white leading-snug break-words">{c.title}</div>
+                <div className="text-[11px] text-white/60 mt-0.5 truncate">{c.faculty}</div>
               </div>
-              <span className="text-[10.5px] font-bold text-[#FFD86B] shrink-0">{c.eta}</span>
+              <span className="px-2 py-0.5 rounded-md bg-[#FFC93C]/12 border border-[#FFC93C]/30 text-[10px] font-bold text-[#FFD86B] shrink-0 whitespace-nowrap">
+                {c.eta}
+              </span>
             </div>
           ))}
         </div>

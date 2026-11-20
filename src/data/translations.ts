@@ -1318,5 +1318,13 @@ export const uiTranslations: Record<string, [string, string]> = {
   "90 Maalmood": [
     "90 Days",
     "90 يوماً"
+  ],
+  "Qaybaha Pro": [
+    "Pro Sections",
+    "أقسام Pro"
+  ],
+  "Qaybood": [
+    "Sections",
+    "أقسام"
   ]
 };
