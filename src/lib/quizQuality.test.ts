@@ -93,8 +93,14 @@ import {
 
 describe("Verified Pro World Hub Data", () => {
   it("ensures every pioneer, future job, skill, and growth pillar has verified HTTPS sources and trilingual copy", () => {
-    assert.ok(worldFacultyPioneers.length >= 6);
+    assert.ok(worldFacultyPioneers.length >= 10);
+    const somaliaPioneers = worldFacultyPioneers.filter((p) => p.region === "somalia");
+    const worldPioneers = worldFacultyPioneers.filter((p) => p.region === "world");
+    assert.ok(somaliaPioneers.length > worldPioneers.length, "Somalia pioneers must outnumber global pioneers");
+    assert.ok(worldPioneers.length >= 4, "Should include verified 21st-century global pioneers");
     for (const p of worldFacultyPioneers) {
+      assert.ok(p.region === "somalia" || p.region === "world", `Invalid region for ${p.id}`);
+      assert.ok(!p.name.toLowerCase().includes("nikola tesla"), "Legacy historical pioneer Nikola Tesla must be removed");
       assert.ok(p.sourceUrl.startsWith("https://"), `Invalid sourceUrl for ${p.id}`);
       assert.ok(p.achievement.so.length > 20 && p.achievement.en.length > 20 && p.achievement.ar.length > 20);
     }

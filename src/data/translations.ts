@@ -1326,5 +1326,33 @@ export const uiTranslations: Record<string, [string, string]> = {
   "Qaybood": [
     "Sections",
     "أقسام"
+  ],
+  "Soomaaliya": [
+    "Somalia",
+    "الصومال"
+  ],
+  "Adduunka": [
+    "World",
+    "العالم"
+  ],
+  "Siyaasadda": [
+    "Political Science",
+    "العلوم السياسية"
+  ],
+  "Warbaahinta": [
+    "Media & Journalism",
+    "الإعلام والصحافة"
+  ],
+  "Dadka Caanka ah ee Qarniga 21-aad (Soomaaliya & Adduunka)": [
+    "21st-Century Pioneers (Somalia & World)",
+    "روّاد القرن الحادي والعشرين (الصومال والعالم)"
+  ],
+  "Kulliyadaha iyo Dadka Heerka Sare ka Gaaray Qarnigan": [
+    "Faculties & Modern Leaders of This Century",
+    "الكليات وأبرز القادة في هذا القرن"
+  ],
+  "Baro shakhsiyaad nool ama qarnigan magac ku yeeshay Soomaaliya iyo adduunka, shahaadadii ay qaateen, iyo casharka ardaygu ka baran karo.": [
+    "Explore living and 21st-century role models from Somalia and around the world, the degrees they earned, and the practical lessons students can learn.",
+    "تعرّف على شخصيات معاصرة من الصومال والعالم حققت إنجازات في هذا القرن، والشهادات التي حصلوا عليها، والدروس العملية للطلاب."
   ]
 };

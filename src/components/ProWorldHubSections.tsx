@@ -73,29 +73,59 @@ export function WorldPioneersSection({
   onUnlock: () => void;
 }) {
   const { tr, tx } = useApp();
+  const [regionFilter, setRegionFilter] = useState<"somalia" | "world" | "all">("somalia");
   const [filter, setFilter] = useState<string>("all");
 
-  const filtered =
-    filter === "all"
-      ? worldFacultyPioneers
-      : worldFacultyPioneers.filter((p) => p.facultyId === filter);
+  const somaliaCount = worldFacultyPioneers.filter((p) => p.region === "somalia").length;
+  const worldCount = worldFacultyPioneers.filter((p) => p.region === "world").length;
+
+  const filtered = worldFacultyPioneers.filter((p) => {
+    const matchesRegion = regionFilter === "all" || p.region === regionFilter;
+    const matchesFaculty = filter === "all" || p.facultyId === filter;
+    return matchesRegion && matchesFaculty;
+  });
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 min-w-0 overflow-hidden">
       <div>
         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FFD86B]">
           <Award className="w-4 h-4" />
-          <span>{tr("Dadka Caanka ah ee Adduunka (Ilaha La Hubiyay)")}</span>
+          <span>{tr("Dadka Caanka ah ee Qarniga 21-aad (Soomaaliya & Adduunka)")}</span>
         </div>
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
-          {tr("Kulliyadaha iyo Dadka Heerka Sare ka Gaaray Adduunka")}
+          {tr("Kulliyadaha iyo Dadka Heerka Sare ka Gaaray Qarnigan")}
         </h2>
         <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Baro shakhsiyaad dhab ah oo adduunka iyo Soomaaliya magac ku yeeshay, shahaadadii ay qaateen, iyo casharka ardaygu ka baran karo.")}
+          {tr("Baro shakhsiyaad nool ama qarnigan magac ku yeeshay Soomaaliya iyo adduunka, shahaadadii ay qaateen, iyo casharka ardaygu ka baran karo.")}
         </p>
       </div>
 
-      {/* Filter Row */}
+      {/* Primary Region Split: Soomaaliya vs Adduunka (World) */}
+      <div className="grid grid-cols-3 gap-2">
+        {[
+          { id: "somalia" as const, label: `${tr("Soomaaliya")} (${somaliaCount})` },
+          { id: "world" as const, label: `${tr("Adduunka")} (${worldCount})` },
+          { id: "all" as const, label: `${tr("Dhammaan")} (${worldFacultyPioneers.length})` },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => {
+              setRegionFilter(tab.id);
+              setFilter("all");
+            }}
+            className={`px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold border cursor-pointer transition-all text-center truncate ${
+              regionFilter === tab.id
+                ? "bg-[#FFC93C] text-[#050A1C] border-[#FFC93C] shadow-md shadow-[#FFC93C]/20"
+                : "bg-white/[0.06] text-white/85 border-white/15 hover:bg-white/12"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Faculty Filter Row */}
       <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1">
         {[
           { id: "all", label: tr("Dhammaan") },
@@ -104,8 +134,9 @@ export function WorldPioneersSection({
           { id: "eng", label: tr("Injineernimada") },
           { id: "econ", label: tr("Dhaqaalaha") },
           { id: "law", label: tr("Sharciga") },
-          { id: "agri", label: tr("Beeraha") },
+          { id: "pol", label: tr("Siyaasadda") },
           { id: "health", label: tr("Caaf. Bulshada") },
+          { id: "arts", label: tr("Warbaahinta") },
         ].map((chip) => (
           <button
             key={chip.id}
@@ -125,18 +156,30 @@ export function WorldPioneersSection({
       <div className="grid md:grid-cols-2 gap-4">
         {filtered.map((p) => {
           const locked = !isPro;
+          const isSomalia = p.region === "somalia";
           return (
             <article
               key={p.id}
-              className="rounded-3xl p-5 border border-white/15 bg-white/[0.05] flex flex-col justify-between gap-3"
+              className="rounded-3xl p-5 border border-white/15 bg-white/[0.05] flex flex-col justify-between gap-3 min-w-0 overflow-hidden"
             >
-              <div className="space-y-2.5">
+              <div className="space-y-2.5 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#FFD86B]">
-                      {tx(p.facultyLabel)}
-                    </span>
-                    <h3 className="font-head font-extrabold text-lg text-white mt-0.5">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span
+                        className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                          isSomalia
+                            ? "bg-sky-500/20 text-sky-200 border-sky-400/35"
+                            : "bg-violet-500/20 text-violet-200 border-violet-400/35"
+                        }`}
+                      >
+                        {isSomalia ? tr("Soomaaliya") : tr("Adduunka")}
+                      </span>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#FFD86B]">
+                        {tx(p.facultyLabel)}
+                      </span>
+                    </div>
+                    <h3 className="font-head font-extrabold text-lg text-white mt-1.5 break-words">
                       {p.name}
                     </h3>
                   </div>
@@ -154,9 +197,9 @@ export function WorldPioneersSection({
                   </button>
                 ) : (
                   <>
-                    <p className="text-xs font-semibold text-sky-200/90">{tx(p.degree)}</p>
-                    <p className="text-sm text-white/85 leading-relaxed">{tx(p.achievement)}</p>
-                    <div className="rounded-xl p-3 bg-emerald-500/10 border border-emerald-400/25 text-xs text-emerald-100 leading-relaxed">
+                    <p className="text-xs font-semibold text-sky-200/90 break-words">{tx(p.degree)}</p>
+                    <p className="text-sm text-white/85 leading-relaxed break-words">{tx(p.achievement)}</p>
+                    <div className="rounded-xl p-3 bg-emerald-500/10 border border-emerald-400/25 text-xs text-emerald-100 leading-relaxed break-words">
                       <strong className="text-emerald-300">{tr("Casharka Ardayga:")} </strong>
                       {tx(p.lesson)}
                     </div>
