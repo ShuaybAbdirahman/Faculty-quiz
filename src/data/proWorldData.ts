@@ -275,8 +275,8 @@ export const worldFacultyPioneers: WorldPioneer[] = [
     sourceUrl: "https://www.nobelprize.org/prizes/chemistry/2024/hassabis/facts/",
   },
   {
-    id: "pioneer_jensen_huang",
-    name: "Jensen Huang",
+    id: "pioneer_lisa_su",
+    name: "Dr. Lisa Su",
     region: "world",
     facultyId: "eng",
     facultyLabel: {
@@ -285,22 +285,22 @@ export const worldFacultyPioneers: WorldPioneer[] = [
       ar: "الهندسة الكهربائية ورقائق الذكاء الاصطناعي",
     },
     degree: {
-      so: "BSc Injineernimada Korontada (Oregon State) & MSc Electrical Engineering (Stanford)",
-      en: "BSc Electrical Engineering (Oregon State) & MSc Electrical Engineering (Stanford)",
-      ar: "بكالوريوس الهندسة الكهربائية (أوريغون) وماجستير الهندسة الكهربائية (ستانفورد)",
+      so: "BSc, MSc & PhD Injineernimada Korontada (MIT, USA)",
+      en: "BSc, MSc & PhD in Electrical Engineering (MIT)",
+      ar: "بكالوريوس وماجستير ودكتوراه في الهندسة الكهربائية (MIT)",
     },
     achievement: {
-      so: "Aasaasaha iyo Maamulaha Guud ee NVIDIA, shirkadda samaysa GPUs-ka iyo chips-ka ku shaqeeya dhammaan nidaamyada AI, robotics-ka, iyo kombiyuutarrada casriga ah ee qarnigan.",
-      en: "Co-founder & CEO of NVIDIA, whose GPU architecture powers modern Artificial Intelligence, robotics, and supercomputing worldwide.",
-      ar: "مؤسس ومدير شركة NVIDIA التي تصنع المعالجات والرقائق التي تشغّل ثورة الذكاء الاصطناعي والروبوتات عالمياً.",
+      so: "Guddoomiyaha iyo Maamulaha Guud ee AMD, oo shirkadda ka dhigtay mid ka mid ah hoggaamiyeyaasha ugu waaweyn ee chips-ka AI iyo supercomputers-ka, kuna guuleysatay abaalmarinta National Medal of Science.",
+      en: "Chair and CEO of AMD, leading breakthroughs in AI accelerators and high-performance chips, and recipient of the National Medal of Science.",
+      ar: "رئيسة مجلس الإدارة والرئيسة التنفيذية لشركة AMD، قادت طفرة رقائق الذكاء الاصطناعي والحوسبة الفائقة، وحصلت على الوسام الوطني للعلوم.",
     },
     lesson: {
       so: "Injineernimada Korontada ee qarnigan ma aha oo keliya fiilooyin, waa chips-ka AI, tamarta casriga ah, iyo qalabka adduunka haga.",
       en: "Modern Electrical Engineering powers the AI chips, renewable grids, and smart hardware running the 21st-century economy.",
       ar: "الهندسة الكهربائية اليوم تقود رقائق الذكاء الاصطناعي وشبكات الطاقة الذكية والاقتصاد الحديث.",
     },
-    sourceName: "NVIDIA Corporate Timeline",
-    sourceUrl: "https://www.nvidia.com/en-us/about-nvidia/corporate-timeline/",
+    sourceName: "AMD Leadership & MIT",
+    sourceUrl: "https://www.amd.com/en/corporate/leadership/lisa-su.html",
   },
   {
     id: "pioneer_kariko",
