@@ -21,7 +21,6 @@ import { useApp } from "../context/AppContext";
 import { AuroraBackground, ProBadge } from "../components/ModernUI";
 import {
   ProRoadmapsExplorer,
-  ProUnlockPromoBanner,
   ReadinessTracker,
   SomaliaChallengesHub,
 } from "../components/ProHubContent";
@@ -43,6 +42,15 @@ export type HubTab =
   | "challenges"
   | "readiness";
 
+interface TabMeta {
+  id: HubTab;
+  label: string;
+  icon: React.ReactNode;
+  gateHeadline: string;
+  gateSummary: string;
+  highlights: string[];
+}
+
 export function ProHubScreen({
   initialTab = "roadmaps",
   initialFacultyId,
@@ -58,15 +66,119 @@ export function ProHubScreen({
   const [tab, setTab] = useState<HubTab>(initialTab);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const tabs: { id: HubTab; label: string; icon: React.ReactNode }[] = [
-    { id: "roadmaps", label: tr("Khariidadaha"), icon: <Map className="w-4 h-4" /> },
-    { id: "universities", label: tr("Jaamacadaha"), icon: <Building2 className="w-4 h-4" /> },
-    { id: "pioneers", label: tr("Dadka Caanka ah"), icon: <Award className="w-4 h-4" /> },
-    { id: "future_jobs", label: tr("Shaqooyinka Cusub"), icon: <TrendingUp className="w-4 h-4" /> },
-    { id: "skills", label: tr("Xirfadaha Dakhliga"), icon: <Wrench className="w-4 h-4" /> },
-    { id: "somalia_growth", label: tr("Horumarinta Ardayga"), icon: <Rocket className="w-4 h-4" /> },
-    { id: "challenges", label: tr("Caqabadaha Soomaaliya"), icon: <Lightbulb className="w-4 h-4" /> },
-    { id: "readiness", label: tr("Diyaargarowga"), icon: <ClipboardCheck className="w-4 h-4" /> },
+  const tabs: TabMeta[] = [
+    {
+      id: "roadmaps",
+      label: tr("Khariidadaha"),
+      icon: <Map className="w-4 h-4" />,
+      gateHeadline: tr("Khariidadaha Waxbarashada (Pro Keliya)"),
+      gateSummary: tr(
+        "Hel khariidado tallaabo-tallaabo ah oo la hubiyay (AI, Koronto, Caafimaad, Dhisme, Maaliyad iyo kuwo kale) marka aad furto Pro."
+      ),
+      highlights: [
+        tr("Marxaladaha waxbarashada iyo xirfadaha loo baahan yahay"),
+        tr("Qalabka casriga ah iyo mashaariicda ardayga"),
+        tr("Ilaha waxbarasho ee bilaashka ah ee la hubiyay"),
+      ],
+    },
+    {
+      id: "universities",
+      label: tr("Jaamacadaha"),
+      icon: <Building2 className="w-4 h-4" />,
+      gateHeadline: tr("Hagaha Jaamacadaha Soomaaliya (Pro Keliya)"),
+      gateSummary: tr(
+        "Ogow jaamacadaha bixiya kulliyaddaada, ku kala shaandhee magaalada iyo kulliyadda, kana hel website-yada rasmiga ah."
+      ),
+      highlights: [
+        tr("Liiska jaamacadaha dowliga ah iyo kuwa gaarka loo leeyahay"),
+        tr("Kala shaandhaynta magaalada iyo 14-ka kulliyadood"),
+        tr("Faahfaahinta iyo xiriirrada rasmiga ah ee jaamacad kasta"),
+      ],
+    },
+    {
+      id: "pioneers",
+      label: tr("Dadka Caanka ah"),
+      icon: <Award className="w-4 h-4" />,
+      gateHeadline: tr("Dadka Caanka ah ee Adduunka (Pro Keliya)"),
+      gateSummary: tr(
+        "Baro shakhsiyaadka heerka sare ka gaaray kulliyad kasta, shahaadadii ay qaateen, iyo casharka ardayga."
+      ),
+      highlights: [
+        tr("Shakhsiyaad caalami ah iyo kuwo Soomaali ah oo la hubiyay"),
+        tr("Shahaadooyinka iyo guulaha ay gaareen"),
+        tr("Ilaha rasmiga ah iyo casharro dhiirrigelin ah"),
+      ],
+    },
+    {
+      id: "future_jobs",
+      label: tr("Shaqooyinka Cusub"),
+      icon: <TrendingUp className="w-4 h-4" />,
+      gateHeadline: tr("Wararka Shaqooyinka Cusub & AI (Pro Keliya)"),
+      gateSummary: tr(
+        "Xog rasmi ah oo ku saabsan shaqooyinka ugu kororka badan 2025 ilaa 2030 iyo fursadaha gudaha Soomaaliya."
+      ),
+      highlights: [
+        tr("Falanqaynta warbixinta World Economic Forum (2025 - 2030)"),
+        tr("Fursadaha suuqa shaqada ee gudaha Soomaaliya"),
+        tr("Xirfadaha AI iyo xogta ee shirkaduhu raadinayaan"),
+      ],
+    },
+    {
+      id: "skills",
+      label: tr("Xirfadaha Dakhliga"),
+      icon: <Wrench className="w-4 h-4" />,
+      gateHeadline: tr("Xirfadaha Dakhliga Sare (Pro Keliya)"),
+      gateSummary: tr(
+        "Baro xirfado dhab ah oo aad ku shaqaysan karto adigoo arday ah (Video Editing, Design, Web & AI)."
+      ),
+      highlights: [
+        tr("Qorshaha 30-ka maalmood ee bilowga xirfad kasta"),
+        tr("Sida ardaygu dakhli uga sameeyo gudaha iyo dibadda"),
+        tr("Koorsooyin bilaash ah oo rasmi ah"),
+      ],
+    },
+    {
+      id: "somalia_growth",
+      label: tr("Horumarinta Ardayga"),
+      icon: <Rocket className="w-4 h-4" />,
+      gateHeadline: tr("Horumarinta Ardayga Soomaaliya (Pro Keliya)"),
+      gateSummary: tr(
+        "Istiraatiijiyad la hubiyay iyo deeqaha waxbarasho ee caalamiga ah ee u furan ardayda Soomaaliya."
+      ),
+      highlights: [
+        tr("Xog ku salaysan warbixinnada Bangiga Adduunka"),
+        tr("Tallaabooyinka heer caalami lagu gaaro"),
+        tr("Xiriirrada rasmiga ah ee deeqaha waxbarasho"),
+      ],
+    },
+    {
+      id: "challenges",
+      label: tr("Caqabadaha Soomaaliya"),
+      icon: <Lightbulb className="w-4 h-4" />,
+      gateHeadline: tr("Caqabadaha Ardayga iyo Xalkooda (Pro Keliya)"),
+      gateSummary: tr(
+        "Hage dhab ah oo xallinaya caqabadaha ugu waaweyn ee ardayga ka baxaya dugsiga sare ee gelaya jaamacadda."
+      ),
+      highlights: [
+        tr("Xalka caqabadda luqadda Ingiriisiga iyo daraasadda"),
+        tr("Maareynta khidmadda, deeqaha, iyo xirfadda shaqada"),
+        tr("Talooyin tallaabo-tallaabo ah oo la tijaabiyay"),
+      ],
+    },
+    {
+      id: "readiness",
+      label: tr("Diyaargarowga"),
+      icon: <ClipboardCheck className="w-4 h-4" />,
+      gateHeadline: tr("Diyaargarowga Jaamacadda 90 Maalmood (Pro Keliya)"),
+      gateSummary: tr(
+        "Liis is-daba-joog ah oo aad calaamadayn karto ka hor sannadka koowaad ee jaamacadda."
+      ),
+      highlights: [
+        tr("Tallaabooyinka diyaargarowga ka hor jaamacadda"),
+        tr("Calaamadayn iyo cabbirka horumarkaaga"),
+        tr("Hage ku siinaya kalsooni buuxda maalinta koowaad"),
+      ],
+    },
   ];
 
   const activeTabObj = tabs.find((t) => t.id === tab) ?? tabs[0];
@@ -227,43 +339,111 @@ export function ProHubScreen({
         )}
       </header>
 
-      <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-3.5 sm:px-6 py-5 sm:py-6 pb-14 space-y-5 min-w-0 overflow-x-clip">
-        {!proActive && <ProUnlockPromoBanner onUnlock={onOpenPaywall} />}
+      <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-3.5 sm:px-6 py-6 sm:py-8 pb-14 space-y-5 min-w-0 overflow-x-clip">
+        {!proActive ? (
+          /* STRICT PRO LOCK GATE: Zero Pro data, zero filters, zero university/pioneer names mounted until Pro is unlocked */
+          <section
+            key={tab}
+            className="animate-pro-enter max-w-2xl mx-auto rounded-3xl p-5 sm:p-8 border border-[#FFC93C]/45 shadow-[0_20px_50px_rgba(0,0,0,0.45)] space-y-5"
+            style={{
+              background:
+                "linear-gradient(145deg, rgba(255,201,60,0.12) 0%, rgba(15,27,76,0.88) 45%, rgba(22,19,68,0.92) 100%)",
+            }}
+          >
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="inline-flex items-center gap-2">
+                <span className="w-10 h-10 rounded-2xl bg-[#FFC93C]/18 border border-[#FFC93C]/40 text-[#FFD86B] flex items-center justify-center shrink-0">
+                  <Lock className="w-5 h-5" />
+                </span>
+                <div>
+                  <div className="text-[11px] font-black uppercase tracking-wider text-[#FFD86B]">
+                    {tr("Qaybtan waa xiran tahay")}
+                  </div>
+                  <div className="text-xs text-white/65">{activeTabObj.label}</div>
+                </div>
+              </div>
+              <ProBadge />
+            </div>
 
-        <div key={tab} className="animate-pro-enter min-w-0">
-          {tab === "roadmaps" && (
-            <ProRoadmapsExplorer
-              locked={!proActive}
-              initialFacultyId={initialFacultyId}
-              onUnlockClick={onOpenPaywall}
-            />
-          )}
-          {tab === "universities" && (
-            <SomaliaUniversitiesSection
-              isPro={proActive}
-              onUnlock={onOpenPaywall}
-              initialFacultyId={initialFacultyId}
-            />
-          )}
-          {tab === "pioneers" && (
-            <WorldPioneersSection isPro={proActive} onUnlock={onOpenPaywall} />
-          )}
-          {tab === "future_jobs" && (
-            <FutureJobsNewsSection isPro={proActive} onUnlock={onOpenPaywall} />
-          )}
-          {tab === "skills" && (
-            <HighIncomeSkillsSection isPro={proActive} onUnlock={onOpenPaywall} />
-          )}
-          {tab === "somalia_growth" && (
-            <SomaliaGrowthSection isPro={proActive} onUnlock={onOpenPaywall} />
-          )}
-          {tab === "challenges" && (
-            <SomaliaChallengesHub locked={!proActive} onUnlockClick={onOpenPaywall} />
-          )}
-          {tab === "readiness" && (
-            <ReadinessTracker locked={!proActive} onUnlockClick={onOpenPaywall} />
-          )}
-        </div>
+            <div className="space-y-2">
+              <h2 className="font-head font-extrabold text-xl sm:text-2xl text-white leading-snug">
+                {activeTabObj.gateHeadline}
+              </h2>
+              <p className="text-sm text-white/80 leading-relaxed">
+                {activeTabObj.gateSummary}
+              </p>
+            </div>
+
+            <div className="rounded-2xl p-4 bg-[#070E29]/80 border border-white/10 space-y-2.5">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[#FFD86B]">
+                {tr("Waxa aad heli doonto marka aad furto:")}
+              </div>
+              {activeTabObj.highlights.map((h) => (
+                <div key={h} className="flex items-start gap-2.5 text-xs sm:text-sm text-white/85">
+                  <Lock className="w-3.5 h-3.5 text-[#FFD86B] shrink-0 mt-0.5" />
+                  <span>{h}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-1 space-y-3">
+              <button
+                type="button"
+                onClick={onOpenPaywall}
+                className="relative overflow-hidden w-full h-[52px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-transform active:scale-[0.98] animate-gold-pulse"
+              >
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/55 to-transparent animate-shimmer"
+                />
+                <Sparkles className="w-4 h-4 relative z-10" />
+                <span className="relative z-10">{tr("Fur Pro ($0.10 · Abid)")}</span>
+              </button>
+
+              <p className="text-[11.5px] text-center text-white/60 leading-relaxed">
+                {tr(
+                  "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waxaa kuu furmaya dhammaan 8-da qaybood ee Xarunta Pro abid."
+                )}
+              </p>
+            </div>
+          </section>
+        ) : (
+          /* PRO ACTIVE: Full unlocked access to all 8 interactive Pro Hub sections */
+          <div key={tab} className="animate-pro-enter min-w-0">
+            {tab === "roadmaps" && (
+              <ProRoadmapsExplorer
+                locked={false}
+                initialFacultyId={initialFacultyId}
+                onUnlockClick={onOpenPaywall}
+              />
+            )}
+            {tab === "universities" && (
+              <SomaliaUniversitiesSection
+                isPro={true}
+                onUnlock={onOpenPaywall}
+                initialFacultyId={initialFacultyId}
+              />
+            )}
+            {tab === "pioneers" && (
+              <WorldPioneersSection isPro={true} onUnlock={onOpenPaywall} />
+            )}
+            {tab === "future_jobs" && (
+              <FutureJobsNewsSection isPro={true} onUnlock={onOpenPaywall} />
+            )}
+            {tab === "skills" && (
+              <HighIncomeSkillsSection isPro={true} onUnlock={onOpenPaywall} />
+            )}
+            {tab === "somalia_growth" && (
+              <SomaliaGrowthSection isPro={true} onUnlock={onOpenPaywall} />
+            )}
+            {tab === "challenges" && (
+              <SomaliaChallengesHub locked={false} onUnlockClick={onOpenPaywall} />
+            )}
+            {tab === "readiness" && (
+              <ReadinessTracker locked={false} onUnlockClick={onOpenPaywall} />
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
