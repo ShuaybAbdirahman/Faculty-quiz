@@ -1278,5 +1278,45 @@ export const uiTranslations: Record<string, [string, string]> = {
   "Jawaabtaada:": [
     "Your answer:",
     "إجابتك:"
+  ],
+  "Xarunta Pro": [
+    "Pro Hub",
+    "مركز Pro"
+  ],
+  "Pro Furan": [
+    "Pro Active",
+    "Pro مفعّل"
+  ],
+  "Khariidad": [
+    "Roadmaps",
+    "المسارات"
+  ],
+  "Jaamacad": [
+    "Universities",
+    "الجامعات"
+  ],
+  "Caanka": [
+    "Pioneers",
+    "الروّاد"
+  ],
+  "AI & 2030": [
+    "AI & 2030",
+    "وظائف AI"
+  ],
+  "Xirfado": [
+    "Skills",
+    "مهارات"
+  ],
+  "Horumar": [
+    "Growth",
+    "التطوير"
+  ],
+  "Caqabad": [
+    "Challenges",
+    "التحديات"
+  ],
+  "90 Maalmood": [
+    "90 Days",
+    "90 يوماً"
   ]
 };

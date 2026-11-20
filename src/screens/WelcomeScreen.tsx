@@ -141,29 +141,30 @@ export function WelcomeScreen({
       >
         <AuroraBackground />
 
-        <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-5 pb-12 lg:pb-16">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 pt-4 sm:pt-5 pb-12 lg:pb-16">
           {/* Top Navigation Bar */}
-          <header className="flex items-center justify-between gap-3 pb-6 border-b border-white/10">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-white/12 border border-white/20 flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 text-[#FFD86B]" />
+          <header className="flex items-center justify-between gap-2 pb-5 sm:pb-6 border-b border-white/10">
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/12 border border-white/20 flex items-center justify-center shrink-0">
+                <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-[#FFD86B]" />
               </div>
-              <div>
-                <div className="font-head font-extrabold text-[17px] leading-tight tracking-tight">
+              <div className="min-w-0">
+                <div className="font-head font-extrabold text-[15px] sm:text-[17px] leading-tight tracking-tight truncate">
                   {tr("Hagaha Kulliyadda")}
                 </div>
-                <div className="text-[11px] text-white/60 font-medium">
+                <div className="text-[10.5px] sm:text-[11px] text-white/60 font-medium truncate">
                   RIASEC · 14 {tr("Kulliyadaha")}
                 </div>
               </div>
             </div>
 
-            <nav className="flex items-center gap-1.5" aria-label="App Controls">
+            <nav className="flex items-center gap-1 sm:gap-1.5 shrink-0" aria-label="App Controls">
               <button
                 type="button"
                 onClick={() => setPromoOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/18 border border-white/20 text-white text-xs font-bold cursor-pointer transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl bg-white/10 hover:bg-white/18 border border-white/20 text-white text-xs font-bold cursor-pointer transition-colors"
                 title={tr("Sawirka Xayeysiinta")}
+                aria-label={tr("Sawirka Xayeysiinta")}
               >
                 <ImageIcon className="w-4 h-4 text-[#FFD86B]" />
                 <span className="hidden md:inline">{tr("Sawirka Xayeysiinta")}</span>
@@ -183,12 +184,13 @@ export function WelcomeScreen({
                 <button
                   type="button"
                   onClick={() => setLangMenuOpen((v) => !v)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/8 hover:bg-white/15 border border-white/15 text-white text-sm font-semibold cursor-pointer transition-colors"
+                  className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 rounded-xl bg-white/8 hover:bg-white/15 border border-white/15 text-white text-xs sm:text-sm font-semibold cursor-pointer transition-colors"
                   aria-label={tr("Luqadda")}
                   aria-expanded={langMenuOpen}
                 >
-                  <Globe className="w-4 h-4 text-[#FFD86B]" />
-                  <span>{langNames[lang]}</span>
+                  <Globe className="w-4 h-4 text-[#FFD86B] shrink-0" />
+                  <span className="sm:hidden uppercase font-bold">{lang}</span>
+                  <span className="hidden sm:inline">{langNames[lang]}</span>
                 </button>
                 {langMenuOpen && (
                   <>
@@ -236,7 +238,7 @@ export function WelcomeScreen({
                 type="button"
                 onClick={() => setDarkMode(!darkMode)}
                 aria-label={tr(darkMode ? "Iftiin" : "Mugdi")}
-                className="p-2.5 rounded-xl bg-white/8 hover:bg-white/15 border border-white/15 text-white cursor-pointer transition-colors"
+                className="p-2 sm:p-2.5 rounded-xl bg-white/8 hover:bg-white/15 border border-white/15 text-white cursor-pointer transition-colors shrink-0"
               >
                 {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
@@ -245,7 +247,7 @@ export function WelcomeScreen({
                 type="button"
                 onClick={onOpenSettings}
                 aria-label={tr("Dejinta")}
-                className="p-2.5 rounded-xl bg-white/8 hover:bg-white/15 border border-white/15 text-white cursor-pointer transition-colors"
+                className="p-2 sm:p-2.5 rounded-xl bg-white/8 hover:bg-white/15 border border-white/15 text-white cursor-pointer transition-colors shrink-0"
               >
                 <Settings className="w-4 h-4" />
               </button>

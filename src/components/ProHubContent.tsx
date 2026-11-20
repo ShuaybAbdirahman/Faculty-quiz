@@ -568,23 +568,23 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
   const { tr } = useApp();
   return (
     <div
-      className="rounded-3xl p-5 border border-[#FFC93C]/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      className="relative overflow-hidden rounded-3xl p-4 sm:p-5 border border-[#FFC93C]/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-[0_14px_34px_rgba(0,0,0,0.32)]"
       style={{
         background:
-          "linear-gradient(135deg, rgba(255,201,60,0.16) 0%, rgba(99,102,241,0.18) 100%)",
+          "linear-gradient(135deg, rgba(255,201,60,0.16) 0%, rgba(59,91,219,0.22) 55%, rgba(168,85,247,0.16) 100%)",
       }}
     >
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
+      <div className="space-y-1.5 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
           <ProBadge small />
           <span className="text-xs font-extrabold text-[#FFD86B]">
             {tr("$0.10 Keliya · Hal mar (Abid)")}
           </span>
         </div>
-        <h3 className="font-head font-extrabold text-lg text-white">
+        <h3 className="font-head font-extrabold text-[17px] sm:text-lg text-white leading-snug">
           {tr("Fur dhammaan Khariidadaha Waxbarashada, Xalka Caqabadaha iyo Hagaha Waaxda")}
         </h3>
-        <p className="text-xs text-white/80">
+        <p className="text-xs text-white/80 leading-relaxed">
           {tr(
             "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waligaa Pro ayaad ahaanaysaa iyadoo adeegyo cusub ay bilaash kuugu soo kordhayaan."
           )}
@@ -593,10 +593,14 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
       <button
         type="button"
         onClick={onUnlock}
-        className="shrink-0 px-5 py-3 rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-colors"
+        className="relative overflow-hidden shrink-0 px-5 py-3 rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-transform active:scale-[0.98] animate-gold-pulse"
       >
-        <CheckCircle2 className="w-4 h-4" />
-        <span>{tr("Fur Pro ($0.10)")}</span>
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/55 to-transparent animate-shimmer"
+        />
+        <CheckCircle2 className="w-4 h-4 relative z-10" />
+        <span className="relative z-10">{tr("Fur Pro ($0.10)")}</span>
       </button>
     </div>
   );

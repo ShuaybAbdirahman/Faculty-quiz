@@ -489,10 +489,10 @@ export function SomaliaUniversitiesSection({
   });
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 min-w-0 overflow-hidden">
       <div>
         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-300">
-          <Building2 className="w-4 h-4" />
+          <Building2 className="w-4 h-4 shrink-0" />
           <span>{tr("Hagaha Jaamacadaha Soomaaliya (Hage Guud)")}</span>
         </div>
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
@@ -507,12 +507,12 @@ export function SomaliaUniversitiesSection({
       </div>
 
       {/* Filters */}
-      <div className="grid sm:grid-cols-2 gap-3">
-        <div>
+      <div className="grid sm:grid-cols-2 gap-3 min-w-0">
+        <div className="min-w-0">
           <label className="block text-[11px] font-bold uppercase tracking-wider text-white/60 mb-1.5">
             {tr("Magaalada")}
           </label>
-          <div className="flex items-center gap-1.5 overflow-x-auto hide-scrollbar pb-1">
+          <div className="flex items-center gap-1.5 flex-wrap pb-1">
             {cities.map((c) => (
               <button
                 key={c}
@@ -530,7 +530,7 @@ export function SomaliaUniversitiesSection({
           </div>
         </div>
 
-        <div>
+        <div className="min-w-0 w-full">
           <label htmlFor="uni-fac-filter" className="block text-[11px] font-bold uppercase tracking-wider text-white/60 mb-1.5">
             {tr("Kulliyadda")}
           </label>
@@ -538,7 +538,7 @@ export function SomaliaUniversitiesSection({
             id="uni-fac-filter"
             value={facultyFilter}
             onChange={(e) => setFacultyFilter(e.target.value)}
-            className="w-full rounded-xl px-3.5 py-2 text-xs font-bold bg-[#091233] border border-white/20 text-white outline-none focus:border-[#FFC93C]"
+            className="block w-full max-w-full min-w-0 truncate rounded-xl px-3.5 py-2.5 text-xs font-bold bg-[#091233] border border-white/20 text-white outline-none focus:border-[#FFC93C]"
           >
             <option value="all">{tr("Dhammaan Kulliyadaha (14)")}</option>
             {faculties.map((f) => (
