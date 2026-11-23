@@ -337,3 +337,44 @@ export function resolveAllowedLang(
 ): "so" | "en" | "ar" {
   return canUseLanguage(requested, proActive) ? requested : "so";
 }
+
+export type BlockedProAction = "screenshot" | "print" | "save" | "copy" | "devtools";
+
+export function isBlockedProShortcut(
+  e: {
+    key?: string;
+    ctrlKey?: boolean;
+    metaKey?: boolean;
+    shiftKey?: boolean;
+    altKey?: boolean;
+  },
+  isEditableTarget = false
+): BlockedProAction | null {
+  const key = (e.key ?? "").toLowerCase();
+  const hasMod = Boolean(e.ctrlKey || e.metaKey);
+
+  if (key === "printscreen") return "screenshot";
+  if (hasMod && e.shiftKey && (key === "3" || key === "4" || key === "5" || key === "s")) {
+    return "screenshot";
+  }
+  if (hasMod && key === "p") return "print";
+  if (hasMod && key === "s") return "save";
+  if (key === "f12") return "devtools";
+  if (hasMod && e.shiftKey && (key === "i" || key === "j" || key === "c")) return "devtools";
+  if (hasMod && key === "u") return "devtools";
+  if (!isEditableTarget && hasMod && (key === "c" || key === "x" || key === "a")) {
+    return "copy";
+  }
+  return null;
+}
+
+export function buildProWatermarkStamp(deviceId: string, userName?: string): string {
+  const short = formatShortDeviceId(deviceId);
+  const cleanName = (userName ?? "").replace(/\s+/g, " ").trim().slice(0, 24);
+  return cleanName ? `CAAWIYE PRO · ${cleanName} · ID:${short}` : `CAAWIYE PRO · ID:${short}`;
+}
+
+export const PRO_PERSONAL_REMINDER = {
+  title: "Xasuusin Muhiim ah · Qalabkaaga Keliya (1 Qalab = 1 Arday)",
+  body: "Qeybtaan Pro waxay si gaar ah ugu furan tahay adiga keligaa. Fadlan ha qaadin screenshot, ha dajisan, hana la wadaagin asxaabtaada ama dad kale. Arday kasta si xor ah ayuu $0.10 ugu furan karaa naftiisa si aan xogta Pro loo helin amar la'aan.",
+} as const;

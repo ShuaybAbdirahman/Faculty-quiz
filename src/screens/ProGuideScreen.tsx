@@ -30,6 +30,7 @@ import {
   ProgressRing,
   ShinyButton,
 } from "../components/ModernUI";
+import { ProContentShield } from "../components/ProContentShield";
 import { ProRoadmapsExplorer } from "../components/ProHubContent";
 
 export interface ProFacultyRef {
@@ -258,6 +259,10 @@ export function ProGuideScreen({
       </header>
 
       <main className="relative z-10 flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 pt-5 pb-12">
+        <ProContentShield
+          active={activeTab === "roadmaps" || Boolean(depts && ranked.length > 0)}
+          sectionLabel={`Qeybta 3aad · Hagaha Waaxda (${plainFacultyName(tx(faculty.name))})`}
+        >
         {activeTab === "roadmaps" ? (
           <ProRoadmapsExplorer initialFacultyId={faculty.id} />
         ) : loading ? (
@@ -577,6 +582,7 @@ export function ProGuideScreen({
             </p>
           </div>
         )}
+        </ProContentShield>
       </main>
     </div>
   );

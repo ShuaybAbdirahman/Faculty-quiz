@@ -194,3 +194,24 @@ test("School Form 4 ($0.10 per subject) and Bridging Exam unlocks stay isolated 
   assert.equal(hasBridgeExamAccess(merged, deviceId, "snu_tartanka", now), true);
   assert.equal(hasBridgeExamAccess(merged, deviceId, "uni_placement", now), false);
 });
+
+test("Pro content shield blocks screenshot/print/save/copy shortcuts and stamps personal watermark", async () => {
+  const { buildProWatermarkStamp, isBlockedProShortcut, PRO_PERSONAL_REMINDER } = await import("./proSecurity");
+
+  assert.equal(isBlockedProShortcut({ key: "PrintScreen" }), "screenshot");
+  assert.equal(isBlockedProShortcut({ key: "4", metaKey: true, shiftKey: true }), "screenshot");
+  assert.equal(isBlockedProShortcut({ key: "s", metaKey: true, shiftKey: true }), "screenshot");
+  assert.equal(isBlockedProShortcut({ key: "p", ctrlKey: true }), "print");
+  assert.equal(isBlockedProShortcut({ key: "s", ctrlKey: true }), "save");
+  assert.equal(isBlockedProShortcut({ key: "c", ctrlKey: true }, false), "copy");
+  assert.equal(isBlockedProShortcut({ key: "c", ctrlKey: true }, true), null);
+  assert.equal(isBlockedProShortcut({ key: "F12" }), "devtools");
+
+  const stamp = buildProWatermarkStamp("hkd_abcdef1234567890", "Axmed Cali");
+  assert.ok(stamp.includes("CAAWIYE PRO"));
+  assert.ok(stamp.includes("ABCDE-7890"));
+  assert.ok(stamp.includes("Axmed Cali"));
+
+  assert.ok(PRO_PERSONAL_REMINDER.body.includes("screenshot"));
+  assert.ok(PRO_PERSONAL_REMINDER.body.includes("naftiisa"));
+});

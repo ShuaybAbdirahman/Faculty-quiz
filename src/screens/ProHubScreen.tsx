@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { AuroraBackground, ProBadge } from "../components/ModernUI";
+import { ProContentShield } from "../components/ProContentShield";
 import { ProRoadmapsExplorer } from "../components/ProHubContent";
 import {
   FutureJobsNewsSection,
@@ -372,35 +373,40 @@ export function ProHubScreen({
             </div>
           </section>
         ) : (
-          /* PRO ACTIVE: Full unlocked access to all 6 interactive Pro Hub sections */
-          <div key={tab} className="animate-pro-enter min-w-0">
-            {tab === "roadmaps" && (
-              <ProRoadmapsExplorer
-                locked={false}
-                initialFacultyId={initialFacultyId}
-                onUnlockClick={onOpenPaywall}
-              />
-            )}
-            {tab === "universities" && (
-              <SomaliaUniversitiesSection
-                isPro={true}
-                onUnlock={onOpenPaywall}
-                initialFacultyId={initialFacultyId}
-              />
-            )}
-            {tab === "pioneers" && (
-              <WorldPioneersSection isPro={true} onUnlock={onOpenPaywall} />
-            )}
-            {tab === "future_jobs" && (
-              <FutureJobsNewsSection isPro={true} onUnlock={onOpenPaywall} />
-            )}
-            {tab === "skills" && (
-              <HighIncomeSkillsSection isPro={true} onUnlock={onOpenPaywall} />
-            )}
-            {tab === "somalia_growth" && (
-              <SomaliaGrowthSection isPro={true} onUnlock={onOpenPaywall} />
-            )}
-          </div>
+          /* PRO ACTIVE: Full unlocked access to all 6 interactive Pro Hub sections under ProContentShield */
+          <ProContentShield
+            active={proActive}
+            sectionLabel={`Qeybta 3aad · University (${activeTabObj.label})`}
+          >
+            <div key={tab} className="animate-pro-enter min-w-0">
+              {tab === "roadmaps" && (
+                <ProRoadmapsExplorer
+                  locked={false}
+                  initialFacultyId={initialFacultyId}
+                  onUnlockClick={onOpenPaywall}
+                />
+              )}
+              {tab === "universities" && (
+                <SomaliaUniversitiesSection
+                  isPro={true}
+                  onUnlock={onOpenPaywall}
+                  initialFacultyId={initialFacultyId}
+                />
+              )}
+              {tab === "pioneers" && (
+                <WorldPioneersSection isPro={true} onUnlock={onOpenPaywall} />
+              )}
+              {tab === "future_jobs" && (
+                <FutureJobsNewsSection isPro={true} onUnlock={onOpenPaywall} />
+              )}
+              {tab === "skills" && (
+                <HighIncomeSkillsSection isPro={true} onUnlock={onOpenPaywall} />
+              )}
+              {tab === "somalia_growth" && (
+                <SomaliaGrowthSection isPro={true} onUnlock={onOpenPaywall} />
+              )}
+            </div>
+          </ProContentShield>
         )}
       </main>
     </div>

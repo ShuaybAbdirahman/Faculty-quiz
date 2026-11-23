@@ -13,6 +13,7 @@ import {
 import { bridgeExamTracks, GAP_EXAM_DATE, type BridgeExamTrack } from "../data/bridgingPrepData";
 import { useApp } from "../context/AppContext";
 import { AuroraBackground, SomaliStarIcon } from "../components/ModernUI";
+import { ProContentShield } from "../components/ProContentShield";
 import { ReadinessTracker, SomaliaChallengesHub } from "../components/ProHubContent";
 import { PredictExamGateCard, PredictExamRunner } from "../components/PredictExamRunner";
 
@@ -259,12 +260,17 @@ export function BridgingPrepScreen({
                 onUnlock={() => onUnlockBridge(activeTrack)}
               />
             ) : (
-              <PredictExamRunner
-                title={activeTrack.title}
-                durationMin={activeTrack.durationMin}
-                examDate={activeTrack.examDate}
-                questions={activeTrack.predictQuestions}
-              />
+              <ProContentShield
+                active={unlocked}
+                sectionLabel={`Qeybta 2aad · Gap (${activeTrack.title})`}
+              >
+                <PredictExamRunner
+                  title={activeTrack.title}
+                  durationMin={activeTrack.durationMin}
+                  examDate={activeTrack.examDate}
+                  questions={activeTrack.predictQuestions}
+                />
+              </ProContentShield>
             )}
           </div>
         )}

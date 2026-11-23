@@ -17,9 +17,8 @@ import {
 import { useApp } from "../context/AppContext";
 import { AuroraBackground, Footer, SomaliStarIcon } from "../components/ModernUI";
 import { HeroSpotlightTicker } from "../components/HeroSpotlightTicker";
-import { PromoPosterModal } from "../components/PromoPosterModal";
+import { PromoPosterModal, PromoPosterThumb } from "../components/PromoPosterModal";
 import { ReviewsSection } from "../components/ReviewsComponents";
-import promoPosterThumb from "../assets/images/hagaha_kulliyadda_promo_1795079553879.jpg";
 
 function daysUntil(year: number, monthIndex: number, day: number): number {
   const now = new Date();
@@ -393,14 +392,10 @@ export function HomeScreen({
           <button
             type="button"
             onClick={() => setPromoOpen(true)}
-            className="w-40 sm:w-44 shrink-0 rounded-2xl overflow-hidden border border-white/15 shadow-lg hover:scale-[1.02] transition-transform cursor-pointer"
+            aria-label="CAAWIYE Promo Poster"
+            className="w-40 sm:w-44 shrink-0 rounded-2xl overflow-hidden border border-[#4189DD]/35 shadow-lg hover:scale-[1.02] transition-transform cursor-pointer"
           >
-            <img
-              src={promoPosterThumb}
-              alt="CAAWIYE Promo Poster"
-              referrerPolicy="no-referrer"
-              className="w-full h-auto block"
-            />
+            <PromoPosterThumb />
           </button>
           <div className="flex-1 text-center sm:text-start space-y-2.5">
             <div className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-[#165FB8] dark:text-[#7CB7FF]">

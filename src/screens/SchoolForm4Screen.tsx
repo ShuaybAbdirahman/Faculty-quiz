@@ -18,6 +18,7 @@ import {
 } from "../data/schoolForm4Data";
 import { useApp } from "../context/AppContext";
 import { AuroraBackground, SomaliStarIcon } from "../components/ModernUI";
+import { ProContentShield } from "../components/ProContentShield";
 import { PredictExamGateCard, PredictExamRunner } from "../components/PredictExamRunner";
 
 export function SchoolForm4Screen({
@@ -287,12 +288,17 @@ export function SchoolForm4Screen({
                     onUnlock={() => onUnlockSubject(activeSubject)}
                   />
                 ) : (
-                  <PredictExamRunner
-                    title={`Predict Exam: ${activeSubject.name}`}
-                    durationMin={activeSubject.predictDurationMin}
-                    examDate={activeSubject.examDate}
-                    questions={activeSubject.predictQuestions}
-                  />
+                  <ProContentShield
+                    active={subjectUnlocked}
+                    sectionLabel={`Qeybta 1aad · School (${activeSubject.name})`}
+                  >
+                    <PredictExamRunner
+                      title={`Predict Exam: ${activeSubject.name}`}
+                      durationMin={activeSubject.predictDurationMin}
+                      examDate={activeSubject.examDate}
+                      questions={activeSubject.predictQuestions}
+                    />
+                  </ProContentShield>
                 )}
               </div>
             )}

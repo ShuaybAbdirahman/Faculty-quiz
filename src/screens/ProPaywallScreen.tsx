@@ -583,8 +583,8 @@ export function ProPaywallScreen({
               </div>
             </div>
 
-            {/* Per-Device Security Guarantee */}
-            <div className="rounded-2xl p-4 bg-emerald-500/[0.08] border border-emerald-400/25 space-y-2">
+            {/* Per-Device Security Guarantee & Personal Reminder */}
+            <div className="rounded-2xl p-4 bg-emerald-500/[0.08] border border-emerald-400/25 space-y-2.5">
               <div className="flex items-center gap-2 text-emerald-300 font-head font-bold text-sm">
                 <ShieldCheck className="w-4 h-4 shrink-0" />
                 <span>{tr("Amniga Gelitaanka (1 Qalab = 1 Arday)")}</span>
@@ -593,6 +593,10 @@ export function ProPaywallScreen({
                 {tr(
                   "Lacag-bixinta waxaa gacanta ku xaqiijiya maamulka (badanaa ilaa 24 saac). Gelitaanku wuxuu ku xidhan yahay qalabkan."
                 )}
+              </p>
+              <p className="text-[11.5px] text-[#FFE599] bg-[#FFC93C]/10 border border-[#FFC93C]/30 rounded-xl p-2.5 leading-relaxed">
+                <strong>Xasuusin: </strong>
+                Qeybta Pro waxay u furan tahay naftaada keliya; lagama qaadi karo screenshot, lama dajisan karo, lamana la wadaagi karo asxaabta. Arday kasta si xor ah ayuu $0.10 ugu furan karaa.
               </p>
               <div className="pt-1 flex items-center justify-between text-[11.5px] font-mono text-white/70">
                 <span>Device ID: {shortDev}</span>
