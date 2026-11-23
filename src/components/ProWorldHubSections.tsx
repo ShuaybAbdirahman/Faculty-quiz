@@ -101,7 +101,7 @@ export function WorldPioneersSection({
       </div>
 
       {/* Primary Region Split: Soomaaliya vs Adduunka (World) */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
         {[
           { id: "somalia" as const, label: `${tr("Soomaaliya")} (${somaliaCount})` },
           { id: "world" as const, label: `${tr("Adduunka")} (${worldCount})` },
@@ -114,7 +114,7 @@ export function WorldPioneersSection({
               setRegionFilter(tab.id);
               setFilter("all");
             }}
-            className={`px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold border cursor-pointer transition-all text-center truncate ${
+            className={`px-1.5 sm:px-3 py-2.5 rounded-2xl text-[11px] sm:text-sm font-extrabold border cursor-pointer transition-all text-center whitespace-nowrap ${
               regionFilter === tab.id
                 ? "bg-[#FFC93C] text-[#050A1C] border-[#FFC93C] shadow-md shadow-[#FFC93C]/20"
                 : "bg-white/[0.06] text-white/85 border-white/15 hover:bg-white/12"

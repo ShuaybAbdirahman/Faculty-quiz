@@ -196,7 +196,15 @@ test("School Form 4 ($0.10 per subject) and Bridging Exam unlocks stay isolated 
 });
 
 test("Pro content shield blocks screenshot/print/save/copy shortcuts and stamps personal watermark", async () => {
-  const { buildProWatermarkStamp, isBlockedProShortcut, PRO_PERSONAL_REMINDER } = await import("./proSecurity");
+  const {
+    buildProWatermarkStamp,
+    buildProWatermarkTileDataUri,
+    formatWatermarkTimeTag,
+    isBlockedProShortcut,
+    isTamperedOverlayStyle,
+    PRO_IDLE_LOCK_MS,
+    PRO_PERSONAL_REMINDER,
+  } = await import("./proSecurity");
 
   assert.equal(isBlockedProShortcut({ key: "PrintScreen" }), "screenshot");
   assert.equal(isBlockedProShortcut({ key: "4", metaKey: true, shiftKey: true }), "screenshot");
@@ -207,10 +215,28 @@ test("Pro content shield blocks screenshot/print/save/copy shortcuts and stamps 
   assert.equal(isBlockedProShortcut({ key: "c", ctrlKey: true }, true), null);
   assert.equal(isBlockedProShortcut({ key: "F12" }), "devtools");
 
-  const stamp = buildProWatermarkStamp("hkd_abcdef1234567890", "Axmed Cali");
+  const timeTag = formatWatermarkTimeTag(new Date(2026, 10, 23, 9, 5));
+  assert.equal(timeTag, "09:05 23/11");
+
+  const stamp = buildProWatermarkStamp("hkd_abcdef1234567890", "Axmed <Cali>", timeTag);
   assert.ok(stamp.includes("CAAWIYE PRO"));
   assert.ok(stamp.includes("ABCDE-7890"));
-  assert.ok(stamp.includes("Axmed Cali"));
+  assert.ok(stamp.includes("Axmed <Cali>"));
+  assert.ok(stamp.includes("09:05 23/11"));
+
+  const uri = buildProWatermarkTileDataUri(stamp);
+  assert.ok(uri.startsWith("data:image/svg+xml;utf8,"));
+  const decoded = decodeURIComponent(uri.slice("data:image/svg+xml;utf8,".length));
+  assert.ok(decoded.includes("Axmed &lt;Cali&gt;"));
+  assert.ok(decoded.includes("ABCDE-7890"));
+  assert.ok(decoded.includes("09:05 23/11"));
+  assert.ok(!decoded.includes("<Cali>"));
+
+  assert.equal(PRO_IDLE_LOCK_MS, 120_000);
+  assert.equal(isTamperedOverlayStyle({ display: "none", visibility: "visible", opacity: "1" }), true);
+  assert.equal(isTamperedOverlayStyle({ display: "block", visibility: "hidden", opacity: "1" }), true);
+  assert.equal(isTamperedOverlayStyle({ display: "block", visibility: "visible", opacity: "0.2" }), true);
+  assert.equal(isTamperedOverlayStyle({ display: "block", visibility: "visible", opacity: "1" }), false);
 
   assert.ok(PRO_PERSONAL_REMINDER.body.includes("screenshot"));
   assert.ok(PRO_PERSONAL_REMINDER.body.includes("naftiisa"));

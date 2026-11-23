@@ -150,7 +150,7 @@ export function ProGuideScreen({
   onBack: () => void;
   onLocked: () => void;
 }) {
-  const { lang, tr, trf, tx, txl, rtl, deviceId, setProUntil } = useApp();
+  const { lang, tr, trf, tx, txl, rtl, deviceId, proActive, setProUntil } = useApp();
   const [depts, setDepts] = useState<ProDeptData[] | null>(null);
   const [ask, setAsk] = useState<number[]>([]);
   const [extra, setExtra] = useState<Record<number, number>>({});
@@ -162,6 +162,10 @@ export function ProGuideScreen({
   const facultyProQuestions = useMemo(() => getProQuestionsForFaculty(faculty.id), [faculty.id]);
 
   const load = useCallback(async () => {
+    if (!proActive) {
+      onLocked();
+      return;
+    }
     setLoading(true);
     setErr(null);
     try {
@@ -183,7 +187,7 @@ export function ProGuideScreen({
       setErr(e instanceof ProApiError ? e.code : "offline");
       setLoading(false);
     }
-  }, [deviceId, faculty.id, ratings, setProUntil, onLocked]);
+  }, [deviceId, faculty.id, onLocked, proActive, ratings, setProUntil]);
 
   useEffect(() => {
     load();
@@ -260,10 +264,10 @@ export function ProGuideScreen({
 
       <main className="relative z-10 flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 pt-5 pb-12">
         <ProContentShield
-          active={activeTab === "roadmaps" || Boolean(depts && ranked.length > 0)}
+          active={proActive && (activeTab === "roadmaps" || Boolean(depts && ranked.length > 0))}
           sectionLabel={`Qeybta 3aad · Hagaha Waaxda (${plainFacultyName(tx(faculty.name))})`}
         >
-        {activeTab === "roadmaps" ? (
+        {!proActive ? null : activeTab === "roadmaps" ? (
           <ProRoadmapsExplorer initialFacultyId={faculty.id} />
         ) : loading ? (
           <div className="py-24 flex justify-center">

@@ -3,8 +3,12 @@ import { Ban, EyeOff, Lock, ShieldAlert, Smartphone } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import {
   buildProWatermarkStamp,
+  buildProWatermarkTileDataUri,
   formatShortDeviceId,
+  formatWatermarkTimeTag,
   isBlockedProShortcut,
+  isTamperedOverlayStyle,
+  PRO_IDLE_LOCK_MS,
   PRO_PERSONAL_REMINDER,
 } from "../lib/proSecurity";
 
@@ -25,25 +29,46 @@ export function ProContentShield({
 }) {
   const { deviceId, userName, showToast } = useApp();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const watermarkRef = useRef<HTMLDivElement | null>(null);
   const [curtainReason, setCurtainReason] = useState<string | null>(null);
+  const [timeTag, setTimeTag] = useState<string>(() => formatWatermarkTimeTag());
+  const [watermarkRev, setWatermarkRev] = useState<number>(0);
 
   const shortDev = useMemo(() => formatShortDeviceId(deviceId), [deviceId]);
   const watermarkStamp = useMemo(
-    () => buildProWatermarkStamp(deviceId, userName),
-    [deviceId, userName]
+    () => buildProWatermarkStamp(deviceId, userName, timeTag),
+    [deviceId, userName, timeTag]
   );
+  const watermarkTileUri = useMemo(
+    () => buildProWatermarkTileDataUri(watermarkStamp),
+    [watermarkStamp]
+  );
+
+  useEffect(() => {
+    if (!active) return;
+    setTimeTag(formatWatermarkTimeTag());
+    const id = window.setInterval(() => {
+      setTimeTag(formatWatermarkTimeTag());
+    }, 60_000);
+    return () => window.clearInterval(id);
+  }, [active]);
 
   useEffect(() => {
     if (!active) {
       setCurtainReason(null);
+      document.body.classList.remove("pro-body-locked");
       return;
     }
+
+    document.body.classList.add("pro-body-locked");
 
     const triggerBlockToast = (action: string) => {
       if (action === "screenshot") {
         showToast("Screenshot lama ogola qeybta Pro. Qalabkaaga keliya ayay u furan tahay.");
       } else if (action === "print" || action === "save") {
         showToast("Dajinta ama daabacaadda (PDF/Save) waa ka xiran tahay qeybta Pro.");
+      } else if (action === "devtools") {
+        showToast("Furista DevTools iyo baaritaanka koodhka waa ka xiran tahay qeybta Pro.");
       } else {
         showToast("Nuqul-qaadista iyo wadaagidda xogta Pro waa xiran tahay.");
       }
@@ -57,15 +82,22 @@ export function ProContentShield({
       e.preventDefault();
       e.stopPropagation();
 
-      if (blocked === "screenshot" || blocked === "print" || blocked === "save") {
+      if (
+        blocked === "screenshot" ||
+        blocked === "print" ||
+        blocked === "save" ||
+        blocked === "devtools"
+      ) {
         setCurtainReason(
           blocked === "screenshot"
             ? "Isku-day screenshot ama sawir-qaadis ayaa la joojiyay."
+            : blocked === "devtools"
+            ? "Isku-day furista DevTools ama baaritaanka koodhka waa la xiray."
             : "Isku-day dajin ama daabacaad (PDF/Save) ayaa la joojiyay."
         );
-        if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
-          navigator.clipboard.writeText("").catch(() => {});
-        }
+      }
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        navigator.clipboard.writeText("").catch(() => {});
       }
       triggerBlockToast(blocked);
     };
@@ -83,36 +115,103 @@ export function ProContentShield({
       setCurtainReason("Shaashadda Pro waa la qariyay si looga ilaaliyo duubis ama sawir-qaadis.");
     };
 
+    const handlePageHide = () => {
+      setCurtainReason("Shaashadda Pro waa la xiray si looga ilaaliyo qabashada xogta.");
+    };
+
     const handleBeforePrint = () => {
       setCurtainReason("Daabacaadda iyo kaydinta PDF waa ka xiran yihiin qeybta Pro.");
       triggerBlockToast("print");
     };
 
-    const el = containerRef.current;
-    const handleSelectStart = (e: Event) => {
-      if (!isEditableElement(e.target)) {
-        e.preventDefault();
+    const handleGlobalBlockedEvent = (e: Event) => {
+      if (isEditableElement(e.target)) return;
+      e.preventDefault();
+      if (e.type !== "selectstart" && e.type !== "dragstart") {
+        showToast("Qeybta Pro lama koobiyeeyo, lama dajisto, lamana wadaago.");
       }
     };
+
+    // Idle auto-lock if student leaves phone unattended on Pro screen
+    let idleTimer: number | null = null;
+    const resetIdleTimer = () => {
+      if (idleTimer !== null) window.clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(() => {
+        setCurtainReason("Shaashadda Pro waa la xiray muddo aan la taaban si loo ilaaliyo xogtaada.");
+      }, PRO_IDLE_LOCK_MS);
+    };
+    resetIdleTimer();
+
+    // Anti-tampering guard: locks & re-mounts watermark if deleted or hidden via DevTools
+    const checkWatermarkIntegrity = () => {
+      const wm = watermarkRef.current;
+      if (!wm || !document.body.contains(wm)) {
+        setCurtainReason("Isku-day ka-saarid calaamadda amniga ah ayaa la joojiyay.");
+        setWatermarkRev((r) => r + 1);
+        return;
+      }
+      const computed = window.getComputedStyle(wm);
+      if (isTamperedOverlayStyle({
+        display: computed.display,
+        visibility: computed.visibility,
+        opacity: computed.opacity,
+      }) || !computed.backgroundImage || computed.backgroundImage === "none") {
+        setCurtainReason("Isku-day wax-ka-beddel calaamadda amniga ah ayaa la joojiyay.");
+        setWatermarkRev((r) => r + 1);
+      }
+    };
+
+    const tamperObserver = new MutationObserver(() => {
+      checkWatermarkIntegrity();
+    });
+    if (containerRef.current) {
+      tamperObserver.observe(containerRef.current, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["style", "class", "hidden"],
+      });
+    }
+    const integrityInterval = window.setInterval(checkWatermarkIntegrity, 1500);
 
     window.addEventListener("keydown", handleKey, true);
     window.addEventListener("keyup", handleKey, true);
     window.addEventListener("blur", handleWindowBlur);
+    window.addEventListener("pagehide", handlePageHide);
     window.addEventListener("beforeprint", handleBeforePrint);
+    window.addEventListener("scroll", resetIdleTimer, { passive: true });
+    window.addEventListener("pointerdown", resetIdleTimer, { passive: true });
+    window.addEventListener("touchstart", resetIdleTimer, { passive: true });
+    window.addEventListener("keydown", resetIdleTimer, { passive: true });
     document.addEventListener("visibilitychange", handleVisibility);
-    if (el) {
-      el.addEventListener("selectstart", handleSelectStart);
-    }
+    document.addEventListener("freeze", handlePageHide);
+    document.addEventListener("contextmenu", handleGlobalBlockedEvent, true);
+    document.addEventListener("copy", handleGlobalBlockedEvent, true);
+    document.addEventListener("cut", handleGlobalBlockedEvent, true);
+    document.addEventListener("dragstart", handleGlobalBlockedEvent, true);
+    document.addEventListener("selectstart", handleGlobalBlockedEvent, true);
 
     return () => {
+      document.body.classList.remove("pro-body-locked");
+      if (idleTimer !== null) window.clearTimeout(idleTimer);
+      window.clearInterval(integrityInterval);
+      tamperObserver.disconnect();
       window.removeEventListener("keydown", handleKey, true);
       window.removeEventListener("keyup", handleKey, true);
       window.removeEventListener("blur", handleWindowBlur);
+      window.removeEventListener("pagehide", handlePageHide);
       window.removeEventListener("beforeprint", handleBeforePrint);
+      window.removeEventListener("scroll", resetIdleTimer);
+      window.removeEventListener("pointerdown", resetIdleTimer);
+      window.removeEventListener("touchstart", resetIdleTimer);
+      window.removeEventListener("keydown", resetIdleTimer);
       document.removeEventListener("visibilitychange", handleVisibility);
-      if (el) {
-        el.removeEventListener("selectstart", handleSelectStart);
-      }
+      document.removeEventListener("freeze", handlePageHide);
+      document.removeEventListener("contextmenu", handleGlobalBlockedEvent, true);
+      document.removeEventListener("copy", handleGlobalBlockedEvent, true);
+      document.removeEventListener("cut", handleGlobalBlockedEvent, true);
+      document.removeEventListener("dragstart", handleGlobalBlockedEvent, true);
+      document.removeEventListener("selectstart", handleGlobalBlockedEvent, true);
     };
   }, [active, showToast]);
 
@@ -183,65 +282,68 @@ export function ProContentShield({
           </div>
         </aside>
 
-        {/* Protected Content Area with Anti-Leak Device Watermark + Privacy Curtain */}
-        <div className="relative rounded-3xl overflow-hidden">
-          {/* Repeating Diagonal Personalized Watermark Overlay */}
+        {/* Protected Content Area with Viewport-Fixed Anti-Leak Watermark + Privacy Curtain */}
+        <div className="relative rounded-3xl">
+          {/* Repeating Full-Viewport Timestamped Watermark (visible at every scroll depth) */}
           <div
+            key={watermarkRev}
+            ref={watermarkRef}
             aria-hidden="true"
-            className="pointer-events-none select-none absolute inset-0 z-20 overflow-hidden opacity-[0.075]"
-          >
-            <div className="w-[150%] h-[150%] -translate-x-[15%] -translate-y-[10%] -rotate-12 grid grid-cols-2 sm:grid-cols-3 gap-12 content-around justify-items-center py-8">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <span
-                  key={i}
-                  className="font-mono font-extrabold text-[11px] sm:text-xs tracking-widest text-white whitespace-nowrap"
-                >
-                  {watermarkStamp}
-                </span>
-              ))}
-            </div>
-          </div>
+            data-testid="pro-watermark-layer"
+            className="pointer-events-none select-none fixed inset-0 z-30"
+            style={{
+              backgroundImage: `url("${watermarkTileUri}")`,
+              backgroundRepeat: "repeat",
+            }}
+          />
 
           {/* Unlocked Pro Content */}
-          <div className={curtainReason ? "blur-xl opacity-15 pointer-events-none transition-all duration-150" : "relative z-10"}>
+          <div
+            className={
+              curtainReason
+                ? "blur-2xl opacity-10 pointer-events-none select-none transition-all duration-150"
+                : "relative z-10"
+            }
+          >
             {children}
           </div>
-
-          {/* Privacy Blur Overlay on Screenshot Attempt / App Switch / Print */}
-          {curtainReason && (
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-label="Ilaalinta Xogta Pro"
-              className="absolute inset-0 z-30 bg-[#041024]/92 backdrop-blur-2xl flex items-center justify-center p-6 text-center"
-            >
-              <div className="max-w-md rounded-3xl p-6 border border-[#FFC93C]/45 bg-[#072047] space-y-4 shadow-2xl">
-                <div className="w-12 h-12 mx-auto rounded-2xl bg-[#FFC93C]/20 border border-[#FFC93C]/50 text-[#FFD86B] flex items-center justify-center">
-                  <EyeOff className="w-6 h-6" />
-                </div>
-                <div className="space-y-1.5">
-                  <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#FFD86B]">
-                    Ilaalinta Xogta Pro · {shortDev}
-                  </div>
-                  <h4 className="font-head font-extrabold text-lg text-white">
-                    {curtainReason}
-                  </h4>
-                  <p className="text-xs text-white/75 leading-relaxed">
-                    Xogta Pro waxay u furan tahay qalabkaaga keliya; lama duubi karo, lama dajisan karo, lamana la wadaagi karo dad kale.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setCurtainReason(null)}
-                  className="w-full h-11 rounded-xl bg-[#4189DD] hover:bg-[#5CA2F2] text-white font-head font-extrabold text-xs cursor-pointer transition-colors"
-                >
-                  Sii Wad Akhriska Qeybta Pro
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Fixed Viewport-Centered Privacy Blur Curtain on Screenshot Attempt / App Switch / Print / Idle */}
+      {curtainReason && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Ilaalinta Xogta Pro"
+          data-testid="pro-privacy-curtain"
+          className="fixed inset-0 z-50 bg-[#041024]/95 backdrop-blur-2xl flex items-center justify-center p-5 text-center overflow-y-auto"
+        >
+          <div className="w-full max-w-md rounded-3xl p-6 border border-[#FFC93C]/45 bg-[#072047] space-y-4 shadow-2xl">
+            <div className="w-12 h-12 mx-auto rounded-2xl bg-[#FFC93C]/20 border border-[#FFC93C]/50 text-[#FFD86B] flex items-center justify-center">
+              <EyeOff className="w-6 h-6" />
+            </div>
+            <div className="space-y-1.5">
+              <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#FFD86B]">
+                Ilaalinta Xogta Pro · {shortDev}
+              </div>
+              <h4 className="font-head font-extrabold text-lg text-white">
+                {curtainReason}
+              </h4>
+              <p className="text-xs text-white/75 leading-relaxed">
+                Xogta Pro waxay u furan tahay qalabkaaga keliya; lama duubi karo, lama dajisan karo, lamana la wadaagi karo dad kale.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setCurtainReason(null)}
+              className="w-full h-11 rounded-xl bg-[#4189DD] hover:bg-[#5CA2F2] text-white font-head font-extrabold text-xs cursor-pointer transition-colors"
+            >
+              Sii Wad Akhriska Qeybta Pro
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Print / PDF Export Blocker Fallback */}
       <div className="pro-print-block hidden">

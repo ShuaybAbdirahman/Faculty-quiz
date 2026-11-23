@@ -368,10 +368,64 @@ export function isBlockedProShortcut(
   return null;
 }
 
-export function buildProWatermarkStamp(deviceId: string, userName?: string): string {
+export const PRO_IDLE_LOCK_MS = 120_000;
+
+export function formatWatermarkTimeTag(date: Date = new Date()): string {
+  const hh = String(date.getHours()).padStart(2, "0");
+  const mm = String(date.getMinutes()).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mo = String(date.getMonth() + 1).padStart(2, "0");
+  return `${hh}:${mm} ${dd}/${mo}`;
+}
+
+export function buildProWatermarkStamp(deviceId: string, userName?: string, timeTag?: string): string {
   const short = formatShortDeviceId(deviceId);
-  const cleanName = (userName ?? "").replace(/\s+/g, " ").trim().slice(0, 24);
-  return cleanName ? `CAAWIYE PRO · ${cleanName} · ID:${short}` : `CAAWIYE PRO · ID:${short}`;
+  const cleanName = (userName ?? "").replace(/\s+/g, " ").trim().slice(0, 22);
+  const cleanTime = (timeTag ?? "").replace(/\s+/g, " ").trim().slice(0, 16);
+  const parts = ["CAAWIYE PRO"];
+  if (cleanName) parts.push(cleanName);
+  parts.push(`ID:${short}`);
+  if (cleanTime) parts.push(cleanTime);
+  return parts.join(" · ");
+}
+
+export function isTamperedOverlayStyle(style: {
+  display?: string;
+  visibility?: string;
+  opacity?: string | number;
+}): boolean {
+  const disp = String(style.display ?? "block").toLowerCase().trim();
+  const vis = String(style.visibility ?? "visible").toLowerCase().trim();
+  const op = Number(style.opacity ?? 1);
+  if (disp === "none" || vis === "hidden" || vis === "collapse") return true;
+  if (!Number.isFinite(op) || op < 0.7) return true;
+  return false;
+}
+
+function escapeSvgText(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+export function buildProWatermarkTileDataUri(stamp: string): string {
+  const safeStamp = escapeSvgText(stamp || "CAAWIYE PRO");
+  const svg = [
+    '<svg xmlns="http://www.w3.org/2000/svg" width="420" height="200" viewBox="0 0 420 200">',
+    '<g transform="rotate(-22 210 100)">',
+    '<text x="210" y="60" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10.5" font-weight="800" letter-spacing="0.9" fill="rgba(255,255,255,0.17)" stroke="rgba(4,16,36,0.22)" stroke-width="0.6">',
+    safeStamp,
+    "</text>",
+    '<text x="210" y="148" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10.5" font-weight="800" letter-spacing="0.9" fill="rgba(255,255,255,0.15)" stroke="rgba(4,16,36,0.2)" stroke-width="0.6">',
+    safeStamp,
+    "</text>",
+    "</g>",
+    "</svg>",
+  ].join("");
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
 export const PRO_PERSONAL_REMINDER = {
