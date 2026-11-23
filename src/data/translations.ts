@@ -1354,5 +1354,37 @@ export const uiTranslations: Record<string, [string, string]> = {
   "Baro shakhsiyaad nool ama qarnigan magac ku yeeshay Soomaaliya iyo adduunka, shahaadadii ay qaateen, iyo casharka ardaygu ka baran karo.": [
     "Explore living and 21st-century role models from Somalia and around the world, the degrees they earned, and the practical lessons students can learn.",
     "تعرّف على شخصيات معاصرة من الصومال والعالم حققت إنجازات في هذا القرن، والشهادات التي حصلوا عليها، والدروس العملية للطلاب."
+  ],
+  "Xarunta Ardayga Pro: Khariidadaha, Jaamacadaha & Xirfadaha": [
+    "Pro Student Hub: Roadmaps, Universities & High-Income Skills",
+    "مركز Pro: المسارات والجامعات والمهارات المربحة"
+  ],
+  "Ka hel khariidado waxbarasho oo la hubiyay (AI, Injineernimada Korontada, Caafimaadka, Dhismaha, Maaliyadda), hagaha jaamacadaha Soomaaliya, dadka caanka ah ee qarnigan, iyo xirfadaha dakhliga sare.": [
+    "Access verified career roadmaps (AI, Electrical Engineering, Medicine, Civil, Finance), Somalia universities directory, 21st-century pioneers, and high-income student skills.",
+    "احصل على مسارات معتمدة ودليل الجامعات الصومالية وروّاد القرن ٢١ والمهارات عالية الدخل للطلاب."
+  ],
+  "Jaamacadaha Soomaaliya": [
+    "Somalia Universities",
+    "جامعات الصومال"
+  ],
+  "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waxaa kuu furmaya dhammaan 6-da qaybood ee Xarunta Pro abid.": [
+    "Pay $0.10 once (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 6 University Pro Hub sections forever.",
+    "ادفع 0.10$ مرة واحدة (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Pro الستة للأبد."
+  ],
+  "Hagaha Waaxaha (14 kulliyadood + 70 su'aalood), Khariidadaha, Jaamacadaha, Dadka Caanka ah, Wararka AI, Xirfadaha & Horumarinta.": [
+    "Department Guide (14 faculties + 70 questions), Roadmaps, Somalia Universities, Pioneers, AI Jobs News, High-Income Skills & Growth.",
+    "دليل الأقسام (14 كلية + 70 سؤالاً)، المسارات، الجامعات، الروّاد، وظائف المستقبل، المهارات المربحة، والتطوير."
+  ],
+  "Fur luqadaha Ingiriisiga iyo Carabiga ee Qeybta 3aad (Af-Soomaaligu waa bilaash abid).": [
+    "Unlock English and Arabic in Section 3 (Somali is 100% free forever).",
+    "افتح الإنجليزية والعربية في القسم الثالث (الصومالية مجانية للأبد)."
+  ],
+  "Hagaha Jaamacadaha Soomaaliya (Dowli & Gaar ah)": [
+    "Somalia Universities Directory (Public & Private)",
+    "دليل الجامعات الصومالية (الحكومية والخاصة)"
+  ],
+  "Xirfadaha Dakhliga Sare & Horumarinta Ardayga Soomaaliya": [
+    "High-Income Skills & Somalia Student Growth",
+    "المهارات المربحة وتطوير الطالب الصومالي"
   ]
 };

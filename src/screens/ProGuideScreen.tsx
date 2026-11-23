@@ -30,11 +30,7 @@ import {
   ProgressRing,
   ShinyButton,
 } from "../components/ModernUI";
-import {
-  ProRoadmapsExplorer,
-  ReadinessTracker,
-  SomaliaChallengesHub,
-} from "../components/ProHubContent";
+import { ProRoadmapsExplorer } from "../components/ProHubContent";
 
 export interface ProFacultyRef {
   f: Faculty;
@@ -59,10 +55,10 @@ export function ProEntryCard({
 
   return (
     <div
-      className="relative rounded-[24px] p-[18px] text-white border border-[#FFC93C]/55"
+      className="relative rounded-[24px] p-[18px] text-white border border-[#7CB7FF]/45"
       style={{
-        background: "linear-gradient(135deg, #050A1E 0%, #16276F 100%)",
-        boxShadow: "0 12px 30px rgba(255,201,60,0.16)",
+        background: "linear-gradient(135deg, #07214C 0%, #165FB8 100%)",
+        boxShadow: "0 12px 30px rgba(65,137,221,0.22)",
       }}
     >
       <div className="flex items-center justify-between">
@@ -160,7 +156,7 @@ export function ProGuideScreen({
   const [proAns, setProAns] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"depts" | "roadmaps" | "challenges" | "readiness">("depts");
+  const [activeTab, setActiveTab] = useState<"depts" | "roadmaps">("depts");
 
   const facultyProQuestions = useMemo(() => getProQuestionsForFaculty(faculty.id), [faculty.id]);
 
@@ -213,19 +209,19 @@ export function ProGuideScreen({
     <div
       className="min-h-screen flex flex-col text-white relative overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, #050A1E 0%, #0B1647 50%, #1A1450 100%)",
+        background: "linear-gradient(180deg, #061D42 0%, #0C326C 52%, #1553A6 100%)",
       }}
     >
       <div
         className="pointer-events-none absolute -top-28 -right-24 w-[320px] h-[320px] rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(255,201,60,0.16), transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(255,255,255,0.14), transparent 70%)" }}
       />
       <div
         className="pointer-events-none absolute -bottom-32 -left-28 w-[360px] h-[360px] rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(106,71,224,0.35), transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(65,137,221,0.38), transparent 70%)" }}
       />
 
-      <header className="relative z-10 border-b border-white/10 bg-[#050A1E]/85 backdrop-blur-md sticky top-0">
+      <header className="relative z-10 border-b border-white/15 bg-[#061D42]/90 backdrop-blur-md sticky top-0">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-2">
           <button
             type="button"
@@ -244,8 +240,6 @@ export function ProGuideScreen({
           {[
             { id: "depts", label: tr("Waaxaha") },
             { id: "roadmaps", label: tr("Khariidadaha") },
-            { id: "challenges", label: tr("Caqabadaha Soomaaliya") },
-            { id: "readiness", label: tr("Diyaargarowga") },
           ].map((t) => (
             <button
               key={t.id}
@@ -253,7 +247,7 @@ export function ProGuideScreen({
               onClick={() => setActiveTab(t.id as typeof activeTab)}
               className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border shrink-0 cursor-pointer transition-colors ${
                 activeTab === t.id
-                  ? "bg-[#FFC93C] text-[#050A1E] border-[#FFC93C]"
+                  ? "bg-[#FFC93C] text-[#050A1C] border-[#FFC93C]"
                   : "bg-white/6 text-white/80 border-white/15 hover:bg-white/12"
               }`}
             >
@@ -266,10 +260,6 @@ export function ProGuideScreen({
       <main className="relative z-10 flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 pt-5 pb-12">
         {activeTab === "roadmaps" ? (
           <ProRoadmapsExplorer initialFacultyId={faculty.id} />
-        ) : activeTab === "challenges" ? (
-          <SomaliaChallengesHub />
-        ) : activeTab === "readiness" ? (
-          <ReadinessTracker />
         ) : loading ? (
           <div className="py-24 flex justify-center">
             <Loader2 className="w-8 h-8 animate-spin text-[#FFC93C]" />

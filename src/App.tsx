@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import type { Faculty } from "./data/quizData";
+import type { ProItemKey } from "./lib/proSecurity";
 import { AppProvider, useApp } from "./context/AppContext";
+import { HomeScreen } from "./screens/HomeScreen";
+import { SchoolForm4Screen } from "./screens/SchoolForm4Screen";
+import { BridgingPrepScreen } from "./screens/BridgingPrepScreen";
 import { WelcomeScreen } from "./screens/WelcomeScreen";
 import { FounderIntroScreen } from "./screens/FounderIntroScreen";
 import { QuizScreen, type QuizOutcome } from "./screens/QuizScreen";
@@ -13,7 +17,10 @@ import { ProPaywallScreen, type ProPlanType } from "./screens/ProPaywallScreen";
 import { ProHubScreen, type HubTab } from "./screens/ProHubScreen";
 
 type Route =
-  | { name: "welcome" }
+  | { name: "home" }
+  | { name: "school"; subjectId?: string }
+  | { name: "bridging"; section?: "exams" | "readiness" | "challenges" }
+  | { name: "faculty_home" }
   | { name: "founder"; after: "quiz" | "back" }
   | { name: "quiz" }
   | { name: "result"; outcome: QuizOutcome }
@@ -22,16 +29,23 @@ type Route =
   | { name: "reviews" }
   | { name: "pro_hub"; tab?: HubTab; facultyId?: string }
   | { name: "pro_guide"; faculty: Faculty; outcome: QuizOutcome }
-  | { name: "pro_paywall"; faculty?: Faculty; outcome?: QuizOutcome; plan?: ProPlanType };
+  | {
+      name: "pro_paywall";
+      faculty?: Faculty;
+      outcome?: QuizOutcome;
+      plan?: ProPlanType;
+      itemKey?: ProItemKey;
+      returnTo?: "school" | "bridging" | "faculty_home";
+    };
 
 function initialStack(): Route[] {
   if (typeof window !== "undefined") {
     const params = new URLSearchParams(window.location.search);
     if (params.get("autostart") === "1") {
-      return [{ name: "welcome" }, { name: "quiz" }];
+      return [{ name: "home" }, { name: "faculty_home" }, { name: "quiz" }];
     }
   }
-  return [{ name: "welcome" }];
+  return [{ name: "home" }];
 }
 
 function AppShell() {
@@ -47,22 +61,67 @@ function AppShell() {
   const push = (r: Route) => setStack((s) => [...s, r]);
   const pop = () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s));
   const replace = (r: Route) => setStack((s) => [...s.slice(0, -1), r]);
-  const resetToWelcome = () => setStack([{ name: "welcome" }]);
+  const resetToHome = () => setStack([{ name: "home" }]);
+  const resetToFacultyHome = () => setStack([{ name: "home" }, { name: "faculty_home" }]);
 
   const handleOpenPro = async (faculty: Faculty, outcome: QuizOutcome) => {
     const verified = proActive ? await refreshPro() : false;
     if (verified) {
       push({ name: "pro_guide", faculty, outcome });
     } else {
-      push({ name: "pro_paywall", faculty, outcome });
+      push({ name: "pro_paywall", faculty, outcome, plan: "departments" });
     }
   };
 
   let screen: React.ReactNode = null;
   switch (current.name) {
-    case "welcome":
+    case "home":
+      screen = (
+        <HomeScreen
+          onEnterSchool={(subjectId) => push({ name: "school", subjectId })}
+          onEnterBridging={(section) => push({ name: "bridging", section })}
+          onEnterFacultyGuide={() => push({ name: "faculty_home" })}
+          onOpenSettings={() => push({ name: "settings" })}
+          onOpenReviews={() => push({ name: "reviews" })}
+        />
+      );
+      break;
+    case "school":
+      screen = (
+        <SchoolForm4Screen
+          initialSubjectId={current.subjectId}
+          onBackHome={pop}
+          onUnlockSubject={(subject) =>
+            push({
+              name: "pro_paywall",
+              plan: "school_subject",
+              itemKey: `school:${subject.id}`,
+              returnTo: "school",
+            })
+          }
+        />
+      );
+      break;
+    case "bridging":
+      screen = (
+        <BridgingPrepScreen
+          initialSection={current.section}
+          onBackHome={pop}
+          onUnlockBridge={(track) =>
+            push({
+              name: "pro_paywall",
+              plan: "bridge_exam",
+              itemKey: `bridge:${track.id}`,
+              returnTo: "bridging",
+            })
+          }
+        />
+      );
+      break;
+    case "faculty_home":
       screen = (
         <WelcomeScreen
+          onBackHome={resetToHome}
           onStart={() => {
             if (founderIntroSeen) push({ name: "quiz" });
             else push({ name: "founder", after: "quiz" });
@@ -70,7 +129,7 @@ function AppShell() {
           onOpenSettings={() => push({ name: "settings" })}
           onOpenReviews={() => push({ name: "reviews" })}
           onOpenProHub={(tab, facultyId) => push({ name: "pro_hub", tab, facultyId })}
-          onOpenPaywall={() => push({ name: "pro_paywall" })}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "departments" })}
         />
       );
       break;
@@ -100,7 +159,7 @@ function AppShell() {
           planLen={current.outcome.planLen}
           profile={current.outcome.profile}
           onCompare={() => push({ name: "compare", outcome: current.outcome })}
-          onRestart={resetToWelcome}
+          onRestart={resetToFacultyHome}
           onOpenPro={(faculty) => {
             void handleOpenPro(faculty, current.outcome);
           }}
@@ -116,7 +175,7 @@ function AppShell() {
           onBack={pop}
           onOpenFounderIntro={() => push({ name: "founder", after: "back" })}
           onOpenReviews={() => push({ name: "reviews" })}
-          onLangChanged={resetToWelcome}
+          onLangChanged={resetToFacultyHome}
           onOpenPaywall={() => push({ name: "pro_paywall", plan: "languages" })}
         />
       );
@@ -150,10 +209,18 @@ function AppShell() {
       screen = (
         <ProPaywallScreen
           initialPlan={current.plan ?? "departments"}
+          initialItemKey={current.itemKey}
           onBack={pop}
-          onUnlocked={() => {
-            if (current.faculty && current.outcome) {
+          onUnlocked={(unlockedItem) => {
+            if (current.returnTo === "school") {
+              const sid = unlockedItem?.startsWith("school:") ? unlockedItem.slice("school:".length) : undefined;
+              replace({ name: "school", subjectId: sid });
+            } else if (current.returnTo === "bridging") {
+              replace({ name: "bridging", section: "exams" });
+            } else if (current.faculty && current.outcome) {
               replace({ name: "pro_guide", faculty: current.faculty, outcome: current.outcome });
+            } else if (current.plan === "languages") {
+              pop();
             } else {
               replace({ name: "pro_hub", tab: "roadmaps" });
             }
@@ -166,7 +233,7 @@ function AppShell() {
   return (
     <div
       className={`min-h-screen w-full transition-colors duration-200 ${!animationsOn ? "no-anim" : ""} ${
-        darkMode ? "bg-[#090F1E] text-[#EEF2FF]" : "bg-[#F6F8FC] text-[#0F172A]"
+        darkMode ? "bg-[#051428] text-[#EEF5FF]" : "bg-[#F1F6FD] text-[#081A33]"
       }`}
     >
       {screen}

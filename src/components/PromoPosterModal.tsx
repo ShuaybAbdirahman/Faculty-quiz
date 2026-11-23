@@ -48,7 +48,7 @@ async function renderPosterWithRealQr(canvas: HTMLCanvasElement): Promise<void> 
   const inner = boxSize - pad * 2;
   const cell = inner / n;
 
-  ctx.fillStyle = "#050B20";
+  ctx.fillStyle = "#061D42";
   for (let r = 0; r < n; r++) {
     for (let c = 0; c < n; c++) {
       if (qrRows[r][c] === "1") {
@@ -174,7 +174,7 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="p-4 sm:p-5 flex flex-col items-center gap-4">
-          <div className="w-full max-w-[360px] rounded-2xl overflow-hidden shadow-xl border border-white/15 bg-[#050B20]">
+          <div className="w-full max-w-[360px] rounded-2xl overflow-hidden shadow-xl border border-white/15 bg-[#061D42]">
             <canvas
               ref={canvasRef}
               className={`w-full h-auto block ${ready ? "" : "hidden"}`}

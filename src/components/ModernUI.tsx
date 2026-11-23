@@ -4,32 +4,41 @@ import { appOwner, type Faculty } from "../data/quizData";
 import { useApp } from "../context/AppContext";
 import { argbToHex, darkenHex } from "../lib/i18n";
 
+export function SomaliStarIcon({ size = 22, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M12 2.4L14.85 8.55L21.55 9.38L16.62 14.02L17.9 20.68L12 17.42L6.1 20.68L7.38 14.02L2.45 9.38L9.15 8.55L12 2.4Z" />
+    </svg>
+  );
+}
+
 export function AuroraBackground() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div
         className="animate-aurora-1 absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full"
         style={{
-          background: "radial-gradient(circle, rgba(34,211,238,0.32) 0%, rgba(34,211,238,0) 70%)",
+          background: "radial-gradient(circle, rgba(65,137,221,0.34) 0%, rgba(65,137,221,0) 70%)",
         }}
       />
       <div
-        className="animate-aurora-2 absolute top-6 -right-28 w-[400px] h-[400px] rounded-full"
+        className="animate-aurora-2 absolute top-6 -right-28 w-[380px] h-[380px] rounded-full"
         style={{
-          background: "radial-gradient(circle, rgba(255,106,162,0.29) 0%, rgba(255,106,162,0) 70%)",
+          background: "radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 70%)",
         }}
       />
       <div
-        className="animate-aurora-3 absolute -bottom-24 left-1/4 w-[340px] h-[340px] rounded-full"
+        className="absolute inset-0 opacity-15"
         style={{
-          background: "radial-gradient(circle, rgba(255,201,60,0.20) 0%, rgba(255,201,60,0) 70%)",
-        }}
-      />
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: "radial-gradient(rgba(255,255,255,0.45) 1.3px, transparent 1.3px)",
-          backgroundSize: "26px 26px",
+          backgroundImage: "radial-gradient(rgba(255,255,255,0.5) 1.1px, transparent 1.1px)",
+          backgroundSize: "24px 24px",
         }}
       />
     </div>
@@ -55,9 +64,10 @@ export function ShinyButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="relative w-full h-[62px] rounded-[20px] overflow-hidden flex items-center justify-center gap-2.5 cursor-pointer transition-transform active:scale-[0.97] disabled:opacity-60 animate-gold-pulse"
+      className="relative w-full h-[60px] rounded-2xl overflow-hidden flex items-center justify-center gap-2.5 cursor-pointer transition-transform active:scale-[0.97] disabled:opacity-60 border border-white/25"
       style={{
-        background: "linear-gradient(135deg, #FFE28F 0%, #FFC93C 50%, #FFA927 100%)",
+        background: "linear-gradient(135deg, #4189DD 0%, #1F6FD4 55%, #1254B5 100%)",
+        boxShadow: "0 10px 28px rgba(65, 137, 221, 0.36)",
       }}
     >
       <span
@@ -65,11 +75,11 @@ export function ShinyButton({
         className="pointer-events-none absolute top-[-30px] left-0 w-[70px] h-[140px] animate-shimmer"
         style={{
           background:
-            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 100%)",
+            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.42) 50%, rgba(255,255,255,0) 100%)",
         }}
       />
-      <span className="relative z-10 flex items-center justify-center gap-2 text-[#0B1533] font-head font-extrabold text-[19px]">
-        {icon ?? <Play className="w-6 h-6 fill-[#0B1533] text-[#0B1533]" />}
+      <span className="relative z-10 flex items-center justify-center gap-2 text-white font-head font-extrabold text-[18px]">
+        {icon ?? <Play className="w-5 h-5 fill-white text-white" />}
         <span>{tr(label)}</span>
         {showArrow && (
           <span className="animate-arrow-nudge inline-flex">
@@ -434,7 +444,7 @@ export function Footer() {
   const { tr } = useApp();
   return (
     <footer className="py-5 px-6 text-center text-xs opacity-65">
-      © 2026 {appOwner}. {tr("Xuquuqda oo dhan waa dhowran tahay.")}
+      © 2026 CAAWIYE · {appOwner}. {tr("Xuquuqda oo dhan waa dhowran tahay.")}
     </footer>
   );
 }

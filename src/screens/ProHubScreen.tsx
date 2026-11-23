@@ -5,8 +5,6 @@ import {
   Award,
   Building2,
   CheckCircle2,
-  ClipboardCheck,
-  Lightbulb,
   Lock,
   Map,
   Menu,
@@ -19,11 +17,7 @@ import {
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { AuroraBackground, ProBadge } from "../components/ModernUI";
-import {
-  ProRoadmapsExplorer,
-  ReadinessTracker,
-  SomaliaChallengesHub,
-} from "../components/ProHubContent";
+import { ProRoadmapsExplorer } from "../components/ProHubContent";
 import {
   FutureJobsNewsSection,
   HighIncomeSkillsSection,
@@ -38,9 +32,7 @@ export type HubTab =
   | "pioneers"
   | "future_jobs"
   | "skills"
-  | "somalia_growth"
-  | "challenges"
-  | "readiness";
+  | "somalia_growth";
 
 interface TabMeta {
   id: HubTab;
@@ -151,34 +143,6 @@ export function ProHubScreen({
         tr("Xiriirrada rasmiga ah ee deeqaha waxbarasho"),
       ],
     },
-    {
-      id: "challenges",
-      label: tr("Caqabadaha Soomaaliya"),
-      icon: <Lightbulb className="w-4 h-4" />,
-      gateHeadline: tr("Caqabadaha Ardayga iyo Xalkooda (Pro Keliya)"),
-      gateSummary: tr(
-        "Hage dhab ah oo xallinaya caqabadaha ugu waaweyn ee ardayga ka baxaya dugsiga sare ee gelaya jaamacadda."
-      ),
-      highlights: [
-        tr("Xalka caqabadda luqadda Ingiriisiga iyo daraasadda"),
-        tr("Maareynta khidmadda, deeqaha, iyo xirfadda shaqada"),
-        tr("Talooyin tallaabo-tallaabo ah oo la tijaabiyay"),
-      ],
-    },
-    {
-      id: "readiness",
-      label: tr("Diyaargarowga"),
-      icon: <ClipboardCheck className="w-4 h-4" />,
-      gateHeadline: tr("Diyaargarowga Jaamacadda 90 Maalmood (Pro Keliya)"),
-      gateSummary: tr(
-        "Liis is-daba-joog ah oo aad calaamadayn karto ka hor sannadka koowaad ee jaamacadda."
-      ),
-      highlights: [
-        tr("Tallaabooyinka diyaargarowga ka hor jaamacadda"),
-        tr("Calaamadayn iyo cabbirka horumarkaaga"),
-        tr("Hage ku siinaya kalsooni buuxda maalinta koowaad"),
-      ],
-    },
   ];
 
   const activeTabObj = tabs.find((t) => t.id === tab) ?? tabs[0];
@@ -192,7 +156,7 @@ export function ProHubScreen({
     <div
       className="min-h-screen w-full max-w-full overflow-x-clip flex flex-col text-white relative"
       style={{
-        background: "linear-gradient(180deg, #050A1C 0%, #0A153E 52%, #131342 100%)",
+        background: "linear-gradient(180deg, #061D42 0%, #0C326C 52%, #1553A6 100%)",
       }}
     >
       <div className="pointer-events-none fixed inset-0 opacity-60">
@@ -200,7 +164,7 @@ export function ProHubScreen({
       </div>
 
       {/* Compact Single-Row Sticky Header with 3-Line Menu Trigger */}
-      <header className="border-b border-white/10 sticky top-0 z-30 bg-[#050A1C]/95 backdrop-blur-xl">
+      <header className="border-b border-white/15 sticky top-0 z-30 bg-[#061D42]/95 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-3.5 sm:px-6 py-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <button
@@ -263,7 +227,7 @@ export function ProHubScreen({
             />
             <nav
               aria-label="Pro Sections Menu"
-              className="relative z-30 border-t border-white/10 bg-[#08102B]/98 shadow-2xl animate-pro-enter"
+              className="relative z-30 border-t border-white/15 bg-[#07214C]/98 shadow-2xl animate-pro-enter"
             >
               <div className="max-w-5xl mx-auto px-3.5 sm:px-6 py-3.5 space-y-2">
                 <div className="flex items-center justify-between px-1 pb-1">
@@ -273,7 +237,7 @@ export function ProHubScreen({
                     </span>
                     <ProBadge small />
                   </div>
-                  <span className="text-[11px] font-semibold text-[#FFD86B]">8 {tr("Qaybood")}</span>
+                  <span className="text-[11px] font-semibold text-[#FFD86B]">6 {tr("Qaybood")}</span>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-1.5">
@@ -402,13 +366,13 @@ export function ProHubScreen({
 
               <p className="text-[11.5px] text-center text-white/60 leading-relaxed">
                 {tr(
-                  "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waxaa kuu furmaya dhammaan 8-da qaybood ee Xarunta Pro abid."
+                  "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waxaa kuu furmaya dhammaan 6-da qaybood ee Xarunta Pro abid."
                 )}
               </p>
             </div>
           </section>
         ) : (
-          /* PRO ACTIVE: Full unlocked access to all 8 interactive Pro Hub sections */
+          /* PRO ACTIVE: Full unlocked access to all 6 interactive Pro Hub sections */
           <div key={tab} className="animate-pro-enter min-w-0">
             {tab === "roadmaps" && (
               <ProRoadmapsExplorer
@@ -435,12 +399,6 @@ export function ProHubScreen({
             )}
             {tab === "somalia_growth" && (
               <SomaliaGrowthSection isPro={true} onUnlock={onOpenPaywall} />
-            )}
-            {tab === "challenges" && (
-              <SomaliaChallengesHub locked={false} onUnlockClick={onOpenPaywall} />
-            )}
-            {tab === "readiness" && (
-              <ReadinessTracker locked={false} onUnlockClick={onOpenPaywall} />
             )}
           </div>
         )}

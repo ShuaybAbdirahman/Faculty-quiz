@@ -1,16 +1,17 @@
 import React, { useMemo, useState } from "react";
 import {
+  ArrowLeft,
   ArrowRight,
+  Award,
   Briefcase,
+  Building2,
   CheckCircle2,
-  ClipboardCheck,
   Clock,
   GitBranch,
   Globe,
   GraduationCap,
   HelpCircle,
   Image as ImageIcon,
-  Lightbulb,
   Lock,
   Map,
   Moon,
@@ -32,10 +33,12 @@ import {
   Footer,
   ProBadge,
   ShinyButton,
+  SomaliStarIcon,
 } from "../components/ModernUI";
 import { ReviewsSection } from "../components/ReviewsComponents";
 import { PromoPosterModal } from "../components/PromoPosterModal";
 import { HeroSpotlightTicker } from "../components/HeroSpotlightTicker";
+import type { HubTab } from "./ProHubScreen";
 import promoPosterThumb from "../assets/images/hagaha_kulliyadda_promo_1795079553879.jpg";
 
 function NameField() {
@@ -103,19 +106,21 @@ function NameField() {
 }
 
 export function WelcomeScreen({
+  onBackHome,
   onStart,
   onOpenSettings,
   onOpenReviews,
   onOpenProHub,
   onOpenPaywall,
 }: {
+  onBackHome: () => void;
   onStart: () => void;
   onOpenSettings: () => void;
   onOpenReviews: () => void;
-  onOpenProHub: (tab?: "roadmaps" | "challenges" | "readiness", facultyId?: string) => void;
+  onOpenProHub: (tab?: HubTab, facultyId?: string) => void;
   onOpenPaywall: () => void;
 }) {
-  const { lang, setLang, darkMode, setDarkMode, tr, trf, tx, txl, proActive } = useApp();
+  const { lang, setLang, darkMode, setDarkMode, tr, trf, tx, txl, rtl, proActive } = useApp();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [peekFaculty, setPeekFaculty] = useState<Faculty | null>(null);
   const [promoOpen, setPromoOpen] = useState(false);
@@ -134,26 +139,35 @@ export function WelcomeScreen({
     <div className="min-h-screen flex flex-col">
       {/* Full-Bleed Academic Hero */}
       <section
-        className="relative overflow-hidden text-white border-b border-white/10"
+        className="relative overflow-hidden text-white border-b border-white/15"
         style={{
-          background: "linear-gradient(135deg, #050B20 0%, #0F205C 52%, #241969 100%)",
+          background: "linear-gradient(135deg, #07224C 0%, #165FB8 52%, #312E81 100%)",
         }}
       >
         <AuroraBackground />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 pt-4 sm:pt-5 pb-12 lg:pb-16">
           {/* Top Navigation Bar */}
-          <header className="flex items-center justify-between gap-2 pb-5 sm:pb-6 border-b border-white/10">
+          <header className="flex items-center justify-between gap-2 pb-5 sm:pb-6 border-b border-white/15">
             <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/12 border border-white/20 flex items-center justify-center shrink-0">
-                <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-[#FFD86B]" />
+              <button
+                type="button"
+                onClick={onBackHome}
+                aria-label="Ku noqo CAAWIYE"
+                className="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-white/12 hover:bg-white/20 border border-white/20 text-xs font-bold text-white cursor-pointer transition-colors shrink-0"
+              >
+                {rtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+                <span className="hidden sm:inline">CAAWIYE</span>
+              </button>
+              <div className="w-9 h-9 rounded-xl bg-[#4189DD] border border-white/30 flex items-center justify-center shrink-0">
+                <SomaliStarIcon className="w-5 h-5 text-white" />
               </div>
               <div className="min-w-0">
                 <div className="font-head font-extrabold text-[15px] sm:text-[17px] leading-tight tracking-tight truncate">
-                  {tr("Hagaha Kulliyadda")}
+                  University · {tr("Hagaha Kulliyadda")}
                 </div>
-                <div className="text-[10.5px] sm:text-[11px] text-white/60 font-medium truncate">
-                  RIASEC · 14 {tr("Kulliyadaha")}
+                <div className="text-[10.5px] sm:text-[11px] text-white/70 font-medium truncate">
+                  Qeybta 3aad · RIASEC · 14 {tr("Kulliyadaha")}
                 </div>
               </div>
             </div>
@@ -394,10 +408,10 @@ export function WelcomeScreen({
 
         {/* Pro Student Hub Spotlight Banner ($0.10 Lifetime) */}
         <section
-          className="rounded-3xl p-6 sm:p-7 text-white border border-[#FFC93C]/40 relative overflow-hidden"
+          className="rounded-3xl p-6 sm:p-7 text-white border border-[#7CB7FF]/40 relative overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, #070E29 0%, #142567 58%, #261B6E 100%)",
-            boxShadow: "0 18px 40px rgba(7,14,41,0.22)",
+            background: "linear-gradient(135deg, #07224C 0%, #1553A6 58%, #312E81 100%)",
+            boxShadow: "0 18px 40px rgba(7,34,76,0.25)",
           }}
         >
           <div className="relative z-10 grid lg:grid-cols-12 gap-6 items-center">
@@ -409,11 +423,11 @@ export function WelcomeScreen({
                 </span>
               </div>
               <h2 className="font-head font-extrabold text-[24px] sm:text-[28px] leading-tight">
-                {tr("Xarunta Ardayga Pro: Khariidadaha iyo Xalka Ardayga Soomaaliya")}
+                {tr("Xarunta Ardayga Pro: Khariidadaha, Jaamacadaha & Xirfadaha")}
               </h2>
               <p className="text-sm text-white/80 leading-relaxed max-w-2xl">
                 {tr(
-                  "Ka hel khariidado waxbarasho oo la hubiyay (AI, Injineernimada Korontada, Caafimaadka, Dhismaha, Maaliyadda iyo in ka badan), xalka caqabadaha dugsiga sare ilaa jaamacadda, iyo liiska diyaargarowga 90-ka maalmood."
+                  "Ka hel khariidado waxbarasho oo la hubiyay (AI, Injineernimada Korontada, Caafimaadka, Dhismaha, Maaliyadda), hagaha jaamacadaha Soomaaliya, dadka caanka ah ee qarnigan, iyo xirfadaha dakhliga sare."
                 )}
               </p>
               <div className="pt-1 flex flex-wrap gap-2.5">
@@ -428,19 +442,19 @@ export function WelcomeScreen({
                 </button>
                 <button
                   type="button"
-                  onClick={() => onOpenProHub("challenges")}
+                  onClick={() => onOpenProHub("universities")}
                   className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/16 border border-white/20 text-white font-bold text-sm inline-flex items-center gap-2 cursor-pointer transition-colors"
                 >
-                  <Lightbulb className="w-4 h-4 text-[#FFD86B]" />
-                  <span>{tr("Caqabadaha Soomaaliya")}</span>
+                  <Building2 className="w-4 h-4 text-[#FFD86B]" />
+                  <span>{tr("Jaamacadaha")}</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => onOpenProHub("readiness")}
+                  onClick={() => onOpenProHub("pioneers")}
                   className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/16 border border-white/20 text-white font-bold text-sm inline-flex items-center gap-2 cursor-pointer transition-colors"
                 >
-                  <ClipboardCheck className="w-4 h-4 text-[#FFD86B]" />
-                  <span>{tr("Liiska 90-ka Maalmood")}</span>
+                  <Award className="w-4 h-4 text-[#FFD86B]" />
+                  <span>{tr("Dadka Caanka ah")}</span>
                 </button>
               </div>
             </div>
@@ -450,22 +464,18 @@ export function WelcomeScreen({
                 { title: "AI & Data Science", tag: "roadmap.sh", color: "#6366F1", tab: "roadmaps" as const, fid: "cs" },
                 { title: "Electrical Eng.", tag: "IEEE & ABET", color: "#F59E0B", tab: "roadmaps" as const, fid: "eng" },
                 { title: "Medicine (MBBS)", tag: "WHO Track", color: "#EF4444", tab: "roadmaps" as const, fid: "med" },
-                { title: tr("Caqabadaha Soomaaliya"), tag: "6 Guides", color: "#10B981", tab: "challenges" as const, fid: undefined },
+                { title: tr("Jaamacadaha Soomaaliya"), tag: "Directory", color: "#10B981", tab: "universities" as const, fid: undefined },
               ].map((card) => (
                 <button
                   key={card.title}
                   type="button"
                   onClick={() => onOpenProHub(card.tab, card.fid)}
-                  className="text-start rounded-2xl p-3.5 bg-white/[0.07] hover:bg-white/[0.12] border border-white/15 transition-all cursor-pointer"
+                  className="text-start rounded-2xl p-3.5 bg-white/[0.08] hover:bg-white/[0.15] border border-white/18 transition-all cursor-pointer"
                 >
-                  <span
-                    className="inline-block w-2 h-2 rounded-full mb-2"
-                    style={{ background: card.color }}
-                  />
                   <div className="font-head font-bold text-sm text-white leading-snug">
                     {card.title}
                   </div>
-                  <div className="text-[11px] text-[#FFD86B] font-semibold mt-0.5">{card.tag}</div>
+                  <div className="text-[11px] text-[#FFD86B] font-semibold mt-1">{card.tag}</div>
                 </button>
               ))}
             </div>

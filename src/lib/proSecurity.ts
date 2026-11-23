@@ -16,17 +16,20 @@ export const ENTITLEMENT_STORAGE_KEY = "hk_pro_entitlement_v2";
 export const LEGACY_PRO_UNTIL_KEY = "pro_until";
 
 export const REQUESTED_SCOPE_STORAGE_KEY = "hk_pro_requested_scope_v2";
+export const REQUESTED_ITEM_STORAGE_KEY = "hk_pro_requested_item_v1";
 
 /** Re-verify with Supabase if local cache is older than 15 minutes. */
 export const MAX_ENTITLEMENT_STALE_MS = 15 * 60 * 1000;
 
-export type ProScope = "full" | "departments" | "languages";
+export type ProScope = "full" | "departments" | "languages" | "none";
+export type ProItemKey = `school:${string}` | `bridge:${string}`;
 
 export interface ProEntitlement {
   deviceId: string;
   expiresAt: number;
   verifiedAt: number;
   scope?: ProScope;
+  unlockedItems?: string[];
 }
 
 export interface StorageLike {
@@ -37,6 +40,11 @@ export interface StorageLike {
 
 const WEAK_IDS = new Set(["", "null", "undefined", "default", "web", "guest", "anonymous"]);
 const VALID_DEVICE_RE = /^[a-zA-Z0-9_-]{16,64}$/;
+const VALID_ITEM_RE = /^(school|bridge):[a-z0-9_]{2,32}$/;
+
+export function isValidProItemKey(key: string | null | undefined): key is ProItemKey {
+  return Boolean(key && typeof key === "string" && VALID_ITEM_RE.test(key));
+}
 
 export function isValidDeviceId(id: string | null | undefined): id is string {
   if (!id || typeof id !== "string") return false;
@@ -113,14 +121,18 @@ export function readStoredEntitlement(
     const parsed = JSON.parse(raw) as Partial<ProEntitlement>;
     const rawScope = parsed.scope;
     const scope: ProScope =
-      rawScope === "languages" || rawScope === "departments" || rawScope === "full"
+      rawScope === "languages" || rawScope === "departments" || rawScope === "full" || rawScope === "none"
         ? rawScope
         : "full";
+    const unlockedItems = Array.isArray(parsed.unlockedItems)
+      ? parsed.unlockedItems.filter((item): item is string => isValidProItemKey(item))
+      : [];
     const ent: ProEntitlement = {
       deviceId: String(parsed.deviceId ?? ""),
       expiresAt: Number(parsed.expiresAt ?? 0),
       verifiedAt: Number(parsed.verifiedAt ?? 0),
       scope,
+      unlockedItems,
     };
     if (!isEntitlementValidForDevice(ent, deviceId, now, maxStaleMs)) {
       // Do not trust mismatched or expired entitlements
@@ -139,6 +151,7 @@ export function readStoredEntitlement(
 export function saveRequestedProScope(storage: StorageLike, deviceId: string, scope: ProScope): void {
   if (!isValidDeviceId(deviceId)) return;
   storage.setItem(REQUESTED_SCOPE_STORAGE_KEY, JSON.stringify({ deviceId, scope }));
+  storage.removeItem(REQUESTED_ITEM_STORAGE_KEY);
 }
 
 export function readRequestedProScope(storage: StorageLike, deviceId: string): ProScope | null {
@@ -156,8 +169,30 @@ export function readRequestedProScope(storage: StorageLike, deviceId: string): P
   }
 }
 
+export function saveRequestedProItem(storage: StorageLike, deviceId: string, itemKey: ProItemKey): void {
+  if (!isValidDeviceId(deviceId) || !isValidProItemKey(itemKey)) return;
+  storage.setItem(REQUESTED_ITEM_STORAGE_KEY, JSON.stringify({ deviceId, itemKey }));
+  storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
+}
+
+export function readRequestedProItem(storage: StorageLike, deviceId: string): ProItemKey | null {
+  const raw = storage.getItem(REQUESTED_ITEM_STORAGE_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { deviceId?: string; itemKey?: string };
+    if (parsed.deviceId !== deviceId) return null;
+    if (isValidProItemKey(parsed.itemKey)) {
+      return parsed.itemKey;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export function mergeProScope(existing: ProScope | null, next: ProScope): ProScope {
-  if (!existing) return next;
+  if (!existing || existing === "none") return next;
+  if (next === "none") return existing;
   if (existing === "full" || next === "full") return "full";
   if (existing !== next) return "full";
   return existing;
@@ -175,12 +210,42 @@ export function hasDepartmentsAccess(ent: ProEntitlement | null, deviceId: strin
   return sc === "departments" || sc === "full";
 }
 
+export function hasUnlockedItem(
+  ent: ProEntitlement | null,
+  deviceId: string,
+  itemKey: ProItemKey,
+  now: number = Date.now()
+): boolean {
+  if (!isEntitlementValidForDevice(ent, deviceId, now)) return false;
+  if (!isValidProItemKey(itemKey)) return false;
+  return Boolean(ent?.unlockedItems?.includes(itemKey));
+}
+
+export function hasSchoolSubjectAccess(
+  ent: ProEntitlement | null,
+  deviceId: string,
+  subjectId: string,
+  now: number = Date.now()
+): boolean {
+  return hasUnlockedItem(ent, deviceId, `school:${subjectId}`, now);
+}
+
+export function hasBridgeExamAccess(
+  ent: ProEntitlement | null,
+  deviceId: string,
+  examId: string,
+  now: number = Date.now()
+): boolean {
+  return hasUnlockedItem(ent, deviceId, `bridge:${examId}`, now);
+}
+
 export function writeStoredEntitlement(
   storage: StorageLike,
   deviceId: string,
   expiresAt: number,
   now: number = Date.now(),
-  explicitScope?: ProScope
+  explicitScope?: ProScope,
+  explicitItem?: ProItemKey
 ): ProEntitlement | null {
   storage.removeItem(LEGACY_PRO_UNTIL_KEY);
   if (!isValidDeviceId(deviceId) || !Number.isFinite(expiresAt) || expiresAt <= now) {
@@ -188,17 +253,28 @@ export function writeStoredEntitlement(
     return null;
   }
   const existing = readStoredEntitlement(storage, deviceId, now, Number.MAX_SAFE_INTEGER);
-  const requested = readRequestedProScope(storage, deviceId);
-  const resolvedScope = explicitScope
+  const requestedScope = readRequestedProScope(storage, deviceId);
+  const requestedItem = readRequestedProItem(storage, deviceId);
+
+  const itemToAdd = explicitItem ?? requestedItem;
+  const mergedItems = Array.from(
+    new Set([...(existing?.unlockedItems ?? []), ...(itemToAdd && isValidProItemKey(itemToAdd) ? [itemToAdd] : [])])
+  );
+
+  const resolvedScope: ProScope = explicitScope
     ? mergeProScope(existing?.scope ?? null, explicitScope)
-    : requested
-    ? mergeProScope(existing?.scope ?? null, requested)
+    : requestedScope
+    ? mergeProScope(existing?.scope ?? null, requestedScope)
+    : itemToAdd
+    ? existing?.scope ?? "none"
     : existing?.scope ?? "full";
+
   const ent: ProEntitlement = {
     deviceId,
     expiresAt,
     verifiedAt: now,
     scope: resolvedScope,
+    unlockedItems: mergedItems,
   };
   storage.setItem(ENTITLEMENT_STORAGE_KEY, JSON.stringify(ent));
   return ent;
@@ -208,6 +284,7 @@ export function clearStoredEntitlement(storage: StorageLike): void {
   storage.removeItem(ENTITLEMENT_STORAGE_KEY);
   storage.removeItem(LEGACY_PRO_UNTIL_KEY);
   storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
+  storage.removeItem(REQUESTED_ITEM_STORAGE_KEY);
 }
 
 export function formatShortDeviceId(deviceId: string): string {

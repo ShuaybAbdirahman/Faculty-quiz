@@ -7,13 +7,16 @@ import {
   canUseLanguage,
   clearStoredEntitlement,
   getOrCreateSecureDeviceId,
+  hasBridgeExamAccess,
   hasDepartmentsAccess,
   hasLanguagesAccess,
+  hasSchoolSubjectAccess,
   readStoredEntitlement,
   resolveAllowedLang,
   rotateDeviceId,
   writeStoredEntitlement,
   type ProEntitlement,
+  type ProItemKey,
   type ProScope,
 } from "../lib/proSecurity";
 
@@ -50,8 +53,10 @@ interface AppContextValue {
   proActive: boolean;
   proLanguagesActive: boolean;
   proDepartmentsActive: boolean;
+  hasSchoolAccess: (subjectId: string) => boolean;
+  hasBridgeAccess: (examId: string) => boolean;
   proExpiresAt: number;
-  setProUntil: (ms: number, scope?: ProScope) => void;
+  setProUntil: (ms: number, scope?: ProScope, itemKey?: ProItemKey) => void;
   refreshPro: () => Promise<boolean>;
   deviceId: string;
   resetDeviceSession: () => void;
@@ -77,7 +82,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const proLanguagesActive = hasLanguagesAccess(entitlement, deviceId);
   const proDepartmentsActive = hasDepartmentsAccess(entitlement, deviceId);
   const proActive = proDepartmentsActive;
-  const proExpiresAt = (proLanguagesActive || proDepartmentsActive) && entitlement ? entitlement.expiresAt : 0;
+  const proExpiresAt = (proLanguagesActive || proDepartmentsActive || (entitlement?.unlockedItems?.length ?? 0) > 0) && entitlement ? entitlement.expiresAt : 0;
+
+  const hasSchoolAccess = useCallback(
+    (subjectId: string) => hasSchoolSubjectAccess(entitlement, deviceId, subjectId),
+    [entitlement, deviceId]
+  );
+
+  const hasBridgeAccess = useCallback(
+    (examId: string) => hasBridgeExamAccess(entitlement, deviceId, examId),
+    [entitlement, deviceId]
+  );
 
   const [langState, setLangState] = useState<Lang>(() =>
     resolveAllowedLang(detectInitialLang(), proLanguagesActive)
@@ -111,7 +126,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? "rtl" : "ltr";
-    document.title = trFn(lang, "Hagaha Kulliyadda");
+    document.title = `CAAWIYE | ${trFn(lang, "Hagaha Kulliyadda")}`;
   }, [lang, rtl]);
 
   useEffect(() => {
@@ -157,8 +172,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setProUntil = useCallback(
-    (ms: number, scope?: ProScope) => {
-      const saved = writeStoredEntitlement(localStorage, deviceId, ms, Date.now(), scope);
+    (ms: number, scope?: ProScope, itemKey?: ProItemKey) => {
+      const saved = writeStoredEntitlement(localStorage, deviceId, ms, Date.now(), scope, itemKey);
       setEntitlement(saved);
     },
     [deviceId]
@@ -262,6 +277,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       proActive,
       proLanguagesActive,
       proDepartmentsActive,
+      hasSchoolAccess,
+      hasBridgeAccess,
       proExpiresAt,
       setProUntil,
       refreshPro,
@@ -293,6 +310,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       proActive,
       proLanguagesActive,
       proDepartmentsActive,
+      hasSchoolAccess,
+      hasBridgeAccess,
       proExpiresAt,
       setProUntil,
       refreshPro,

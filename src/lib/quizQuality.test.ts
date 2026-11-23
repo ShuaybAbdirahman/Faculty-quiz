@@ -178,3 +178,43 @@ describe("Smart-Witty Faculty Fun Prompts", () => {
     assert.ok(facultyFunPrompts.eng.question.so.includes("1 + 1"));
   });
 });
+
+import { FORM4_EXAM_DATE, form4Subjects } from "../data/schoolForm4Data";
+import { bridgeExamTracks, GAP_EXAM_DATE } from "../data/bridgingPrepData";
+
+describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures", () => {
+  it("contains all 12 official Form 4 subjects (4 scientific, 3 languages, 2 social, 3 applied) ready for June 2027 uploads with zero pre-written mock content", () => {
+    assert.equal(FORM4_EXAM_DATE, "June 2027");
+    assert.equal(form4Subjects.length, 12);
+    assert.equal(form4Subjects.filter((s) => s.group === "science").length, 4);
+    assert.equal(form4Subjects.filter((s) => s.group === "language").length, 3);
+    assert.equal(form4Subjects.filter((s) => s.group === "social").length, 2);
+    assert.equal(form4Subjects.filter((s) => s.group === "applied").length, 3);
+
+    for (const sub of form4Subjects) {
+      assert.equal(sub.examDate, "June 2027");
+      assert.equal(sub.predictPrice, "$0.10");
+      assert.equal(sub.pdfs.length, 0, `PDFs should remain empty until founder uploads for ${sub.id}`);
+      assert.equal(sub.freeTopics.length, 0, `Topics should remain empty until founder uploads for ${sub.id}`);
+      assert.equal(sub.predictQuestions.length, 0, `Predict questions should remain empty until founder uploads for ${sub.id}`);
+      assert.equal(sub.summary, "");
+      assert.equal(sub.freeExamTip, "");
+    }
+  });
+
+  it("includes competitive Gap entrance exam tracks ready for October 2027 uploads with zero pre-written mock content", () => {
+    assert.equal(GAP_EXAM_DATE, "October 2027");
+    assert.ok(bridgeExamTracks.some((t) => t.id === "snu_tartanka"));
+    assert.ok(bridgeExamTracks.some((t) => t.id === "uni_placement"));
+    for (const tr of bridgeExamTracks) {
+      assert.equal(tr.examDate, "October 2027");
+      assert.equal(tr.price, "$0.10");
+      assert.equal(tr.pdfs.length, 0);
+      assert.equal(tr.freeTips.length, 0);
+      assert.equal(tr.predictQuestions.length, 0);
+      assert.equal(tr.subtitle, "");
+      assert.equal(tr.description, "");
+    }
+  });
+});
+

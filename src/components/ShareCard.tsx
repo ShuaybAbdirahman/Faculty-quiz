@@ -54,11 +54,11 @@ async function renderShareCardPng(
   const headFont = rtl ? "Cairo, sans-serif" : "Outfit, sans-serif";
   const bodyFont = rtl ? "Cairo, sans-serif" : '"Plus Jakarta Sans", sans-serif';
 
-  // Background gradient
+  // Background gradient (Somalia Flag Blue)
   const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, "#070D26");
-  bg.addColorStop(0.5, "#1B3A9E");
-  bg.addColorStop(1, "#6A47E0");
+  bg.addColorStop(0, "#061D42");
+  bg.addColorStop(0.5, "#165FB8");
+  bg.addColorStop(1, "#4189DD");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
 
@@ -85,10 +85,10 @@ async function renderShareCardPng(
   }
 
   // Brand header
-  ctx.fillStyle = "rgba(255,255,255,0.9)";
+  ctx.fillStyle = "rgba(255,255,255,0.94)";
   ctx.font = `700 ${11 * S}px ${bodyFont}`;
   ctx.textAlign = rtl ? "right" : "left";
-  ctx.fillText(tr("Hagaha Kulliyadda").toUpperCase(), rtl ? (360 - 22) * S : 22 * S, 37 * S);
+  ctx.fillText("CAAWIYE · " + tr("Hagaha Kulliyadda").toUpperCase(), rtl ? (360 - 22) * S : 22 * S, 37 * S);
 
   // Title
   ctx.textAlign = "center";

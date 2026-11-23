@@ -51,13 +51,13 @@ export function FounderIntroScreen({ onContinue }: { onContinue: () => void }) {
     <div
       className="min-h-screen flex flex-col relative overflow-hidden text-white"
       style={{
-        background: "linear-gradient(135deg, #0B1533 0%, #1E3A8A 50%, #5B3FD0 100%)",
+        background: "linear-gradient(135deg, #061D42 0%, #165FB8 52%, #4189DD 100%)",
       }}
     >
       {/* Ambient glows */}
       <div
         className="pointer-events-none absolute -top-28 -right-24 w-[340px] h-[340px] rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(255,126,182,0.30), transparent 70%)" }}
+        style={{ background: "radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%)" }}
       />
       <div
         className="pointer-events-none absolute -bottom-32 -left-28 w-[380px] h-[380px] rounded-full"
@@ -89,10 +89,10 @@ export function FounderIntroScreen({ onContinue }: { onContinue: () => void }) {
             className="absolute w-[164px] h-[164px] rounded-full animate-spin-slow"
             style={{
               background:
-                "conic-gradient(from 0deg, #FFC93C, #FF7EB6, #7AE7FF, #B79CFF, #FFC93C)",
+                "conic-gradient(from 0deg, #FFFFFF, #7CB7FF, #4189DD, #FFC93C, #FFFFFF)",
             }}
           />
-          <div className="relative w-[152px] h-[152px] rounded-full bg-[#0B1533] flex items-center justify-center">
+          <div className="relative w-[152px] h-[152px] rounded-full bg-[#061D42] flex items-center justify-center">
             <img
               src={founderPhotoDataUrl}
               alt="Eng. Shuayb Abdirahman"
@@ -100,10 +100,10 @@ export function FounderIntroScreen({ onContinue }: { onContinue: () => void }) {
             />
           </div>
           <div
-            className="absolute right-2 bottom-2.5 w-[38px] h-[38px] rounded-full flex items-center justify-center border-[3px] border-[#0B1533]"
+            className="absolute right-2 bottom-2.5 w-[38px] h-[38px] rounded-full flex items-center justify-center border-[3px] border-[#061D42]"
             style={{ background: "linear-gradient(135deg, #FFD86B 0%, #FFC93C 100%)" }}
           >
-            <GraduationCap className="w-5 h-5 text-[#0B1533]" />
+            <GraduationCap className="w-5 h-5 text-[#061D42]" />
           </div>
         </div>
 
@@ -111,7 +111,7 @@ export function FounderIntroScreen({ onContinue }: { onContinue: () => void }) {
           {tr("Eng. Shuayb Abdirahman")}
         </h1>
         <p className="mt-1 text-[14px] font-semibold text-[#FFD86B] text-center animate-rise">
-          {tr("Aasaasaha Hagaha Kulliyadda")}
+          Aasaasaha CAAWIYE
         </p>
 
         {/* Glass message card */}

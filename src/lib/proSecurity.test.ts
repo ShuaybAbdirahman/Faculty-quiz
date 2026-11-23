@@ -162,3 +162,35 @@ test("Pro Languages and Pro Departments packages stay cleanly separated and merg
   assert.equal(hasLanguagesAccess(fullEnt, deviceId, now), true);
   assert.equal(hasDepartmentsAccess(fullEnt, deviceId, now), true);
 });
+
+test("School Form 4 ($0.10 per subject) and Bridging Exam unlocks stay isolated per item", async () => {
+  const {
+    hasBridgeExamAccess,
+    hasDepartmentsAccess,
+    hasLanguagesAccess,
+    hasSchoolSubjectAccess,
+    saveRequestedProItem,
+  } = await import("./proSecurity");
+
+  const storage = createMemoryStorage();
+  const deviceId = getOrCreateSecureDeviceId(storage);
+  const now = 1_700_000_000_000;
+  const future = now + 365 * 24 * 3600 * 1000;
+
+  // Unlock Biology Predict Exam ($0.10) only
+  saveRequestedProItem(storage, deviceId, "school:bio");
+  const bioOnly = writeStoredEntitlement(storage, deviceId, future, now);
+  assert.equal(hasSchoolSubjectAccess(bioOnly, deviceId, "bio", now), true);
+  assert.equal(hasSchoolSubjectAccess(bioOnly, deviceId, "chem", now), false);
+  assert.equal(hasBridgeExamAccess(bioOnly, deviceId, "snu_tartanka", now), false);
+  assert.equal(hasDepartmentsAccess(bioOnly, deviceId, now), false);
+  assert.equal(hasLanguagesAccess(bioOnly, deviceId, now), false);
+
+  // Unlock SNU Entrance Predict Exam ($0.10) -> preserves school:bio without unlocking other school subjects
+  saveRequestedProItem(storage, deviceId, "bridge:snu_tartanka");
+  const merged = writeStoredEntitlement(storage, deviceId, future, now);
+  assert.equal(hasSchoolSubjectAccess(merged, deviceId, "bio", now), true);
+  assert.equal(hasSchoolSubjectAccess(merged, deviceId, "phys", now), false);
+  assert.equal(hasBridgeExamAccess(merged, deviceId, "snu_tartanka", now), true);
+  assert.equal(hasBridgeExamAccess(merged, deviceId, "uni_placement", now), false);
+});
