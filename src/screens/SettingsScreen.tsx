@@ -51,6 +51,8 @@ export function SettingsScreen({
     userName,
     setUserName,
     proActive,
+    proLanguagesActive,
+    proExpiresAt,
     deviceId,
     refreshPro,
     resetDeviceSession,
@@ -94,7 +96,7 @@ export function SettingsScreen({
     setCheckingPro(true);
     try {
       const ok = await refreshPro();
-      showToast(ok ? tr("Pro waa la furay!") : tr("Weli lama xaqiijin. Fadlan sug ama la xiriir maamulaha."));
+      showToast(ok ? tr("Unlock+ waa la furay!") : tr("Weli lama xaqiijin. Fadlan sug ama la xiriir maamulaha."));
     } finally {
       setCheckingPro(false);
     }
@@ -175,16 +177,24 @@ export function SettingsScreen({
 
       <main className="max-w-2xl w-full mx-auto px-4 pb-12">
         {/* Pro & Device Security Card */}
-        <Section icon={<ShieldCheck className="w-5 h-5" />} title="Pro iyo Amniga Qalabka">
+        <Section icon={<ShieldCheck className="w-5 h-5" />} title="Unlock+ iyo Amniga Qalabka">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
               <div className="text-sm font-bold flex items-center gap-2">
-                <span>{tr("Xaaladda Pro:")}</span>
-                <span className={proActive ? "text-emerald-400" : "opacity-75"}>
-                  {tr(proActive ? "Waa furan yahay" : "Waa xiran yahay")}
+                <span>{tr("Xaaladda Unlock+:")}</span>
+                <span className={proActive || proLanguagesActive ? "text-emerald-400" : "opacity-75"}>
+                  {tr(proActive || proLanguagesActive ? "Waa furan yahay" : "Waa xiran yahay")}
                 </span>
               </div>
               <div className="mt-1 text-xs font-mono opacity-70">Device ID: {shortDev}</div>
+              {proExpiresAt > Date.now() && (
+                <div className="mt-1 text-xs text-emerald-400 font-semibold tabular-nums">
+                  {tr("Dhammaadka:")}{" "}
+                  {new Date(proExpiresAt).toLocaleDateString()} (
+                  {Math.max(1, Math.ceil((proExpiresAt - Date.now()) / (86400 * 1000)))}{" "}
+                  {tr("maalmood")})
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-2">
@@ -218,7 +228,7 @@ export function SettingsScreen({
           <div className="mt-3 pt-3 border-t border-current/10 flex items-center justify-between gap-3 flex-wrap">
             <p className="text-xs opacity-70 max-w-sm leading-relaxed">
               {tr(
-                "Haddii arday kale uu qalabkan isticmaalayo, riix badhanka si Pro loo xiro oo aqoonsi cusub loo sameeyo."
+                "Haddii arday kale uu qalabkan isticmaalayo, riix badhanka si Unlock+ loo xiro oo aqoonsi cusub loo sameeyo."
               )}
             </p>
             <button
@@ -259,7 +269,7 @@ export function SettingsScreen({
             })}
           </div>
           <p className="mt-2 text-xs opacity-70">
-            {tr("Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Pro ($0.10, hal mar).")}
+            {tr("Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Unlock+ ($0.50, 6 bilood).")}
           </p>
           <p className="mt-1 text-xs opacity-55">
             {tr("Beddelka luqadda wuxuu ku celinayaa bogga hore.")}

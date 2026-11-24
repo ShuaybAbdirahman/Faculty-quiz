@@ -165,13 +165,26 @@ describe("Hero Spotlight Ticker & Automatic Friday Salawat", () => {
 import { facultyFunPrompts, getFacultyFunPrompt } from "../data/facultyFunPrompts";
 
 describe("Smart-Witty Faculty Fun Prompts", () => {
-  it("provides a complete trilingual prompt with quick options and insight for all 14 faculties", () => {
+  it("provides a complete trilingual prompt with 3 distinct optionInsights for all 14 faculties", () => {
     assert.equal(Object.keys(facultyFunPrompts).length, 14);
     for (const f of faculties) {
       const p = getFacultyFunPrompt(f.id);
       assert.equal(p.facultyId, f.id, `Missing fun prompt for ${f.id}`);
       assert.ok(p.question.so.length > 15 && p.question.en.length > 15 && p.question.ar.length > 15);
-      assert.ok(p.quickOptions.so.length >= 3 && p.quickOptions.en.length >= 3 && p.quickOptions.ar.length >= 3);
+      assert.equal(p.quickOptions.so.length, 3, `Expected 3 SO options for ${f.id}`);
+      assert.equal(p.quickOptions.en.length, 3, `Expected 3 EN options for ${f.id}`);
+      assert.equal(p.quickOptions.ar.length, 3, `Expected 3 AR options for ${f.id}`);
+      assert.equal(p.optionInsights.so.length, 3, `Expected 3 SO insights for ${f.id}`);
+      assert.equal(p.optionInsights.en.length, 3, `Expected 3 EN insights for ${f.id}`);
+      assert.equal(p.optionInsights.ar.length, 3, `Expected 3 AR insights for ${f.id}`);
+      assert.equal(new Set(p.optionInsights.so).size, 3, `SO optionInsights must be unique for ${f.id}`);
+      assert.equal(new Set(p.optionInsights.en).size, 3, `EN optionInsights must be unique for ${f.id}`);
+      assert.equal(new Set(p.optionInsights.ar).size, 3, `AR optionInsights must be unique for ${f.id}`);
+      for (let i = 0; i < 3; i++) {
+        assert.ok(p.optionInsights.so[i].length > 30, `SO optionInsight ${i} too short for ${f.id}`);
+        assert.ok(p.optionInsights.en[i].length > 30, `EN optionInsight ${i} too short for ${f.id}`);
+        assert.ok(p.optionInsights.ar[i].length > 30, `AR optionInsight ${i} too short for ${f.id}`);
+      }
       assert.ok(p.insight.so.length > 30 && p.insight.en.length > 30 && p.insight.ar.length > 30);
     }
     assert.ok(facultyFunPrompts.cs.question.so.toLowerCase().includes("gamers"));
@@ -181,6 +194,12 @@ describe("Smart-Witty Faculty Fun Prompts", () => {
 
 import { FORM4_EXAM_DATE, form4Subjects } from "../data/schoolForm4Data";
 import { bridgeExamTracks, GAP_EXAM_DATE } from "../data/bridgingPrepData";
+import {
+  examHallRules,
+  HIRAAL_INTEGRITY_CHARTER,
+  legalSubjectSecrets,
+  top10StudyTricks,
+} from "../data/topStudentData";
 
 describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures", () => {
   it("contains all 12 official Form 4 subjects (4 scientific, 3 languages, 2 social, 3 applied) ready for June 2027 uploads with zero pre-written mock content", () => {
@@ -193,7 +212,7 @@ describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures"
 
     for (const sub of form4Subjects) {
       assert.equal(sub.examDate, "June 2027");
-      assert.equal(sub.predictPrice, "$0.10");
+      assert.equal(sub.predictPrice, "$0.25");
       assert.equal(sub.pdfs.length, 0, `PDFs should remain empty until founder uploads for ${sub.id}`);
       assert.equal(sub.freeTopics.length, 0, `Topics should remain empty until founder uploads for ${sub.id}`);
       assert.equal(sub.predictQuestions.length, 0, `Predict questions should remain empty until founder uploads for ${sub.id}`);
@@ -208,7 +227,7 @@ describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures"
     assert.ok(bridgeExamTracks.some((t) => t.id === "uni_placement"));
     for (const tr of bridgeExamTracks) {
       assert.equal(tr.examDate, "October 2027");
-      assert.equal(tr.price, "$0.10");
+      assert.equal(tr.price, "$0.50");
       assert.equal(tr.pdfs.length, 0);
       assert.equal(tr.freeTips.length, 0);
       assert.equal(tr.predictQuestions.length, 0);
@@ -216,5 +235,32 @@ describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures"
       assert.equal(tr.description, "");
     }
   });
-});
 
+  it("provides ethical Top-10 study tricks and legal marking secrets covering all 12 Form 4 subjects with explicit anti-cheating charter", () => {
+    assert.ok(HIRAAL_INTEGRITY_CHARTER.headline.toLowerCase().includes("qishku waa xaaraam"));
+    assert.ok(HIRAAL_INTEGRITY_CHARTER.body.toLowerCase().includes("100% xalaal"));
+
+    assert.equal(top10StudyTricks.length, 6);
+    for (const trick of top10StudyTricks) {
+      assert.ok(trick.title.trim().length > 5);
+      assert.ok(trick.steps.length >= 3, `Expected at least 3 concrete steps for ${trick.id}`);
+      assert.ok(trick.avoid.trim().length > 10);
+    }
+
+    assert.equal(examHallRules.length, 4);
+    for (const rule of examHallRules) {
+      assert.ok(rule.title.trim().length > 3, `Expected title for rule ${rule.id}`);
+      assert.ok(rule.detail.trim().length > 10, `Expected detail for rule ${rule.id}`);
+    }
+
+    assert.equal(legalSubjectSecrets.length, 12);
+    const form4Ids = new Set(form4Subjects.map((s) => s.id));
+    for (const sec of legalSubjectSecrets) {
+      assert.ok(form4Ids.has(sec.id), `Subject secret ${sec.id} should match form4Subjects id`);
+      assert.ok(sec.examinerFocus.trim().length > 20);
+      assert.equal(sec.legalSecrets.length, 3, `Expected 3 legal secrets for ${sec.id}`);
+      assert.ok(sec.highYieldTopics.length >= 3);
+      assert.ok(sec.commonTrap.trim().length > 20);
+    }
+  });
+});

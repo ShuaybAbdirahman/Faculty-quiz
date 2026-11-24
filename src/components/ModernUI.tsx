@@ -1,8 +1,64 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Play, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, LockOpen, Play, Star } from "lucide-react";
 import { appOwner, type Faculty } from "../data/quizData";
 import { useApp } from "../context/AppContext";
 import { argbToHex, darkenHex } from "../lib/i18n";
+import hiraalLogoImg from "../assets/images/hiraal_brand_logo_1795488212099.jpg";
+
+export function HiraalLogoMark({ size = 24, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M24 8.5L27.4 18.2L37.6 19.3L29.6 25.6L31.4 31.8L24 27.6L16.6 31.8L18.4 25.6L10.4 19.3L20.6 18.2L24 8.5Z"
+        fill="#FFFFFF"
+      />
+      <path
+        d="M7 36.5C14.5 29.5 28.5 26.8 41 31.2C33.5 29.6 18.5 31.6 10.2 38.8L7 36.5Z"
+        fill="#F59E0B"
+      />
+    </svg>
+  );
+}
+
+export function HiraalBrandIcon({
+  size = 44,
+  className = "",
+}: {
+  size?: number;
+  className?: string;
+}) {
+  const [imgFailed, setImgFailed] = useState(false);
+
+  return (
+    <div
+      className={`relative overflow-hidden rounded-2xl border border-white/30 shadow-lg shrink-0 flex items-center justify-center ${className}`}
+      style={{
+        width: size,
+        height: size,
+        background: "linear-gradient(135deg, #1E3A8A 0%, #0284C7 65%, #06B6D4 100%)",
+      }}
+    >
+      {!imgFailed ? (
+        <img
+          src={hiraalLogoImg}
+          alt="HIRAAL logo"
+          referrerPolicy="no-referrer"
+          onError={() => setImgFailed(true)}
+          className="w-full h-full object-cover scale-[1.24] select-none"
+        />
+      ) : (
+        <HiraalLogoMark size={Math.round(size * 0.72)} />
+      )}
+    </div>
+  );
+}
 
 export function SomaliStarIcon({ size = 22, className = "" }: { size?: number; className?: string }) {
   return (
@@ -20,29 +76,7 @@ export function SomaliStarIcon({ size = 22, className = "" }: { size?: number; c
 }
 
 export function AuroraBackground() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div
-        className="animate-aurora-1 absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full"
-        style={{
-          background: "radial-gradient(circle, rgba(65,137,221,0.34) 0%, rgba(65,137,221,0) 70%)",
-        }}
-      />
-      <div
-        className="animate-aurora-2 absolute top-6 -right-28 w-[380px] h-[380px] rounded-full"
-        style={{
-          background: "radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 70%)",
-        }}
-      />
-      <div
-        className="absolute inset-0 opacity-15"
-        style={{
-          backgroundImage: "radial-gradient(rgba(255,255,255,0.5) 1.1px, transparent 1.1px)",
-          backgroundSize: "24px 24px",
-        }}
-      />
-    </div>
-  );
+  return null;
 }
 
 export function ShinyButton({
@@ -64,28 +98,12 @@ export function ShinyButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="relative w-full h-[60px] rounded-2xl overflow-hidden flex items-center justify-center gap-2.5 cursor-pointer transition-transform active:scale-[0.97] disabled:opacity-60 border border-white/25"
-      style={{
-        background: "linear-gradient(135deg, #4189DD 0%, #1F6FD4 55%, #1254B5 100%)",
-        boxShadow: "0 10px 28px rgba(65, 137, 221, 0.36)",
-      }}
+      className="w-full h-[56px] rounded-2xl flex items-center justify-center gap-2.5 cursor-pointer transition-colors disabled:opacity-60 border border-white/20 bg-[#2563EB] hover:bg-[#1D4ED8] active:scale-[0.99] shadow-md"
     >
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute top-[-30px] left-0 w-[70px] h-[140px] animate-shimmer"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.42) 50%, rgba(255,255,255,0) 100%)",
-        }}
-      />
-      <span className="relative z-10 flex items-center justify-center gap-2 text-white font-head font-extrabold text-[18px]">
-        {icon ?? <Play className="w-5 h-5 fill-white text-white" />}
+      <span className="flex items-center justify-center gap-2 text-white font-head font-extrabold text-[17px]">
+        {icon ?? <Play className="w-4 h-4 fill-white text-white" />}
         <span>{tr(label)}</span>
-        {showArrow && (
-          <span className="animate-arrow-nudge inline-flex">
-            {rtl ? <ArrowLeft className="w-5 h-5" /> : <ArrowRight className="w-5 h-5" />}
-          </span>
-        )}
+        {showArrow && (rtl ? <ArrowLeft className="w-5 h-5" /> : <ArrowRight className="w-5 h-5" />)}
       </span>
     </button>
   );
@@ -207,7 +225,7 @@ export function FacultyBanner({
         }}
       />
       {badge && (
-        <div className="absolute left-3 top-3 px-3 py-1 rounded-full bg-black/40 backdrop-blur-xs text-white font-bold text-[13px]">
+        <div className="absolute left-3 top-3 px-2.5 py-1 rounded-md bg-black/45 text-white font-bold text-[12.5px]">
           {badge}
         </div>
       )}
@@ -349,16 +367,12 @@ export function Stars({ value, size = 18 }: { value: number; size?: number }) {
 export function ProBadge({ small = false }: { small?: boolean }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full font-head font-black tracking-wider text-[#050A1E] ${
-        small ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-1 text-[11.5px]"
+      className={`inline-flex items-center gap-1 rounded-md font-head font-black tracking-wider text-[#050A1E] bg-[#FFC93C] ${
+        small ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-1 text-[11px]"
       }`}
-      style={{
-        background: "linear-gradient(90deg, #FFE28F 0%, #FFC93C 50%, #FFA927 100%)",
-        boxShadow: "0 0 12px rgba(255,201,60,0.4)",
-      }}
     >
-      <Sparkles className={small ? "w-2.5 h-2.5" : "w-3.5 h-3.5"} />
-      <span>PRO</span>
+      <LockOpen className={small ? "w-2.5 h-2.5" : "w-3.5 h-3.5"} />
+      <span>UNLOCK+</span>
     </span>
   );
 }
@@ -444,7 +458,7 @@ export function Footer() {
   const { tr } = useApp();
   return (
     <footer className="py-5 px-6 text-center text-xs opacity-65">
-      © 2026 CAAWIYE · {appOwner}. {tr("Xuquuqda oo dhan waa dhowran tahay.")}
+      © 2026 HIRAAL · {appOwner}. {tr("Xuquuqda oo dhan waa dhowran tahay.")}
     </footer>
   );
 }

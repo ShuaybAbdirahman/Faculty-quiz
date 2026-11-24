@@ -30,6 +30,7 @@ export function ProContentShield({
   const { deviceId, userName, showToast } = useApp();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const watermarkRef = useRef<HTMLDivElement | null>(null);
+  const outboundClickAtRef = useRef<number>(0);
   const [curtainReason, setCurtainReason] = useState<string | null>(null);
   const [timeTag, setTimeTag] = useState<string>(() => formatWatermarkTimeTag());
   const [watermarkRev, setWatermarkRev] = useState<number>(0);
@@ -64,13 +65,13 @@ export function ProContentShield({
 
     const triggerBlockToast = (action: string) => {
       if (action === "screenshot") {
-        showToast("Screenshot lama ogola qeybta Pro. Qalabkaaga keliya ayay u furan tahay.");
+        showToast("Screenshot lama ogola qeybta Unlock+. Qalabkaaga keliya ayay u furan tahay.");
       } else if (action === "print" || action === "save") {
-        showToast("Dajinta ama daabacaadda (PDF/Save) waa ka xiran tahay qeybta Pro.");
+        showToast("Dajinta ama daabacaadda (PDF/Save) waa ka xiran tahay qeybta Unlock+.");
       } else if (action === "devtools") {
-        showToast("Furista DevTools iyo baaritaanka koodhka waa ka xiran tahay qeybta Pro.");
+        showToast("Furista DevTools iyo baaritaanka koodhka waa ka xiran tahay qeybta Unlock+.");
       } else {
-        showToast("Nuqul-qaadista iyo wadaagidda xogta Pro waa xiran tahay.");
+        showToast("Nuqul-qaadista iyo wadaagidda xogta Unlock+ waa xiran tahay.");
       }
     };
 
@@ -104,23 +105,26 @@ export function ProContentShield({
 
     const handleVisibility = () => {
       if (document.hidden) {
-        setCurtainReason("Shaashadda Pro waa la qariyay intii aad ka baxday si looga ilaaliyo screenshot ama duubis.");
+        setCurtainReason("Shaashadda Unlock+ waa la qariyay intii aad ka baxday si looga ilaaliyo screenshot ama duubis.");
       }
     };
 
     const handleWindowBlur = () => {
-      if (document.activeElement && document.activeElement.tagName === "SELECT") {
+      if (isEditableElement(document.activeElement)) {
         return;
       }
-      setCurtainReason("Shaashadda Pro waa la qariyay si looga ilaaliyo duubis ama sawir-qaadis.");
+      if (Date.now() - outboundClickAtRef.current < 1500) {
+        return;
+      }
+      setCurtainReason("Shaashadda Unlock+ waa la qariyay si looga ilaaliyo duubis ama sawir-qaadis.");
     };
 
     const handlePageHide = () => {
-      setCurtainReason("Shaashadda Pro waa la xiray si looga ilaaliyo qabashada xogta.");
+      setCurtainReason("Shaashadda Unlock+ waa la xiray si looga ilaaliyo qabashada xogta.");
     };
 
     const handleBeforePrint = () => {
-      setCurtainReason("Daabacaadda iyo kaydinta PDF waa ka xiran yihiin qeybta Pro.");
+      setCurtainReason("Daabacaadda iyo kaydinta PDF waa ka xiran yihiin qeybta Unlock+.");
       triggerBlockToast("print");
     };
 
@@ -128,16 +132,19 @@ export function ProContentShield({
       if (isEditableElement(e.target)) return;
       e.preventDefault();
       if (e.type !== "selectstart" && e.type !== "dragstart") {
-        showToast("Qeybta Pro lama koobiyeeyo, lama dajisto, lamana wadaago.");
+        showToast("Qeybta Unlock+ lama koobiyeeyo, lama dajisto, lamana wadaago.");
       }
     };
 
-    // Idle auto-lock if student leaves phone unattended on Pro screen
+    // Idle auto-lock if student leaves phone unattended on Unlock+ screen
     let idleTimer: number | null = null;
-    const resetIdleTimer = () => {
+    const resetIdleTimer = (e?: Event) => {
+      if (e && e.target instanceof Element && e.target.closest('a[target="_blank"]')) {
+        outboundClickAtRef.current = Date.now();
+      }
       if (idleTimer !== null) window.clearTimeout(idleTimer);
       idleTimer = window.setTimeout(() => {
-        setCurtainReason("Shaashadda Pro waa la xiray muddo aan la taaban si loo ilaaliyo xogtaada.");
+        setCurtainReason("Shaashadda Unlock+ waa la xiray muddo aan la taaban si loo ilaaliyo xogtaada.");
       }, PRO_IDLE_LOCK_MS);
     };
     resetIdleTimer();
@@ -222,7 +229,7 @@ export function ProContentShield({
   const handleBlockedInteraction = (e: React.SyntheticEvent) => {
     if (isEditableElement(e.target)) return;
     e.preventDefault();
-    showToast("Qeybta Pro lama koobiyeeyo, lama dajisto, lamana wadaago.");
+    showToast("Qeybta Unlock+ lama koobiyeeyo, lama dajisto, lamana wadaago.");
   };
 
   return (
@@ -238,7 +245,7 @@ export function ProContentShield({
       >
         {/* Qoraal Xasuusin ah: Strictly 1 Student = 1 Device, No Screenshot/Download/Share */}
         <aside
-          aria-label="Xasuusinta Ilaalinta Pro"
+          aria-label="Xasuusinta Ilaalinta Unlock+"
           className="rounded-2xl p-4 sm:p-5 border border-[#FFC93C]/50 bg-[#051836]/92 shadow-[0_10px_28px_rgba(0,0,0,0.28)] space-y-3"
         >
           <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -315,7 +322,7 @@ export function ProContentShield({
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Ilaalinta Xogta Pro"
+          aria-label="Ilaalinta Xogta Unlock+"
           data-testid="pro-privacy-curtain"
           className="fixed inset-0 z-50 bg-[#041024]/95 backdrop-blur-2xl flex items-center justify-center p-5 text-center overflow-y-auto"
         >
@@ -325,13 +332,13 @@ export function ProContentShield({
             </div>
             <div className="space-y-1.5">
               <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#FFD86B]">
-                Ilaalinta Xogta Pro · {shortDev}
+                Ilaalinta Xogta Unlock+ · {shortDev}
               </div>
               <h4 className="font-head font-extrabold text-lg text-white">
                 {curtainReason}
               </h4>
               <p className="text-xs text-white/75 leading-relaxed">
-                Xogta Pro waxay u furan tahay qalabkaaga keliya; lama duubi karo, lama dajisan karo, lamana la wadaagi karo dad kale.
+                Xogta Unlock+ waxay u furan tahay qalabkaaga keliya; lama duubi karo, lama dajisan karo, lamana la wadaagi karo dad kale.
               </p>
             </div>
             <button
@@ -339,7 +346,7 @@ export function ProContentShield({
               onClick={() => setCurtainReason(null)}
               className="w-full h-11 rounded-xl bg-[#4189DD] hover:bg-[#5CA2F2] text-white font-head font-extrabold text-xs cursor-pointer transition-colors"
             >
-              Sii Wad Akhriska Qeybta Pro
+              Sii Wad Akhriska Qeybta Unlock+
             </button>
           </div>
         </div>
@@ -347,9 +354,9 @@ export function ProContentShield({
 
       {/* Print / PDF Export Blocker Fallback */}
       <div className="pro-print-block hidden">
-        <h2>CAAWIYE Pro - Daabacaadda iyo Kaydinta PDF waa Xiran Yihiin</h2>
+        <h2>HIRAAL Unlock+ - Daabacaadda iyo Kaydinta PDF waa Xiran Yihiin</h2>
         <p>
-          Xogtan Pro waxay si gaar ah ugu furan tahay ardayga furtay (ID: {shortDev}) lamana daabacan karo, lamana dajisan karo, lamana wadaagi karo amar la'aan.
+          Xogtan Unlock+ waxay si gaar ah ugu furan tahay ardayga furtay (ID: {shortDev}) lamana daabacan karo, lamana dajisan karo, lamana wadaagi karo amar la'aan.
         </p>
       </div>
     </>

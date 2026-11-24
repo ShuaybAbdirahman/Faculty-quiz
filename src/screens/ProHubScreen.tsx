@@ -3,20 +3,22 @@ import {
   ArrowLeft,
   ArrowRight,
   Award,
+  BookOpenCheck,
   Building2,
   CheckCircle2,
   Lock,
+  LockOpen,
   Map,
   Menu,
   Rocket,
   ShieldCheck,
-  Sparkles,
   TrendingUp,
+  Trophy,
   Wrench,
   X,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
-import { AuroraBackground, ProBadge } from "../components/ModernUI";
+import { ProBadge } from "../components/ModernUI";
 import { ProContentShield } from "../components/ProContentShield";
 import { ProRoadmapsExplorer } from "../components/ProHubContent";
 import {
@@ -26,9 +28,15 @@ import {
   SomaliaUniversitiesSection,
   WorldPioneersSection,
 } from "../components/ProWorldHubSections";
+import {
+  LegalSubjectSecretsSection,
+  Top10TricksSection,
+} from "../components/TopStudentHubSection";
 
 export type HubTab =
   | "roadmaps"
+  | "top10_tricks"
+  | "subject_secrets"
   | "universities"
   | "pioneers"
   | "future_jobs"
@@ -64,9 +72,9 @@ export function ProHubScreen({
       id: "roadmaps",
       label: tr("Khariidadaha"),
       icon: <Map className="w-4 h-4" />,
-      gateHeadline: tr("Khariidadaha Waxbarashada (Pro Keliya)"),
+      gateHeadline: tr("Khariidadaha Waxbarashada (Unlock+ Keliya)"),
       gateSummary: tr(
-        "Hel khariidado tallaabo-tallaabo ah oo la hubiyay (AI, Koronto, Caafimaad, Dhisme, Maaliyad iyo kuwo kale) marka aad furto Pro."
+        "Hel khariidado tallaabo-tallaabo ah oo la hubiyay (AI, Koronto, Caafimaad, Dhisme, Maaliyad iyo kuwo kale) marka aad furto Unlock+."
       ),
       highlights: [
         tr("Marxaladaha waxbarashada iyo xirfadaha loo baahan yahay"),
@@ -78,7 +86,7 @@ export function ProHubScreen({
       id: "universities",
       label: tr("Jaamacadaha"),
       icon: <Building2 className="w-4 h-4" />,
-      gateHeadline: tr("Hagaha Jaamacadaha Soomaaliya (Pro Keliya)"),
+      gateHeadline: tr("Hagaha Jaamacadaha Soomaaliya (Unlock+ Keliya)"),
       gateSummary: tr(
         "Ogow jaamacadaha bixiya kulliyaddaada, ku kala shaandhee magaalada iyo kulliyadda, kana hel website-yada rasmiga ah."
       ),
@@ -92,7 +100,7 @@ export function ProHubScreen({
       id: "pioneers",
       label: tr("Dadka Caanka ah"),
       icon: <Award className="w-4 h-4" />,
-      gateHeadline: tr("Dadka Caanka ah ee Adduunka (Pro Keliya)"),
+      gateHeadline: tr("Dadka Caanka ah ee Adduunka (Unlock+ Keliya)"),
       gateSummary: tr(
         "Baro shakhsiyaadka heerka sare ka gaaray kulliyad kasta, shahaadadii ay qaateen, iyo casharka ardayga."
       ),
@@ -106,7 +114,7 @@ export function ProHubScreen({
       id: "future_jobs",
       label: tr("Shaqooyinka Cusub"),
       icon: <TrendingUp className="w-4 h-4" />,
-      gateHeadline: tr("Wararka Shaqooyinka Cusub & AI (Pro Keliya)"),
+      gateHeadline: tr("Wararka Shaqooyinka Cusub & AI (Unlock+ Keliya)"),
       gateSummary: tr(
         "Xog rasmi ah oo ku saabsan shaqooyinka ugu kororka badan 2025 ilaa 2030 iyo fursadaha gudaha Soomaaliya."
       ),
@@ -120,7 +128,7 @@ export function ProHubScreen({
       id: "skills",
       label: tr("Xirfadaha Dakhliga"),
       icon: <Wrench className="w-4 h-4" />,
-      gateHeadline: tr("Xirfadaha Dakhliga Sare (Pro Keliya)"),
+      gateHeadline: tr("Xirfadaha Dakhliga Sare (Unlock+ Keliya)"),
       gateSummary: tr(
         "Baro xirfado dhab ah oo aad ku shaqaysan karto adigoo arday ah (Video Editing, Design, Web & AI)."
       ),
@@ -131,10 +139,38 @@ export function ProHubScreen({
       ],
     },
     {
+      id: "top10_tricks",
+      label: tr("Sirta Ardayda Top-10"),
+      icon: <Trophy className="w-4 h-4" />,
+      gateHeadline: tr("Xeeladaha Ardayda Top-10 Galaan (Xalaal · Unlock+)"),
+      gateSummary: tr(
+        "Baro hababka cilmiyeysan ee ardayda kaalmaha sare galaan ku diyaar-garoobaan — qishku waa xaaraam, HIRAAL-na ma taageero qish iyo khiyaano."
+      ),
+      highlights: [
+        tr("6 xeeladood oo xusuusta & fahamka kordhiya (Active Recall, 1-3-7-21, Feynman)"),
+        tr("Xeerka maareynta waqtiga hoolka imtixaanka (60% · 25% · 15%)"),
+        tr("Hababka xalaasha ah ee MCQ Elimination iyo Buugga Qaladaadka"),
+      ],
+    },
+    {
+      id: "subject_secrets",
+      label: tr("Sirta Maaddooyinka (12 Maado)"),
+      icon: <BookOpenCheck className="w-4 h-4" />,
+      gateHeadline: tr("Sirta Xalaasha ah ee 12-ka Maado (Unlock+ Keliya)"),
+      gateSummary: tr(
+        "Ogow meelaha saxaha imtixaannadu dhibcaha ku bixiyaan (Method Marks, Keywords, Diagrams) maaddo kasta — si sharci ah oo xalaal ah."
+      ),
+      highlights: [
+        tr("Dhammaan 12-ka maado ee Form 4 (Saynis, Luqado, Bulsho, Ganacsi, Tech & Tarbiyo)"),
+        tr("Mowduucyada ugu muhiimsan imtixaannada Form 4 iyo Tartanka JUS"),
+        tr("Khaladaadka yaryar ee dhibcaha lumiya iyo sida looga fogaado"),
+      ],
+    },
+    {
       id: "somalia_growth",
       label: tr("Horumarinta Ardayga"),
       icon: <Rocket className="w-4 h-4" />,
-      gateHeadline: tr("Horumarinta Ardayga Soomaaliya (Pro Keliya)"),
+      gateHeadline: tr("Horumarinta Ardayga Soomaaliya (Unlock+ Keliya)"),
       gateSummary: tr(
         "Istiraatiijiyad la hubiyay iyo deeqaha waxbarasho ee caalamiga ah ee u furan ardayda Soomaaliya."
       ),
@@ -160,12 +196,8 @@ export function ProHubScreen({
         background: "linear-gradient(180deg, #061D42 0%, #0C326C 52%, #1553A6 100%)",
       }}
     >
-      <div className="pointer-events-none fixed inset-0 opacity-60">
-        <AuroraBackground />
-      </div>
-
-      {/* Compact Single-Row Sticky Header with 3-Line Menu Trigger */}
-      <header className="border-b border-white/15 sticky top-0 z-30 bg-[#061D42]/95 backdrop-blur-xl">
+      {/* Compact Single-Row Header with 3-Line Menu Trigger */}
+      <header className="border-b border-white/15 relative z-30 bg-[#061D42]/95 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-3.5 sm:px-6 py-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <button
@@ -180,7 +212,7 @@ export function ProHubScreen({
             <button
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
-              aria-label={tr("Qaybaha Pro")}
+              aria-label={tr("Qaybaha Unlock+")}
               aria-expanded={menuOpen}
               className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs sm:text-sm font-bold cursor-pointer transition-all min-w-0 ${
                 menuOpen
@@ -207,13 +239,13 @@ export function ProHubScreen({
                 onClick={onOpenPaywall}
                 className="relative overflow-hidden px-3 sm:px-4 py-2 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[11.5px] sm:text-xs inline-flex items-center gap-1.5 cursor-pointer transition-transform active:scale-[0.97] whitespace-nowrap shrink-0 shadow-[0_6px_18px_rgba(255,201,60,0.3)]"
               >
-                <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                <span>{tr("Fur Pro ($0.10)")}</span>
+                <LockOpen className="w-3.5 h-3.5 shrink-0" />
+                <span>{tr("Fur Unlock+ ($0.50)")}</span>
               </button>
             ) : (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-400/35 text-[11px] sm:text-xs font-bold text-emerald-300 whitespace-nowrap shrink-0">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>{tr("Pro Furan")}</span>
+                <span>{tr("Unlock+ Furan")}</span>
               </span>
             )}
           </div>
@@ -223,22 +255,22 @@ export function ProHubScreen({
         {menuOpen && (
           <>
             <div
-              className="fixed inset-0 top-[61px] bg-black/60 backdrop-blur-xs z-20"
+              className="fixed inset-0 bg-black/60 backdrop-blur-xs z-20"
               onClick={() => setMenuOpen(false)}
             />
             <nav
-              aria-label="Pro Sections Menu"
+              aria-label="Unlock+ Sections Menu"
               className="relative z-30 border-t border-white/15 bg-[#07214C]/98 shadow-2xl animate-pro-enter"
             >
               <div className="max-w-5xl mx-auto px-3.5 sm:px-6 py-3.5 space-y-2">
                 <div className="flex items-center justify-between px-1 pb-1">
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-white/60">
-                      {tr("Xarunta Ardayga Pro")}
+                      {tr("Xarunta Ardayga Unlock+")}
                     </span>
                     <ProBadge small />
                   </div>
-                  <span className="text-[11px] font-semibold text-[#FFD86B]">6 {tr("Qaybood")}</span>
+                  <span className="text-[11px] font-semibold text-[#FFD86B]">8 {tr("Qaybood")}</span>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-1.5">
@@ -271,7 +303,7 @@ export function ProHubScreen({
                             }`}
                           >
                             <Lock className="w-3 h-3" />
-                            <span>PRO</span>
+                            <span>UNLOCK+</span>
                           </span>
                         ) : (
                           <CheckCircle2
@@ -294,8 +326,8 @@ export function ProHubScreen({
                     }}
                     className="mt-2 w-full py-2.5 px-4 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
                   >
-                    <Sparkles className="w-4 h-4" />
-                    <span>{tr("Fur Pro ($0.10 · Abid)")}</span>
+                    <LockOpen className="w-4 h-4" />
+                    <span>{tr("Fur Unlock+ ($0.50 · 6 Bilood)")}</span>
                   </button>
                 )}
               </div>
@@ -304,7 +336,7 @@ export function ProHubScreen({
         )}
       </header>
 
-      <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-3.5 sm:px-6 py-6 sm:py-8 pb-14 space-y-5 min-w-0 overflow-x-clip">
+      <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-3.5 sm:px-6 py-6 sm:py-8 pb-28 space-y-5 min-w-0 overflow-x-clip">
         {!proActive ? (
           /* STRICT PRO LOCK GATE: Zero Pro data, zero filters, zero university/pioneer names mounted until Pro is unlocked */
           <section
@@ -355,25 +387,21 @@ export function ProHubScreen({
               <button
                 type="button"
                 onClick={onOpenPaywall}
-                className="relative overflow-hidden w-full h-[52px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-transform active:scale-[0.98] animate-gold-pulse"
+                className="w-full h-[52px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
               >
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/55 to-transparent animate-shimmer"
-                />
-                <Sparkles className="w-4 h-4 relative z-10" />
-                <span className="relative z-10">{tr("Fur Pro ($0.10 · Abid)")}</span>
+                <LockOpen className="w-4 h-4" />
+                <span>{tr("Fur Unlock+ ($0.50 · 6 Bilood)")}</span>
               </button>
 
               <p className="text-[11.5px] text-center text-white/60 leading-relaxed">
                 {tr(
-                  "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waxaa kuu furmaya dhammaan 6-da qaybood ee Xarunta Pro abid."
+                  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) — waxaa kuu furmaya dhammaan 8-da qaybood ee Unlock+ Hub muddo 6 bilood ah (180 maalmood)."
                 )}
               </p>
             </div>
           </section>
         ) : (
-          /* PRO ACTIVE: Full unlocked access to all 6 interactive Pro Hub sections under ProContentShield */
+          /* PRO ACTIVE: Full unlocked access to all 8 interactive Unlock+ Hub sections under ProContentShield */
           <ProContentShield
             active={proActive}
             sectionLabel={`Qeybta 3aad · University (${activeTabObj.label})`}
@@ -385,6 +413,12 @@ export function ProHubScreen({
                   initialFacultyId={initialFacultyId}
                   onUnlockClick={onOpenPaywall}
                 />
+              )}
+              {tab === "top10_tricks" && (
+                <Top10TricksSection isPro={true} onUnlock={onOpenPaywall} />
+              )}
+              {tab === "subject_secrets" && (
+                <LegalSubjectSecretsSection isPro={true} onUnlock={onOpenPaywall} />
               )}
               {tab === "universities" && (
                 <SomaliaUniversitiesSection

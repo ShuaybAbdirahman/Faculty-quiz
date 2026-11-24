@@ -6,7 +6,7 @@ import {
   FileText,
   GraduationCap,
   Lock,
-  Sparkles,
+  LockOpen,
   UploadCloud,
 } from "lucide-react";
 import {
@@ -17,7 +17,7 @@ import {
   type SchoolSubjectGroup,
 } from "../data/schoolForm4Data";
 import { useApp } from "../context/AppContext";
-import { AuroraBackground, SomaliStarIcon } from "../components/ModernUI";
+import { HiraalLogoMark } from "../components/ModernUI";
 import { ProContentShield } from "../components/ProContentShield";
 import { PredictExamGateCard, PredictExamRunner } from "../components/PredictExamRunner";
 
@@ -57,29 +57,25 @@ export function SchoolForm4Screen({
       lang="so"
       className="min-h-screen w-full max-w-full overflow-x-clip flex flex-col text-white relative"
       style={{
-        background: "linear-gradient(180deg, #071D42 0%, #0E3572 52%, #1553A6 100%)",
+        background: "linear-gradient(180deg, #062147 0%, #093E78 52%, #0284C7 100%)",
       }}
     >
-      <div className="pointer-events-none fixed inset-0 opacity-65">
-        <AuroraBackground />
-      </div>
-
       {/* Single-Row Top Bar */}
-      <header className="border-b border-white/15 sticky top-0 z-30 bg-[#071D42]/92 backdrop-blur-xl">
+      <header className="border-b border-white/15 relative z-30 bg-[#062147]/92 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <button
               type="button"
               onClick={onBackHome}
-              aria-label="Ku noqo CAAWIYE"
+              aria-label="Ku noqo HIRAAL"
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/18 border border-white/18 text-xs font-bold text-white cursor-pointer transition-colors shrink-0"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">CAAWIYE</span>
+              <span className="hidden sm:inline">HIRAAL</span>
             </button>
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-[#4189DD] border border-white/30 flex items-center justify-center shrink-0">
-                <SomaliStarIcon className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-[#0284C7] border border-white/30 flex items-center justify-center shrink-0">
+                <HiraalLogoMark size={20} />
               </div>
               <div className="min-w-0">
                 <h1 className="font-head font-extrabold text-[15px] sm:text-lg leading-tight truncate">
@@ -98,7 +94,7 @@ export function SchoolForm4Screen({
         </div>
       </header>
 
-      <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-14 space-y-6">
+      <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 space-y-6">
         {/* Prepared Flagship Intro Banner (June 2027) */}
         <section className="rounded-3xl p-5 sm:p-6 border border-[#7CB7FF]/35 bg-white/[0.08] backdrop-blur-md space-y-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -110,7 +106,7 @@ export function SchoolForm4Screen({
               <Calendar className="w-3.5 h-3.5 text-[#FFD86B]" />
               <span>Imtixaanka: {FORM4_EXAM_DATE}</span>
               <span className="text-white/35" aria-hidden="true">·</span>
-              <span>Predict $0.10 / Maado</span>
+              <span>Predict $0.25 / Maado</span>
             </div>
           </div>
 
@@ -212,14 +208,21 @@ export function SchoolForm4Screen({
                 </div>
 
                 {!subjectUnlocked ? (
-                  <button
-                    type="button"
-                    onClick={() => onUnlockSubject(activeSubject)}
-                    className="px-4 py-2 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#051531] font-head font-extrabold text-xs inline-flex items-center gap-1.5 cursor-pointer shrink-0"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Fur Predict ({activeSubject.predictPrice})</span>
-                  </button>
+                  activeSubject.predictQuestions.length > 0 ? (
+                    <button
+                      type="button"
+                      onClick={() => onUnlockSubject(activeSubject)}
+                      className="px-4 py-2 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#051531] font-head font-extrabold text-xs inline-flex items-center gap-1.5 cursor-pointer shrink-0"
+                    >
+                      <LockOpen className="w-3.5 h-3.5" />
+                      <span>Fur Predict ({activeSubject.predictPrice})</span>
+                    </button>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#BFDBFE] shrink-0">
+                      <UploadCloud className="w-4 h-4" />
+                      <span>Soo Socda ({activeSubject.examDate})</span>
+                    </span>
+                  )
                 ) : (
                   <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-300 shrink-0">
                     <CheckCircle2 className="w-4 h-4" />
@@ -235,7 +238,7 @@ export function SchoolForm4Screen({
                   {
                     id: "predict" as const,
                     label: subjectUnlocked ? "Predict Exam" : `Predict (${activeSubject.predictPrice})`,
-                    icon: subjectUnlocked ? <Sparkles className="w-4 h-4" /> : <Lock className="w-4 h-4" />,
+                    icon: subjectUnlocked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />,
                   },
                 ].map((t) => (
                   <button

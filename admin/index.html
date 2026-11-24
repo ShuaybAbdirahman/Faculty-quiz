@@ -77,7 +77,7 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--bd);b
   <div id="setup" class="card hide err">Supabase lama habeynin. Ku qor <code>SUPABASE_URL</code> iyo <code>SUPABASE_ANON_KEY</code> gudaha faylkan.</div>
 
   <div id="dash" class="hide">
-    <div class="tabs"><button class="tab on" id="tabRes">Natiijooyinka</button><button class="tab" id="tabRev">Fikirrada <span id="pendBadge"></span></button><button class="tab" id="tabQr">QR code</button><button class="tab" id="tabPro">Pro <span id="pendProBadge"></span></button></div>
+    <div class="tabs"><button class="tab on" id="tabRes">Natiijooyinka</button><button class="tab" id="tabRev">Fikirrada <span id="pendBadge"></span></button><button class="tab" id="tabQr">QR code</button><button class="tab" id="tabPro">Unlock+ <span id="pendProBadge"></span></button></div>
 
     <div id="panelRes">
       <div class="stats" id="stats"></div>
@@ -100,10 +100,10 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--bd);b
       <div class="stats" id="proStats"></div>
       <div class="card" style="margin-top:14px">
         <b>Dejinta lacag-bixinta (EVC Plus keliya)</b>
-        <div class="mut">Waxaa lagu muujiyaa bogga Pro ee ardayda.</div>
+        <div class="mut">Waxaa lagu muujiyaa bogga Unlock+ ee ardayda.</div>
         <div id="pWarn" class="warn hide">Digniin: Xogta server-ka weli waxaa ku jira habab hore (sida Zaad ama lambar tijaabo ah). Riix <b>Keydi dejinta</b> si loo nadiifiyo oo looga dhigo EVC Plus keliya.</div>
-        <label class="lbl">Qiimaha (qoraal, tusaale: $3 / 6 bilood)</label><input id="pPrice" maxlength="60" placeholder="$3 / 6 bilood">
-        <label class="lbl">Maalmaha gelitaanka</label><input id="pDays" type="number" min="1" max="3650" value="180">
+        <label class="lbl">Qiimaha (qoraal, tusaale: $0.50 · 6 Bilood)</label><input id="pPrice" maxlength="60" placeholder="$0.50 · 6 Bilood">
+        <label class="lbl">Maalmaha gelitaanka (tusaale: 180)</label><input id="pDays" type="number" min="1" max="730" value="180">
         <label class="lbl">WhatsApp (lambar caalami ah, tusaale 252610999089)</label><input id="pWa" inputmode="numeric" maxlength="20" placeholder="252610999089">
         <label class="lbl">Fariin dheeraad ah (ikhtiyaari)</label><input id="pNote" maxlength="300">
         <label class="lbl">Habka lacag-bixinta: EVC Plus · Lambar (tusaale 0610999089) · Magaca lambarka</label>
@@ -130,7 +130,7 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--bd);b
         <b>Koodhyada</b>
         <div class="mut">U iib koodh ardayga (WhatsApp, wakiil). Koodh kasta mar keliya ayaa la isticmaali karaa.</div>
         <div class="mrow" style="grid-template-columns:1fr 1fr auto;align-items:end">
-          <div><label class="lbl">Maalmaha</label><input id="pcDays" type="number" min="1" max="3650" value="180"></div>
+          <div><label class="lbl">Maalmaha</label><input id="pcDays" type="number" min="1" max="730" value="180"></div>
           <div><label class="lbl">Tirada (ugu badnaan 50)</label><input id="pcCount" type="number" min="1" max="50" value="5"></div>
           <button id="pcMake">Samee</button>
         </div>
@@ -168,7 +168,7 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--bd);b
 <script>
 const SUPABASE_URL = 'https://dmwhyltkdjvnehyhtjak.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_KJ3maGBUGCpUEn7vA464Ug_xUzJqGfU';
-const DEFAULT_EVC_NUM = '0610999089';
+const DEFAULT_EVC_NUM = '610999089';
 const DEFAULT_WA_NUM = '252610999089';
 
 const NAMES = {law:'Shari’ada iyo Sharciga',edu:'Waxbarashada',econ:'Dhaqaalaha iyo Maaraynta',health:'Sayniska Caafimaadka',cs:'Sayniska Kombuyuutarka iyo IT',pol:'Siyaasadda iyo Maamulka Dadweynaha',eng:'Injineerinka (Architecture ku jirta)',agri:'Beeraha iyo Deegaanka',med:'Dhakhtarnimada',vet:'Dhakhtarnimada Xoolaha',dent:'Ilkaha',pharm:'Farmashiyaha',sci:'Sayniska Dabiiciga ah',arts:'Farshaxanka, Aadanaha iyo Warbaahinta'};
@@ -345,8 +345,8 @@ async function loadPro(){
     .map(([k, v]) => '<div class="stat"><b>' + esc(v) + '</b><span>' + esc(k) + '</span></div>').join('');
   $('pendProBadge').textContent = data.pending ? '(' + data.pending + ')' : '';
   const st = data.settings || {};
-  $('pPrice').value = st.price_text || '$0.10 · Abid (Hal mar)';
-  $('pDays').value = st.days || '3650';
+  $('pPrice').value = st.price_text || '$0.50 · 6 Bilood';
+  $('pDays').value = st.days || '180';
   $('pWa').value = st.whatsapp || DEFAULT_WA_NUM;
   $('pNote').value = st.note || '';
 
@@ -358,9 +358,9 @@ async function loadPro(){
   show('pWarn', hasExtra);
 
   $('pmName').value = 'EVC Plus';
-  $('pmNum').value = isDummy ? '610999089' : (evc.number || '610999089');
+  $('pmNum').value = isDummy ? DEFAULT_EVC_NUM : (evc.number || DEFAULT_EVC_NUM);
   $('pmHolder').value = isDummy ? 'Shuceyb Abdirahman' : (evc.holder || 'Shuceyb Abdirahman');
-  $('pcDays').value = st.days || '3650';
+  $('pcDays').value = st.days || '180';
   loadProReqs(); loadProCodes();
 }
 $('pSave').onclick = async () => {
@@ -371,8 +371,8 @@ $('pSave').onclick = async () => {
   const holder = $('pmHolder').value.trim();
 
   $('pSaveMsg').className = 'mut';
-  if (!price) { $('pSaveMsg').className = 'err'; $('pSaveMsg').textContent = 'Geli qiimaha (tusaale: $3 / 6 bilood).'; return; }
-  if (!days || days < 1 || days > 3650) { $('pSaveMsg').className = 'err'; $('pSaveMsg').textContent = 'Maalmaha waa inay ahaadaan 1–3650.'; return; }
+  if (!price) { $('pSaveMsg').className = 'err'; $('pSaveMsg').textContent = 'Geli qiimaha (tusaale: $0.50 · 6 Bilood).'; return; }
+  if (!days || days < 1 || days > 730) { $('pSaveMsg').className = 'err'; $('pSaveMsg').textContent = 'Maalmaha waa inay ahaadaan 1–730.'; return; }
   if (!num) { $('pSaveMsg').className = 'err'; $('pSaveMsg').textContent = 'Geli lambarka EVC Plus.'; return; }
 
   const methods = [{ name: 'EVC Plus', number: num, holder }];
@@ -392,11 +392,11 @@ function proReqHtml(r){
     : r.status === 'approved' ? '<span class="badge ok">La ansixiyay</span>'
     : '<span class="badge bad">La diiday</span>';
   const waNum = formatWaPhone(r.phone);
-  const waMsg = encodeURIComponent('Salaam, codsigaaga Hagaha Waaxda Pro (' + r.method + ' · Txn: ' + r.txn_ref + ')');
+  const waMsg = encodeURIComponent('Salaam, codsigaaga HIRAAL Unlock+ (' + r.method + ' · Txn: ' + r.txn_ref + ')');
   const waBtn = waNum ? '<a class="mini wa" target="_blank" rel="noopener" href="https://wa.me/' + esc(waNum) + '?text=' + waMsg + '">WhatsApp</a>' : '';
   const copyBtn = '<button class="mini" data-copy="' + esc(r.txn_ref) + '">Koobi Txn</button>';
   const acts = r.status === 'pending'
-    ? '<input class="dayin" type="number" min="1" max="3650" value="' + esc(defDays) + '" style="width:86px;margin:0;padding:7px 10px" title="Maalmaha"><button class="mini ok" data-a="approve" data-id="' + esc(r.id) + '">Ansix</button><button class="mini bad" data-a="reject" data-id="' + esc(r.id) + '">Diid</button>'
+    ? '<input class="dayin" type="number" min="1" max="730" value="' + esc(defDays) + '" style="width:86px;margin:0;padding:7px 10px" title="Maalmaha"><button class="mini ok" data-a="approve" data-id="' + esc(r.id) + '">Ansix</button><button class="mini bad" data-a="reject" data-id="' + esc(r.id) + '">Diid</button>'
     : '';
   return '<div class="rev"><div><b>' + esc(r.method) + '</b> · ' + esc(r.phone) + stBadge + '</div>' +
     '<div class="meta">Lambarka xaqiijinta: <b>' + esc(r.txn_ref) + '</b>' + (r.amount ? ' · ' + esc(r.amount) : '') + (r.name ? ' · ' + esc(r.name) : '') + ' · ' + esc(new Date(r.created_at).toLocaleString()) + '</div>' +

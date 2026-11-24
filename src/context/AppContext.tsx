@@ -14,6 +14,7 @@ import {
   readStoredEntitlement,
   resolveAllowedLang,
   rotateDeviceId,
+  syncServerEntitlement,
   writeStoredEntitlement,
   type ProEntitlement,
   type ProItemKey,
@@ -126,7 +127,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? "rtl" : "ltr";
-    document.title = `CAAWIYE | ${trFn(lang, "Hagaha Kulliyadda")}`;
+    document.title = `HIRAAL | ${trFn(lang, "Hagaha Kulliyadda")}`;
   }, [lang, rtl]);
 
   useEffect(() => {
@@ -140,7 +141,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const setLang = useCallback(
     (l: Lang): boolean => {
       if (!canUseLanguage(l, proLanguagesActive)) {
-        setToast(trFn(lang, "Af-Soomaaligu waa bilaash. Fur Pro ($0.10, hal mar) si aad u hesho Ingiriisi iyo Carabi."));
+        setToast(trFn(lang, "Af-Soomaaligu waa bilaash. Fur Unlock+ ($0.50, 6 bilood) si aad u hesho Ingiriisi iyo Carabi."));
         return false;
       }
       setLangState(l);
@@ -188,8 +189,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const refreshPro = useCallback(async () => {
     if (!backendEnabled) return false;
     try {
-      const exp = await fetchProStatus(deviceId);
-      const saved = writeStoredEntitlement(localStorage, deviceId, exp);
+      const status = await fetchProStatus(deviceId);
+      const saved = syncServerEntitlement(localStorage, deviceId, status);
       setEntitlement(saved);
       if (saved) setPendingAt(0);
       return saved !== null;
@@ -337,7 +338,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 px-4 max-w-[92vw]"
+          className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 px-4 max-w-[92vw]"
         >
           <div className="rounded-xl bg-[#10182E]/95 backdrop-blur-md text-white text-sm font-semibold px-4 py-3 shadow-2xl border border-white/15 animate-rise">
             {toast}

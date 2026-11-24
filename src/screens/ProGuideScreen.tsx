@@ -12,7 +12,6 @@ import {
   Lock,
   LockOpen,
   SlidersHorizontal,
-  Sparkles,
   Trophy,
 } from "lucide-react";
 import { items, sections, type Faculty } from "../data/quizData";
@@ -124,14 +123,8 @@ export function ProEntryCard({
 
       <div className="mt-4">
         <ShinyButton
-          label={proActive ? "Fur Hagaha Pro" : "Fur Pro"}
-          icon={
-            proActive ? (
-              <Sparkles className="w-5 h-5 text-[#050A1E]" />
-            ) : (
-              <LockOpen className="w-5 h-5 text-[#050A1E]" />
-            )
-          }
+          label={proActive ? "Fur Hagaha Unlock+" : "Fur Unlock+"}
+          icon={<LockOpen className="w-5 h-5 text-[#050A1E]" />}
           onClick={() => onOpenPro(entries[sel].f)}
         />
       </div>
@@ -365,36 +358,22 @@ export function ProGuideScreen({
 
                   {top.why.length > 0 && (
                     <div className="mt-3.5">
-                      <p className="text-[11.5px] font-bold tracking-wider uppercase text-[#FFD86B] mb-2">
+                      <p className="text-[11.5px] font-bold tracking-wider uppercase text-[#FFD86B] mb-1">
                         {tr("Waxa ay kuugu habboon tahay")}
                       </p>
-                      <div className="flex flex-wrap gap-2">
-                        {top.why.map((k) => (
-                          <span
-                            key={k}
-                            className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FFC93C]/16 border border-[#FFC93C]/50 text-[#FFD86B]"
-                          >
-                            {traitLabel(k)}
-                          </span>
-                        ))}
-                      </div>
+                      <p className="text-xs font-semibold text-white/90 leading-relaxed">
+                        {top.why.map((k) => traitLabel(k)).join(" · ")}
+                      </p>
                     </div>
                   )}
 
                   <div className="mt-3.5">
-                    <p className="text-[11.5px] font-bold tracking-wider uppercase text-[#FFD86B] mb-2">
+                    <p className="text-[11.5px] font-bold tracking-wider uppercase text-[#FFD86B] mb-1">
                       {tr("Shaqooyin suurtagal ah")}
                     </p>
-                    <div className="flex flex-wrap gap-2">
-                      {jobs.map((j) => (
-                        <span
-                          key={j}
-                          className="px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 border border-white/22 text-white"
-                        >
-                          {j}
-                        </span>
-                      ))}
-                    </div>
+                    <p className="text-xs font-semibold text-white/90 leading-relaxed">
+                      {jobs.join(" · ")}
+                    </p>
                   </div>
                 </div>
               );
@@ -438,16 +417,9 @@ export function ProGuideScreen({
                       <p className="mt-2.5 text-[12.5px] text-white/80 leading-relaxed">
                         {tx(s.d.d)}
                       </p>
-                      <div className="mt-2.5 flex flex-wrap gap-1.5">
-                        {jobs.slice(0, 3).map((j) => (
-                          <span
-                            key={j}
-                            className="px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 border border-white/22"
-                          >
-                            {j}
-                          </span>
-                        ))}
-                      </div>
+                      <p className="mt-2 text-xs font-semibold text-white/80">
+                        {jobs.slice(0, 3).join(" · ")}
+                      </p>
                     </div>
                   );
                 })}
@@ -458,7 +430,7 @@ export function ProGuideScreen({
             <div className="pt-2 space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <AccentTitleLight label="Su'aalaha Gaarka ah ee Waaxda (Pro)" />
+                  <AccentTitleLight label="Su'aalaha Gaarka ah ee Waaxda (Unlock+)" />
                 </div>
                 <span className="text-xs font-bold text-[#FFD86B] tabular-nums">
                   {Object.keys(proAns).length}/{facultyProQuestions.length}

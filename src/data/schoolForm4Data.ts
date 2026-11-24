@@ -59,7 +59,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
   {
@@ -75,7 +75,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
   {
@@ -91,7 +91,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
   {
@@ -107,7 +107,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
 
@@ -125,7 +125,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
   {
@@ -141,7 +141,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
   {
@@ -157,7 +157,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
 
@@ -175,7 +175,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
   {
@@ -191,7 +191,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
 
@@ -209,7 +209,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
   {
@@ -225,7 +225,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
   {
@@ -241,7 +241,7 @@ export const form4Subjects: Form4Subject[] = [
     freeExamTip: "",
     pdfs: [],
     predictDurationMin: 15,
-    predictPrice: "$0.10",
+    predictPrice: "$0.25",
     predictQuestions: [],
   },
 ];

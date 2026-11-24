@@ -24,7 +24,7 @@ function drawSomaliStar(
 }
 
 /**
- * Draws the official 1080x1440 CAAWIYE promotional poster in Somalia Flag Blue
+ * Draws the official 1080x1440 HIRAAL promotional poster in Somalia Flag Blue
  * with School (June 2027), Gap (Oct 2027), University (RIASEC), and real scannable QR code.
  */
 export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
@@ -76,7 +76,7 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
   ctx.roundRect(24, 24, w - 48, h - 48, 38);
   ctx.stroke();
 
-  // 2. Top Brand Header: Somali Star Badge + CAAWIYE Wordmark
+  // 2. Top Brand Header: Somali Star Badge + HIRAAL Wordmark
   const badgeX = 76;
   const badgeY = 72;
   const badgeSize = 86;
@@ -92,13 +92,21 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
   ctx.stroke();
 
   ctx.fillStyle = "#FFFFFF";
-  drawSomaliStar(ctx, badgeX + badgeSize / 2, badgeY + badgeSize / 2, 26, 11);
+  drawSomaliStar(ctx, badgeX + badgeSize / 2, badgeY + badgeSize / 2 - 4, 24, 10);
+
+  // Golden horizon arc in poster emblem
+  ctx.strokeStyle = "#F59E0B";
+  ctx.lineWidth = 5;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.arc(badgeX + badgeSize / 2, badgeY + badgeSize + 2, 34, Math.PI * 1.18, Math.PI * 1.82);
+  ctx.stroke();
 
   ctx.textBaseline = "top";
   ctx.textAlign = "left";
   ctx.fillStyle = "#FFFFFF";
   ctx.font = '800 54px "Bricolage Grotesque", "DM Sans", system-ui, sans-serif';
-  ctx.fillText("CAAWIYE", badgeX + badgeSize + 24, badgeY + 4);
+  ctx.fillText("HIRAAL", badgeX + badgeSize + 24, badgeY + 4);
 
   ctx.fillStyle = "#BFDBFE";
   ctx.font = '700 22px "DM Sans", system-ui, sans-serif';
@@ -141,7 +149,7 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
       title: "Dugsiga Sare · Form 4 (12 Maado)",
       sub: "Imtixaanka Qaranka (June 2027) · Saynis, Luqado & Tech",
       topStat: "PDFs: Free",
-      botStat: "Predict: $0.10",
+      botStat: "Predict: $0.25",
       c1: "#4189DD",
       c2: "#165FB8",
       numBg: "#FFFFFF",
@@ -154,7 +162,7 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
       title: "School ilaa University (Gap)",
       sub: "Tartanka JUS (Oct 2027) · 90 Maalmood & Xalka",
       topStat: "PDFs: Free",
-      botStat: "Predict: $0.10",
+      botStat: "Predict: $0.50",
       c1: "#059669",
       c2: "#047857",
       numBg: "#FFFFFF",
@@ -164,10 +172,10 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
     {
       num: "03",
       tag: "QEYBTA 3AAD · UNIVERSITY",
-      title: "Hagaha Kulliyadda & Xarunta Pro",
+      title: "Hagaha Kulliyadda & Unlock+ Hub",
       sub: "RIASEC · 14 Kulliyadood · Waaxaha & Jaamacadaha",
       topStat: "RIASEC: Free",
-      botStat: "Pro Hub: $0.10",
+      botStat: "Unlock+ Hub: $0.50",
       c1: "#4338CA",
       c2: "#312E81",
       numBg: "#FFC93C",
@@ -310,7 +318,7 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
   ctx.font = '600 17px "DM Sans", system-ui, sans-serif';
-  ctx.fillText("CAAWIYE · ShuaybAbdirahman · 1 Qalab = 1 Arday", 108, qrBarY + 164);
+  ctx.fillText("HIRAAL · ShuaybAbdirahman · 1 Qalab = 1 Arday", 108, qrBarY + 164);
 
   // Right Crisp White QR Box with Real Matrix
   const boxSize = 172;
@@ -354,7 +362,7 @@ export function PromoPosterThumb({ className = "w-full h-auto block" }: { classN
   return (
     <canvas
       ref={canvasRef}
-      aria-label="CAAWIYE Promo Poster"
+      aria-label="HIRAAL Promo Poster"
       className={className}
     />
   );
@@ -379,7 +387,7 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
     const href = canvas.toDataURL("image/png");
     const a = document.createElement("a");
     a.href = href;
-    a.download = "CAAWIYE-Sawirka-Xayeysiinta.png";
+    a.download = "HIRAAL-Sawirka-Xayeysiinta.png";
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -394,13 +402,13 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
           canvas.toBlob((b) => res(b), "image/png")
         );
         if (blob) {
-          const file = new File([blob], "CAAWIYE-Sawirka-Xayeysiinta.png", {
+          const file = new File([blob], "HIRAAL-Sawirka-Xayeysiinta.png", {
             type: "image/png",
           });
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({
-              title: "CAAWIYE · School, Gap & University",
-              text: `Barnaamijka CAAWIYE (School Form 4, Gap & University): ${qrUrl}`,
+              title: "HIRAAL · School, Gap & University",
+              text: `Barnaamijka HIRAAL (School Form 4, Gap & University): ${qrUrl}`,
               files: [file],
             });
             return;
@@ -409,8 +417,8 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
       }
       if (navigator.share) {
         await navigator.share({
-          title: "CAAWIYE · School, Gap & University",
-          text: "Barnaamijka CAAWIYE ee ardayda Soomaaliyeed!",
+          title: "HIRAAL · School, Gap & University",
+          text: "Barnaamijka HIRAAL ee ardayda Soomaaliyeed!",
           url: qrUrl,
         });
         return;
@@ -448,7 +456,7 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
         <div className="px-5 py-4 border-b border-current/10 flex items-center justify-between gap-3">
           <div>
             <h3 className="font-head font-extrabold text-[17px]">
-              {tr("Sawirka Xayeysiinta (QR Dhab ah)")} · CAAWIYE
+              {tr("Sawirka Xayeysiinta (QR Dhab ah)")} · HIRAAL
             </h3>
             <p className="text-xs opacity-70">{qrDisplayUrl}</p>
           </div>
@@ -492,7 +500,7 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
             className="w-full py-2.5 rounded-xl border border-current/15 hover:bg-current/5 text-xs font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? tr("La koobiyay") : qrUrl}</span>
+            <span>{copied ? tr("La koobiyeeyay") : qrUrl}</span>
           </button>
         </div>
       </div>

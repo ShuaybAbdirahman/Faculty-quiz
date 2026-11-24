@@ -9,7 +9,7 @@ import {
   Play,
   RotateCcw,
   ShieldCheck,
-  Sparkles,
+  LockOpen,
   Trophy,
   UploadCloud,
   XCircle,
@@ -22,7 +22,7 @@ export function PredictExamGateCard({
   questionCount,
   durationMin,
   examDate,
-  price = "$0.10",
+  price = "$0.25",
   badgeText,
   onUnlock,
 }: {
@@ -53,7 +53,7 @@ export function PredictExamGateCard({
           </div>
         </div>
         <span className="px-3 py-1 rounded-lg bg-[#FFC93C]/20 border border-[#FFC93C]/45 font-head font-black text-xs text-[#FFD86B] tabular-nums">
-          PRO · {price}
+          UNLOCK+ · {price}
         </span>
       </div>
 
@@ -88,22 +88,37 @@ export function PredictExamGateCard({
       </div>
 
       <div className="space-y-2.5">
-        <button
-          type="button"
-          onClick={onUnlock}
-          className="relative overflow-hidden w-full h-[52px] rounded-2xl bg-[#4189DD] hover:bg-[#5CA2F2] text-white font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-transform active:scale-[0.98] shadow-[0_10px_28px_rgba(65,137,221,0.35)]"
-        >
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/35 to-transparent animate-shimmer"
-          />
-          <Sparkles className="w-4 h-4 relative z-10 text-[#FFD86B]" />
-          <span className="relative z-10">Fur Predict Exam ({price})</span>
-        </button>
+        {questionCount > 0 ? (
+          <>
+            <button
+              type="button"
+              onClick={onUnlock}
+              className="w-full h-[50px] rounded-2xl bg-[#4189DD] hover:bg-[#5CA2F2] text-white font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
+            >
+              <LockOpen className="w-4 h-4 text-[#FFD86B]" />
+              <span>Fur Predict Exam ({price})</span>
+            </button>
 
-        <p className="text-[11.5px] text-center text-white/65 leading-relaxed">
-          Hal mar bixi {price} (EVC Plus: 610999089 · Shuceyb Abdirahman).
-        </p>
+            <p className="text-[11.5px] text-center text-white/65 leading-relaxed">
+              6 Bilood (180 Maalmood) · {price} (EVC Plus: 610999089 · Shuceyb Abdirahman).
+            </p>
+          </>
+        ) : (
+          <>
+            <button
+              type="button"
+              disabled
+              className="w-full h-[50px] rounded-2xl bg-white/10 text-white/70 border border-white/20 font-head font-extrabold text-sm flex items-center justify-center gap-2 cursor-not-allowed"
+            >
+              <UploadCloud className="w-4 h-4 text-[#93C5FD]" />
+              <span>Diyaarinta Socota · Soo Gelinta {examDate ?? "2027"}</span>
+            </button>
+
+            <p className="text-[11.5px] text-center text-white/65 leading-relaxed">
+              Furitaanka ({price}) wuxuu shaqaynayaa isla marka su'aalaha rasmiga ah la soo geliyo.
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

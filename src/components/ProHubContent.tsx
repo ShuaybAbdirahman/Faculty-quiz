@@ -8,11 +8,11 @@ import {
   ClipboardCheck,
   Compass,
   ExternalLink,
+  Flag,
   Lightbulb,
   Lock,
   Map,
   Search,
-  Sparkles,
   Wrench,
 } from "lucide-react";
 import {
@@ -217,7 +217,7 @@ export function ProRoadmapsExplorer({
                   {isStageLocked && (
                     <span className="inline-flex items-center gap-1 text-xs font-bold text-[#FFD86B]">
                       <Lock className="w-3.5 h-3.5" />
-                      <span>PRO</span>
+                      <span>UNLOCK+</span>
                     </span>
                   )}
                 </div>
@@ -226,7 +226,7 @@ export function ProRoadmapsExplorer({
                   <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
                     <p className="text-xs text-white/65">
                       {tr(
-                        "Fur Pro ($0.10 · Abid) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan."
+                        "Fur Unlock+ ($0.50 · 6 Bilood) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan."
                       )}
                     </p>
                     {onUnlockClick && (
@@ -235,7 +235,7 @@ export function ProRoadmapsExplorer({
                         onClick={onUnlockClick}
                         className="px-4 py-2 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
                       >
-                        {tr("Fur Pro ($0.10)")}
+                        {tr("Fur Unlock+ ($0.50)")}
                       </button>
                     )}
                   </div>
@@ -286,7 +286,7 @@ export function ProRoadmapsExplorer({
                     </div>
 
                     <div className="mt-2.5 rounded-xl px-3.5 py-2.5 bg-[#FFC93C]/10 border border-[#FFC93C]/25 text-xs text-[#FFE8A3] flex items-start gap-2">
-                      <Sparkles className="w-4 h-4 text-[#FFC93C] shrink-0 mt-0.5" />
+                      <Flag className="w-4 h-4 text-[#FFC93C] shrink-0 mt-0.5" />
                       <span>
                         <strong>{tr("Mashruuca Marxaladda:")}</strong> {stage.milestone}
                       </span>
@@ -329,7 +329,7 @@ export function ProRoadmapsExplorer({
           <div className="flex items-center gap-2 min-w-0">
             <Compass className="w-4 h-4 text-[#FFD86B] shrink-0" />
             <h4 className="font-head font-bold text-sm text-white leading-snug">
-              {tr("Khariidado Cusub oo Soo Socda (Bilaash u ah Pro)")}
+              {tr("Khariidado Cusub oo Soo Socda (Bilaash u ah Unlock+)")}
             </h4>
           </div>
           <span className="text-[11px] font-bold text-[#FFD86B] shrink-0">{tr("Dhawaan")}</span>
@@ -552,7 +552,7 @@ export function ReadinessTracker({
                 </div>
                 {locked ? (
                   <p className="text-[11.5px] text-[#FFE599]/80 mt-1">
-                    {tr("Fur Pro ($0.10 · Abid) si aad u aragto faahfaahinta iyo calaamadaynta.")}
+                    {tr("Fur Unlock+ ($0.50 · 6 Bilood) si aad u aragto faahfaahinta iyo calaamadaynta.")}
                   </p>
                 ) : (
                   <p className="text-xs text-white/65 mt-1 leading-relaxed">{item.detail}</p>
@@ -580,7 +580,7 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
         <div className="flex items-center gap-2 flex-wrap">
           <ProBadge small />
           <span className="text-xs font-extrabold text-[#FFD86B]">
-            {tr("$0.10 Keliya · Hal mar (Abid)")}
+            {tr("$0.50 Keliya · 6 Bilood (180 Maalmood)")}
           </span>
         </div>
         <h3 className="font-head font-extrabold text-[17px] sm:text-lg text-white leading-snug">
@@ -588,21 +588,17 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
         </h3>
         <p className="text-xs text-white/80 leading-relaxed">
           {tr(
-            "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waligaa Pro ayaad ahaanaysaa iyadoo adeegyo cusub ay bilaash kuugu soo kordhayaan."
+            "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) — waxaa kuu furmaya dhammaan 8-da qaybood ee Unlock+ Hub muddo 6 bilood ah (180 maalmood)."
           )}
         </p>
       </div>
       <button
         type="button"
         onClick={onUnlock}
-        className="relative overflow-hidden shrink-0 px-5 py-3 rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-transform active:scale-[0.98] animate-gold-pulse"
+        className="shrink-0 px-5 py-3 rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
       >
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/55 to-transparent animate-shimmer"
-        />
-        <CheckCircle2 className="w-4 h-4 relative z-10" />
-        <span className="relative z-10">{tr("Fur Pro ($0.10)")}</span>
+        <CheckCircle2 className="w-4 h-4" />
+        <span>{tr("Fur Unlock+ ($0.50)")}</span>
       </button>
     </div>
   );

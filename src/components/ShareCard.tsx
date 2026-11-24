@@ -88,7 +88,7 @@ async function renderShareCardPng(
   ctx.fillStyle = "rgba(255,255,255,0.94)";
   ctx.font = `700 ${11 * S}px ${bodyFont}`;
   ctx.textAlign = rtl ? "right" : "left";
-  ctx.fillText("CAAWIYE · " + tr("Hagaha Kulliyadda").toUpperCase(), rtl ? (360 - 22) * S : 22 * S, 37 * S);
+  ctx.fillText("HIRAAL · " + tr("Hagaha Kulliyadda").toUpperCase(), rtl ? (360 - 22) * S : 22 * S, 37 * S);
 
   // Title
   ctx.textAlign = "center";
@@ -185,7 +185,7 @@ async function renderShareCardPng(
     ctx.fillText(tr("Adigu kulliyaddee kugu habboon?"), W / 2, py + 23 * S);
     ctx.fillStyle = "rgba(255,255,255,0.9)";
     ctx.font = `600 ${10.5 * S}px ${bodyFont}`;
-    ctx.fillText(tr("Scan garee QR-ka oo tijaabi 3 daqiiqo (Bilaash)"), W / 2, py + 41 * S);
+    ctx.fillText(tr("Scan garee QR-ka oo tijaabi 8 daqiiqo (Bilaash)"), W / 2, py + 41 * S);
   }
 
   // Footer CTA + QR
@@ -461,7 +461,7 @@ export function ShareSection({
                 {tr("Adigu kulliyaddee kugu habboon?")}
               </p>
               <p className="text-[10.5px] font-semibold text-white/90 mt-0.5">
-                {tr("Scan garee QR-ka oo tijaabi 3 daqiiqo (Bilaash)")}
+                {tr("Scan garee QR-ka oo tijaabi 8 daqiiqo (Bilaash)")}
               </p>
             </div>
           )}

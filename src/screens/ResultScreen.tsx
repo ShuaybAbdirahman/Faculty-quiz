@@ -358,7 +358,43 @@ export function ResultScreen({
           </div>
         )}
 
-        {/* Smart-Witty Faculty Icebreaker right under Congratulations */}
+        {/* #1 Match Spotlight Hook Strip */}
+        {top.length > 0 && (
+          <div
+            className={`mb-4 rounded-2xl px-4 py-3.5 border flex flex-wrap items-center justify-between gap-3 ${
+              darkMode ? "bg-[#121A30] border-white/12" : "bg-white border-slate-200 shadow-xs"
+            }`}
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white font-head font-extrabold text-sm tabular-nums"
+                style={{ background: argbToHex(top[0].f.color) }}
+              >
+                {top[0].percent}%
+              </div>
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold uppercase tracking-wider opacity-65">
+                  {tr("Kulliyadda kugu habboon waa")}
+                </div>
+                <div className="font-head font-extrabold text-[15px] sm:text-base truncate">
+                  {plainFacultyName(tx(top[0].f.name))}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                document.getElementById("top-faculty-details")?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="text-xs font-extrabold text-[#4A6CF7] dark:text-[#8CA8FF] hover:underline inline-flex items-center gap-1 cursor-pointer shrink-0"
+            >
+              <span>{tr("Eeg faahfaahinta")}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
+        {/* Interactive Faculty Icebreaker right under Top Result */}
         {top.length > 0 && <FacultyFunPromptCard top={top} />}
 
         {/* Top Row: Share Card + Pro Entry Card Side-by-Side on Desktop */}
@@ -399,7 +435,7 @@ export function ResultScreen({
         </div>
 
         {/* Top 3 Faculty Cards */}
-        <div className="mt-2">
+        <div id="top-faculty-details" className="mt-2 scroll-mt-20">
           {top.map((m, i) => (
             <ResultCard key={m.f.id} rank={i + 1} m={m} />
           ))}

@@ -4,7 +4,7 @@ import { founderPhotoDataUrl } from "../data/founderPhoto";
 import { useApp } from "../context/AppContext";
 
 const FOUNDER_MSG_KEY =
-  "Asc! Waxaan ahay Shuayb. Arday badan oo dhammeysa dugsiga sare ayaa ku wareersan kulliyadda ay dooran lahaayeen, sidaas darteed waxaan dhisay Hagaha Kulliyadda. Waxay ku weydiinaysaa su’aalo gaagaaban oo ku saabsan waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah. Kadib waxay kuu soo bandhigaysaa saddexda kulliyadood ee kuugu habboon, boqolkiiba, sababta, waaxaha iyo shaqooyinka. Waa hage oo kaa caawinaya inaad si cad u fikirto, ma aha go’aan kama dambays ah, la tasho waalidkaaga iyo macallimiintaada. Guul!";
+  "Asc! Waxaan ahay Shuayb. Arday badan oo dhammeysa dugsiga sare ayaa ku wareersan kulliyadda ay dooran lahaayeen, sidaas darteed waxaan dhisay HIRAAL (Hagaha Kulliyadda). Waxay ku weydiinaysaa su’aalo gaagaaban oo ku saabsan waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah. Kadib waxay kuu soo bandhigaysaa saddexda kulliyadood ee kuugu habboon, boqolkiiba, sababta, waaxaha iyo shaqooyinka. Waa hage oo kaa caawinaya inaad si cad u fikirto, ma aha go’aan kama dambays ah, la tasho waalidkaaga iyo macallimiintaada. Guul!";
 
 export function FounderIntroScreen({ onContinue }: { onContinue: () => void }) {
   const { tr, rtl, animationsOn, markFounderIntroSeen } = useApp();
@@ -54,16 +54,6 @@ export function FounderIntroScreen({ onContinue }: { onContinue: () => void }) {
         background: "linear-gradient(135deg, #061D42 0%, #165FB8 52%, #4189DD 100%)",
       }}
     >
-      {/* Ambient glows */}
-      <div
-        className="pointer-events-none absolute -top-28 -right-24 w-[340px] h-[340px] rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%)" }}
-      />
-      <div
-        className="pointer-events-none absolute -bottom-32 -left-28 w-[380px] h-[380px] rounded-full"
-        style={{ background: "radial-gradient(circle, rgba(122,231,255,0.22), transparent 70%)" }}
-      />
-
       <div className="relative z-10 flex-1 flex flex-col items-center px-5 pt-3 pb-4 max-w-[520px] w-full mx-auto">
         <div className="w-full flex justify-end">
           <button
@@ -79,29 +69,17 @@ export function FounderIntroScreen({ onContinue }: { onContinue: () => void }) {
           {tr("Fariin ka timid aasaasaha")}
         </p>
 
-        {/* Avatar with spinning rainbow/gold ring */}
-        <div className="mt-3 relative w-[176px] h-[176px] flex items-center justify-center animate-rise">
-          <div
-            className="absolute w-[164px] h-[164px] rounded-full animate-gold-pulse"
-            style={{ boxShadow: "0 0 42px rgba(255,201,60,0.35)" }}
-          />
-          <div
-            className="absolute w-[164px] h-[164px] rounded-full animate-spin-slow"
-            style={{
-              background:
-                "conic-gradient(from 0deg, #FFFFFF, #7CB7FF, #4189DD, #FFC93C, #FFFFFF)",
-            }}
-          />
-          <div className="relative w-[152px] h-[152px] rounded-full bg-[#061D42] flex items-center justify-center">
+        {/* Founder Portrait */}
+        <div className="mt-3 relative w-[160px] h-[160px] flex items-center justify-center animate-rise">
+          <div className="relative w-[152px] h-[152px] rounded-full bg-[#061D42] border-[3px] border-[#FFC93C] flex items-center justify-center shadow-lg">
             <img
               src={founderPhotoDataUrl}
               alt="Eng. Shuayb Abdirahman"
-              className="w-[142px] h-[142px] rounded-full object-cover"
+              className="w-[144px] h-[144px] rounded-full object-cover"
             />
           </div>
           <div
-            className="absolute right-2 bottom-2.5 w-[38px] h-[38px] rounded-full flex items-center justify-center border-[3px] border-[#061D42]"
-            style={{ background: "linear-gradient(135deg, #FFD86B 0%, #FFC93C 100%)" }}
+            className="absolute right-1 bottom-1.5 w-[38px] h-[38px] rounded-full flex items-center justify-center border-[3px] border-[#061D42] bg-[#FFC93C]"
           >
             <GraduationCap className="w-5 h-5 text-[#061D42]" />
           </div>
@@ -111,7 +89,7 @@ export function FounderIntroScreen({ onContinue }: { onContinue: () => void }) {
           {tr("Eng. Shuayb Abdirahman")}
         </h1>
         <p className="mt-1 text-[14px] font-semibold text-[#FFD86B] text-center animate-rise">
-          Aasaasaha CAAWIYE
+          Aasaasaha HIRAAL
         </p>
 
         {/* Glass message card */}
@@ -120,20 +98,12 @@ export function FounderIntroScreen({ onContinue }: { onContinue: () => void }) {
           className="mt-4 w-full rounded-[26px] p-[18px] bg-white/10 border border-white/25 shadow-2xl cursor-pointer animate-rise"
           style={{ animationDelay: "250ms" }}
         >
-          <div className="flex items-center gap-2.5">
-            <span className="text-[22px]" role="img" aria-label="wave">
-              👋
-            </span>
-            <h2 className="font-head font-extrabold text-[20px] text-[#FFD86B]">
-              {tr("Soo dhawoow!")}
-            </h2>
-          </div>
+          <h2 className="font-head font-extrabold text-[20px] text-[#FFD86B]">
+            {tr("Soo dhawoow!")}
+          </h2>
 
           <p className="mt-3 text-[15.5px] leading-relaxed text-white/95 min-h-[120px]">
             {fullText.slice(0, shown)}
-            {!done && (
-              <span className="inline-block w-[3px] h-[18px] bg-[#FFC93C] align-middle mx-0.5 animate-pulse" />
-            )}
           </p>
 
           {done && (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { Faculty } from "./data/quizData";
 import type { ProItemKey } from "./lib/proSecurity";
+import { backendEnabled } from "./lib/config";
 import { AppProvider, useApp } from "./context/AppContext";
 import { HomeScreen } from "./screens/HomeScreen";
 import { SchoolForm4Screen } from "./screens/SchoolForm4Screen";
@@ -15,6 +16,7 @@ import { ReviewsScreen } from "./screens/ReviewsScreen";
 import { ProGuideScreen } from "./screens/ProGuideScreen";
 import { ProPaywallScreen, type ProPlanType } from "./screens/ProPaywallScreen";
 import { ProHubScreen, type HubTab } from "./screens/ProHubScreen";
+import { BottomNavBar, type MainNavTab } from "./components/BottomNavBar";
 
 type Route =
   | { name: "home" }
@@ -65,13 +67,42 @@ function AppShell() {
   const resetToFacultyHome = () => setStack([{ name: "home" }, { name: "faculty_home" }]);
 
   const handleOpenPro = async (faculty: Faculty, outcome: QuizOutcome) => {
-    const verified = proActive ? await refreshPro() : false;
+    const verified = backendEnabled ? await refreshPro() : proActive;
     if (verified) {
       push({ name: "pro_guide", faculty, outcome });
     } else {
       push({ name: "pro_paywall", faculty, outcome, plan: "departments" });
     }
   };
+
+  const handleSelectMainTab = (tab: MainNavTab) => {
+    switch (tab) {
+      case "home":
+        setStack([{ name: "home" }]);
+        break;
+      case "school":
+        setStack([{ name: "home" }, { name: "school" }]);
+        break;
+      case "bridging":
+        setStack([{ name: "home" }, { name: "bridging", section: "exams" }]);
+        break;
+      case "faculty_home":
+        setStack([{ name: "home" }, { name: "faculty_home" }]);
+        break;
+      case "pro_hub":
+        setStack([{ name: "home" }, { name: "pro_hub", tab: "roadmaps" }]);
+        break;
+    }
+  };
+
+  const mainNavTab: MainNavTab | null =
+    current.name === "home" ||
+    current.name === "school" ||
+    current.name === "bridging" ||
+    current.name === "faculty_home" ||
+    current.name === "pro_hub"
+      ? current.name
+      : null;
 
   let screen: React.ReactNode = null;
   switch (current.name) {
@@ -81,6 +112,7 @@ function AppShell() {
           onEnterSchool={(subjectId) => push({ name: "school", subjectId })}
           onEnterBridging={(section) => push({ name: "bridging", section })}
           onEnterFacultyGuide={() => push({ name: "faculty_home" })}
+          onOpenProHub={(tab, facultyId) => push({ name: "pro_hub", tab, facultyId })}
           onOpenSettings={() => push({ name: "settings" })}
           onOpenReviews={() => push({ name: "reviews" })}
         />
@@ -237,6 +269,7 @@ function AppShell() {
       }`}
     >
       {screen}
+      {mainNavTab && <BottomNavBar activeTab={mainNavTab} onSelect={handleSelectMainTab} />}
     </div>
   );
 }

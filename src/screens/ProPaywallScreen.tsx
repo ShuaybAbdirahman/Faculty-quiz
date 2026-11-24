@@ -13,7 +13,7 @@ import {
   KeyRound,
   Languages,
   Loader2,
-  Lock,
+  LockKeyhole,
   MessageCircle,
   Phone,
   RefreshCw,
@@ -30,16 +30,27 @@ import {
   type ProInfo,
 } from "../lib/api";
 import {
+  buildSafeTelUssdUrl,
+  buildSafeWhatsappUrl,
+  clearRedeemFailures,
   EVC_PAYMENT_CONFIG,
   formatShortDeviceId,
+  generateSecureEvcRef,
+  getPaymentCooldownRemainingMs,
+  getRedeemCooldownRemainingMs,
   normalizeProInfo,
+  recordPaymentAttempt,
+  recordRedeemFailure,
+  sanitizeCheckoutName,
   saveRequestedProItem,
   saveRequestedProScope,
+  validateEvcPhone,
+  validatePayTimeHHMM,
   type ProItemKey,
 } from "../lib/proSecurity";
 import { form4Subjects } from "../data/schoolForm4Data";
 import { bridgeExamTracks } from "../data/bridgingPrepData";
-import { AccentTitleLight, ProBadge } from "../components/ModernUI";
+import { ProBadge } from "../components/ModernUI";
 
 interface Msg {
   key: string;
@@ -84,12 +95,12 @@ export function ProPaywallScreen({
   const { tr, trf, rtl, userName, deviceId, pendingAt, setPendingAt, setProUntil, refreshPro, showToast } =
     useApp();
 
-  // Initialize immediately with normalized EVC Plus config so 610999089 / Shuceyb Abdirahman is always ready
   const [info, setInfo] = useState<ProInfo>(() => normalizeProInfo());
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [copiedNum, setCopiedNum] = useState(false);
   const [copiedDev, setCopiedDev] = useState(false);
   const [plan, setPlan] = useState<ProPlanType>(initialPlan);
+  const [checkoutTab, setCheckoutTab] = useState<"evc" | "code">("evc");
 
   const [selectedSchoolId, setSelectedSchoolId] = useState<string>(() =>
     initialItemKey?.startsWith("school:") ? initialItemKey.slice("school:".length) : form4Subjects[0].id
@@ -111,10 +122,20 @@ export function ProPaywallScreen({
   const [statMsg, setStatMsg] = useState<Msg | null>(null);
   const [codeMsg, setCodeMsg] = useState<Msg | null>(null);
 
+  const [payCooldownSec, setPayCooldownSec] = useState<number>(() =>
+    Math.ceil(getPaymentCooldownRemainingMs(localStorage, deviceId) / 1000)
+  );
+  const [redeemLockSec, setRedeemLockSec] = useState<number>(() =>
+    Math.ceil(getRedeemCooldownRemainingMs(localStorage, deviceId) / 1000)
+  );
+
   const shortDev = formatShortDeviceId(deviceId);
 
   const activeSchoolSubject = form4Subjects.find((s) => s.id === selectedSchoolId) ?? form4Subjects[0];
   const activeBridgeTrack = bridgeExamTracks.find((t) => t.id === selectedBridgeId) ?? bridgeExamTracks[0];
+  const isSelectedExamEmpty =
+    (plan === "school_subject" && activeSchoolSubject.predictQuestions.length === 0) ||
+    (plan === "bridge_exam" && activeBridgeTrack.predictQuestions.length === 0);
 
   const resolvedItemKey: ProItemKey | undefined =
     plan === "school_subject"
@@ -122,6 +143,15 @@ export function ProPaywallScreen({
       : plan === "bridge_exam"
         ? `bridge:${activeBridgeTrack.id}`
         : undefined;
+
+  useEffect(() => {
+    if (payCooldownSec <= 0 && redeemLockSec <= 0) return;
+    const t = window.setInterval(() => {
+      setPayCooldownSec(Math.ceil(getPaymentCooldownRemainingMs(localStorage, deviceId) / 1000));
+      setRedeemLockSec(Math.ceil(getRedeemCooldownRemainingMs(localStorage, deviceId) / 1000));
+    }, 1000);
+    return () => window.clearInterval(t);
+  }, [payCooldownSec, redeemLockSec, deviceId]);
 
   const loadInfo = useCallback(async () => {
     setLoadingInfo(true);
@@ -140,23 +170,12 @@ export function ProPaywallScreen({
   }, [loadInfo]);
 
   const handleUnlocked = () => {
-    showToast(tr("Pro waa la furay!"));
+    showToast(tr("Unlock waa la furay!"));
     onUnlocked(resolvedItemKey);
   };
 
-  const buildEvcTimeRef = (phDigits: string, hhmm: string, selectedPlan: ProPlanType): string => {
-    const cleanTime = hhmm.replace(/[^0-9:]/g, "").replace(":", "") || currentHHMM().replace(":", "");
-    const tail = phDigits.replace(/\D/g, "").slice(-4) || "0000";
-    const tag =
-      selectedPlan === "languages"
-        ? "LANG"
-        : selectedPlan === "school_subject"
-          ? `SCH_${activeSchoolSubject.id.toUpperCase()}`
-          : selectedPlan === "bridge_exam"
-            ? `BRG_${activeBridgeTrack.id.slice(0, 6).toUpperCase()}`
-            : "DEPT";
-    return `EVC-${tag}-${cleanTime}-${tail}`;
-  };
+  const selectedPlanPrice = plan === "school_subject" ? "$0.25" : "$0.50";
+  const selectedUssdAmount = plan === "school_subject" ? "0.25" : EVC_PAYMENT_CONFIG.ussdAmount;
 
   const getMethodLabel = (): string => {
     if (plan === "languages") return "EVC Plus (Lang)";
@@ -166,25 +185,48 @@ export function ProPaywallScreen({
   };
 
   const getWhatsappPlanLabel = (): string => {
-    if (plan === "languages") return "Pro Luqadaha (English & Carabi)";
-    if (plan === "school_subject") return `Form 4 Predict Exam: ${activeSchoolSubject.name} ($0.10)`;
-    if (plan === "bridge_exam") return `Tartanka Jaamacadda Predict: ${activeBridgeTrack.title} ($0.10)`;
-    return "Pro Waaxaha & Xarunta (Qeybta 3aad)";
+    if (plan === "languages") return "Unlock Luqadaha (English & Carabi)";
+    if (plan === "school_subject") return `Form 4 Predict Exam: ${activeSchoolSubject.name} ($0.25)`;
+    if (plan === "bridge_exam") return `Tartanka Jaamacadda Predict: ${activeBridgeTrack.title} ($0.50)`;
+    return "Unlock+ Waaxaha & Xarunta (8 Qaybood)";
+  };
+
+  const getPlanRefTag = (): string => {
+    if (plan === "languages") return "LANG";
+    if (plan === "school_subject") return `SCH_${activeSchoolSubject.id}`;
+    if (plan === "bridge_exam") return `BRG_${activeBridgeTrack.id.slice(0, 6)}`;
+    return "DEPT";
   };
 
   const handleSendRequest = async () => {
-    const ph = phone.replace(/[^0-9+]/g, "");
-    const tm = payTime.trim();
-    const nm = name.trim();
-    if (ph.length < 6 || ph.length > 20) {
+    if (isSelectedExamEmpty) {
+      setReqMsg({
+        key: "Su'aalaha Predict Exam-kan weli lama soo gelin. Waxaa la furayaa marka la soo geliyo.",
+        ok: false,
+      });
+      return;
+    }
+    const cooldownMs = getPaymentCooldownRemainingMs(localStorage, deviceId);
+    if (cooldownMs > 0) {
+      setPayCooldownSec(Math.ceil(cooldownMs / 1000));
+      setReqMsg({ key: "Isku-day badan. Fadlan mar dambe isku day.", ok: false });
+      return;
+    }
+
+    const phoneCheck = validateEvcPhone(phone);
+    if (!phoneCheck.ok) {
       setReqMsg({ key: "Lambarka taleefanka waa khalad.", ok: false });
       return;
     }
-    if (!tm || tm.length < 3) {
+
+    const tm = payTime.trim();
+    if (!validatePayTimeHHMM(tm)) {
       setReqMsg({ key: "Fadlan geli saacadda aad lacagta dirtay.", ok: false });
       return;
     }
-    const generatedRef = buildEvcTimeRef(ph, tm, plan);
+
+    const cleanName = sanitizeCheckoutName(name);
+    const generatedRef = generateSecureEvcRef(deviceId, tm, phoneCheck.normalized, getPlanRefTag());
     const methodLabel = getMethodLabel();
 
     setSending(true);
@@ -197,12 +239,14 @@ export function ProPaywallScreen({
       }
       await submitProRequest({
         deviceId,
-        phone: ph,
+        phone: phoneCheck.normalized,
         method: methodLabel,
         txn: generatedRef,
-        amount: "$0.10",
-        name: nm || undefined,
+        amount: selectedPlanPrice,
+        name: cleanName || undefined,
       });
+      recordPaymentAttempt(localStorage, deviceId);
+      setPayCooldownSec(Math.ceil(getPaymentCooldownRemainingMs(localStorage, deviceId) / 1000));
       setPendingAt(Date.now());
       setReqMsg({
         key: "Codsigaaga waa la helay. Waan hubin doonaa, kadibna riix “Hubi xaaladda”.",
@@ -219,9 +263,6 @@ export function ProPaywallScreen({
     setChecking(true);
     setStatMsg(null);
     try {
-      if (resolvedItemKey) {
-        saveRequestedProItem(localStorage, deviceId, resolvedItemKey);
-      }
       const ok = await refreshPro();
       if (ok) {
         handleUnlocked();
@@ -239,25 +280,49 @@ export function ProPaywallScreen({
   };
 
   const handleRedeem = async () => {
-    const c = code.trim();
-    if (c.replace(/[^A-Za-z0-9]/g, "").length < 8) {
+    if (isSelectedExamEmpty) {
+      setCodeMsg({
+        key: "Su'aalaha Predict Exam-kan weli lama soo gelin. Dooro xirmo diyaar ah.",
+        ok: false,
+      });
+      return;
+    }
+    const lockMs = getRedeemCooldownRemainingMs(localStorage, deviceId);
+    if (lockMs > 0) {
+      setRedeemLockSec(Math.ceil(lockMs / 1000));
+      setCodeMsg({ key: "Isku-day badan. Fadlan mar dambe isku day.", ok: false });
+      return;
+    }
+
+    const cleanedCode = code.trim().toUpperCase().replace(/[^A-Z0-9-]/g, "");
+    if (cleanedCode.replace(/-/g, "").length < 8) {
       setCodeMsg({ key: "Koodhku waa khalad.", ok: false });
       return;
     }
+
     setRedeeming(true);
     setCodeMsg(null);
     try {
-      const res = await redeemProCode(deviceId, c);
+      const res = await redeemProCode(deviceId, cleanedCode);
       if (res.ok) {
-        if (resolvedItemKey) {
-          setProUntil(res.expiresMs ?? Date.now() + 180 * 86400 * 1000, undefined, resolvedItemKey);
+        clearRedeemFailures(localStorage);
+        setRedeemLockSec(0);
+        const fallbackExp = res.expiresMs || Date.now() + info.days * 86400 * 1000;
+        if (res.scope || (res.unlockedItems && res.unlockedItems.length > 0)) {
+          await refreshPro();
+        } else if (resolvedItemKey) {
+          setProUntil(fallbackExp, undefined, resolvedItemKey);
         } else if (plan === "departments" || plan === "languages") {
-          setProUntil(res.expiresMs ?? Date.now() + 180 * 86400 * 1000, plan);
+          setProUntil(fallbackExp, plan);
         } else {
-          setProUntil(res.expiresMs ?? Date.now() + 180 * 86400 * 1000);
+          setProUntil(fallbackExp, "departments");
         }
         handleUnlocked();
       } else {
+        const triggeredMs = recordRedeemFailure(localStorage, deviceId);
+        if (triggeredMs > 0) {
+          setRedeemLockSec(Math.ceil(triggeredMs / 1000));
+        }
         setCodeMsg({
           key: res.error === "code_used" ? "Koodhkan hore ayaa loo isticmaalay." : "Koodhku waa khalad.",
           ok: false,
@@ -299,14 +364,33 @@ export function ProPaywallScreen({
     holder: EVC_PAYMENT_CONFIG.holder,
   };
 
+  const activeStep = pending || reqMsg?.ok ? 3 : copiedNum || phone.length >= 7 ? 2 : 1;
+
+  const whatsappSupportHref = buildSafeWhatsappUrl(
+    info.whatsapp,
+    `Salaan, waxaan rabaa inaan furo: ${getWhatsappPlanLabel()} (${selectedPlanPrice} · Device ID: ${shortDev})`
+  );
+
+  const whatsappConfirmHref = buildSafeWhatsappUrl(
+    info.whatsapp,
+    `${tr("Salaan, waxaan bixiyay lacagta Unlock")} (${selectedPlanPrice}).\n` +
+      `Xirmo: ${getWhatsappPlanLabel()}\n` +
+      `Tel: ${validateEvcPhone(phone).normalized || "-"}\n` +
+      `Saacadda EVC: ${payTime || "-"}\n` +
+      `Magac: ${sanitizeCheckoutName(name) || "-"}\n` +
+      `Device ID: ${shortDev}`
+  );
+
+  const ussdHref = buildSafeTelUssdUrl(evcMethod.number, selectedUssdAmount);
+
   const MsgView = ({ msg }: { msg: Msg | null }) =>
     !msg ? null : (
       <div
         role="alert"
         className={`mt-3 rounded-xl px-3.5 py-2.5 flex items-start gap-2.5 text-xs leading-relaxed border ${
           msg.ok
-            ? "bg-emerald-500/12 border-emerald-400/35 text-emerald-200"
-            : "bg-rose-500/12 border-rose-400/35 text-rose-200"
+            ? "bg-emerald-500/14 border-emerald-400/40 text-emerald-100"
+            : "bg-rose-500/14 border-rose-400/40 text-rose-100"
         }`}
       >
         {msg.ok ? (
@@ -320,150 +404,181 @@ export function ProPaywallScreen({
 
   return (
     <div
-      className="min-h-screen flex flex-col text-white"
+      className="min-h-screen flex flex-col text-white relative overflow-x-clip"
       style={{
-        background: "linear-gradient(180deg, #061D42 0%, #0C326C 52%, #1553A6 100%)",
+        background: "linear-gradient(170deg, #05132E 0%, #0A2558 50%, #103A7E 100%)",
       }}
     >
-      {/* Top Bar */}
-      <header className="border-b border-white/10">
+      {/* Modern Security Top Bar */}
+      <header className="relative z-20 border-b border-white/12 bg-[#05132E]/75 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 min-w-0">
             <button
               type="button"
               onClick={onBack}
               aria-label="Back"
-              className="p-2 rounded-xl hover:bg-white/10 text-white cursor-pointer transition-colors"
+              className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl bg-white/8 hover:bg-white/15 border border-white/15 text-white cursor-pointer transition-colors shrink-0"
             >
               {rtl ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
             </button>
-            <div className="flex items-center gap-2">
-              <h1 className="font-head font-extrabold text-[18px]">{tr("Fur Pro ($0.10)")}</h1>
+            <div className="flex items-center gap-2 min-w-0">
+              <h1 className="font-head font-extrabold text-[17px] sm:text-[19px] truncate">
+                HIRAAL Unlock
+              </h1>
               <ProBadge small />
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handleCopyDevice}
-            title="Device ID"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/8 hover:bg-white/14 border border-white/15 text-xs font-mono text-white/80 cursor-pointer transition-colors"
-          >
-            <Smartphone className="w-3.5 h-3.5 text-[#FFD86B]" />
-            <span>ID: {shortDev}</span>
-            {copiedDev ? (
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
-            ) : (
-              <Copy className="w-3.5 h-3.5 opacity-65" />
-            )}
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300">
+              <LockKeyhole className="w-3.5 h-3.5" />
+              <span>Amni Xaqiijisan</span>
+            </span>
+
+            <button
+              type="button"
+              onClick={handleCopyDevice}
+              title="Device ID"
+              className="inline-flex items-center gap-1.5 min-h-[38px] px-3 rounded-xl bg-white/8 hover:bg-white/14 border border-white/15 text-xs font-mono text-white/85 cursor-pointer transition-colors"
+            >
+              <Smartphone className="w-3.5 h-3.5 text-[#FFD86B]" />
+              <span>{shortDev}</span>
+              {copiedDev ? (
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+              ) : (
+                <Copy className="w-3.5 h-3.5 opacity-65" />
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 pb-14 space-y-5">
-        {/* Four-Package Pro Selector */}
-        <section className="grid sm:grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => setPlan("school_subject")}
-            className={`text-start rounded-2xl p-4 border transition-all cursor-pointer ${
-              plan === "school_subject"
-                ? "border-sky-400 bg-sky-500/14 shadow-lg"
-                : "border-white/15 bg-white/[0.04] hover:bg-white/[0.08]"
-            }`}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-2 font-head font-extrabold text-sm text-white">
-                <BookOpen className="w-4 h-4 text-sky-400" />
-                Qeybta 1: Predict Form 4 (Maado)
-              </span>
-              <span className="text-xs font-extrabold text-[#FFD86B] tabular-nums">$0.10</span>
-            </div>
-            <p className="mt-1.5 text-xs text-white/75 leading-relaxed">
-              Fur Predict Exam maado kasta oo Form 4 ah (12-ka maado ee Imtixaanka Qaranka, Af-Soomaali keliya).
-            </p>
-          </button>
+      <main className="relative z-10 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 pb-16 space-y-6">
+        {/* Clean 3-Step Checkout Progress Bar */}
+        <div className="rounded-2xl p-3 sm:px-5 bg-white/[0.06] border border-white/12 flex items-center justify-between gap-2 overflow-x-auto hide-scrollbar">
+          {[
+            { n: 1, label: "1. Dooro Xirmo" },
+            { n: 2, label: "2. Bixi EVC Plus" },
+            { n: 3, label: "3. Xaqiijinta" },
+          ].map((st, idx) => {
+            const done = activeStep > st.n;
+            const current = activeStep === st.n;
+            return (
+              <React.Fragment key={st.n}>
+                <div className="flex items-center gap-2 whitespace-nowrap shrink-0">
+                  <span
+                    className={`w-6 h-6 rounded-full text-xs font-head font-black flex items-center justify-center transition-colors ${
+                      done
+                        ? "bg-emerald-500 text-white"
+                        : current
+                          ? "bg-[#FFC93C] text-[#05132E]"
+                          : "bg-white/12 text-white/60"
+                    }`}
+                  >
+                    {done ? <Check className="w-3.5 h-3.5" /> : st.n}
+                  </span>
+                  <span
+                    className={`text-xs sm:text-[13px] font-bold ${
+                      current ? "text-white" : done ? "text-emerald-300" : "text-white/55"
+                    }`}
+                  >
+                    {st.label}
+                  </span>
+                </div>
+                {idx < 2 && <div className="h-[1px] flex-1 min-w-[20px] bg-white/15" />}
+              </React.Fragment>
+            );
+          })}
+        </div>
 
-          <button
-            type="button"
-            onClick={() => setPlan("bridge_exam")}
-            className={`text-start rounded-2xl p-4 border transition-all cursor-pointer ${
-              plan === "bridge_exam"
-                ? "border-emerald-400 bg-emerald-500/14 shadow-lg"
-                : "border-white/15 bg-white/[0.04] hover:bg-white/[0.08]"
-            }`}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-2 font-head font-extrabold text-sm text-white">
-                <Target className="w-4 h-4 text-emerald-400" />
-                Qeybta 2: Tartanka Jaamacadda
-              </span>
-              <span className="text-xs font-extrabold text-[#FFD86B] tabular-nums">$0.10</span>
-            </div>
-            <p className="mt-1.5 text-xs text-white/75 leading-relaxed">
-              Fur Predict Exam-ka diyaargarowga tartanka jaamacadaha (sida Jaamacadda Ummadda) &amp; gelitaanka.
-            </p>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setPlan("departments")}
-            className={`text-start rounded-2xl p-4 border transition-all cursor-pointer ${
-              plan === "departments"
-                ? "border-[#FFC93C] bg-[#FFC93C]/12 shadow-lg"
-                : "border-white/15 bg-white/[0.04] hover:bg-white/[0.08]"
-            }`}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-2 font-head font-extrabold text-sm text-white">
-                <GraduationCap className="w-4 h-4 text-[#FFD86B]" />
-                {tr("Xirmada 1: Waaxaha & Xarunta Pro")}
-              </span>
-              <span className="text-xs font-extrabold text-[#FFD86B] tabular-nums">$0.10</span>
-            </div>
-            <p className="mt-1.5 text-xs text-white/75 leading-relaxed">
-              {tr("Hagaha Waaxaha (14 kulliyadood + 70 su'aalood), Khariidadaha, Jaamacadaha, Dadka Caanka ah, Wararka AI, Xirfadaha & Horumarinta.")}
-            </p>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setPlan("languages")}
-            className={`text-start rounded-2xl p-4 border transition-all cursor-pointer ${
-              plan === "languages"
-                ? "border-[#FFC93C] bg-[#FFC93C]/12 shadow-lg"
-                : "border-white/15 bg-white/[0.04] hover:bg-white/[0.08]"
-            }`}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-2 font-head font-extrabold text-sm text-white">
-                <Languages className="w-4 h-4 text-[#FFD86B]" />
-                {tr("Xirmada 2: Luqadaha (English & Carabi)")}
-              </span>
-              <span className="text-xs font-extrabold text-[#FFD86B] tabular-nums">$0.10</span>
-            </div>
-            <p className="mt-1.5 text-xs text-white/75 leading-relaxed">
-              {tr("Fur luqadaha Ingiriisiga iyo Carabiga ee Qeybta 3aad (Af-Soomaaligu waa bilaash abid).")}
-            </p>
-          </button>
+        {/* 4 Color-Coded Unlock Packages */}
+        <section aria-label="Dooro Xirmada Unlock" className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {[
+            {
+              id: "school_subject" as const,
+              title: "Predict Form 4",
+              sub: "12 Maado · June 2027",
+              icon: BookOpen,
+              activeCls: "border-cyan-400 bg-cyan-500/18 shadow-[0_8px_24px_rgba(6,182,212,0.22)]",
+              iconColor: "text-cyan-300",
+            },
+            {
+              id: "bridge_exam" as const,
+              title: "Tartanka (Gap)",
+              sub: "JUS & Gelitaan · Oct 2027",
+              icon: Target,
+              activeCls: "border-emerald-400 bg-emerald-500/18 shadow-[0_8px_24px_rgba(16,185,129,0.22)]",
+              iconColor: "text-emerald-300",
+            },
+            {
+              id: "departments" as const,
+              title: "Waaxaha & Unlock Hub",
+              sub: "14 Kulliyad · Khariidadaha",
+              icon: GraduationCap,
+              activeCls: "border-indigo-400 bg-indigo-500/22 shadow-[0_8px_24px_rgba(99,102,241,0.26)]",
+              iconColor: "text-indigo-300",
+            },
+            {
+              id: "languages" as const,
+              title: "English & Carabi",
+              sub: "Luqadaha App-ka",
+              icon: Languages,
+              activeCls: "border-amber-400 bg-amber-500/18 shadow-[0_8px_24px_rgba(245,158,11,0.22)]",
+              iconColor: "text-amber-300",
+            },
+          ].map((pkg) => {
+            const Icon = pkg.icon;
+            const selected = plan === pkg.id;
+            return (
+              <button
+                key={pkg.id}
+                type="button"
+                onClick={() => setPlan(pkg.id)}
+                className={`text-start rounded-2xl p-4 border transition-all duration-150 cursor-pointer flex flex-col justify-between gap-2.5 ${
+                  selected
+                    ? pkg.activeCls
+                    : "border-white/12 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/25"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                      selected ? "bg-white/15" : "bg-white/8"
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 ${pkg.iconColor}`} />
+                  </span>
+                  <span className="font-head font-extrabold text-sm text-[#FFE484] tabular-nums">
+                    {pkg.id === "school_subject" ? "$0.25" : "$0.50"}
+                  </span>
+                </div>
+                <div>
+                  <div className="font-head font-extrabold text-sm text-white leading-snug">
+                    {pkg.title}
+                  </div>
+                  <div className="text-[11.5px] text-white/70 mt-0.5">{pkg.sub}</div>
+                </div>
+              </button>
+            );
+          })}
         </section>
 
-        {/* Sub-selector when unlocking a specific Form 4 subject or Bridging exam */}
+        {/* Subject / Track Picker when unlocking Form 4 or Bridging */}
         {plan === "school_subject" && (
-          <section className="rounded-2xl p-4 border border-sky-400/40 bg-sky-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <section className="rounded-2xl p-4 border border-cyan-400/35 bg-cyan-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div className="text-xs font-extrabold uppercase tracking-wider text-sky-200">
-                Dooro Maadada Form 4 · June 2027 ($0.10)
+              <div className="text-xs font-extrabold text-cyan-200">
+                Dooro Maadada Form 4 · June 2027 ($0.25)
               </div>
               <div className="text-xs text-white/75 mt-0.5">
-                Maado kasta oo aad bixiso $0.10 waxaa kuu furmaya Predict Exam-keeda markii la soo geliyo.
+                Maado kasta oo aad furto waxaa kuu diyaar noqonaya Predict Exam-keeda.
               </div>
             </div>
             <select
               aria-label="Dooro Maadada Form 4"
               value={activeSchoolSubject.id}
               onChange={(e) => setSelectedSchoolId(e.target.value)}
-              className="rounded-xl px-3.5 py-2.5 bg-[#072352] border border-white/25 text-white font-bold text-sm outline-none focus:border-[#FFC93C]"
+              className="rounded-xl px-3.5 py-2.5 bg-[#061D42] border border-white/25 text-white font-bold text-sm outline-none focus:border-[#FFC93C]"
             >
               {form4Subjects.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -475,20 +590,20 @@ export function ProPaywallScreen({
         )}
 
         {plan === "bridge_exam" && (
-          <section className="rounded-2xl p-4 border border-emerald-400/40 bg-emerald-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <section className="rounded-2xl p-4 border border-emerald-400/35 bg-emerald-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div className="text-xs font-extrabold uppercase tracking-wider text-emerald-200">
-                Dooro Imtixaanka Tartanka · October 2027 ($0.10)
+              <div className="text-xs font-extrabold text-emerald-200">
+                Dooro Imtixaanka Tartanka · Oct 2027 ($0.50)
               </div>
               <div className="text-xs text-white/75 mt-0.5">
-                Ka dooro imtixaanka diyaargarowga tartanka jaamacadaha ee aad furayso.
+                Ka dooro imtixaanka diyaargarowga tartanka jaamacadaha.
               </div>
             </div>
             <select
               aria-label="Dooro Imtixaanka Tartanka"
               value={activeBridgeTrack.id}
               onChange={(e) => setSelectedBridgeId(e.target.value)}
-              className="rounded-xl px-3.5 py-2.5 bg-[#072352] border border-white/25 text-white font-bold text-sm outline-none focus:border-[#FFC93C]"
+              className="rounded-xl px-3.5 py-2.5 bg-[#061D42] border border-white/25 text-white font-bold text-sm outline-none focus:border-[#FFC93C]"
             >
               {bridgeExamTracks.map((t) => (
                 <option key={t.id} value={t.id}>
@@ -499,83 +614,65 @@ export function ProPaywallScreen({
           </section>
         )}
 
+        {/* Two-Column Modern Checkout Workspace */}
         <div className="grid lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column: Value Proposition + Device Lock Guarantee */}
-          <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-6">
-            <div
-              className="rounded-3xl p-6 border border-[#FFC93C]/45"
-              style={{
-                background:
-                  "linear-gradient(145deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.03) 100%)",
-                boxShadow: "0 18px 40px rgba(0,0,0,0.35)",
-              }}
-            >
+          {/* Left Column: Order Summary & Server-Verified Security Guarantee */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="rounded-3xl p-6 border border-white/18 bg-white/[0.06] backdrop-blur-md shadow-xl space-y-4">
               <div className="flex items-center justify-between">
                 <ProBadge />
-                <Lock className="w-5 h-5 text-[#FFD86B]" />
-              </div>
-
-              <h2 className="mt-4 font-head font-extrabold text-[24px] leading-tight">
-                {plan === "school_subject"
-                  ? `Predict Exam: ${activeSchoolSubject.name}`
-                  : plan === "bridge_exam"
-                    ? `Predict Exam: ${activeBridgeTrack.title}`
-                    : plan === "languages"
-                      ? tr("Pro Luqadaha (English & Carabi)")
-                      : tr("Pro Waaxaha & Xarunta Ardayga")}
-              </h2>
-
-              <div className="mt-3 flex items-baseline gap-2 flex-wrap">
-                <span className="font-head font-extrabold text-[24px] text-[#FFD86B] tabular-nums">
-                  {info.priceText}
-                </span>
-                <span className="text-xs font-semibold text-emerald-300">
-                  · {tr("Hal mar bixi, abid ha kuu furnaado")}
+                <span className="text-xs font-bold text-emerald-300 inline-flex items-center gap-1">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>{info.days} Maalmood</span>
                 </span>
               </div>
 
-              <p className="mt-2 text-xs text-white/70 leading-relaxed">
-                {plan === "school_subject"
-                  ? `Waxaad furaysaa Imtixaanka Saadaasha (Predict Exam) ee maadada ${activeSchoolSubject.name} ($0.10).`
-                  : plan === "bridge_exam"
-                    ? `Waxaad furaysaa Imtixaanka Saadaasha ee ${activeBridgeTrack.title} ($0.10).`
-                    : tr(
-                        "Uma baahnid inaad mar walba lacag bixiso. $0.10 hal mar ah ayaad ku helaysaa dhammaan adeegyada Pro iyo kuwa cusub ee soo socda."
-                      )}
-              </p>
+              <div>
+                <h2 className="font-head font-extrabold text-[22px] leading-tight text-white">
+                  {plan === "school_subject"
+                    ? `Predict Exam: ${activeSchoolSubject.name}`
+                    : plan === "bridge_exam"
+                      ? `Predict Exam: ${activeBridgeTrack.title}`
+                      : plan === "languages"
+                        ? tr("Unlock Luqadaha (English & Carabi)")
+                        : "Waaxaha & Xarunta Unlock"}
+                </h2>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="font-head font-extrabold text-[28px] text-[#FFE484] tabular-nums">
+                    {plan === "school_subject" ? "$0.25 · Maado" : info.priceText}
+                  </span>
+                </div>
+              </div>
 
-              <div className="mt-5 pt-5 border-t border-white/12 space-y-2.5">
+              <div className="pt-4 border-t border-white/12 space-y-2.5">
                 {(plan === "school_subject"
                   ? [
                       `Predict Exam buuxa: ${activeSchoolSubject.name}`,
-                      "Saacad xaddidan oo u dhiganta Imtixaanka Qaranka Form 4",
-                      "Saxidda tooska ah, dhibcaha (%), iyo sharaxaad Af-Soomaali ah",
-                      "PDF-yada & mowduucyadu waa kuwo bilaash ah markasta",
+                      "Saacad xaddidan oo u dhiganta Imtixaanka Qaranka",
+                      "Saxidda tooska ah iyo sharaxaad Af-Soomaali ah",
+                      "PDF-yada & mowduucyadu waa bilaash markasta",
                     ]
                   : plan === "bridge_exam"
                     ? [
                         `Predict Exam buuxa: ${activeBridgeTrack.title}`,
-                        "Su'aalo u diyaariya tartanka jaamacadaha (sida Jaamacadda Ummadda)",
+                        "Su'aalo u diyaariya tartanka jaamacadaha (JUS)",
                         "Falanqaynta jawaabaha saxda ah ee Af-Soomaali ah",
-                        "90-ka maalmood & xalka caqabaduhu waa kuwo bilaash ah",
+                        "90-ka maalmood & xalka caqabaduhu waa bilaash",
                       ]
                     : plan === "languages"
                       ? [
                           tr("Luqadda Ingiriisiga (English) ee barnaamijka oo dhan"),
                           tr("Luqadda Carabiga (العربية) oo leh qaabka saxda ah (RTL)"),
                           tr("Af-Soomaaligu waa bilaash boqolkiiba boqol abid"),
-                          tr("Hal mar bixi, abid ha kuu furnaado"),
                         ]
                       : [
-                          tr("Kala saar waaxaha ku habboon") + " (14 + 70 Pro)",
-                          tr("Khariidado waxbarasho oo la hubiyay (AI, Injineernimada Korontada, Caafimaadka iyo in ka badan)"),
-                          tr("Hagaha Jaamacadaha Soomaaliya (Dowli & Gaar ah)"),
-                          tr("Dadka Caanka ah ee Qarniga 21-aad (Soomaaliya & Adduunka)"),
-                          tr("Wararka Shaqooyinka Cusub (WEF 2025 - 2030)"),
-                          tr("Xirfadaha Dakhliga Sare & Horumarinta Ardayga Soomaaliya"),
+                          "Xeeladaha Ardayda Top-10 & Sirta Xalaasha ah ee 12-ka Maado (Qish la'aan)",
+                          "Kala saaridda waaxaha (14 kulliyadood + 70 su'aalood)",
+                          "Khariidadaha AI, Koronto, Caafimaad & Jaamacadaha Soomaaliya",
+                          "Shaqooyinka 2030, Xirfadaha Dakhliga & Horumarka Ardayga",
                         ]
                 ).map((label) => (
-                  <div key={label} className="flex items-start gap-2.5 text-[13.5px] text-white/90">
+                  <div key={label} className="flex items-start gap-2.5 text-[13px] text-white/90">
                     <CheckCircle2 className="w-4 h-4 text-[#FFC93C] shrink-0 mt-0.5" />
                     <span>{label}</span>
                   </div>
@@ -583,23 +680,17 @@ export function ProPaywallScreen({
               </div>
             </div>
 
-            {/* Per-Device Security Guarantee & Personal Reminder */}
-            <div className="rounded-2xl p-4 bg-emerald-500/[0.08] border border-emerald-400/25 space-y-2.5">
+            {/* Security & Device Binding Box */}
+            <div className="rounded-2xl p-4 bg-emerald-500/[0.09] border border-emerald-400/25 space-y-2">
               <div className="flex items-center gap-2 text-emerald-300 font-head font-bold text-sm">
                 <ShieldCheck className="w-4 h-4 shrink-0" />
                 <span>{tr("Amniga Gelitaanka (1 Qalab = 1 Arday)")}</span>
               </div>
               <p className="text-xs text-white/75 leading-relaxed">
-                {tr(
-                  "Lacag-bixinta waxaa gacanta ku xaqiijiya maamulka (badanaa ilaa 24 saac). Gelitaanku wuxuu ku xidhan yahay qalabkan."
-                )}
+                Furitaanka waxaa si toos ah u xaqiijiya server-ka, waxaana lagu xiraa aqoonsiga qalabkan oo saxiixan si aan cid kale ula wadaagi karin.
               </p>
-              <p className="text-[11.5px] text-[#FFE599] bg-[#FFC93C]/10 border border-[#FFC93C]/30 rounded-xl p-2.5 leading-relaxed">
-                <strong>Xasuusin: </strong>
-                Qeybta Pro waxay u furan tahay naftaada keliya; lagama qaadi karo screenshot, lama dajisan karo, lamana la wadaagi karo asxaabta. Arday kasta si xor ah ayuu $0.10 ugu furan karaa.
-              </p>
-              <div className="pt-1 flex items-center justify-between text-[11.5px] font-mono text-white/70">
-                <span>Device ID: {shortDev}</span>
+              <div className="pt-1 flex items-center justify-between text-xs font-mono text-white/75">
+                <span>ID: {shortDev}</span>
                 <button
                   type="button"
                   onClick={handleCopyDevice}
@@ -610,228 +701,265 @@ export function ProPaywallScreen({
               </div>
             </div>
 
-            {/* Direct WhatsApp Support */}
             <a
-              href={`https://wa.me/${info.whatsapp}?text=${encodeURIComponent(
-                `Salaan, waxaan rabaa inaan furo: ${getWhatsappPlanLabel()} ($0.10 · Device ID: ${shortDev})`
-              )}`}
+              href={whatsappSupportHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full h-12 rounded-2xl border border-emerald-400/40 bg-emerald-500/12 hover:bg-emerald-500/20 text-emerald-200 font-bold text-sm flex items-center justify-center gap-2 transition-colors"
+              className="w-full h-12 rounded-2xl border border-emerald-400/40 bg-emerald-500/12 hover:bg-emerald-500/22 text-emerald-200 font-bold text-sm flex items-center justify-center gap-2 transition-colors"
             >
-              <MessageCircle className="w-5 h-5 text-emerald-400" />
+              <MessageCircle className="w-4 h-4 text-emerald-400" />
               <span>{tr("La xiriir WhatsApp")}</span>
             </a>
           </div>
 
-          {/* Right Column: 3-Step EVC Plus Checkout + Redeem Code */}
+          {/* Right Column: Modern Fintech Checkout Panel */}
           <div className="lg:col-span-7 space-y-4">
-            {/* Step 1: EVC Plus Payment Details */}
-            <section className="rounded-3xl p-5 border border-white/15 bg-white/[0.05]">
-              <div className="flex items-center justify-between gap-2 mb-4">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-7 h-7 rounded-full bg-[#FFC93C] text-[#050A1C] font-head font-black text-sm flex items-center justify-center">
-                    1
-                  </span>
-                  <h3 className="font-head font-extrabold text-[16.5px]">{tr("1. Bixi lacagta")}</h3>
-                </div>
-                {loadingInfo && <Loader2 className="w-4 h-4 animate-spin text-[#FFD86B]" />}
-              </div>
-
-              <div className="rounded-2xl p-4 border border-[#FFC93C]/45 bg-[#072352]/90">
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <div className="space-y-1">
-                    <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#FFD86B]">
-                      <Phone className="w-3.5 h-3.5" />
-                      <span>{evcMethod.name}</span>
-                    </div>
-                    <div className="font-head font-extrabold text-[26px] tracking-wider text-white tabular-nums select-all">
-                      {evcMethod.number}
-                    </div>
-                    <div className="text-sm font-semibold text-white/90">
-                      {tr("Magaca:")} <span className="text-[#FFD86B]">{evcMethod.holder}</span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleCopyNumber}
-                    className="px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-sm inline-flex items-center gap-2 cursor-pointer transition-colors"
-                  >
-                    {copiedNum ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    <span>{copiedNum ? tr("La koobiyay") : tr("Koobi lambarka")}</span>
-                  </button>
-                </div>
-
-                <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap text-xs text-white/75">
-                  <span>{trf("Qiimaha: {p}", { p: info.priceText })}</span>
-                  <a
-                    href={`tel:*712*${evcMethod.number}*${EVC_PAYMENT_CONFIG.ussdAmount}%23`}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FFC93C]/15 hover:bg-[#FFC93C]/25 border border-[#FFC93C]/35 font-mono text-[#FFD86B] transition-colors"
-                  >
-                    <Phone className="w-3 h-3" />
-                    <span>*712*{evcMethod.number}*{EVC_PAYMENT_CONFIG.ussdAmount}#</span>
-                  </a>
-                </div>
-              </div>
-
-              {info.note && <p className="mt-3 text-xs text-white/75 leading-relaxed">{info.note}</p>}
-            </section>
-
-            {/* Step 2: Submit Transaction Info */}
-            <section className="rounded-3xl p-5 border border-white/15 bg-white/[0.05]">
-              <div className="flex items-center gap-2.5 mb-4">
-                <span className="w-7 h-7 rounded-full bg-[#FFC93C] text-[#050A1C] font-head font-black text-sm flex items-center justify-center">
-                  2
-                </span>
-                <h3 className="font-head font-extrabold text-[16.5px]">
-                  {tr("2. Dir xogta lacag-bixinta")}
-                </h3>
-              </div>
-
-              {pending && !reqMsg && (
-                <div className="mb-4 rounded-xl px-3.5 py-2.5 bg-[#FFC93C]/12 border border-[#FFC93C]/35 flex items-start gap-2.5 text-xs text-[#FFE599]">
-                  <Hourglass className="w-4 h-4 text-[#FFD86B] shrink-0 mt-0.5" />
-                  <span>{tr("Codsi hore ayaa socda; sug xaqiijinta ama riix “Hubi xaaladda”.")}</span>
-                </div>
-              )}
-
-              <div className="space-y-3">
-                <div>
-                  <label htmlFor="evc-phone" className="block text-xs font-semibold text-white/75 mb-1.5">
-                    {tr("Lambarka taleefankaaga (kii aad ka bixisay)")}
-                  </label>
-                  <input
-                    id="evc-phone"
-                    type="tel"
-                    value={phone}
-                    maxLength={20}
-                    onChange={(e) => setPhone(e.target.value.replace(/[^0-9+ ]/g, ""))}
-                    placeholder="61XXXXXXX"
-                    className="w-full rounded-xl px-4 py-3.5 text-[15px] bg-[#072352]/85 border border-white/20 outline-none focus:border-[#FFC93C] placeholder:text-white/35 tabular-nums"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
-                    <label htmlFor="evc-time" className="inline-flex items-center gap-1.5 text-xs font-semibold text-white/75">
-                      <Clock className="w-3.5 h-3.5 text-[#FFD86B]" />
-                      <span>{tr("Saacadda aad lacagta dirtay (Waqtiga EVC Plus)")}</span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setPayTime(currentHHMM())}
-                      className="text-[11.5px] font-semibold text-[#FFD86B] hover:underline cursor-pointer"
-                    >
-                      {tr("Waqtiga hadda")}
-                    </button>
-                  </div>
-                  <input
-                    id="evc-time"
-                    type="time"
-                    value={payTime}
-                    onChange={(e) => setPayTime(e.target.value)}
-                    className="w-full rounded-xl px-4 py-3.5 text-[16px] font-mono font-bold bg-[#072352]/85 border border-white/20 outline-none focus:border-[#FFC93C] text-white"
-                  />
-                  <p className="mt-1.5 text-[11.5px] text-white/60 leading-relaxed">
-                    {tr(
-                      "EVC Plus kuma soo diro Ref code; kaliya geli lambarkaaga iyo saacadda fariinta lacag-dirista (tusaale: 14:35) si degdeg ah loogu xaqiijiyo."
-                    )}
-                  </p>
-                </div>
-
-                <div>
-                  <label htmlFor="evc-name" className="block text-xs font-semibold text-white/75 mb-1.5">
-                    {tr("Magacaaga (ikhtiyaari)")}
-                  </label>
-                  <input
-                    id="evc-name"
-                    type="text"
-                    value={name}
-                    maxLength={40}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder={tr("Magacaaga (ikhtiyaari)")}
-                    className="w-full rounded-xl px-4 py-3.5 text-[15px] bg-[#072352]/85 border border-white/20 outline-none focus:border-[#FFC93C] placeholder:text-white/35"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="button"
-                disabled={sending}
-                onClick={handleSendRequest}
-                className="mt-4 w-full h-[52px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[15.5px] flex items-center justify-center cursor-pointer disabled:opacity-50 transition-colors"
-              >
-                {sending ? <Loader2 className="w-5 h-5 animate-spin" /> : tr("Dir codsiga")}
-              </button>
-
-              <a
-                href={`https://wa.me/${info.whatsapp}?text=${encodeURIComponent(
-                  `${tr("Salaan, waxaan bixiyay lacagta Pro ($0.10).")}\n` +
-                    `Xirmo: ${getWhatsappPlanLabel()}\n` +
-                    `Tel: ${phone || "-"}\n` +
-                    `Saacadda EVC: ${payTime || "-"}\n` +
-                    `Magac: ${name || "-"}\n` +
-                    `Device ID: ${shortDev}`
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2.5 w-full h-11 rounded-2xl border border-emerald-400/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-200 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
-              >
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span>{tr("U dir caddaynta WhatsApp (Degdeg)")}</span>
-              </a>
-
-              <MsgView msg={reqMsg} />
-            </section>
-
-            {/* Step 3: Check Approval Status */}
-            <section className="rounded-3xl p-5 border border-white/15 bg-white/[0.05]">
-              <div className="flex items-center gap-2.5 mb-3.5">
-                <span className="w-7 h-7 rounded-full bg-[#FFC93C] text-[#050A1C] font-head font-black text-sm flex items-center justify-center">
-                  3
-                </span>
-                <h3 className="font-head font-extrabold text-[16.5px]">{tr("3. Hubi xaaladda")}</h3>
-              </div>
-              <button
-                type="button"
-                disabled={checking}
-                onClick={handleCheck}
-                className="w-full h-12 rounded-2xl border border-[#FFC93C]/65 hover:bg-[#FFC93C]/10 text-[#FFD86B] font-bold text-[14.5px] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-colors"
-              >
-                <RefreshCw className={`w-4 h-4 ${checking ? "animate-spin" : ""}`} />
-                <span>{tr("Hubi xaaladda")}</span>
-              </button>
-              <MsgView msg={statMsg} />
-            </section>
-
-            {/* Redeem One-Time Code */}
-            <section className="rounded-3xl p-5 border border-white/15 bg-white/[0.04] space-y-3">
-              <div className="flex items-center gap-2">
-                <KeyRound className="w-4 h-4 text-[#FFD86B]" />
-                <AccentTitleLight label="Koodh ma haysaa?" />
-              </div>
-              <div className="flex flex-col sm:flex-row gap-2.5">
-                <input
-                  type="text"
-                  value={code}
-                  maxLength={14}
-                  onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  placeholder={tr("Geli koodhka")}
-                  aria-label={tr("Geli koodhka")}
-                  className="flex-1 rounded-xl px-4 py-3 text-[15px] font-mono font-bold tracking-widest bg-[#072352]/85 border border-white/20 outline-none focus:border-[#FFC93C] placeholder:text-white/35 placeholder:font-sans placeholder:font-normal placeholder:tracking-normal"
-                />
+            <div className="rounded-3xl p-5 sm:p-6 border border-white/18 bg-[#071D46]/85 backdrop-blur-xl shadow-2xl space-y-5">
+              {/* Checkout Method Segmented Control */}
+              <div className="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-white/[0.07] border border-white/10">
                 <button
                   type="button"
-                  disabled={redeeming}
-                  onClick={handleRedeem}
-                  className="sm:w-44 h-12 rounded-xl bg-white text-[#050A1C] hover:bg-slate-100 font-head font-extrabold text-sm flex items-center justify-center cursor-pointer disabled:opacity-50 transition-colors"
+                  onClick={() => setCheckoutTab("evc")}
+                  className={`min-h-[42px] rounded-xl text-xs sm:text-sm font-head font-extrabold flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                    checkoutTab === "evc"
+                      ? "bg-[#FFC93C] text-[#05132E] shadow-sm"
+                      : "text-white/75 hover:text-white"
+                  }`}
                 >
-                  {redeeming ? <Loader2 className="w-5 h-5 animate-spin" /> : tr("Isticmaal koodhka")}
+                  <Phone className="w-4 h-4" />
+                  <span>EVC Plus ({selectedPlanPrice})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCheckoutTab("code")}
+                  className={`min-h-[42px] rounded-xl text-xs sm:text-sm font-head font-extrabold flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                    checkoutTab === "code"
+                      ? "bg-[#FFC93C] text-[#05132E] shadow-sm"
+                      : "text-white/75 hover:text-white"
+                  }`}
+                >
+                  <KeyRound className="w-4 h-4" />
+                  <span>Koodh Furitaan</span>
                 </button>
               </div>
-              <MsgView msg={codeMsg} />
-            </section>
+
+              {checkoutTab === "evc" ? (
+                <div className="space-y-5">
+                  {/* Sleek Mobile Money Merchant Card */}
+                  <div
+                    className="rounded-2xl p-4 sm:p-5 border border-[#FFC93C]/45 relative overflow-hidden"
+                    style={{
+                      background: "linear-gradient(135deg, #0D2F6E 0%, #081F4D 100%)",
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-3 flex-wrap">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#FFE484]">
+                          <Phone className="w-3.5 h-3.5" />
+                          <span>{evcMethod.name}</span>
+                          {loadingInfo && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                        </div>
+                        <div className="font-head font-extrabold text-[28px] sm:text-[32px] tracking-wider text-white tabular-nums select-all">
+                          {evcMethod.number}
+                        </div>
+                        <div className="text-xs sm:text-sm font-semibold text-white/85">
+                          {tr("Magaca:")} <span className="text-[#FFE484]">{evcMethod.holder}</span>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleCopyNumber}
+                        className="min-h-[42px] px-4 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#05132E] font-head font-extrabold text-xs sm:text-sm inline-flex items-center gap-2 cursor-pointer transition-colors shrink-0"
+                      >
+                        {copiedNum ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                        <span>{copiedNum ? tr("La koobiyay") : tr("Koobi lambarka")}</span>
+                      </button>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-white/12 flex items-center justify-between gap-2 flex-wrap text-xs">
+                      <span className="text-white/75 tabular-nums">
+                        {trf("Qiimaha: {p}", {
+                          p: plan === "school_subject" ? "$0.25 · Maado" : info.priceText,
+                        })}
+                      </span>
+                      <a
+                        href={ussdHref}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/18 border border-white/20 font-mono text-[#FFE484] transition-colors"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>*712*{evcMethod.number}*{selectedUssdAmount}#</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  {pending && !reqMsg && (
+                    <div className="rounded-xl px-3.5 py-2.5 bg-amber-500/14 border border-amber-400/35 flex items-start gap-2.5 text-xs text-amber-100">
+                      <Hourglass className="w-4 h-4 text-[#FFE484] shrink-0 mt-0.5" />
+                      <span>{tr("Codsi hore ayaa socda; sug xaqiijinta ama riix “Hubi xaaladda”.")}</span>
+                    </div>
+                  )}
+
+                  {/* Validated Form Inputs */}
+                  <div className="space-y-3.5">
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div>
+                        <label htmlFor="evc-phone" className="block text-xs font-semibold text-white/80 mb-1.5">
+                          {tr("Lambarka taleefankaaga (kii aad ka bixisay)")}
+                        </label>
+                        <input
+                          id="evc-phone"
+                          type="tel"
+                          value={phone}
+                          maxLength={20}
+                          onChange={(e) => setPhone(e.target.value.replace(/[^0-9+ ]/g, ""))}
+                          placeholder="061XXXXXXX"
+                          className="w-full rounded-xl px-4 py-3 text-[15px] bg-[#041430] border border-white/20 outline-none focus:border-[#FFC93C] placeholder:text-white/35 tabular-nums"
+                        />
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-1.5">
+                          <label htmlFor="evc-time" className="inline-flex items-center gap-1.5 text-xs font-semibold text-white/80">
+                            <Clock className="w-3.5 h-3.5 text-[#FFD86B]" />
+                            <span>Saacadda EVC</span>
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setPayTime(currentHHMM())}
+                            className="text-[11px] font-bold text-[#FFD86B] hover:underline cursor-pointer"
+                          >
+                            {tr("Waqtiga hadda")}
+                          </button>
+                        </div>
+                        <input
+                          id="evc-time"
+                          type="time"
+                          value={payTime}
+                          onChange={(e) => setPayTime(e.target.value)}
+                          className="w-full rounded-xl px-4 py-3 text-[15px] font-mono font-bold bg-[#041430] border border-white/20 outline-none focus:border-[#FFC93C] text-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="evc-name" className="block text-xs font-semibold text-white/80 mb-1.5">
+                        {tr("Magacaaga (ikhtiyaari)")}
+                      </label>
+                      <input
+                        id="evc-name"
+                        type="text"
+                        value={name}
+                        maxLength={40}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder={tr("Magacaaga (ikhtiyaari)")}
+                        className="w-full rounded-xl px-4 py-3 text-[15px] bg-[#041430] border border-white/20 outline-none focus:border-[#FFC93C] placeholder:text-white/35"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Notice when selected School/Bridge Predict Exam has 0 uploaded questions yet */}
+                  {isSelectedExamEmpty && (
+                    <div className="rounded-xl px-3.5 py-3 bg-amber-500/14 border border-amber-400/40 flex items-start gap-2.5 text-xs text-amber-100 leading-relaxed">
+                      <AlertCircle className="w-4 h-4 text-[#FFE484] shrink-0 mt-0.5" />
+                      <span>
+                        Su'aalaha Predict Exam-kan weli lama soo gelin (diyaarinta 2027 ayaa socota). Si aadan lacag ugu bixin imtixaan aan weli soo bixin, lacag-bixinta qeybtan waa la hakiyay ilaa la soo geliyo. Waaxaha &amp; Unlock+ Hub ama Luqadaha hadda waad furan kartaa.
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Primary Submit + WhatsApp Fast Confirmation */}
+                  <div className="space-y-2.5">
+                    <button
+                      type="button"
+                      disabled={sending || payCooldownSec > 0 || isSelectedExamEmpty}
+                      onClick={handleSendRequest}
+                      className="w-full h-[50px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#05132E] font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-55 disabled:cursor-not-allowed transition-colors shadow-lg"
+                    >
+                      {sending ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : isSelectedExamEmpty ? (
+                        <span>Weli lama soo gelin (2027)</span>
+                      ) : payCooldownSec > 0 ? (
+                        <span className="tabular-nums">Sug {payCooldownSec}s...</span>
+                      ) : (
+                        <span>{tr("Dir codsiga")}</span>
+                      )}
+                    </button>
+
+                    <a
+                      href={whatsappConfirmHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full h-11 rounded-2xl border border-emerald-400/40 bg-emerald-500/12 hover:bg-emerald-500/22 text-emerald-200 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+                    >
+                      <MessageCircle className="w-4 h-4 text-emerald-400" />
+                      <span>{tr("U dir caddaynta WhatsApp (Degdeg)")}</span>
+                    </a>
+                  </div>
+
+                  <MsgView msg={reqMsg} />
+
+                  {/* Server Verification Check Bar */}
+                  <div className="pt-4 border-t border-white/12 space-y-2.5">
+                    <div className="flex items-center justify-between gap-2 text-xs text-white/75">
+                      <span className="font-semibold">Ma dirtay lacagta?</span>
+                      <span>Xaqiijinta tooska ah ee server-ka</span>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={checking}
+                      onClick={handleCheck}
+                      className="w-full h-12 rounded-2xl border border-[#FFC93C]/65 bg-[#FFC93C]/10 hover:bg-[#FFC93C]/18 text-[#FFE484] font-head font-extrabold text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-colors"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${checking ? "animate-spin" : ""}`} />
+                      <span>{tr("Hubi xaaladda")}</span>
+                    </button>
+                    <MsgView msg={statMsg} />
+                  </div>
+                </div>
+              ) : (
+                /* Redeem Code Tab */
+                <div className="space-y-4 py-1">
+                  <div className="space-y-1">
+                    <h3 className="font-head font-extrabold text-base text-white">
+                      {tr("Koodh ma haysaa?")}
+                    </h3>
+                    <p className="text-xs text-white/70 leading-relaxed">
+                      Geli koodhka hal-mar-isticmaalka ah ee laguu soo diray si isla markiiba laguugu furo qeybta Unlock+.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2.5">
+                    <input
+                      type="text"
+                      value={code}
+                      maxLength={20}
+                      onChange={(e) => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ""))}
+                      placeholder={tr("Geli koodhka")}
+                      aria-label={tr("Geli koodhka")}
+                      className="flex-1 rounded-xl px-4 py-3.5 text-[15px] font-mono font-bold tracking-widest bg-[#041430] border border-white/20 outline-none focus:border-[#FFC93C] placeholder:text-white/35 placeholder:font-sans placeholder:font-normal placeholder:tracking-normal"
+                    />
+                    <button
+                      type="button"
+                      disabled={redeeming || redeemLockSec > 0}
+                      onClick={handleRedeem}
+                      className="sm:w-44 h-12 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#05132E] font-head font-extrabold text-sm flex items-center justify-center cursor-pointer disabled:opacity-50 transition-colors"
+                    >
+                      {redeeming ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : redeemLockSec > 0 ? (
+                        <span className="tabular-nums">Sug {redeemLockSec}s</span>
+                      ) : (
+                        tr("Isticmaal koodhka")
+                      )}
+                    </button>
+                  </div>
+
+                  <MsgView msg={codeMsg} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>

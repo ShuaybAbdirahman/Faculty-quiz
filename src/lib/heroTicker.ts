@@ -64,8 +64,8 @@ export function getFridaySalawatSlide(now: Date = new Date()): HeroTickerSlide |
 
 export const baseHeroSlides: HeroTickerSlide[] = [
   {
-    id: "caawiye_brand",
-    tag: { so: "CAAWIYE", en: "CAAWIYE", ar: "عاويي" },
+    id: "hiraal_brand",
+    tag: { so: "HIRAAL", en: "HIRAAL", ar: "هيرال" },
     text: {
       so: "School · Gap · University (Hal Meel)",
       en: "School · Gap · University Platform",
@@ -97,9 +97,9 @@ export const baseHeroSlides: HeroTickerSlide[] = [
     id: "predict_exam_price",
     tag: { so: "Predict Exam", en: "Predict Exam", ar: "اختبار التوقع" },
     text: {
-      so: "Predict Exam Maado Kasta: $0.10 Keliya",
-      en: "Predict Exam Per Subject: Only $0.10",
-      ar: "اختبار التوقع لكل مادة: 0.10$ فقط",
+      so: "Predict Exam Form 4: $0.25 · Gap & Unlock+: $0.50",
+      en: "Predict Exam Form 4: $0.25 · Gap & Unlock+: $0.50",
+      ar: "اختبار التوقع: 0.25$ للمدرسة · 0.50$ للجامعة وUnlock+",
     },
     accent: "gold",
   },
@@ -117,9 +117,9 @@ export const baseHeroSlides: HeroTickerSlide[] = [
     id: "founder",
     tag: { so: "Aasaasaha", en: "Founder", ar: "المؤسس" },
     text: {
-      so: "Aasaasaha CAAWIYE: ShuaybAbdirahman",
-      en: "CAAWIYE Founder: ShuaybAbdirahman",
-      ar: "مؤسس عاويي: ShuaybAbdirahman",
+      so: "Aasaasaha HIRAAL: ShuaybAbdirahman",
+      en: "HIRAAL Founder: ShuaybAbdirahman",
+      ar: "مؤسس هيرال: ShuaybAbdirahman",
     },
     accent: "gold",
   },
@@ -128,18 +128,18 @@ export const baseHeroSlides: HeroTickerSlide[] = [
     tag: { so: "Af-Soomaali", en: "Somali Free", ar: "الصومالية مجاناً" },
     text: {
       so: "Af-Soomaaliga: 100% Bilaash (School, Gap & Uni)",
-      en: "Somali Language: 100% Free Across CAAWIYE",
+      en: "Somali Language: 100% Free Across HIRAAL",
       ar: "اللغة الصومالية مجانية ١٠٠٪",
     },
     accent: "emerald",
   },
   {
     id: "pro_70_questions",
-    tag: { so: "Pro Waaxaha", en: "Pro Guide", ar: "دليل Pro" },
+    tag: { so: "Unlock+ Waaxaha", en: "Unlock+ Guide", ar: "دليل Unlock+" },
     text: {
-      so: "Su'aalaha Waaxaha Pro: 70 Su'aalood",
-      en: "Pro Department Guide: 70 Precision Questions",
-      ar: "دليل الأقسام Pro: ٧٠ سؤالاً",
+      so: "Su'aalaha Waaxaha Unlock+: 70 Su'aalood",
+      en: "Unlock+ Department Guide: 70 Precision Questions",
+      ar: "دليل الأقسام Unlock+: ٧٠ سؤالاً",
     },
     accent: "violet",
   },
@@ -155,7 +155,7 @@ export const baseHeroSlides: HeroTickerSlide[] = [
   },
   {
     id: "universities_jobs",
-    tag: { so: "Jaamacadaha", en: "Pro Hub", ar: "مركز Pro" },
+    tag: { so: "Jaamacadaha", en: "Unlock+ Hub", ar: "مركز Unlock+" },
     text: {
       so: "Jaamacadaha Soomaaliya & Dadka Caanka ah",
       en: "Somalia Universities & 21st-Century Pioneers",

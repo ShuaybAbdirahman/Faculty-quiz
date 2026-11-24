@@ -5,9 +5,9 @@ export const EVC_PAYMENT_CONFIG = {
   number: "610999089",
   holder: "Shuceyb Abdirahman",
   whatsapp: "252610999089",
-  defaultPrice: "$0.10 · Abid (Hal mar)",
-  ussdAmount: "0.1",
-  defaultDays: 3650,
+  defaultPrice: "$0.50 · 6 Bilood",
+  ussdAmount: "0.5",
+  defaultDays: 180,
 } as const;
 
 export const DEVICE_ID_STORAGE_KEY = "hk_device_id_v2";
@@ -18,8 +18,8 @@ export const LEGACY_PRO_UNTIL_KEY = "pro_until";
 export const REQUESTED_SCOPE_STORAGE_KEY = "hk_pro_requested_scope_v2";
 export const REQUESTED_ITEM_STORAGE_KEY = "hk_pro_requested_item_v1";
 
-/** Re-verify with Supabase if local cache is older than 15 minutes. */
-export const MAX_ENTITLEMENT_STALE_MS = 15 * 60 * 1000;
+/** Re-verify with Supabase if local cache is older than 5 minutes. */
+export const MAX_ENTITLEMENT_STALE_MS = 5 * 60 * 1000;
 
 export type ProScope = "full" | "departments" | "languages" | "none";
 export type ProItemKey = `school:${string}` | `bridge:${string}`;
@@ -30,6 +30,7 @@ export interface ProEntitlement {
   verifiedAt: number;
   scope?: ProScope;
   unlockedItems?: string[];
+  sig?: string;
 }
 
 export interface StorageLike {
@@ -91,6 +92,24 @@ export function rotateDeviceId(storage: StorageLike): string {
   return fresh;
 }
 
+const MAX_FUTURE_EXPIRY_MS = 735 * 86400 * 1000;
+const MAX_CLOCK_SKEW_MS = 60_000;
+
+export function computeEntitlementSignature(ent: Omit<ProEntitlement, "sig">): string {
+  const items = [...(ent.unlockedItems ?? [])].sort().join(",");
+  const payload = `hiraal_v2|${ent.deviceId}|${ent.expiresAt}|${ent.verifiedAt}|${ent.scope ?? "full"}|${items}`;
+  let h1 = 0x811c9dc5;
+  let h2 = 0x9e3779b9;
+  for (let i = 0; i < payload.length; i++) {
+    const ch = payload.charCodeAt(i);
+    h1 ^= ch;
+    h1 = Math.imul(h1, 0x01000193) >>> 0;
+    h2 ^= (ch + i * 31) & 0xff;
+    h2 = Math.imul(h2, 0x85ebca6b) >>> 0;
+  }
+  return `${h1.toString(16).padStart(8, "0")}${h2.toString(16).padStart(8, "0")}`;
+}
+
 export function isEntitlementValidForDevice(
   ent: ProEntitlement | null,
   deviceId: string,
@@ -101,7 +120,9 @@ export function isEntitlementValidForDevice(
   if (!isValidDeviceId(deviceId)) return false;
   if (ent.deviceId !== deviceId) return false;
   if (!Number.isFinite(ent.expiresAt) || ent.expiresAt <= now) return false;
+  if (ent.expiresAt > now + MAX_FUTURE_EXPIRY_MS) return false;
   if (!Number.isFinite(ent.verifiedAt) || ent.verifiedAt <= 0) return false;
+  if (ent.verifiedAt > now + MAX_CLOCK_SKEW_MS) return false;
   if (now - ent.verifiedAt > maxStaleMs) return false;
   return true;
 }
@@ -133,7 +154,13 @@ export function readStoredEntitlement(
       verifiedAt: Number(parsed.verifiedAt ?? 0),
       scope,
       unlockedItems,
+      sig: typeof parsed.sig === "string" ? parsed.sig : undefined,
     };
+    const expectedSig = computeEntitlementSignature(ent);
+    if (!ent.sig || ent.sig !== expectedSig) {
+      storage.removeItem(ENTITLEMENT_STORAGE_KEY);
+      return null;
+    }
     if (!isEntitlementValidForDevice(ent, deviceId, now, maxStaleMs)) {
       // Do not trust mismatched or expired entitlements
       if (ent.deviceId !== deviceId || ent.expiresAt <= now) {
@@ -239,6 +266,14 @@ export function hasBridgeExamAccess(
   return hasUnlockedItem(ent, deviceId, `bridge:${examId}`, now);
 }
 
+export interface ServerEntitlementPayload {
+  active: boolean;
+  expiresAt: number;
+  scope?: ProScope;
+  unlockedItems?: string[];
+  hasServerScopeMetadata?: boolean;
+}
+
 export function writeStoredEntitlement(
   storage: StorageLike,
   deviceId: string,
@@ -269,15 +304,88 @@ export function writeStoredEntitlement(
     ? existing?.scope ?? "none"
     : existing?.scope ?? "full";
 
-  const ent: ProEntitlement = {
+  const unsignedEnt: Omit<ProEntitlement, "sig"> = {
     deviceId,
-    expiresAt,
+    expiresAt: Math.min(expiresAt, now + MAX_FUTURE_EXPIRY_MS),
     verifiedAt: now,
     scope: resolvedScope,
     unlockedItems: mergedItems,
   };
+  const ent: ProEntitlement = {
+    ...unsignedEnt,
+    sig: computeEntitlementSignature(unsignedEnt),
+  };
   storage.setItem(ENTITLEMENT_STORAGE_KEY, JSON.stringify(ent));
+  // Consume pending request markers so they cannot be replayed across status refreshes
+  storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
+  storage.removeItem(REQUESTED_ITEM_STORAGE_KEY);
   return ent;
+}
+
+export function syncServerEntitlement(
+  storage: StorageLike,
+  deviceId: string,
+  server: ServerEntitlementPayload,
+  now: number = Date.now()
+): ProEntitlement | null {
+  storage.removeItem(LEGACY_PRO_UNTIL_KEY);
+  if (!isValidDeviceId(deviceId) || !server.active || !Number.isFinite(server.expiresAt) || server.expiresAt <= now) {
+    clearStoredEntitlement(storage);
+    return null;
+  }
+
+  // Authoritative path: server explicitly returned scope and/or unlockedItems
+  if (server.hasServerScopeMetadata) {
+    const validItems = Array.from(
+      new Set((server.unlockedItems ?? []).filter((item): item is string => isValidProItemKey(item)))
+    );
+    const resolvedScope: ProScope =
+      server.scope === "full" || server.scope === "departments" || server.scope === "languages" || server.scope === "none"
+        ? server.scope
+        : validItems.length > 0
+        ? "none"
+        : "departments";
+
+    const unsignedEnt: Omit<ProEntitlement, "sig"> = {
+      deviceId,
+      expiresAt: Math.min(server.expiresAt, now + MAX_FUTURE_EXPIRY_MS),
+      verifiedAt: now,
+      scope: resolvedScope,
+      unlockedItems: validItems,
+    };
+    const ent: ProEntitlement = {
+      ...unsignedEnt,
+      sig: computeEntitlementSignature(unsignedEnt),
+    };
+    storage.setItem(ENTITLEMENT_STORAGE_KEY, JSON.stringify(ent));
+    storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
+    storage.removeItem(REQUESTED_ITEM_STORAGE_KEY);
+    return ent;
+  }
+
+  // Legacy backend fallback (server returned only { active: true, expires_at }):
+  // If this device already has a signed entitlement, NEVER let pending local selections escalate it.
+  const existing = readStoredEntitlement(storage, deviceId, now, Number.MAX_SAFE_INTEGER);
+  if (existing) {
+    const unsignedEnt: Omit<ProEntitlement, "sig"> = {
+      deviceId,
+      expiresAt: Math.min(server.expiresAt, now + MAX_FUTURE_EXPIRY_MS),
+      verifiedAt: now,
+      scope: existing.scope ?? "departments",
+      unlockedItems: existing.unlockedItems ?? [],
+    };
+    const ent: ProEntitlement = {
+      ...unsignedEnt,
+      sig: computeEntitlementSignature(unsignedEnt),
+    };
+    storage.setItem(ENTITLEMENT_STORAGE_KEY, JSON.stringify(ent));
+    storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
+    storage.removeItem(REQUESTED_ITEM_STORAGE_KEY);
+    return ent;
+  }
+
+  // First activation on legacy backend: bind strictly to the single submitted request (and consume it)
+  return writeStoredEntitlement(storage, deviceId, server.expiresAt, now);
 }
 
 export function clearStoredEntitlement(storage: StorageLike): void {
@@ -303,11 +411,17 @@ export function normalizeProInfo(raw?: Partial<ProInfo> | null): ProInfo {
     rawPrice === "0.10" ||
     rawPrice === "$0.1" ||
     rawPrice === "$0.10" ||
+    rawPrice === "$0.10 · 6 Bilood" ||
+    rawPrice === "$0.10 · Abid (Hal mar)" ||
+    rawPrice === "0.5" ||
+    rawPrice === "0.50" ||
+    rawPrice === "$0.5" ||
+    rawPrice === "$0.50" ||
     rawPrice.includes("$3");
 
   const priceText = isDefaultTiny ? EVC_PAYMENT_CONFIG.defaultPrice : rawPrice;
   const days =
-    typeof raw?.days === "number" && Number.isFinite(raw.days) && raw.days >= 365
+    typeof raw?.days === "number" && Number.isFinite(raw.days) && raw.days >= 1 && raw.days <= 730
       ? raw.days
       : EVC_PAYMENT_CONFIG.defaultDays;
 
@@ -382,7 +496,7 @@ export function buildProWatermarkStamp(deviceId: string, userName?: string, time
   const short = formatShortDeviceId(deviceId);
   const cleanName = (userName ?? "").replace(/\s+/g, " ").trim().slice(0, 22);
   const cleanTime = (timeTag ?? "").replace(/\s+/g, " ").trim().slice(0, 16);
-  const parts = ["CAAWIYE PRO"];
+  const parts = ["HIRAAL UNLOCK+"];
   if (cleanName) parts.push(cleanName);
   parts.push(`ID:${short}`);
   if (cleanTime) parts.push(cleanTime);
@@ -412,7 +526,7 @@ function escapeSvgText(value: string): string {
 }
 
 export function buildProWatermarkTileDataUri(stamp: string): string {
-  const safeStamp = escapeSvgText(stamp || "CAAWIYE PRO");
+  const safeStamp = escapeSvgText(stamp || "HIRAAL UNLOCK+");
   const svg = [
     '<svg xmlns="http://www.w3.org/2000/svg" width="420" height="200" viewBox="0 0 420 200">',
     '<g transform="rotate(-22 210 100)">',
@@ -430,5 +544,140 @@ export function buildProWatermarkTileDataUri(stamp: string): string {
 
 export const PRO_PERSONAL_REMINDER = {
   title: "Xasuusin Muhiim ah · Qalabkaaga Keliya (1 Qalab = 1 Arday)",
-  body: "Qeybtaan Pro waxay si gaar ah ugu furan tahay adiga keligaa. Fadlan ha qaadin screenshot, ha dajisan, hana la wadaagin asxaabtaada ama dad kale. Arday kasta si xor ah ayuu $0.10 ugu furan karaa naftiisa si aan xogta Pro loo helin amar la'aan.",
+  body: "Qeybtan Unlock+ waxay si gaar ah ugu furan tahay adiga keligaa. Fadlan ha qaadin screenshot, ha dajisan, hana la wadaagin asxaabtaada ama dad kale. Arday kasta si xor ah ayuu $0.50 ugu furan karaa naftiisa si aan xogta gaarka ah loo helin amar la'aan.",
 } as const;
+
+export const PAYMENT_COOLDOWN_MS = 30_000;
+export const REDEEM_LOCKOUT_MS = 15_000;
+const PAYMENT_COOLDOWN_KEY = "hk_pay_cooldown_v1";
+const REDEEM_FAIL_KEY = "hk_redeem_fail_v1";
+
+export function validateEvcPhone(raw: string): { ok: boolean; normalized: string } {
+  const cleaned = raw.replace(/[\s()-]/g, "").replace(/[^0-9+]/g, "");
+  const digits = cleaned.replace(/^\+/, "");
+  if (!/^[0-9]{7,15}$/.test(digits)) {
+    return { ok: false, normalized: cleaned };
+  }
+  // Reject repeated dummy digits like 0000000 or 1111111
+  if (/^(\d)\1{6,}$/.test(digits)) {
+    return { ok: false, normalized: cleaned };
+  }
+  return { ok: true, normalized: cleaned };
+}
+
+export function validatePayTimeHHMM(raw: string): boolean {
+  return /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(raw.trim());
+}
+
+export function sanitizeCheckoutName(raw: string): string {
+  return raw
+    .replace(/[<>`"'\\]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 40);
+}
+
+export function generateSecureEvcRef(
+  deviceId: string,
+  hhmm: string,
+  phDigits: string,
+  tag: string
+): string {
+  const cleanTime = hhmm.replace(/[^0-9]/g, "").slice(0, 4) || "0000";
+  const tail = phDigits.replace(/\D/g, "").slice(-4) || "0000";
+  const devSuffix = formatShortDeviceId(deviceId).replace(/[^A-Z0-9]/g, "").slice(-4) || "0000";
+  const randByte = new Uint8Array(2);
+  if (typeof globalThis.crypto !== "undefined" && typeof globalThis.crypto.getRandomValues === "function") {
+    globalThis.crypto.getRandomValues(randByte);
+  } else {
+    randByte[0] = Math.floor(Math.random() * 256);
+    randByte[1] = Math.floor(Math.random() * 256);
+  }
+  const nonce = Array.from(randByte, (b) => b.toString(36).toUpperCase().padStart(2, "0"))
+    .join("")
+    .slice(0, 3);
+  const safeTag = tag.replace(/[^A-Z0-9_]/g, "").slice(0, 10) || "UNLOCK";
+  return `EVC-${safeTag}-${cleanTime}-${tail}-${devSuffix}${nonce}`.slice(0, 40);
+}
+
+export function getPaymentCooldownRemainingMs(
+  storage: StorageLike,
+  deviceId: string,
+  now: number = Date.now()
+): number {
+  const raw = storage.getItem(PAYMENT_COOLDOWN_KEY);
+  if (!raw) return 0;
+  try {
+    const parsed = JSON.parse(raw) as { deviceId?: string; until?: number };
+    if (parsed.deviceId !== deviceId || !Number.isFinite(parsed.until)) return 0;
+    return Math.max(0, (parsed.until ?? 0) - now);
+  } catch {
+    return 0;
+  }
+}
+
+export function recordPaymentAttempt(
+  storage: StorageLike,
+  deviceId: string,
+  now: number = Date.now()
+): void {
+  if (!isValidDeviceId(deviceId)) return;
+  storage.setItem(
+    PAYMENT_COOLDOWN_KEY,
+    JSON.stringify({ deviceId, until: now + PAYMENT_COOLDOWN_MS })
+  );
+}
+
+export function getRedeemCooldownRemainingMs(
+  storage: StorageLike,
+  deviceId: string,
+  now: number = Date.now()
+): number {
+  const raw = storage.getItem(REDEEM_FAIL_KEY);
+  if (!raw) return 0;
+  try {
+    const parsed = JSON.parse(raw) as { deviceId?: string; count?: number; until?: number };
+    if (parsed.deviceId !== deviceId || !Number.isFinite(parsed.until)) return 0;
+    return Math.max(0, (parsed.until ?? 0) - now);
+  } catch {
+    return 0;
+  }
+}
+
+export function recordRedeemFailure(
+  storage: StorageLike,
+  deviceId: string,
+  now: number = Date.now()
+): number {
+  if (!isValidDeviceId(deviceId)) return 0;
+  let count = 1;
+  try {
+    const parsed = JSON.parse(storage.getItem(REDEEM_FAIL_KEY) || "{}") as {
+      deviceId?: string;
+      count?: number;
+    };
+    if (parsed.deviceId === deviceId && typeof parsed.count === "number") {
+      count = parsed.count + 1;
+    }
+  } catch {
+    // ignore
+  }
+  const until = count >= 3 ? now + REDEEM_LOCKOUT_MS : 0;
+  storage.setItem(REDEEM_FAIL_KEY, JSON.stringify({ deviceId, count, until }));
+  return until > now ? REDEEM_LOCKOUT_MS : 0;
+}
+
+export function clearRedeemFailures(storage: StorageLike): void {
+  storage.removeItem(REDEEM_FAIL_KEY);
+}
+
+export function buildSafeWhatsappUrl(phone: string, message: string): string {
+  const safeDigits = phone.replace(/[^0-9]/g, "").slice(0, 18) || EVC_PAYMENT_CONFIG.whatsapp;
+  return `https://wa.me/${safeDigits}?text=${encodeURIComponent(message)}`;
+}
+
+export function buildSafeTelUssdUrl(number: string, amount: string): string {
+  const safeNum = number.replace(/[^0-9]/g, "").slice(0, 15) || EVC_PAYMENT_CONFIG.number;
+  const safeAmt = amount.replace(/[^0-9.]/g, "").slice(0, 8) || EVC_PAYMENT_CONFIG.ussdAmount;
+  return `tel:*712*${safeNum}*${safeAmt}%23`;
+}

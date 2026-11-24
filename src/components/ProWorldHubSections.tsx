@@ -11,7 +11,7 @@ import {
   Lock,
   MapPin,
   Rocket,
-  Sparkles,
+  LockOpen,
   TrendingUp,
   Wrench,
 } from "lucide-react";
@@ -50,7 +50,7 @@ function ProLockedFooter({ onUnlock }: { onUnlock: () => void }) {
       <div className="flex items-start gap-2.5 text-xs text-[#FFE599] leading-relaxed">
         <Lock className="w-4 h-4 text-[#FFD86B] shrink-0 mt-0.5" />
         <span>
-          {tr("Fur Pro Waaxaha & Xarunta ($0.10 · Abid) si aad u aragto dhammaan xogta, ilaha la hubiyay, iyo qorshayaasha.")}
+          {tr("Fur Unlock+ Waaxaha & Xarunta ($0.50 · 6 Bilood) si aad u aragto dhammaan xogta, ilaha la hubiyay, iyo qorshayaasha.")}
         </span>
       </div>
       <button
@@ -58,8 +58,8 @@ function ProLockedFooter({ onUnlock }: { onUnlock: () => void }) {
         onClick={onUnlock}
         className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
       >
-        <Sparkles className="w-3.5 h-3.5" />
-        <span>{tr("Fur Pro ($0.10 · Abid)")}</span>
+        <LockOpen className="w-3.5 h-3.5" />
+        <span>{tr("Fur Unlock+ ($0.50 · 6 Bilood)")}</span>
       </button>
     </div>
   );
@@ -165,17 +165,12 @@ export function WorldPioneersSection({
               <div className="space-y-2.5 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span
-                        className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
-                          isSomalia
-                            ? "bg-sky-500/20 text-sky-200 border-sky-400/35"
-                            : "bg-violet-500/20 text-violet-200 border-violet-400/35"
-                        }`}
-                      >
+                    <div className="flex items-center gap-2 flex-wrap text-[11px] font-bold uppercase tracking-wider">
+                      <span className={isSomalia ? "text-sky-300" : "text-indigo-200"}>
                         {isSomalia ? tr("Soomaaliya") : tr("Adduunka")}
                       </span>
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#FFD86B]">
+                      <span className="text-white/30" aria-hidden="true">·</span>
+                      <span className="text-[#FFD86B]">
                         {tx(p.facultyLabel)}
                       </span>
                     </div>
@@ -193,7 +188,7 @@ export function WorldPioneersSection({
                     className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
                   >
                     <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
-                    <span>{tr("Fur Pro si aad u akhrido guusha, casharka ardayga, iyo isha rasmiga ah.")}</span>
+                    <span>{tr("Fur Unlock+ si aad u akhrido guusha, casharka ardayga, iyo isha rasmiga ah.")}</span>
                   </button>
                 ) : (
                   <>
@@ -295,7 +290,7 @@ export function FutureJobsNewsSection({
                   className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
                 >
                   <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
-                  <span>{tr("Fur Pro si aad u aragto falanqaynta suuqa Soomaaliya, xirfadaha loo baahan yahay, iyo isha warbixinta.")}</span>
+                  <span>{tr("Fur Unlock+ si aad u aragto falanqaynta suuqa Soomaaliya, xirfadaha loo baahan yahay, iyo isha warbixinta.")}</span>
                 </button>
               ) : (
                 <>
@@ -378,7 +373,7 @@ export function HighIncomeSkillsSection({
                     className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
                   >
                     <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
-                    <span>{tr("Fur Pro si aad u aragto qorshaha 30-ka maalmood, sida lacag looga sameeyo, iyo koorsada bilaashka ah.")}</span>
+                    <span>{tr("Fur Unlock+ si aad u aragto qorshaha 30-ka maalmood, sida lacag looga sameeyo, iyo koorsada bilaashka ah.")}</span>
                   </button>
                 ) : (
                   <>
@@ -474,7 +469,7 @@ export function SomaliaGrowthSection({
                   className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
                 >
                   <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
-                  <span>{tr("Fur Pro si aad u aragto istiraatiijiyadda iyo xiriirrada rasmiga ah ee deeqaha waxbarasho.")}</span>
+                  <span>{tr("Fur Unlock+ si aad u aragto istiraatiijiyadda iyo xiriirrada rasmiga ah ee deeqaha waxbarasho.")}</span>
                 </button>
               ) : (
                 <>
@@ -628,7 +623,7 @@ export function SomaliaUniversitiesSection({
                   className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
                 >
                   <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
-                  <span>{tr("Fur Pro si aad u aragto kulliyadaha, faahfaahinta, iyo website-ka rasmiga ah.")}</span>
+                  <span>{tr("Fur Unlock+ si aad u aragto kulliyadaha, faahfaahinta, iyo website-ka rasmiga ah.")}</span>
                 </button>
               ) : (
                 <>

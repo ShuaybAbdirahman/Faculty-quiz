@@ -335,9 +335,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Tap to show the full note",
     "اضغط لإظهار الرسالة كاملة"
   ],
-  "Asc! Waxaan ahay Shuayb. Arday badan oo dhammeysa dugsiga sare ayaa ku wareersan kulliyadda ay dooran lahaayeen, sidaas darteed waxaan dhisay Hagaha Kulliyadda. Waxay ku weydiinaysaa su’aalo gaagaaban oo ku saabsan waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah. Kadib waxay kuu soo bandhigaysaa saddexda kulliyadood ee kuugu habboon, boqolkiiba, sababta, waaxaha iyo shaqooyinka. Waa hage oo kaa caawinaya inaad si cad u fikirto, ma aha go’aan kama dambays ah, la tasho waalidkaaga iyo macallimiintaada. Guul!": [
-    "Hi! I’m Shuayb. Many high school graduates feel lost when choosing a faculty, so I built Faculty Guide. It asks you short questions about what you enjoy, what you have studied and what matters to you. Then it shows your top three faculties with a match percentage, the reason, the departments and the careers. It is a guide to help you think clearly, not a final decision, so talk it over with your family and teachers. Good luck!",
-    "مرحبًا! أنا شعيب. يشعر كثير من خريجي الثانوية بالحيرة عند اختيار الكلية، لذلك صممت «دليل الكليات». يسألك أسئلة قصيرة عمّا تحب وما درسته وما يهمك. ثم يعرض لك أفضل ثلاث كليات مع نسبة التوافق والسبب والأقسام والوظائف. إنه دليل يساعدك على التفكير بوضوح وليس قرارًا نهائيًا، فاستشر أسرتك ومعلميك. بالتوفيق!"
+  "Asc! Waxaan ahay Shuayb. Arday badan oo dhammeysa dugsiga sare ayaa ku wareersan kulliyadda ay dooran lahaayeen, sidaas darteed waxaan dhisay HIRAAL (Hagaha Kulliyadda). Waxay ku weydiinaysaa su’aalo gaagaaban oo ku saabsan waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah. Kadib waxay kuu soo bandhigaysaa saddexda kulliyadood ee kuugu habboon, boqolkiiba, sababta, waaxaha iyo shaqooyinka. Waa hage oo kaa caawinaya inaad si cad u fikirto, ma aha go’aan kama dambays ah, la tasho waalidkaaga iyo macallimiintaada. Guul!": [
+    "Hi! I’m Shuayb. Many high school graduates feel lost when choosing a faculty, so I built HIRAAL (Faculty Guide). It asks you short questions about what you enjoy, what you have studied and what matters to you. Then it shows your top three faculties with a match percentage, the reason, the departments and the careers. It is a guide to help you think clearly, not a final decision, so talk it over with your family and teachers. Good luck!",
+    "مرحبًا! أنا شعيب. يشعر كثير من خريجي الثانوية بالحيرة عند اختيار الكلية، لذلك صممت «HIRAAL · دليل الكليات». يسألك أسئلة قصيرة عمّا تحب وما درسته وما يهمك. ثم يعرض لك أفضل ثلاث كليات مع نسبة التوافق والسبب والأقسام والوظائف. إنه دليل يساعدك على التفكير بوضوح وليس قرارًا نهائيًا، فاستشر أسرتك ومعلميك. بالتوفيق!"
   ],
   "Magaca waa inuu ahaadaa ugu yaraan 2 xaraf, xarfo kaliya (tiro iyo calaamado lama oggola).": [
     "Your name must be at least 2 letters, letters only (no numbers or symbols).",
@@ -1255,9 +1255,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Which faculty fits you best?",
     "أي كلية تناسبك أكثر؟"
   ],
-  "Scan garee QR-ka oo tijaabi 3 daqiiqo (Bilaash)": [
-    "Scan the QR code and test in 3 minutes (Free)",
-    "امسح رمز QR وجرّب في 3 دقائق (مجاناً)"
+  "Scan garee QR-ka oo tijaabi 8 daqiiqo (Bilaash)": [
+    "Scan the QR code and test in 8 minutes (Free)",
+    "امسح رمز QR وجرّب في 8 دقائق (مجاناً)"
   ],
   "Fur Pro ($0.10 · Abid) si aad u aragto faahfaahinta iyo calaamadaynta.": [
     "Unlock Pro ($0.10 · Lifetime) to view step details and track your checklist.",
@@ -1367,17 +1367,17 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Somalia Universities",
     "جامعات الصومال"
   ],
-  "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waxaa kuu furmaya dhammaan 6-da qaybood ee Xarunta Pro abid.": [
-    "Pay $0.10 once (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 6 University Pro Hub sections forever.",
-    "ادفع 0.10$ مرة واحدة (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Pro الستة للأبد."
+  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) — waxaa kuu furmaya dhammaan 8-da qaybood ee Xarunta Unlock+ muddo 6 bilood ah (180 maalmood).": [
+    "Pay $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 8 Unlock+ Hub sections for 6 months (180 days).",
+    "ادفع 0.50$ (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Unlock+ الثمانية لمدة 6 أشهر (180 يوماً)."
   ],
   "Hagaha Waaxaha (14 kulliyadood + 70 su'aalood), Khariidadaha, Jaamacadaha, Dadka Caanka ah, Wararka AI, Xirfadaha & Horumarinta.": [
     "Department Guide (14 faculties + 70 questions), Roadmaps, Somalia Universities, Pioneers, AI Jobs News, High-Income Skills & Growth.",
     "دليل الأقسام (14 كلية + 70 سؤالاً)، المسارات، الجامعات، الروّاد، وظائف المستقبل، المهارات المربحة، والتطوير."
   ],
-  "Fur luqadaha Ingiriisiga iyo Carabiga ee Qeybta 3aad (Af-Soomaaligu waa bilaash abid).": [
-    "Unlock English and Arabic in Section 3 (Somali is 100% free forever).",
-    "افتح الإنجليزية والعربية في القسم الثالث (الصومالية مجانية للأبد)."
+  "Fur luqadaha Ingiriisiga iyo Carabiga ee Qeybta 3aad (Af-Soomaaligu waa bilaash 100%).": [
+    "Unlock English and Arabic in Section 3 (Somali is 100% free).",
+    "افتح الإنجليزية والعربية في القسم الثالث (الصومالية مجانية بالكامل)."
   ],
   "Hagaha Jaamacadaha Soomaaliya (Dowli & Gaar ah)": [
     "Somalia Universities Directory (Public & Private)",
@@ -1386,5 +1386,277 @@ export const uiTranslations: Record<string, [string, string]> = {
   "Xirfadaha Dakhliga Sare & Horumarinta Ardayga Soomaaliya": [
     "High-Income Skills & Somalia Student Growth",
     "المهارات المربحة وتطوير الطالب الصومالي"
+  ],
+  "Pro Hub": [
+    "Pro Hub",
+    "مركز Pro"
+  ],
+  "Unlock+": [
+    "Unlock+",
+    "Unlock+"
+  ],
+  "Unlock+ Hub · Khariidadaha": [
+    "Unlock+ Hub · Roadmaps",
+    "مركز Unlock+ · المسارات"
+  ],
+  "Xarunta Ardayga Unlock+": [
+    "Unlock+ Student Hub",
+    "مركز الطالب Unlock+"
+  ],
+  "Qaybaha Unlock+": [
+    "Unlock+ Sections",
+    "أقسام Unlock+"
+  ],
+  "Unlock+ Furan": [
+    "Unlock+ Active",
+    "Unlock+ مفعّل"
+  ],
+  "Unlock waa la furay!": [
+    "Unlock+ activated!",
+    "تم تفعيل Unlock+!"
+  ],
+  "Unlock+ waa la furay!": [
+    "Unlock+ activated!",
+    "تم تفعيل Unlock+!"
+  ],
+  "Unlock+ iyo Amniga Qalabka": [
+    "Unlock+ & Device Security",
+    "Unlock+ وأمان الجهاز"
+  ],
+  "Xaaladda Unlock+:": [
+    "Unlock+ Status:",
+    "حالة Unlock+:"
+  ],
+  "Haddii arday kale uu qalabkan isticmaalayo, riix badhanka si Unlock+ loo xiro oo aqoonsi cusub loo sameeyo.": [
+    "If another student is using this device, click here to lock Unlock+ and issue a fresh device ID.",
+    "إذا كان طالب آخر يستخدم هذا الجهاز، اضغط هنا لقفل Unlock+ وإنشاء معرّف جهاز جديد."
+  ],
+  "Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Unlock+ ($0.50, 6 bilood).": [
+    "Somali is free. English & Arabic are included in Unlock+ ($0.50, 6 months).",
+    "الصومالية مجانية. الإنجليزية والعربية ضمن Unlock+ (0.50$ لمدة 6 أشهر)."
+  ],
+  "Af-Soomaaligu waa bilaash. Fur Unlock+ ($0.50, 6 bilood) si aad u hesho Ingiriisi iyo Carabi.": [
+    "Somali is 100% free. Get Unlock+ ($0.50, 6 months) to switch to English or Arabic.",
+    "اللغة الصومالية مجانية بالكامل. فعّل Unlock+ (0.50$ لمدة 6 أشهر) لاستخدام الإنجليزية أو العربية."
+  ],
+  "Fur Unlock+": [
+    "Get Unlock+",
+    "تفعيل Unlock+"
+  ],
+  "Fur Hagaha Unlock+": [
+    "Open Unlock+ Guide",
+    "افتح دليل Unlock+"
+  ],
+  "Fur Unlock+ ($0.50)": [
+    "Get Unlock+ ($0.50)",
+    "تفعيل Unlock+ (0.50$)"
+  ],
+  "Fur Unlock+ ($0.50 · 6 Bilood)": [
+    "Get Unlock+ ($0.50 · 6 Months)",
+    "تفعيل Unlock+ (0.50$ · 6 أشهر)"
+  ],
+  "$0.50 Keliya · 6 Bilood (180 Maalmood)": [
+    "Only $0.50 · 6 Months (180 Days)",
+    "0.50$ فقط · 6 أشهر (180 يوماً)"
+  ],
+  "Su'aalaha Gaarka ah ee Waaxda (Unlock+)": [
+    "Faculty-Specific Precision Questions (Unlock+)",
+    "أسئلة التخصص الدقيقة للكلية (Unlock+)"
+  ],
+  "Unlock Luqadaha (English & Carabi)": [
+    "Unlock Languages (English & Arabic)",
+    "تفعيل اللغات (الإنجليزية والعربية)"
+  ],
+  "Salaan, waxaan bixiyay lacagta Unlock": [
+    "Hello, I just paid for Unlock+",
+    "مرحباً، لقد دفعت رسوم Unlock+"
+  ],
+  "Khariidadaha Waxbarashada (Unlock+ Keliya)": [
+    "Learning Roadmaps (Unlock+ Only)",
+    "مسارات التعلم (Unlock+ فقط)"
+  ],
+  "Hel khariidado tallaabo-tallaabo ah oo la hubiyay (AI, Koronto, Caafimaad, Dhisme, Maaliyad iyo kuwo kale) marka aad furto Unlock+.": [
+    "Get verified step-by-step roadmaps (AI, Electrical, Medicine, Civil, Finance & more) with Unlock+.",
+    "احصل على مسارات معتمدة خطوة بخطوة عند تفعيل Unlock+."
+  ],
+  "Hagaha Jaamacadaha Soomaaliya (Unlock+ Keliya)": [
+    "Somalia Universities Guide (Unlock+ Only)",
+    "دليل جامعات الصومال (Unlock+ فقط)"
+  ],
+  "Dadka Caanka ah ee Adduunka (Unlock+ Keliya)": [
+    "World Pioneers (Unlock+ Only)",
+    "روّاد العالم (Unlock+ فقط)"
+  ],
+  "Wararka Shaqooyinka Cusub & AI (Unlock+ Keliya)": [
+    "Future Jobs & AI News (Unlock+ Only)",
+    "أخبار وظائف المستقبل وAI (Unlock+ فقط)"
+  ],
+  "Xirfadaha Dakhliga Sare (Unlock+ Keliya)": [
+    "High-Income Skills (Unlock+ Only)",
+    "المهارات عالية الدخل (Unlock+ فقط)"
+  ],
+  "Horumarinta Ardayga Soomaaliya (Unlock+ Keliya)": [
+    "Somalia Student Growth (Unlock+ Only)",
+    "تطوير الطالب الصومالي (Unlock+ فقط)"
+  ],
+  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) — waxaa kuu furmaya dhammaan 8-da qaybood ee Unlock+ Hub muddo 6 bilood ah (180 maalmood).": [
+    "Pay $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 8 Unlock+ Hub sections for 6 months (180 days).",
+    "ادفع 0.50$ (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Unlock+ الثمانية لمدة 6 أشهر (180 يوماً)."
+  ],
+  "Fur Unlock+ ($0.50 · 6 Bilood) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan.": [
+    "Get Unlock+ ($0.50 · 6 Months) to view skills, tools, and projects for this stage.",
+    "فعّل Unlock+ (0.50$ · 6 أشهر) لعرض المهارات والأدوات والمشاريع لهذه المرحلة."
+  ],
+  "Khariidado Cusub oo Soo Socda (Bilaash u ah Unlock+)": [
+    "Upcoming Roadmaps (Free for Unlock+ Members)",
+    "مسارات جديدة قادمة (مجانية لمشتركي Unlock+)"
+  ],
+  "Fur Unlock+ ($0.50 · 6 Bilood) si aad u aragto faahfaahinta iyo calaamadaynta.": [
+    "Get Unlock+ ($0.50 · 6 Months) to view step details and track your checklist.",
+    "فعّل Unlock+ (0.50$ · 6 أشهر) لعرض تفاصيل الخطوات وتتبع قائمة الاستعداد."
+  ],
+  "Fur Unlock+ Waaxaha & Xarunta ($0.50 · 6 Bilood) si aad u aragto dhammaan xogta, ilaha la hubiyay, iyo qorshayaasha.": [
+    "Get Unlock+ ($0.50 · 6 Months) to view all verified insights, sources, and action plans.",
+    "فعّل Unlock+ (0.50$ · 6 أشهر) لعرض جميع المعلومات والمصادر الموثوقة وخطط العمل."
+  ],
+  "Fur Unlock+ si aad u akhrido guusha, casharka ardayga, iyo isha rasmiga ah.": [
+    "Get Unlock+ to read the achievement, student lesson, and official source.",
+    "فعّل Unlock+ لقراءة الإنجاز والدرس المستفاد والمصدر الرسمي."
+  ],
+  "Fur Unlock+ si aad u aragto falanqaynta suuqa Soomaaliya, xirfadaha loo baahan yahay, iyo isha warbixinta.": [
+    "Get Unlock+ to see the Somalia market analysis, required skills, and official report source.",
+    "فعّل Unlock+ لعرض تحليل السوق الصومالي والمهارات المطلوبة ومصدر التقرير."
+  ],
+  "Fur Unlock+ si aad u aragto qorshaha 30-ka maalmood, sida lacag looga sameeyo, iyo koorsada bilaashka ah.": [
+    "Get Unlock+ to view the 30-day roadmap, monetization steps, and official free course.",
+    "فعّل Unlock+ لعرض خطة 30 يوماً وطرق تحقيق الدخل والدورة المجانية الرسمية."
+  ],
+  "Fur Unlock+ si aad u aragto istiraatiijiyadda iyo xiriirrada rasmiga ah ee deeqaha waxbarasho.": [
+    "Get Unlock+ to view the full strategy and verified official scholarship portals.",
+    "فعّل Unlock+ لعرض الاستراتيجية الكاملة وروابط المنح الدراسية الرسمية."
+  ],
+  "Fur Unlock+ si aad u aragto kulliyadaha, faahfaahinta, iyo website-ka rasmiga ah.": [
+    "Get Unlock+ to view faculties, details, and the official university website.",
+    "فعّل Unlock+ لعرض الكليات والتفاصيل والموقع الرسمي للجامعة."
+  ],
+  "Sawirka QR": [
+    "QR Poster",
+    "ملصق QR"
+  ],
+  "Fikirrada Ardayda": [
+    "Student Reviews",
+    "آراء الطلاب"
+  ],
+  "Taabo mid ka mid ah 3-da doorasho si aad isla markiiba u aragto jawaabta gaarka ah.": [
+    "Tap any of the 3 options to reveal its tailored insight instantly.",
+    "اضغط على أحد الخيارات الثلاثة لعرض الإجابة الخاصة به فوراً."
+  ],
+  "Doorashadaada:": [
+    "Your pick:",
+    "اختيارك:"
+  ],
+  "Eeg su'aasha #{n} ({name})": [
+    "Try question #{n} ({name})",
+    "جرّب السؤال #{n} ({name})"
+  ],
+  "{n} su’aalood uun baa kuu haray!": [
+    "Only {n} questions left!",
+    "بقي {n} أسئلة فقط!"
+  ],
+  "Kala bar waad dhaaftay — natiijadaadu way soo dhowdahay.": [
+    "Past the halfway mark — your result is getting sharper.",
+    "تجاوزت المنتصف — نتيجتك أصبحت أقرب."
+  ],
+  "Ogow kulliyadda kugu habboon, imtixaannada 2027, iyo xirfadaha mustaqbalka.": [
+    "Discover your best-fit faculty, 2027 exam prep, and future-ready skills.",
+    "اكتشف الكلية الأنسب لك، واستعد لامتحانات 2027، ومهارات المستقبل."
+  ],
+  "Dhammaadka:": [
+    "Expires:",
+    "ينتهي في:"
+  ],
+  "maalmood": [
+    "days",
+    "يوماً"
+  ],
+  "Su'aalaha Predict Exam-kan weli lama soo gelin. Waxaa la furayaa marka la soo geliyo.": [
+    "This Predict Exam's questions haven't been uploaded yet. Unlocking opens once uploaded.",
+    "لم يتم رفع أسئلة هذا الاختبار التوقعي بعد. سيتم التفعيل فور توفرها."
+  ],
+  "Su'aalaha Predict Exam-kan weli lama soo gelin. Dooro xirmo diyaar ah.": [
+    "This Predict Exam's questions haven't been uploaded yet. Please choose an available plan.",
+    "لم يتم رفع أسئلة هذا الاختبار التوقعي بعد. اختر باقة متاحة حالياً."
+  ],
+  "Sirta Ardayda Top-10": [
+    "Top-10 Student Secrets",
+    "أسرار المتفوقين (Top-10)"
+  ],
+  "Xeeladaha Ardayda Top-10 Galaan (Xalaal · Unlock+)": [
+    "Top-10 Student Exam Strategies (100% Ethical · Unlock+)",
+    "استراتيجيات طلاب القمة العشرة الأوائل (حلال 100%)"
+  ],
+  "Baro hababka cilmiyeysan ee ardayda kaalmaha sare galaan ku diyaar-garoobaan — qishku waa xaaraam, HIRAAL-na ma taageero qish iyo khiyaano.": [
+    "Learn science-backed study systems used by top-ranked students — cheating is forbidden and HIRAAL strictly rejects all exam dishonesty.",
+    "تعلّم الأساليب العلمية التي يعتمدها أوائل الطلاب — الغش حرام ولا تدعمه منصة HIRAAL إطلاقاً."
+  ],
+  "6 xeeladood oo xusuusta & fahamka kordhiya (Active Recall, 1-3-7-21, Feynman)": [
+    "6 proven memory & mastery systems (Active Recall, 1-3-7-21, Feynman)",
+    "6 أساليب مجربة للحفظ والفهم (الاسترجاع النشط، 1-3-7-21، فاينمان)"
+  ],
+  "Xeerka maareynta waqtiga hoolka imtixaanka (60% · 25% · 15%)": [
+    "Exam-hall time management protocol (60% · 25% · 15%)",
+    "نظام إدارة الوقت داخل قاعة الامتحان (60% · 25% · 15%)"
+  ],
+  "Hababka xalaasha ah ee MCQ Elimination iyo Buugga Qaladaadka": [
+    "Ethical MCQ elimination & Error Logbook review methods",
+    "طرق استبعاد الخيارات الخاطئة ودفتر الأخطاء"
+  ],
+  "Sirta Maaddooyinka (12 Maado)": [
+    "Subject Marking Secrets (12 Subjects)",
+    "أسرار المواد الـ 12 (حلال)"
+  ],
+  "Sirta Xalaasha ah ee 12-ka Maado (Unlock+ Keliya)": [
+    "Ethical Marking & Study Blueprints for All 12 Subjects (Unlock+)",
+    "الأسرار الشرعية والعلمية لجميع المواد الـ 12 (Unlock+)"
+  ],
+  "Ogow meelaha saxaha imtixaannadu dhibcaha ku bixiyaan (Method Marks, Keywords, Diagrams) maaddo kasta — si sharci ah oo xalaal ah.": [
+    "Understand what examiners actually award marks for (Method Marks, Keywords, Diagrams) in each subject — completely legal and ethical.",
+    "تعرّف على مواطن توزيع الدرجات عند المصححين (الخطوات، الكلمات المفتاحية، الرسومات) في كل مادة بأسلوب شرعي ونظامي."
+  ],
+  "Dhammaan 12-ka maado ee Form 4 (Saynis, Luqado, Bulsho, Ganacsi, Tech & Tarbiyo)": [
+    "All 12 Form 4 subjects (Sciences, Languages, Social Studies, Business, Tech & Islamic)",
+    "جميع مواد الصف الرابع ثانوي الـ 12 (العلوم، اللغات، الاجتماعيات، الأعمال، التقنية والتربية)"
+  ],
+  "Mowduucyada ugu muhiimsan imtixaannada Form 4 iyo Tartanka JUS": [
+    "High-yield core topics for Form 4 Nationals and SNU Entrance",
+    "أهم الموضوعات المتكررة في امتحانات الثانوية وقبول الجامعة"
+  ],
+  "Khaladaadka yaryar ee dhibcaha lumiya iyo sida looga fogaado": [
+    "Common mark-losing traps and how to avoid them",
+    "الأخطاء الشائعة التي تُضيع الدرجات وكيفية تجنبها"
+  ],
+  "Xeeladaha Ardayda Top-10 (100% Xalaal)": [
+    "Top-10 Student Strategies (100% Ethical)",
+    "استراتيجيات طلاب القمة (حلال 100%)"
+  ],
+  "Sida Ardayda Kaalmaha Sare Galaan U Diyaar-garoobaan": [
+    "How Top-Ranked Students Prepare Legally",
+    "كيف يستعد أوائل الطلاب للامتحانات"
+  ],
+  "Habab waxbarasho oo cilmiyeysan iyo xeeladaha maareynta waqtiga gudaha hoolka imtixaanka — iyadoon wax qish ah jirin.": [
+    "Evidence-based study techniques and exam-hall pacing rules — with zero cheating.",
+    "أساليب مذاكرة علمية وتنظيم وقت الامتحان — بدون أي غش."
+  ],
+  "Sirta Xalaasha ah ee Maaddooyinka (Form 4 & JUS)": [
+    "Ethical Subject Blueprints (Form 4 & SNU)",
+    "أسرار المواد المشروعة (الثانوية وقبول الجامعة)"
+  ],
+  "Meelaha Dhibcaha Laga Helo Maaddo Kasta (12 Maado)": [
+    "Where Marks Are Earned in Every Subject (12 Subjects)",
+    "مواطن كسب الدرجات في كل مادة (12 مادة)"
+  ],
+  "Ogow waxa macallimiinta saxa imtixaannadu eegaan, mowduucyada soo noqnoqda, iyo khaladaadka yaryar ee dhibcaha lumiya — si xalaal ah oo sharci ah.": [
+    "See what examiners look for, high-yield topics, and small mistakes that cost marks — strictly ethical and transparent.",
+    "تعرّف على معايير المصححين والموضوعات المهمة والأخطاء التي تُنقص الدرجات بأسلوب مشروع وواضح."
   ]
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, MoonStar, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Compass, MoonStar } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { buildHeroTickerSlides, type TickerAccent } from "../lib/heroTicker";
 
@@ -108,18 +108,16 @@ export function HeroSpotlightTicker() {
     >
       <div className="px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between gap-3">
         <div key={current.id} className="min-w-0 flex-1 animate-rise">
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg border text-[11px] font-head font-extrabold uppercase tracking-wider shrink-0 ${style.badge}`}
-            >
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="inline-flex items-center gap-1.5 text-[11.5px] font-head font-extrabold uppercase tracking-wider text-[#FFE484] shrink-0">
               {current.arabicLine ? (
                 <MoonStar className="w-3.5 h-3.5 shrink-0" />
               ) : (
-                <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                <Compass className="w-3.5 h-3.5 shrink-0" />
               )}
               <span>{tx(current.tag)}</span>
             </span>
-
+            <span className="text-white/30" aria-hidden="true">·</span>
             <p className="font-head font-extrabold text-[14.5px] sm:text-[16px] text-white leading-snug">
               {tx(current.text)}
             </p>

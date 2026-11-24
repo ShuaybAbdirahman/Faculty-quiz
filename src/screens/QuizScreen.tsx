@@ -185,12 +185,20 @@ export function QuizScreen({
           </div>
         </div>
 
-        {adapt && (
+        {adapt && total - (pos + 1) <= 2 && total - (pos + 1) > 0 ? (
+          <div className="mt-1 text-xs font-bold text-emerald-500 dark:text-emerald-400 tabular-nums">
+            {trf("{n} su’aalood uun baa kuu haray!", { n: total - (pos + 1) })}
+          </div>
+        ) : adapt && pos + 1 === Math.ceil(total / 2) ? (
+          <div className="mt-1 text-xs font-bold text-[#5D7BFF]">
+            {tr("Kala bar waad dhaaftay — natiijadaadu way soo dhowdahay.")}
+          </div>
+        ) : adapt ? (
           <div className="mt-1 inline-flex items-center gap-1.5 text-xs font-semibold text-[#5D7BFF]">
             <Lock className="w-3.5 h-3.5 shrink-0" />
             <span>{tr("Natiijadaadu waa ay qarsoontahay ilaa dhamaadka")}</span>
           </div>
-        )}
+        ) : null}
 
         {/* Segmented Progress Bar */}
         <div className="mt-2.5 flex gap-1.5">

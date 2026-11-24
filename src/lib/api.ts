@@ -1,6 +1,12 @@
 import { backendEnabled, supaHeaders, supabaseUrl } from "./config";
 import type { ProDeptData } from "./scoring";
-import { isValidDeviceId, normalizeProInfo } from "./proSecurity";
+import {
+  isValidDeviceId,
+  isValidProItemKey,
+  normalizeProInfo,
+  type ProScope,
+  type ServerEntitlementPayload,
+} from "./proSecurity";
 
 // ---- Results API ----
 export async function submitResult(params: {
@@ -181,13 +187,34 @@ export async function fetchProInfo(): Promise<ProInfo> {
   });
 }
 
-export async function fetchProStatus(deviceId: string): Promise<number> {
-  if (!isValidDeviceId(deviceId)) return 0;
+function parseServerScope(raw: unknown): ProScope | undefined {
+  return raw === "full" || raw === "departments" || raw === "languages" || raw === "none"
+    ? raw
+    : undefined;
+}
+
+function parseServerItems(raw: unknown): string[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  return raw.filter((item): item is string => typeof item === "string" && isValidProItemKey(item));
+}
+
+export async function fetchProStatus(deviceId: string): Promise<ServerEntitlementPayload> {
+  if (!isValidDeviceId(deviceId)) return { active: false, expiresAt: 0 };
   const j = (await rpc("pro_status", { p_device: deviceId })) as Record<string, unknown>;
   if (j?.active === true && typeof j.expires_at === "string") {
-    return Date.parse(j.expires_at) || 0;
+    const expiresAt = Date.parse(j.expires_at) || 0;
+    const scope = parseServerScope(j.scope);
+    const unlockedItems = parseServerItems(j.unlocked_items);
+    const hasServerScopeMetadata = scope !== undefined || unlockedItems !== undefined;
+    return {
+      active: expiresAt > Date.now(),
+      expiresAt,
+      scope,
+      unlockedItems,
+      hasServerScopeMetadata,
+    };
   }
-  return 0;
+  return { active: false, expiresAt: 0 };
 }
 
 export async function submitProRequest(params: {
@@ -212,7 +239,13 @@ export async function submitProRequest(params: {
 export async function redeemProCode(
   deviceId: string,
   code: string
-): Promise<{ ok: boolean; expiresMs?: number; error?: string }> {
+): Promise<{
+  ok: boolean;
+  expiresMs?: number;
+  scope?: ProScope;
+  unlockedItems?: string[];
+  error?: string;
+}> {
   if (!isValidDeviceId(deviceId)) throw new ProApiError("bad_device");
   const j = (await rpc("pro_redeem", { p_device: deviceId, p_code: code })) as Record<
     string,
@@ -220,7 +253,12 @@ export async function redeemProCode(
   >;
   if (j?.ok === true) {
     const exp = typeof j.expires_at === "string" ? Date.parse(j.expires_at) || 0 : 0;
-    return { ok: true, expiresMs: exp };
+    return {
+      ok: true,
+      expiresMs: exp,
+      scope: parseServerScope(j.scope),
+      unlockedItems: parseServerItems(j.unlocked_items),
+    };
   }
   return { ok: false, error: String(j?.error ?? "invalid_code") };
 }
