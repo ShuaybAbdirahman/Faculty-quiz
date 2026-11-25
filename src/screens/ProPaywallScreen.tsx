@@ -44,6 +44,8 @@ import {
   sanitizeCheckoutName,
   saveRequestedProItem,
   saveRequestedProScope,
+  TOTAL_BUNDLE_CONFIG,
+  calculateTotalBundlePricing,
   validateEvcPhone,
   validatePayTimeHHMM,
   type ProItemKey,
@@ -74,7 +76,7 @@ function errKey(code: string): string {
   }
 }
 
-export type ProPlanType = "departments" | "languages" | "school_subject" | "bridge_exam";
+export type ProPlanType = "total" | "departments" | "languages" | "school_subject" | "bridge_exam";
 
 function currentHHMM(): string {
   const now = new Date();
@@ -82,7 +84,7 @@ function currentHHMM(): string {
 }
 
 export function ProPaywallScreen({
-  initialPlan = "departments",
+  initialPlan = "total",
   initialItemKey,
   onBack,
   onUnlocked,
@@ -130,6 +132,7 @@ export function ProPaywallScreen({
   );
 
   const shortDev = formatShortDeviceId(deviceId);
+  const bundlePricing = calculateTotalBundlePricing();
 
   const activeSchoolSubject = form4Subjects.find((s) => s.id === selectedSchoolId) ?? form4Subjects[0];
   const activeBridgeTrack = bridgeExamTracks.find((t) => t.id === selectedBridgeId) ?? bridgeExamTracks[0];
@@ -174,10 +177,11 @@ export function ProPaywallScreen({
     onUnlocked(resolvedItemKey);
   };
 
-  const selectedPlanPrice = plan === "school_subject" ? "$0.25" : "$0.50";
-  const selectedUssdAmount = plan === "school_subject" ? "0.25" : EVC_PAYMENT_CONFIG.ussdAmount;
+  const selectedPlanPrice = plan === "total" ? bundlePricing.formattedFinal : "$0.50";
+  const selectedUssdAmount = plan === "total" ? bundlePricing.ussdAmount : EVC_PAYMENT_CONFIG.ussdAmount;
 
   const getMethodLabel = (): string => {
+    if (plan === "total") return "EVC Total (20% Off)";
     if (plan === "languages") return "EVC Plus (Lang)";
     if (plan === "school_subject") return `EVC School: ${activeSchoolSubject.id}`;
     if (plan === "bridge_exam") return `EVC Bridge: ${activeBridgeTrack.id}`;
@@ -185,13 +189,15 @@ export function ProPaywallScreen({
   };
 
   const getWhatsappPlanLabel = (): string => {
-    if (plan === "languages") return "Unlock Luqadaha (English & Carabi)";
-    if (plan === "school_subject") return `Form 4 Predict Exam: ${activeSchoolSubject.name} ($0.25)`;
-    if (plan === "bridge_exam") return `Tartanka Jaamacadda Predict: ${activeBridgeTrack.title} ($0.50)`;
-    return "Unlock+ Waaxaha & Xarunta (8 Qaybood)";
+    if (plan === "total") return `HIRAAL Total (Dhammaan Qeybaha + Luqadaha · ${bundlePricing.formattedFinal} / 20% Off)`;
+    if (plan === "languages") return "Unlock Luqadaha (English & Carabi · $0.50)";
+    if (plan === "school_subject") return `School Form 4 (12 Maado + Sirta Top-10 + Ranking · $0.50)`;
+    if (plan === "bridge_exam") return `Diyaarinta JUS (5 Maado + Ranking JUS · $0.50)`;
+    return "University & Unlock+ Hub ($0.50)";
   };
 
   const getPlanRefTag = (): string => {
+    if (plan === "total") return "TOTAL";
     if (plan === "languages") return "LANG";
     if (plan === "school_subject") return `SCH_${activeSchoolSubject.id}`;
     if (plan === "bridge_exam") return `BRG_${activeBridgeTrack.id.slice(0, 6)}`;
@@ -199,13 +205,6 @@ export function ProPaywallScreen({
   };
 
   const handleSendRequest = async () => {
-    if (isSelectedExamEmpty) {
-      setReqMsg({
-        key: "Su'aalaha Predict Exam-kan weli lama soo gelin. Waxaa la furayaa marka la soo geliyo.",
-        ok: false,
-      });
-      return;
-    }
     const cooldownMs = getPaymentCooldownRemainingMs(localStorage, deviceId);
     if (cooldownMs > 0) {
       setPayCooldownSec(Math.ceil(cooldownMs / 1000));
@@ -232,10 +231,15 @@ export function ProPaywallScreen({
     setSending(true);
     setReqMsg(null);
     try {
-      if (resolvedItemKey) {
-        saveRequestedProItem(localStorage, deviceId, resolvedItemKey);
-      } else if (plan === "departments" || plan === "languages") {
-        saveRequestedProScope(localStorage, deviceId, plan);
+      if (plan === "total") {
+        saveRequestedProScope(localStorage, deviceId, "full");
+      } else if (plan === "languages") {
+        saveRequestedProScope(localStorage, deviceId, "languages");
+      } else {
+        saveRequestedProScope(localStorage, deviceId, "departments");
+        if (resolvedItemKey) {
+          saveRequestedProItem(localStorage, deviceId, resolvedItemKey);
+        }
       }
       await submitProRequest({
         deviceId,
@@ -280,13 +284,6 @@ export function ProPaywallScreen({
   };
 
   const handleRedeem = async () => {
-    if (isSelectedExamEmpty) {
-      setCodeMsg({
-        key: "Su'aalaha Predict Exam-kan weli lama soo gelin. Dooro xirmo diyaar ah.",
-        ok: false,
-      });
-      return;
-    }
     const lockMs = getRedeemCooldownRemainingMs(localStorage, deviceId);
     if (lockMs > 0) {
       setRedeemLockSec(Math.ceil(lockMs / 1000));
@@ -310,12 +307,12 @@ export function ProPaywallScreen({
         const fallbackExp = res.expiresMs || Date.now() + info.days * 86400 * 1000;
         if (res.scope || (res.unlockedItems && res.unlockedItems.length > 0)) {
           await refreshPro();
-        } else if (resolvedItemKey) {
-          setProUntil(fallbackExp, undefined, resolvedItemKey);
-        } else if (plan === "departments" || plan === "languages") {
-          setProUntil(fallbackExp, plan);
+        } else if (plan === "total") {
+          setProUntil(fallbackExp, "full");
+        } else if (plan === "languages") {
+          setProUntil(fallbackExp, "languages");
         } else {
-          setProUntil(fallbackExp, "departments");
+          setProUntil(fallbackExp, "departments", resolvedItemKey);
         }
         handleUnlocked();
       } else {
@@ -491,87 +488,142 @@ export function ProPaywallScreen({
           })}
         </div>
 
-        {/* 4 Color-Coded Unlock Packages */}
-        <section aria-label="Dooro Xirmada Unlock" className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {[
-            {
-              id: "school_subject" as const,
-              title: "Predict Form 4",
-              sub: "12 Maado · June 2027",
-              icon: BookOpen,
-              activeCls: "border-cyan-400 bg-cyan-500/18 shadow-[0_8px_24px_rgba(6,182,212,0.22)]",
-              iconColor: "text-cyan-300",
-            },
-            {
-              id: "bridge_exam" as const,
-              title: "Tartanka (Gap)",
-              sub: "JUS & Gelitaan · Oct 2027",
-              icon: Target,
-              activeCls: "border-emerald-400 bg-emerald-500/18 shadow-[0_8px_24px_rgba(16,185,129,0.22)]",
-              iconColor: "text-emerald-300",
-            },
-            {
-              id: "departments" as const,
-              title: "Waaxaha & Unlock Hub",
-              sub: "14 Kulliyad · Khariidadaha",
-              icon: GraduationCap,
-              activeCls: "border-indigo-400 bg-indigo-500/22 shadow-[0_8px_24px_rgba(99,102,241,0.26)]",
-              iconColor: "text-indigo-300",
-            },
-            {
-              id: "languages" as const,
-              title: "English & Carabi",
-              sub: "Luqadaha App-ka",
-              icon: Languages,
-              activeCls: "border-amber-400 bg-amber-500/18 shadow-[0_8px_24px_rgba(245,158,11,0.22)]",
-              iconColor: "text-amber-300",
-            },
-          ].map((pkg) => {
-            const Icon = pkg.icon;
-            const selected = plan === pkg.id;
-            return (
-              <button
-                key={pkg.id}
-                type="button"
-                onClick={() => setPlan(pkg.id)}
-                className={`text-start rounded-2xl p-4 border transition-all duration-150 cursor-pointer flex flex-col justify-between gap-2.5 ${
-                  selected
-                    ? pkg.activeCls
-                    : "border-white/12 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/25"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-                      selected ? "bg-white/15" : "bg-white/8"
+        {/* Smooth 2-Tier Checkout Selector: Featured HIRAAL Total (20% Off) + Single Stage ($0.50) */}
+        <section aria-label="Dooro Xirmada Unlock" className="space-y-3.5">
+          {/* Tier 1: Featured Total Bundle (20% Discount) */}
+          <button
+            type="button"
+            onClick={() => setPlan("total")}
+            className={`w-full text-start rounded-3xl p-4 sm:p-5 border transition-all duration-150 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+              plan === "total"
+                ? "border-[#FFC93C] bg-gradient-to-r from-[#FFC93C]/20 via-indigo-500/20 to-cyan-500/18 shadow-[0_12px_32px_rgba(255,201,60,0.2)]"
+                : "border-white/15 bg-white/[0.05] hover:bg-white/[0.09] hover:border-white/30"
+            }`}
+          >
+            <div className="space-y-1.5 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-2.5 py-0.5 rounded-full bg-[#FFC93C] text-[#05132E] font-head font-black text-[11px] uppercase tracking-wider">
+                  {TOTAL_BUNDLE_CONFIG.discountPct}% Qiimo Dhimis
+                </span>
+                <span className="text-xs font-bold text-emerald-300">
+                  Hal lacag-bixin · Dhammaan Qeybaha
+                </span>
+              </div>
+              <div className="font-head font-extrabold text-lg sm:text-xl text-white leading-snug">
+                HIRAAL Total (School + JUS + University + Luqadaha)
+              </div>
+              <p className="text-xs text-white/80 leading-relaxed max-w-2xl">
+                Hal mar bixi si ay kuugu furmaan dhammaan 3-da qaybood (Predict Exams, Sirta Top-10, Ranking, University Hub 6 Qaybood, Hagaha Waaxda) iyo Luqadaha English &amp; Carabi muddo 6 bilood ah.
+              </p>
+            </div>
+
+            <div className="flex sm:flex-col items-baseline sm:items-end justify-between gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/12">
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm font-bold text-white/50 line-through tabular-nums">
+                  {TOTAL_BUNDLE_CONFIG.originalPrice}
+                </span>
+                <span className="font-head font-extrabold text-[28px] text-[#FFE484] tabular-nums leading-none">
+                  {bundlePricing.formattedFinal}
+                </span>
+              </div>
+              <span className="text-[11px] font-bold text-emerald-300 tabular-nums">
+                Badbaadi {bundlePricing.formattedSaved} · 180 Maalmood
+              </span>
+            </div>
+          </button>
+
+          {/* Tier 2: Single Stage / Pack ($0.50 each) */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-2 px-1">
+              <span className="text-xs font-bold text-white/75">
+                Ama dooro hal qeyb oo keliya ($0.50):
+              </span>
+              <span className="text-[11px] font-semibold text-[#FFE484] tabular-nums">
+                6 Bilood
+              </span>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+              {[
+                {
+                  id: "school_subject" as const,
+                  title: "School Form 4",
+                  sub: "12 Maado, Sirta & Ranking",
+                  icon: BookOpen,
+                  activeCls: "border-cyan-400 bg-cyan-500/18 shadow-[0_8px_24px_rgba(6,182,212,0.22)]",
+                  iconColor: "text-cyan-300",
+                },
+                {
+                  id: "bridge_exam" as const,
+                  title: "Diyaarinta JUS",
+                  sub: "5 Maado (4 Saynis + EN) & Ranking",
+                  icon: Target,
+                  activeCls: "border-emerald-400 bg-emerald-500/18 shadow-[0_8px_24px_rgba(16,185,129,0.22)]",
+                  iconColor: "text-emerald-300",
+                },
+                {
+                  id: "departments" as const,
+                  title: "University & Hub",
+                  sub: "Hagaha Waaxda + 6 Qaybood",
+                  icon: GraduationCap,
+                  activeCls: "border-indigo-400 bg-indigo-500/22 shadow-[0_8px_24px_rgba(99,102,241,0.26)]",
+                  iconColor: "text-indigo-300",
+                },
+                {
+                  id: "languages" as const,
+                  title: "English & Carabi",
+                  sub: "Luqadaha App-ka",
+                  icon: Languages,
+                  activeCls: "border-amber-400 bg-amber-500/18 shadow-[0_8px_24px_rgba(245,158,11,0.22)]",
+                  iconColor: "text-amber-300",
+                },
+              ].map((pkg) => {
+                const Icon = pkg.icon;
+                const selected = plan === pkg.id;
+                return (
+                  <button
+                    key={pkg.id}
+                    type="button"
+                    onClick={() => setPlan(pkg.id)}
+                    className={`text-start rounded-2xl p-3.5 border transition-all duration-150 cursor-pointer flex flex-col justify-between gap-2 ${
+                      selected
+                        ? pkg.activeCls
+                        : "border-white/12 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/25"
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${pkg.iconColor}`} />
-                  </span>
-                  <span className="font-head font-extrabold text-sm text-[#FFE484] tabular-nums">
-                    {pkg.id === "school_subject" ? "$0.25" : "$0.50"}
-                  </span>
-                </div>
-                <div>
-                  <div className="font-head font-extrabold text-sm text-white leading-snug">
-                    {pkg.title}
-                  </div>
-                  <div className="text-[11.5px] text-white/70 mt-0.5">{pkg.sub}</div>
-                </div>
-              </button>
-            );
-          })}
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                          selected ? "bg-white/15" : "bg-white/8"
+                        }`}
+                      >
+                        <Icon className={`w-4 h-4 ${pkg.iconColor}`} />
+                      </span>
+                      <span className="font-head font-extrabold text-sm text-[#FFE484] tabular-nums">
+                        $0.50
+                      </span>
+                    </div>
+                    <div>
+                      <div className="font-head font-extrabold text-sm text-white leading-snug">
+                        {pkg.title}
+                      </div>
+                      <div className="text-[11px] text-white/70 mt-0.5">{pkg.sub}</div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </section>
 
-        {/* Subject / Track Picker when unlocking Form 4 or Bridging */}
+        {/* Subject / Track Picker when inspecting Form 4 or JUS */}
         {plan === "school_subject" && (
           <section className="rounded-2xl p-4 border border-cyan-400/35 bg-cyan-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <div className="text-xs font-extrabold text-cyan-200">
-                Dooro Maadada Form 4 · June 2027 ($0.25)
+                Xirmada School Form 4 · June 2027 ($0.50)
               </div>
               <div className="text-xs text-white/75 mt-0.5">
-                Maado kasta oo aad furto waxaa kuu diyaar noqonaya Predict Exam-keeda.
+                Waxay furaysaa dhammaan 12-ka maado (Predict), Sirta Top-10 &amp; Ranking.
               </div>
             </div>
             <select
@@ -593,10 +645,10 @@ export function ProPaywallScreen({
           <section className="rounded-2xl p-4 border border-emerald-400/35 bg-emerald-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <div className="text-xs font-extrabold text-emerald-200">
-                Dooro Imtixaanka Tartanka · Oct 2027 ($0.50)
+                Imtixaanka Tartanka JUS · Oct 2027 ($0.50)
               </div>
               <div className="text-xs text-white/75 mt-0.5">
-                Ka dooro imtixaanka diyaargarowga tartanka jaamacadaha.
+                Jaamacadda Ummadda Soomaaliyeed (5 Maado: 4 Saynis + English) &amp; Ranking JUS.
               </div>
             </div>
             <select
@@ -629,48 +681,62 @@ export function ProPaywallScreen({
 
               <div>
                 <h2 className="font-head font-extrabold text-[22px] leading-tight text-white">
-                  {plan === "school_subject"
-                    ? `Predict Exam: ${activeSchoolSubject.name}`
-                    : plan === "bridge_exam"
-                      ? `Predict Exam: ${activeBridgeTrack.title}`
-                      : plan === "languages"
-                        ? tr("Unlock Luqadaha (English & Carabi)")
-                        : "Waaxaha & Xarunta Unlock"}
+                  {plan === "total"
+                    ? "HIRAAL Total (Dhammaan Qeybaha)"
+                    : plan === "school_subject"
+                      ? "School Form 4 (12 Maado)"
+                      : plan === "bridge_exam"
+                        ? "Diyaarinta JUS (5 Maado)"
+                        : plan === "languages"
+                          ? tr("Unlock Luqadaha (English & Carabi)")
+                          : "University & Hub Unlock"}
                 </h2>
-                <div className="mt-2 flex items-baseline gap-2">
+                <div className="mt-2 flex items-baseline gap-2.5 flex-wrap">
+                  {plan === "total" && (
+                    <span className="text-base font-bold text-white/45 line-through tabular-nums">
+                      {TOTAL_BUNDLE_CONFIG.originalPrice}
+                    </span>
+                  )}
                   <span className="font-head font-extrabold text-[28px] text-[#FFE484] tabular-nums">
-                    {plan === "school_subject" ? "$0.25 · Maado" : info.priceText}
+                    {plan === "total" ? TOTAL_BUNDLE_CONFIG.priceText : info.priceText}
                   </span>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-white/12 space-y-2.5">
-                {(plan === "school_subject"
+                {(plan === "total"
                   ? [
-                      `Predict Exam buuxa: ${activeSchoolSubject.name}`,
-                      "Saacad xaddidan oo u dhiganta Imtixaanka Qaranka",
-                      "Saxidda tooska ah iyo sharaxaad Af-Soomaali ah",
-                      "PDF-yada & mowduucyadu waa bilaash markasta",
+                      "School: Predict Exam (12 Maado), Sirta Top-10 & Ranking (PDFs waa Bilaash)",
+                      "Diyaarinta JUS: Predict (5 Maado) & Ranking JUS (90 Maalmood & Xalka waa Bilaash)",
+                      "University: Hagaha Waaxda (70 Su'aalood), Qorshaha 30-ka Maalmood & Compare Pro (Natiijada RIASEC waa Bilaash)",
+                      "University Hub (6 Qaybood) + English & Carabi oo wada jira (20% Qiimo Dhimis)",
                     ]
-                  : plan === "bridge_exam"
+                  : plan === "school_subject"
                     ? [
-                        `Predict Exam buuxa: ${activeBridgeTrack.title}`,
-                        "Su'aalo u diyaariya tartanka jaamacadaha (JUS)",
-                        "Falanqaynta jawaabaha saxda ah ee Af-Soomaali ah",
-                        "90-ka maalmood & xalka caqabaduhu waa bilaash",
+                        "Predict Exam buuxa oo leh dhammaan 12-ka maado ee Form 4",
+                        "Sirta Ardayda Top-10 & Sirta Xalaasha ah ee 12-ka Maado",
+                        "Ranking-ka School-ka ee kaalmaha sare",
+                        "PDF-yada & mowduucyadu waa bilaash markasta",
                       ]
-                    : plan === "languages"
+                    : plan === "bridge_exam"
                       ? [
-                          tr("Luqadda Ingiriisiga (English) ee barnaamijka oo dhan"),
-                          tr("Luqadda Carabiga (العربية) oo leh qaabka saxda ah (RTL)"),
-                          tr("Af-Soomaaligu waa bilaash boqolkiiba boqol abid"),
+                          "Predict Exam buuxa ee JUS (4 Saynis + English)",
+                          "Ranking-ka ardayda u diyaar-garoobaysa JUS",
+                          "Falanqaynta jawaabaha saxda ah ee Af-Soomaali ah",
+                          "90 Maalmood, Xalka Caqabadaha & PDF-yadu waa Bilaash",
                         ]
-                      : [
-                          "Xeeladaha Ardayda Top-10 & Sirta Xalaasha ah ee 12-ka Maado (Qish la'aan)",
-                          "Kala saaridda waaxaha (14 kulliyadood + 70 su'aalood)",
-                          "Khariidadaha AI, Koronto, Caafimaad & Jaamacadaha Soomaaliya",
-                          "Shaqooyinka 2030, Xirfadaha Dakhliga & Horumarka Ardayga",
-                        ]
+                      : plan === "languages"
+                        ? [
+                            tr("Luqadda Ingiriisiga (English) ee barnaamijka oo dhan"),
+                            tr("Luqadda Carabiga (العربية) oo leh qaabka saxda ah (RTL)"),
+                            tr("Af-Soomaaligu waa bilaash boqolkiiba boqol abid"),
+                          ]
+                        : [
+                            "Hagaha Waaxda (70 Su'aalood oo gaar u ah kulliyad kasta)",
+                            "Qorshaha Go'aanka & 30-ka Maalmood + Compare Matrix Pro",
+                            "University Hub (6 Qaybood): Khariidadaha, Jaamacadaha, Shaqooyinka Casriga ah & Xirfadaha",
+                            "Natiijada RIASEC (#1-#3) & Isbarbardhigga caadiga ah waa Bilaash",
+                          ]
                 ).map((label) => (
                   <div key={label} className="flex items-start gap-2.5 text-[13px] text-white/90">
                     <CheckCircle2 className="w-4 h-4 text-[#FFC93C] shrink-0 mt-0.5" />
@@ -780,7 +846,7 @@ export function ProPaywallScreen({
                     <div className="mt-4 pt-3 border-t border-white/12 flex items-center justify-between gap-2 flex-wrap text-xs">
                       <span className="text-white/75 tabular-nums">
                         {trf("Qiimaha: {p}", {
-                          p: plan === "school_subject" ? "$0.25 · Maado" : info.priceText,
+                          p: plan === "total" ? TOTAL_BUNDLE_CONFIG.priceText : info.priceText,
                         })}
                       </span>
                       <a
@@ -858,12 +924,12 @@ export function ProPaywallScreen({
                     </div>
                   </div>
 
-                  {/* Notice when selected School/Bridge Predict Exam has 0 uploaded questions yet */}
+                  {/* Gentle informational note when Predict questions are being uploaded soon (never blocks checkout) */}
                   {isSelectedExamEmpty && (
-                    <div className="rounded-xl px-3.5 py-3 bg-amber-500/14 border border-amber-400/40 flex items-start gap-2.5 text-xs text-amber-100 leading-relaxed">
-                      <AlertCircle className="w-4 h-4 text-[#FFE484] shrink-0 mt-0.5" />
+                    <div className="rounded-xl px-3.5 py-3 bg-cyan-500/14 border border-cyan-400/35 flex items-start gap-2.5 text-xs text-cyan-100 leading-relaxed">
+                      <AlertCircle className="w-4 h-4 text-[#BAE6FD] shrink-0 mt-0.5" />
                       <span>
-                        Su'aalaha Predict Exam-kan weli lama soo gelin (diyaarinta 2027 ayaa socota). Si aadan lacag ugu bixin imtixaan aan weli soo bixin, lacag-bixinta qeybtan waa la hakiyay ilaa la soo geliyo. Waaxaha &amp; Unlock+ Hub ama Luqadaha hadda waad furan kartaa.
+                        Xasuusin: Su&apos;aalaha Predict Exam-kan waxaa la soo gelinayaa ka hor imtixaanka 2027. Haddii aad hadda furato waxaa isla markiiba kuu furmaya Sirta Top-10, Ranking &amp; Hub-ka, Predict-kuna si toos ah ayuu kuugu furmi doonaa markii la soo geliyo.
                       </span>
                     </div>
                   )}
@@ -872,14 +938,12 @@ export function ProPaywallScreen({
                   <div className="space-y-2.5">
                     <button
                       type="button"
-                      disabled={sending || payCooldownSec > 0 || isSelectedExamEmpty}
+                      disabled={sending || payCooldownSec > 0}
                       onClick={handleSendRequest}
                       className="w-full h-[50px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#05132E] font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-55 disabled:cursor-not-allowed transition-colors shadow-lg"
                     >
                       {sending ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : isSelectedExamEmpty ? (
-                        <span>Weli lama soo gelin (2027)</span>
                       ) : payCooldownSec > 0 ? (
                         <span className="tabular-nums">Sug {payCooldownSec}s...</span>
                       ) : (

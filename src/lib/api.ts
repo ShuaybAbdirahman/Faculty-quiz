@@ -269,3 +269,67 @@ export async function fetchProContent(deviceId: string, facultyId: string): Prom
   if (!Array.isArray(j)) return [];
   return j as ProDeptData[];
 }
+
+export interface RemotePredictRankingRow {
+  id: string;
+  device_id_short: string;
+  scope: "school" | "jus";
+  subject_id: string;
+  subject_name: string;
+  student_name: string;
+  score_pct: number;
+  correct_count: number;
+  total_questions: number;
+  elapsed_sec: number;
+  submitted_at: number;
+}
+
+export async function fetchPredictRankings(
+  scope: "school" | "jus",
+  subjectId = "all",
+  limit = 50
+): Promise<RemotePredictRankingRow[]> {
+  if (!backendEnabled) return [];
+  try {
+    const j = await rpc("public_predict_rankings", {
+      p_scope: scope,
+      p_subject_id: subjectId,
+      p_limit: limit,
+    });
+    if (!Array.isArray(j)) return [];
+    return j as RemotePredictRankingRow[];
+  } catch {
+    return [];
+  }
+}
+
+export async function submitPredictRanking(params: {
+  deviceId: string;
+  scope: "school" | "jus";
+  subjectId: string;
+  subjectName: string;
+  studentName: string;
+  scorePct: number;
+  correctCount: number;
+  totalQuestions: number;
+  elapsedSec: number;
+}): Promise<boolean> {
+  if (!backendEnabled || !isValidDeviceId(params.deviceId)) return false;
+  try {
+    await rpc("submit_predict_ranking", {
+      p_device: params.deviceId,
+      p_scope: params.scope,
+      p_subject_id: params.subjectId,
+      p_subject_name: params.subjectName,
+      p_student_name: params.studentName,
+      p_score_pct: params.scorePct,
+      p_correct_count: params.correctCount,
+      p_total_questions: params.totalQuestions,
+      p_elapsed_sec: params.elapsedSec,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+

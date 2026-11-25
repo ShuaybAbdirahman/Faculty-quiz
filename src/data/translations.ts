@@ -1135,21 +1135,21 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Verified Source:",
     "المصدر الموثوق:"
   ],
-  "Wararka Shaqooyinka Cusub (WEF 2025 - 2030)": [
-    "Future Jobs Report (WEF 2025 - 2030)",
-    "تقرير وظائف المستقبل (WEF 2025 - 2030)"
+  "Wararka Shaqooyinka Cusub (2025 ilaa 2030)": [
+    "Future Jobs Report (2025 to 2030)",
+    "أخبار الوظائف الحديثة (2025 إلى 2030)"
   ],
   "Shaqooyinka Ugu Kororka Badan Adduunka & Fursadda Soomaaliya": [
     "Fastest-Growing Careers Globally & in Somalia",
     "أسرع الوظائف نمواً عالمياً وفي الصومال"
   ],
-  "Xog rasmi ah oo laga soo xigtay World Economic Forum (Future of Jobs Report 2025): 170 milyan oo shaqo cusub ayaa abuurmaya ka hor 2030, 86% shirkaduhuna waxay adeegsan doonaan AI.": [
-    "Verified data from the World Economic Forum Future of Jobs Report 2025: 170 million new roles will be created by 2030, and 86% of employers expect AI to transform their business.",
-    "بيانات رسمية من تقرير المنتدى الاقتصادي العالمي 2025: 170 مليون وظيفة جديدة بحلول 2030، و86% من الشركات ستتبنى الذكاء الاصطناعي."
+  "Xog rasmi ah oo laga soo xigtay warbixinta suuqa shaqada adduunka: 170 milyan oo shaqo cusub ayaa abuurmaya sannadaha soo socda, 86% shirkaduhuna waxay adeegsanayaan tiknoolajiyada casriga ah.": [
+    "Verified global labor report data: 170 million new roles are emerging in the coming years, and 86% of employers are adopting modern technology.",
+    "بيانات رسمية من سوق العمل العالمي: 170 مليون وظيفة جديدة تتشكل خلال السنوات القادمة، و86% من الشركات تتبنى التقنيات الحديثة."
   ],
-  "Shaqooyin cusub (2030)": [
-    "New jobs by 2030",
-    "وظائف جديدة بحلول 2030"
+  "Shaqooyin cusub": [
+    "New jobs",
+    "وظائف جديدة"
   ],
   "Shirkadaha AI adeegsanaya": [
     "Employers adopting AI",
@@ -1259,9 +1259,21 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Scan the QR code and test in 8 minutes (Free)",
     "امسح رمز QR وجرّب في 8 دقائق (مجاناً)"
   ],
-  "Fur Pro ($0.10 · Abid) si aad u aragto faahfaahinta iyo calaamadaynta.": [
-    "Unlock Pro ($0.10 · Lifetime) to view step details and track your checklist.",
-    "فعّل Pro (0.10$ مدى الحياة) لعرض تفاصيل الخطوات وتتبع قائمة الاستعداد."
+  "Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u aragto dhammaan xogta, ilaha la hubiyay, iyo qorshayaasha.": [
+    "Get Unlock+ ($0.50 per section or $1.20 Total · 20% Off) to view all verified insights, sources, and action plans.",
+    "فعّل Unlock+ (0.50$ للقسم أو 1.20$ للباقة الشاملة بخصم 20%) لعرض جميع البيانات والمصادر والخطط."
+  ],
+  "Fur Unlock+ ($0.50 | $1.20 Total)": [
+    "Get Unlock+ ($0.50 | $1.20 Total)",
+    "تفعيل Unlock+ (0.50$ | الشامل 1.20$)"
+  ],
+  "Fur Unlock+ ($0.50 · Total $1.20)": [
+    "Get Unlock+ ($0.50 · Total $1.20)",
+    "تفعيل Unlock+ (0.50$ · الشامل 1.20$)"
+  ],
+  "Bixi $0.50 hal qeyb ama $1.20 HIRAAL Total (20% Qiimo Dhimis) EVC Plus: 610999089 · Shuceyb Abdirahman muddo 6 bilood ah.": [
+    "Pay $0.50 for one section or $1.20 for HIRAAL Total (20% Off) via EVC Plus: 610999089 · Shuceyb Abdirahman for 6 months.",
+    "ادفع 0.50$ لقسم واحد أو 1.20$ لباقة HIRAAL الشاملة (خصم 20%) عبر EVC Plus: 610999089 · Shuceyb Abdirahman لمدة 6 أشهر."
   ],
   "Fur Pro si aad u aragto kulliyadaha, faahfaahinta, iyo website-ka rasmiga ah.": [
     "Unlock Pro to view faculties, details, and the official university website.",
@@ -1299,9 +1311,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Pioneers",
     "الروّاد"
   ],
-  "AI & 2030": [
-    "AI & 2030",
-    "وظائف AI"
+  "Shaqooyin": [
+    "Future Careers",
+    "الوظائف"
   ],
   "Xirfado": [
     "Skills",
@@ -1367,9 +1379,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Somalia Universities",
     "جامعات الصومال"
   ],
-  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) — waxaa kuu furmaya dhammaan 8-da qaybood ee Xarunta Unlock+ muddo 6 bilood ah (180 maalmood).": [
-    "Pay $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 8 Unlock+ Hub sections for 6 months (180 days).",
-    "ادفع 0.50$ (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Unlock+ الثمانية لمدة 6 أشهر (180 يوماً)."
+  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) si ay kuugu furmaan dhammaan 6-da qaybood ee Xarunta Unlock+ muddo 6 bilood ah (180 maalmood).": [
+    "Pay $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 6 Unlock+ Hub sections for 6 months (180 days).",
+    "ادفع 0.50$ (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Unlock+ الستة لمدة 6 أشهر (180 يوماً)."
   ],
   "Hagaha Waaxaha (14 kulliyadood + 70 su'aalood), Khariidadaha, Jaamacadaha, Dadka Caanka ah, Wararka AI, Xirfadaha & Horumarinta.": [
     "Department Guide (14 faculties + 70 questions), Roadmaps, Somalia Universities, Pioneers, AI Jobs News, High-Income Skills & Growth.",
@@ -1499,9 +1511,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Somalia Student Growth (Unlock+ Only)",
     "تطوير الطالب الصومالي (Unlock+ فقط)"
   ],
-  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) — waxaa kuu furmaya dhammaan 8-da qaybood ee Unlock+ Hub muddo 6 bilood ah (180 maalmood).": [
-    "Pay $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 8 Unlock+ Hub sections for 6 months (180 days).",
-    "ادفع 0.50$ (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Unlock+ الثمانية لمدة 6 أشهر (180 يوماً)."
+  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) si ay kuugu furmaan dhammaan 6-da qaybood ee Unlock+ Hub muddo 6 bilood ah (180 maalmood).": [
+    "Pay $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 6 Unlock+ Hub sections for 6 months (180 days).",
+    "ادفع 0.50$ (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Unlock+ الستة لمدة 6 أشهر (180 يوماً)."
   ],
   "Fur Unlock+ ($0.50 · 6 Bilood) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan.": [
     "Get Unlock+ ($0.50 · 6 Months) to view skills, tools, and projects for this stage.",
@@ -1563,9 +1575,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Only {n} questions left!",
     "بقي {n} أسئلة فقط!"
   ],
-  "Kala bar waad dhaaftay — natiijadaadu way soo dhowdahay.": [
-    "Past the halfway mark — your result is getting sharper.",
-    "تجاوزت المنتصف — نتيجتك أصبحت أقرب."
+  "Kala bar waad dhaaftay, natiijadaadu way soo dhowdahay.": [
+    "Past the halfway mark, your result is getting sharper.",
+    "تجاوزت المنتصف، نتيجتك أصبحت أقرب."
   ],
   "Ogow kulliyadda kugu habboon, imtixaannada 2027, iyo xirfadaha mustaqbalka.": [
     "Discover your best-fit faculty, 2027 exam prep, and future-ready skills.",
@@ -1595,9 +1607,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Top-10 Student Exam Strategies (100% Ethical · Unlock+)",
     "استراتيجيات طلاب القمة العشرة الأوائل (حلال 100%)"
   ],
-  "Baro hababka cilmiyeysan ee ardayda kaalmaha sare galaan ku diyaar-garoobaan — qishku waa xaaraam, HIRAAL-na ma taageero qish iyo khiyaano.": [
-    "Learn science-backed study systems used by top-ranked students — cheating is forbidden and HIRAAL strictly rejects all exam dishonesty.",
-    "تعلّم الأساليب العلمية التي يعتمدها أوائل الطلاب — الغش حرام ولا تدعمه منصة HIRAAL إطلاقاً."
+  "Baro hababka cilmiyeysan ee ardayda kaalmaha sare galaan ku diyaar-garoobaan. Qishku waa xaaraam, HIRAAL-na ma taageero qish iyo khiyaano.": [
+    "Learn science-backed study systems used by top-ranked students. Cheating is forbidden and HIRAAL strictly rejects all exam dishonesty.",
+    "تعلّم الأساليب العلمية التي يعتمدها أوائل الطلاب. الغش حرام ولا تدعمه منصة HIRAAL إطلاقاً."
   ],
   "6 xeeladood oo xusuusta & fahamka kordhiya (Active Recall, 1-3-7-21, Feynman)": [
     "6 proven memory & mastery systems (Active Recall, 1-3-7-21, Feynman)",
@@ -1619,8 +1631,8 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Ethical Marking & Study Blueprints for All 12 Subjects (Unlock+)",
     "الأسرار الشرعية والعلمية لجميع المواد الـ 12 (Unlock+)"
   ],
-  "Ogow meelaha saxaha imtixaannadu dhibcaha ku bixiyaan (Method Marks, Keywords, Diagrams) maaddo kasta — si sharci ah oo xalaal ah.": [
-    "Understand what examiners actually award marks for (Method Marks, Keywords, Diagrams) in each subject — completely legal and ethical.",
+  "Ogow meelaha saxaha imtixaannadu dhibcaha ku bixiyaan (Method Marks, Keywords, Diagrams) maaddo kasta, si sharci ah oo xalaal ah.": [
+    "Understand what examiners actually award marks for (Method Marks, Keywords, Diagrams) in each subject, completely legal and ethical.",
     "تعرّف على مواطن توزيع الدرجات عند المصححين (الخطوات، الكلمات المفتاحية، الرسومات) في كل مادة بأسلوب شرعي ونظامي."
   ],
   "Dhammaan 12-ka maado ee Form 4 (Saynis, Luqado, Bulsho, Ganacsi, Tech & Tarbiyo)": [
@@ -1643,9 +1655,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "How Top-Ranked Students Prepare Legally",
     "كيف يستعد أوائل الطلاب للامتحانات"
   ],
-  "Habab waxbarasho oo cilmiyeysan iyo xeeladaha maareynta waqtiga gudaha hoolka imtixaanka — iyadoon wax qish ah jirin.": [
-    "Evidence-based study techniques and exam-hall pacing rules — with zero cheating.",
-    "أساليب مذاكرة علمية وتنظيم وقت الامتحان — بدون أي غش."
+  "Habab waxbarasho oo cilmiyeysan iyo xeeladaha maareynta waqtiga gudaha hoolka imtixaanka, iyadoon wax qish ah jirin.": [
+    "Evidence-based study techniques and exam-hall pacing rules, with zero cheating.",
+    "أساليب مذاكرة علمية وتنظيم وقت الامتحان، بدون أي غش."
   ],
   "Sirta Xalaasha ah ee Maaddooyinka (Form 4 & JUS)": [
     "Ethical Subject Blueprints (Form 4 & SNU)",
@@ -1655,8 +1667,36 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Where Marks Are Earned in Every Subject (12 Subjects)",
     "مواطن كسب الدرجات في كل مادة (12 مادة)"
   ],
-  "Ogow waxa macallimiinta saxa imtixaannadu eegaan, mowduucyada soo noqnoqda, iyo khaladaadka yaryar ee dhibcaha lumiya — si xalaal ah oo sharci ah.": [
-    "See what examiners look for, high-yield topics, and small mistakes that cost marks — strictly ethical and transparent.",
+  "Ogow waxa macallimiinta saxa imtixaannadu eegaan, mowduucyada soo noqnoqda, iyo khaladaadka yaryar ee dhibcaha lumiya, si xalaal ah oo sharci ah.": [
+    "See what examiners look for, high-yield topics, and small mistakes that cost marks, strictly ethical and transparent.",
     "تعرّف على معايير المصححين والموضوعات المهمة والأخطاء التي تُنقص الدرجات بأسلوب مشروع وواضح."
+  ],
+  "TikTok / WhatsApp Status (9:16)": [
+    "TikTok / WhatsApp Status (9:16)",
+    "تيك توك / حالة واتساب (9:16)"
+  ],
+  "Post Caadi ah (3:4)": [
+    "Standard Post (3:4)",
+    "منشور عادي (3:4)"
+  ],
+  "Xog rasmi ah oo ku saabsan shaqooyinka ugu kororka badan iyo fursadaha gudaha Soomaaliya.": [
+    "Verified insights on the fastest-growing global careers and opportunities in Somalia.",
+    "بيانات موثوقة حول الوظائف الأسرع نمواً والفرص المتاحة في الصومال."
+  ],
+  "Falanqaynta shaqooyinka ugu kororka badan adduunka": [
+    "Analysis of the fastest-growing careers worldwide",
+    "تحليل لأسرع الوظائف نمواً في العالم"
+  ],
+  "Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Unlock+ ($0.50 qeyb ama $1.20 Total · 20% Off).": [
+    "Somali is 100% free. English & Arabic are in Unlock+ ($0.50 single or $1.20 Total · 20% Off).",
+    "الصومالية مجانية بالكامل. الإنجليزية والعربية ضمن Unlock+ (0.50$ أو 1.20$ للباقة الشاملة بخصم 20%)."
+  ],
+  "Af-Soomaaligu waa bilaash. Fur Unlock+ ($0.50 ama $1.20 Total) si aad u hesho Ingiriisi iyo Carabi.": [
+    "Somali is 100% free. Get Unlock+ ($0.50 single or $1.20 Total) to unlock English & Arabic.",
+    "الصومالية مجانية بالكامل. فعّل Unlock+ (0.50$ أو 1.20$ للباقة الشاملة) لاستخدام الإنجليزية أو العربية."
+  ],
+  "Fur Unlock+ ($0.50 | $1.20 Total) si aad u aragto faahfaahinta iyo Sirta HIRAAL.": [
+    "Get Unlock+ ($0.50 | $1.20 Total) to view full steps and HIRAAL Insider Tips.",
+    "فعّل Unlock+ (0.50$ | الشامل 1.20$) لعرض التفاصيل وأسرار HIRAAL."
   ]
 };

@@ -87,7 +87,7 @@ export function Top10TricksSection({
           {tr("Sida Ardayda Kaalmaha Sare Galaan U Diyaar-garoobaan")}
         </h2>
         <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Habab waxbarasho oo cilmiyeysan iyo xeeladaha maareynta waqtiga gudaha hoolka imtixaanka — iyadoon wax qish ah jirin.")}
+          {tr("Habab waxbarasho oo cilmiyeysan iyo xeeladaha maareynta waqtiga gudaha hoolka imtixaanka, iyadoon wax qish ah jirin.")}
         </p>
       </div>
 
@@ -215,7 +215,7 @@ export function LegalSubjectSecretsSection({
           {tr("Meelaha Dhibcaha Laga Helo Maaddo Kasta (12 Maado)")}
         </h2>
         <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Ogow waxa macallimiinta saxa imtixaannadu eegaan, mowduucyada soo noqnoqda, iyo khaladaadka yaryar ee dhibcaha lumiya — si xalaal ah oo sharci ah.")}
+          {tr("Ogow waxa macallimiinta saxa imtixaannadu eegaan, mowduucyada soo noqnoqda, iyo khaladaadka yaryar ee dhibcaha lumiya, si xalaal ah oo sharci ah.")}
         </p>
       </div>
 

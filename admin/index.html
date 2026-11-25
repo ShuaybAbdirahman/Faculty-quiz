@@ -372,7 +372,7 @@ $('pSave').onclick = async () => {
 
   $('pSaveMsg').className = 'mut';
   if (!price) { $('pSaveMsg').className = 'err'; $('pSaveMsg').textContent = 'Geli qiimaha (tusaale: $0.50 · 6 Bilood).'; return; }
-  if (!days || days < 1 || days > 730) { $('pSaveMsg').className = 'err'; $('pSaveMsg').textContent = 'Maalmaha waa inay ahaadaan 1–730.'; return; }
+  if (!days || days < 1 || days > 730) { $('pSaveMsg').className = 'err'; $('pSaveMsg').textContent = 'Maalmaha waa inay ahaadaan 1-730.'; return; }
   if (!num) { $('pSaveMsg').className = 'err'; $('pSaveMsg').textContent = 'Geli lambarka EVC Plus.'; return; }
 
   const methods = [{ name: 'EVC Plus', number: num, holder }];

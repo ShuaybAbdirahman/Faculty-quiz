@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import {
+  AlertTriangle,
   BookOpen,
   Check,
   CheckCircle2,
@@ -11,8 +12,10 @@ import {
   Flag,
   Lightbulb,
   Lock,
+  LockOpen,
   Map,
   Search,
+  Sparkles,
   Wrench,
 } from "lucide-react";
 import {
@@ -21,12 +24,14 @@ import {
   readinessChecklist,
   somaliaChallenges,
   type FacultyRoadmap,
+  type ReadinessPhase,
 } from "../data/proHubData";
 import { useApp } from "../context/AppContext";
 import { ProBadge, ProgressRing } from "./ModernUI";
 
 const STORAGE_ROADMAP_PROGRESS = "hk_pro_roadmap_done_v1";
 const STORAGE_READINESS_PROGRESS = "hk_pro_readiness_done_v1";
+const STORAGE_CHALLENGES_DONE = "hk_pro_challenges_done_v1";
 
 function loadIdSet(key: string): Record<string, boolean> {
   try {
@@ -226,7 +231,7 @@ export function ProRoadmapsExplorer({
                   <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
                     <p className="text-xs text-white/65">
                       {tr(
-                        "Fur Unlock+ ($0.50 · 6 Bilood) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan."
+                        "Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan."
                       )}
                     </p>
                     {onUnlockClick && (
@@ -235,7 +240,7 @@ export function ProRoadmapsExplorer({
                         onClick={onUnlockClick}
                         className="px-4 py-2 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
                       >
-                        {tr("Fur Unlock+ ($0.50)")}
+                        {tr("Fur Unlock+ ($0.50 | $1.20 Total)")}
                       </button>
                     )}
                   </div>
@@ -364,31 +369,93 @@ export function SomaliaChallengesHub({
 }) {
   const { tr } = useApp();
   const [openId, setOpenId] = useState<string>(somaliaChallenges[0].id);
+  const [doneChallenges, setDoneChallenges] = useState<Record<string, boolean>>(() =>
+    loadIdSet(STORAGE_CHALLENGES_DONE)
+  );
+
+  const solvedCount = somaliaChallenges.filter((c) => Boolean(doneChallenges[c.id])).length;
+
+  const toggleSolved = (id: string) => {
+    setDoneChallenges((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      localStorage.setItem(STORAGE_CHALLENGES_DONE, JSON.stringify(next));
+      return next;
+    });
+  };
 
   return (
     <div className="space-y-4">
-      <div className="rounded-3xl p-5 border border-white/15 bg-white/[0.05]">
-        <div className="flex items-center gap-2">
-          <Lightbulb className="w-5 h-5 text-[#FFD86B]" />
-          <h2 className="font-head font-extrabold text-[20px] text-white">
-            {tr("Caqabadaha Ardayga Soomaaliya iyo Xalkooda")}
-          </h2>
+      <div className="rounded-3xl p-5 border border-white/15 bg-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1 max-w-2xl">
+          <div className="flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-[#FFD86B]" />
+            <h2 className="font-head font-extrabold text-[20px] text-white">
+              {tr("Caqabadaha Ardayga Soomaaliya iyo Xalkooda")}
+            </h2>
+          </div>
+          <p className="text-xs sm:text-sm text-white/75 leading-relaxed">
+            {tr(
+              "Hage dhab ah oo leh khaladaadka la baaqsado, qoraalka wadahadalka waalidka, iyo su'aalaha jaamacadda."
+            )}
+          </p>
         </div>
-        <p className="mt-1 text-xs sm:text-sm text-white/75 leading-relaxed">
-          {tr(
-            "Hage dhab ah oo loogu talagalay ardayga ka baxaya dugsiga sare una gudbaya jaamacadaha Soomaaliya (luqadda, khidmadda, xirfadda shaqada, qoyska, iyo darajada)."
-          )}
-        </p>
+
+        {locked ? (
+          onUnlockClick && (
+            <button
+              type="button"
+              onClick={onUnlockClick}
+              className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <LockOpen className="w-4 h-4" />
+              <span>{tr("Fur Unlock+ ($0.50 | $1.20 Total)")}</span>
+            </button>
+          )
+        ) : (
+          <div className="shrink-0 rounded-2xl px-4 py-2 bg-[#091233]/85 border border-white/15 text-xs font-bold text-[#FFD86B] tabular-nums">
+            Diyaar: {solvedCount}/{somaliaChallenges.length}
+          </div>
+        )}
       </div>
+
+      {locked && (
+        <div className="rounded-2xl p-4 sm:p-5 border border-[#FFC93C]/40 bg-[#FFC93C]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <Lock className="w-5 h-5 text-[#FFD86B] shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <div className="font-head font-extrabold text-sm text-white">
+                Qeybta Xalka Caqabadaha &amp; Qalabka Ficilka (Unlock+ Keliya)
+              </div>
+              <p className="text-xs text-white/80 leading-relaxed">
+                Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u hesho xalka tallaabo-tallaabo, khaladaadka la baaqsado, qoraalka wadahadalka waalidka, iyo su'aalaha xafiiska jaamacadda.
+              </p>
+            </div>
+          </div>
+          {onUnlockClick && (
+            <button
+              type="button"
+              onClick={onUnlockClick}
+              className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
+            >
+              {tr("Fur Unlock+ ($0.50 | $1.20 Total)")}
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="space-y-3">
         {somaliaChallenges.map((item) => {
           const isOpen = openId === item.id;
           const isLocked = locked;
+          const solved = !isLocked && Boolean(doneChallenges[item.id]);
           return (
             <div
               key={item.id}
-              className="rounded-2xl border border-white/15 bg-[#091233]/80 overflow-hidden"
+              className={`rounded-2xl border overflow-hidden transition-colors ${
+                solved
+                  ? "border-emerald-400/40 bg-[#082530]/85"
+                  : "border-white/15 bg-[#091233]/85"
+              }`}
             >
               <button
                 type="button"
@@ -402,8 +469,14 @@ export function SomaliaChallengesHub({
                 className="w-full p-4 sm:p-5 text-start flex items-center justify-between gap-3 cursor-pointer hover:bg-white/[0.03] transition-colors"
               >
                 <div className="space-y-1">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#FFD86B]">
-                    {item.category}
+                  <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-[#FFD86B]">
+                    <span>{item.category}</span>
+                    {solved && (
+                      <>
+                        <span className="text-white/35" aria-hidden="true">·</span>
+                        <span className="text-emerald-300">Waa Diyaar</span>
+                      </>
+                    )}
                   </div>
                   <h3 className="font-head font-bold text-[15.5px] sm:text-[16.5px] text-white leading-snug">
                     {item.title}
@@ -419,17 +492,29 @@ export function SomaliaChallengesHub({
               </button>
 
               {isOpen && !isLocked && (
-                <div className="px-4 sm:px-5 pb-5 pt-1 border-t border-white/10 space-y-3.5">
-                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
+                <div className="px-4 sm:px-5 pb-5 pt-2 border-t border-white/10 space-y-4">
+                  <p className="text-xs sm:text-sm text-white/85 leading-relaxed">
                     <strong className="text-rose-300">{tr("Caqabadda:")}</strong> {item.problem}
                   </p>
+
+                  <div className="rounded-xl p-3.5 bg-rose-500/12 border border-rose-400/30 flex items-start gap-2.5 text-xs sm:text-[13px] text-rose-100 leading-relaxed">
+                    <AlertTriangle className="w-4 h-4 text-rose-300 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-rose-200">Khaladka Ugu Weyn ee La Baaqsado:</strong>{" "}
+                      {item.commonMistake}
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
                     <div className="text-xs font-bold uppercase tracking-wider text-emerald-300">
                       {tr("Xalka Tallaabo-Tallaabo:")}
                     </div>
                     <ol className="space-y-2">
                       {item.solutionSteps.map((step, i) => (
-                        <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-white/90 leading-relaxed">
+                        <li
+                          key={i}
+                          className="flex items-start gap-2.5 text-xs sm:text-sm text-white/90 leading-relaxed"
+                        >
                           <span className="w-5 h-5 rounded-full bg-emerald-400/20 text-emerald-300 font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5 tabular-nums">
                             {i + 1}
                           </span>
@@ -438,8 +523,39 @@ export function SomaliaChallengesHub({
                       ))}
                     </ol>
                   </div>
-                  <div className="rounded-xl px-3.5 py-2.5 bg-[#FFC93C]/12 border border-[#FFC93C]/30 text-xs text-[#FFE599]">
-                    <strong>{tr("Talo Muhiim ah:")}</strong> {item.quickTip}
+
+                  {/* Unique HIRAAL Action Kit */}
+                  <div className="rounded-2xl p-4 bg-[#0D214D]/80 border border-[#7CB7FF]/30 space-y-2.5">
+                    <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#BAE6FD]">
+                      <Sparkles className="w-4 h-4 text-[#FFD86B]" />
+                      <span>{item.actionKitTitle}</span>
+                    </div>
+                    <ul className="space-y-1.5">
+                      {item.actionKitItems.map((line, i) => (
+                        <li key={i} className="text-xs sm:text-[13px] text-white/90 leading-relaxed flex items-start gap-2">
+                          <span className="text-[#FFD86B] font-extrabold shrink-0">•</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                    <div className="rounded-xl px-3.5 py-2.5 bg-[#FFC93C]/12 border border-[#FFC93C]/30 text-xs text-[#FFE599] flex-1">
+                      <strong>{tr("Talo Muhiim ah:")}</strong> {item.quickTip}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => toggleSolved(item.id)}
+                      className={`shrink-0 min-h-[40px] px-4 rounded-xl text-xs font-extrabold border inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors ${
+                        solved
+                          ? "bg-emerald-500 text-white border-emerald-400"
+                          : "bg-white/10 hover:bg-white/18 text-white border-white/25"
+                      }`}
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>{solved ? "Waa Diyaariyay" : "Calaamadee Diyaar"}</span>
+                    </button>
                   </div>
                 </div>
               )}
@@ -451,6 +567,13 @@ export function SomaliaChallengesHub({
   );
 }
 
+const READINESS_PHASES: ("all" | ReadinessPhase)[] = [
+  "all",
+  "1-30 Maalmood",
+  "31-60 Maalmood",
+  "61-90 Maalmood",
+];
+
 export function ReadinessTracker({
   locked = false,
   onUnlockClick,
@@ -459,12 +582,18 @@ export function ReadinessTracker({
   onUnlockClick?: () => void;
 }) {
   const { tr } = useApp();
+  const [phaseFilter, setPhaseFilter] = useState<"all" | ReadinessPhase>("all");
   const [checkedMap, setCheckedMap] = useState<Record<string, boolean>>(() =>
     loadIdSet(STORAGE_READINESS_PROGRESS)
   );
 
+  const visibleItems = useMemo(() => {
+    if (phaseFilter === "all") return readinessChecklist;
+    return readinessChecklist.filter((it) => it.phase === phaseFilter);
+  }, [phaseFilter]);
+
   const doneCount = readinessChecklist.filter((it) => Boolean(checkedMap[it.id])).length;
-  const pct = Math.round((doneCount / readinessChecklist.length) * 100);
+  const pct = locked ? 0 : Math.round((doneCount / readinessChecklist.length) * 100);
 
   const toggle = (id: string) => {
     if (locked) {
@@ -480,8 +609,8 @@ export function ReadinessTracker({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-3xl p-5 border border-white/15 bg-white/[0.05] flex items-center justify-between gap-4 flex-wrap">
-        <div className="max-w-lg">
+      <div className="rounded-3xl p-5 border border-white/15 bg-white/[0.06] flex items-center justify-between gap-4 flex-wrap">
+        <div className="max-w-xl">
           <div className="flex items-center gap-2">
             <ClipboardCheck className="w-5 h-5 text-[#FFD86B]" />
             <h2 className="font-head font-extrabold text-[20px] text-white">
@@ -490,7 +619,7 @@ export function ReadinessTracker({
           </div>
           <p className="mt-1 text-xs sm:text-sm text-white/75 leading-relaxed">
             {tr(
-              "Calaamadee tallaabo kasta oo aad dhammayso ka hor inta uusan sannadka koowaad bilaaban si aad jaamacadda ugu gasho kalsooni buuxda."
+              "12 tallaabo oo u qaybsan 3 marxaladood (Maalinta 1 ilaa 90) oo leh Sirta HIRAAL si aad jaamacadda iyo JUS ugu gasho kalsooni buuxda."
             )}
           </p>
         </div>
@@ -508,8 +637,60 @@ export function ReadinessTracker({
         </ProgressRing>
       </div>
 
+      {locked ? (
+        <div className="rounded-2xl p-4 sm:p-5 border border-[#FFC93C]/45 bg-[#FFC93C]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <Lock className="w-5 h-5 text-[#FFD86B] shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <div className="font-head font-extrabold text-sm text-white">
+                Qorshaha Buuxa ee 90-ka Maalmood (Unlock+ Keliya)
+              </div>
+              <p className="text-xs text-white/80 leading-relaxed">
+                Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u furto dhammaan 12-ka tallaabo, xisaabiyaha horumarka, iyo Sirta HIRAAL ee marxalad kasta.
+              </p>
+            </div>
+          </div>
+          {onUnlockClick && (
+            <button
+              type="button"
+              onClick={onUnlockClick}
+              className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
+            >
+              {tr("Fur Unlock+ ($0.50 | $1.20 Total)")}
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-2">
+            {READINESS_PHASES.map((ph) => {
+              const active = phaseFilter === ph;
+              const label = ph === "all" ? `Dhammaan (${readinessChecklist.length})` : ph;
+              return (
+                <button
+                  key={ph}
+                  type="button"
+                  onClick={() => setPhaseFilter(ph)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                    active
+                      ? "bg-[#FFC93C] text-[#050A1C] border-[#FFC93C]"
+                      : "bg-white/[0.06] text-white/85 border-white/15 hover:bg-white/[0.12]"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          <span className="text-xs font-bold text-emerald-300 tabular-nums">
+            La Dhammaystiray: {doneCount}/{readinessChecklist.length}
+          </span>
+        </div>
+      )}
+
       <div className="grid sm:grid-cols-2 gap-3">
-        {readinessChecklist.map((item) => {
+        {(locked ? readinessChecklist.slice(0, 6) : visibleItems).map((item) => {
           const checked = !locked && Boolean(checkedMap[item.id]);
           return (
             <button
@@ -539,12 +720,20 @@ export function ReadinessTracker({
                   <Check className="w-4 h-4 stroke-[3]" />
                 </span>
               )}
-              <div className="min-w-0">
-                <div className="text-[10.5px] font-bold uppercase tracking-wider text-[#FFD86B]">
-                  {item.category}
+              <div className="min-w-0 space-y-1">
+                <div className="flex flex-wrap items-center gap-x-2 text-[10.5px] font-bold uppercase tracking-wider text-[#FFD86B]">
+                  <span>{item.phase}</span>
+                  <span className="text-white/35" aria-hidden="true">·</span>
+                  <span className="text-[#BAE6FD]">{item.category}</span>
+                  {!locked && (
+                    <>
+                      <span className="text-white/35" aria-hidden="true">·</span>
+                      <span className="text-white/65">{item.timeEstimate}</span>
+                    </>
+                  )}
                 </div>
                 <div
-                  className={`font-head font-bold text-sm mt-0.5 ${
+                  className={`font-head font-bold text-sm ${
                     checked ? "text-emerald-100 line-through opacity-80" : "text-white"
                   }`}
                 >
@@ -552,10 +741,15 @@ export function ReadinessTracker({
                 </div>
                 {locked ? (
                   <p className="text-[11.5px] text-[#FFE599]/80 mt-1">
-                    {tr("Fur Unlock+ ($0.50 · 6 Bilood) si aad u aragto faahfaahinta iyo calaamadaynta.")}
+                    {tr("Fur Unlock+ ($0.50 | $1.20 Total) si aad u aragto faahfaahinta iyo Sirta HIRAAL.")}
                   </p>
                 ) : (
-                  <p className="text-xs text-white/65 mt-1 leading-relaxed">{item.detail}</p>
+                  <>
+                    <p className="text-xs text-white/75 leading-relaxed">{item.detail}</p>
+                    <p className="text-[11.5px] text-[#FFE599] pt-1 leading-relaxed">
+                      <strong>Sirta HIRAAL:</strong> {item.hiraalTip}
+                    </p>
+                  </>
                 )}
               </div>
             </button>
@@ -580,15 +774,15 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
         <div className="flex items-center gap-2 flex-wrap">
           <ProBadge small />
           <span className="text-xs font-extrabold text-[#FFD86B]">
-            {tr("$0.50 Keliya · 6 Bilood (180 Maalmood)")}
+            {tr("$0.50 Qeyb · $1.20 Total (20% Off) · 6 Bilood")}
           </span>
         </div>
         <h3 className="font-head font-extrabold text-[17px] sm:text-lg text-white leading-snug">
-          {tr("Fur dhammaan Khariidadaha Waxbarashada, Xalka Caqabadaha iyo Hagaha Waaxda")}
+          {tr("Fur dhammaan Khariidadaha Waxbarashada, Jaamacadaha iyo Hagaha Waaxda")}
         </h3>
         <p className="text-xs text-white/80 leading-relaxed">
           {tr(
-            "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) — waxaa kuu furmaya dhammaan 8-da qaybood ee Unlock+ Hub muddo 6 bilood ah (180 maalmood)."
+            "Bixi $0.50 hal qeyb ama $1.20 HIRAAL Total (20% Qiimo Dhimis) EVC Plus: 610999089 · Shuceyb Abdirahman muddo 6 bilood ah."
           )}
         </p>
       </div>
@@ -598,7 +792,7 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
         className="shrink-0 px-5 py-3 rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
       >
         <CheckCircle2 className="w-4 h-4" />
-        <span>{tr("Fur Unlock+ ($0.50)")}</span>
+        <span>{tr("Fur Unlock+ ($0.50 | $1.20 Total)")}</span>
       </button>
     </div>
   );

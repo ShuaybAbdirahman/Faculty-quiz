@@ -50,7 +50,7 @@ function ProLockedFooter({ onUnlock }: { onUnlock: () => void }) {
       <div className="flex items-start gap-2.5 text-xs text-[#FFE599] leading-relaxed">
         <Lock className="w-4 h-4 text-[#FFD86B] shrink-0 mt-0.5" />
         <span>
-          {tr("Fur Unlock+ Waaxaha & Xarunta ($0.50 · 6 Bilood) si aad u aragto dhammaan xogta, ilaha la hubiyay, iyo qorshayaasha.")}
+          {tr("Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u aragto dhammaan xogta, ilaha la hubiyay, iyo qorshayaasha.")}
         </span>
       </div>
       <button
@@ -59,7 +59,7 @@ function ProLockedFooter({ onUnlock }: { onUnlock: () => void }) {
         className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
       >
         <LockOpen className="w-3.5 h-3.5" />
-        <span>{tr("Fur Unlock+ ($0.50 · 6 Bilood)")}</span>
+        <span>{tr("Fur Unlock+ ($0.50 | $1.20 Total)")}</span>
       </button>
     </div>
   );
@@ -232,20 +232,20 @@ export function FutureJobsNewsSection({
       <div>
         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-300">
           <TrendingUp className="w-4 h-4" />
-          <span>{tr("Wararka Shaqooyinka Cusub (WEF 2025 - 2030)")}</span>
+          <span>{tr("Wararka Shaqooyinka Cusub (2025 ilaa 2030)")}</span>
         </div>
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
           {tr("Shaqooyinka Ugu Kororka Badan Adduunka & Fursadda Soomaaliya")}
         </h2>
         <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Xog rasmi ah oo laga soo xigtay World Economic Forum (Future of Jobs Report 2025): 170 milyan oo shaqo cusub ayaa abuurmaya ka hor 2030, 86% shirkaduhuna waxay adeegsan doonaan AI.")}
+          {tr("Xog rasmi ah oo laga soo xigtay warbixinta suuqa shaqada adduunka: 170 milyan oo shaqo cusub ayaa abuurmaya sannadaha soo socda, 86% shirkaduhuna waxay adeegsanayaan tiknoolajiyada casriga ah.")}
         </p>
       </div>
 
       {/* Key Macro Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { stat: "170M", label: tr("Shaqooyin cusub (2030)") },
+          { stat: "170M", label: tr("Shaqooyin cusub") },
           { stat: "86%", label: tr("Shirkadaha AI adeegsanaya") },
           { stat: "+113%", label: tr("Kobaca Xogta & AI") },
         ].map((s) => (

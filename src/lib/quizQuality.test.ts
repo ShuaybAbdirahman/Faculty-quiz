@@ -1,5 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import { items, faculties } from "../data/quizData";
 import { proFacultyQuestions, getProQuestionsForFaculty } from "../data/proQuestions";
 import { traitsFrom, rankDepts, type ProDeptData } from "./scoring";
@@ -193,7 +195,7 @@ describe("Smart-Witty Faculty Fun Prompts", () => {
 });
 
 import { FORM4_EXAM_DATE, form4Subjects } from "../data/schoolForm4Data";
-import { bridgeExamTracks, GAP_EXAM_DATE } from "../data/bridgingPrepData";
+import { bridgeExamTracks, bridgeSubjects, GAP_EXAM_DATE } from "../data/bridgingPrepData";
 import {
   examHallRules,
   HIRAAL_INTEGRITY_CHARTER,
@@ -201,7 +203,7 @@ import {
   top10StudyTricks,
 } from "../data/topStudentData";
 
-describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures", () => {
+describe("CAAWIYE School (June 2027) & Diyaarinta Jaamacadda (Oct 2027) Clean Prepared Structures", () => {
   it("contains all 12 official Form 4 subjects (4 scientific, 3 languages, 2 social, 3 applied) ready for June 2027 uploads with zero pre-written mock content", () => {
     assert.equal(FORM4_EXAM_DATE, "June 2027");
     assert.equal(form4Subjects.length, 12);
@@ -212,7 +214,10 @@ describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures"
 
     for (const sub of form4Subjects) {
       assert.equal(sub.examDate, "June 2027");
-      assert.equal(sub.predictPrice, "$0.25");
+      assert.equal(sub.predictPrice, "$0.50");
+      assert.equal(sub.predictDurationMin, 60);
+      assert.ok(sub.examBlueprint.totalMarks === 100);
+      assert.ok(sub.examBlueprint.pastPaperPolicy.toLowerCase().includes("qish ma ahan"));
       assert.equal(sub.pdfs.length, 0, `PDFs should remain empty until founder uploads for ${sub.id}`);
       assert.equal(sub.freeTopics.length, 0, `Topics should remain empty until founder uploads for ${sub.id}`);
       assert.equal(sub.predictQuestions.length, 0, `Predict questions should remain empty until founder uploads for ${sub.id}`);
@@ -221,13 +226,32 @@ describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures"
     }
   });
 
-  it("includes competitive Gap entrance exam tracks ready for October 2027 uploads with zero pre-written mock content", () => {
+  it("prepares exact 5 JUS entrance subjects (4 scientific + English) and 60-min competitive entrance tracks for October 2027", () => {
     assert.equal(GAP_EXAM_DATE, "October 2027");
-    assert.ok(bridgeExamTracks.some((t) => t.id === "snu_tartanka"));
-    assert.ok(bridgeExamTracks.some((t) => t.id === "uni_placement"));
+    assert.equal(bridgeSubjects.length, 5);
+    assert.equal(bridgeSubjects.filter((s) => s.group === "science").length, 4);
+    assert.equal(bridgeSubjects.filter((s) => s.group === "language").length, 1);
+    assert.deepEqual(
+      bridgeSubjects.map((s) => s.id),
+      ["jus_bio", "jus_chem", "jus_phys", "jus_math", "jus_eng"]
+    );
+    for (const sub of bridgeSubjects) {
+      assert.equal(sub.examDate, "October 2027");
+      assert.equal(sub.price, "$0.50");
+      assert.equal(sub.durationMin, 60);
+      assert.ok(sub.examBlueprint.totalMarks === 100);
+      assert.ok(sub.examBlueprint.pastPaperPolicy.toLowerCase().includes("qish ma ahan"));
+      assert.equal(sub.pdfs.length, 0);
+      assert.equal(sub.predictQuestions.length, 0);
+    }
+
+    assert.equal(bridgeExamTracks.length, 1, "Section 2 must target JUS only until other universities announce exams");
+    assert.equal(bridgeExamTracks[0].id, "snu_tartanka");
     for (const tr of bridgeExamTracks) {
       assert.equal(tr.examDate, "October 2027");
       assert.equal(tr.price, "$0.50");
+      assert.equal(tr.durationMin, 60);
+      assert.equal(tr.subjectCount, 5);
       assert.equal(tr.pdfs.length, 0);
       assert.equal(tr.freeTips.length, 0);
       assert.equal(tr.predictQuestions.length, 0);
@@ -236,7 +260,7 @@ describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures"
     }
   });
 
-  it("provides ethical Top-10 study tricks and legal marking secrets covering all 12 Form 4 subjects with explicit anti-cheating charter", () => {
+  it("provides ethical Top-10 study tricks and legal marking secrets covering all 12 Form 4 subjects with explicit anti-cheating charter and zero AI dashes", () => {
     assert.ok(HIRAAL_INTEGRITY_CHARTER.headline.toLowerCase().includes("qishku waa xaaraam"));
     assert.ok(HIRAAL_INTEGRITY_CHARTER.body.toLowerCase().includes("100% xalaal"));
 
@@ -261,6 +285,52 @@ describe("CAAWIYE School (June 2027) & Gap (Oct 2027) Clean Prepared Structures"
       assert.equal(sec.legalSecrets.length, 3, `Expected 3 legal secrets for ${sec.id}`);
       assert.ok(sec.highYieldTopics.length >= 3);
       assert.ok(sec.commonTrap.trim().length > 20);
+    }
+
+    const serializedData = JSON.stringify({
+      HIRAAL_INTEGRITY_CHARTER,
+      top10StudyTricks,
+      examHallRules,
+      legalSubjectSecrets,
+      facultyFunPrompts,
+      bridgeSubjects,
+      bridgeExamTracks,
+      form4Subjects,
+    });
+    assert.ok(!serializedData.includes("—"), "Em-dash (—) must be permanently removed");
+    assert.ok(!serializedData.includes("–"), "En-dash (–) must be permanently removed");
+    assert.ok(!/kala.?guur/i.test(serializedData), "Old label Kala-Guurka must not appear");
+  });
+
+  it("enforces universal fonts, zero AI dashes, zero $0.25 fragments, and clean copy across index.html and src/", () => {
+    const filesToCheck: string[] = [path.resolve("index.html")];
+    const walk = (dir: string) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          walk(full);
+        } else if (/\.(ts|tsx|css|html)$/.test(entry.name) && !entry.name.endsWith(".test.ts")) {
+          filesToCheck.push(full);
+        }
+      }
+    };
+    walk(path.resolve("src"));
+
+    const forbiddenPatterns: Array<[RegExp, string]> = [
+      [/—/, "Em-dash (—)"],
+      [/–/, "En-dash (–)"],
+      [/kala.?guur/i, "Old Kala-Guur label"],
+      [/Bricolage Grotesque/i, "Legacy Bricolage Grotesque font"],
+      [/\bDM Sans\b/i, "Legacy DM Sans font"],
+      [/Instrument Serif/i, "Legacy Instrument Serif font"],
+      [/\$0\.25/, "Fragmented $0.25 micro-pricing"],
+    ];
+
+    for (const filePath of filesToCheck) {
+      const content = fs.readFileSync(filePath, "utf8");
+      for (const [re, label] of forbiddenPatterns) {
+        assert.ok(!re.test(content), `${label} found in ${path.relative(process.cwd(), filePath)}`);
+      }
     }
   });
 });

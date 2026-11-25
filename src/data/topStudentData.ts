@@ -29,7 +29,7 @@ export interface ExamHallRule {
 
 export const HIRAAL_INTEGRITY_CHARTER = {
   badge: "Xeerka Xalaasha ah · Zero Cheating",
-  headline: "Qishku waa xaaraam — HIRAAL ma taageero qish iyo khiyaano",
+  headline: "Qishku waa xaaraam: HIRAAL ma taageero qish iyo khiyaano",
   body: "Barnaamijkani kama mid aha meelaha qishka laga raadiyo. Qishku wuxuu burburiyaa barakada aqoonta, kalsoonidaada, iyo mustaqbalkaaga jaamacadeed. Xeeladaha halkan ku qoran waa habab waxbarasho oo 100% xalaal ah oo ay adeegsadaan ardayda kaalmaha Top-10 gala.",
 };
 
@@ -39,11 +39,11 @@ export const top10StudyTricks: Top10Trick[] = [
     tag: "Xeeladda 1aad · Xusuusta",
     title: "Active Recall (Xir Buugga oo Qor Waxaad Xasuusato)",
     whyItWorks:
-      "Ardayda caadiga ahi waxay akhriyaan buugga 5 jeer — maskaxdu way ka caajistaa. Ardayda Top-10 waxay akhriyaan hal mar, kadibna way xiraan buugga oo warqad cad ayay ku tijaabiyaan waxay xasuustaan.",
+      "Ardayda caadiga ahi waxay akhriyaan buugga 5 jeer, maskaxdu way ka caajistaa. Ardayda Top-10 waxay akhriyaan hal mar, kadibna way xiraan buugga oo warqad cad ayay ku tijaabiyaan waxay xasuustaan.",
     steps: [
       "Akhri hal cutub 20 daqiiqo adigoo diiradda saaraya fikradaha waaweyn.",
       "Xir buugga gabi ahaanba, kadibna qor ama sharax qaacidooyinka iyo qeexitaannada aad xasuusato.",
-      "Fur buugga oo ku calaamadee qalin cas meelaha aad ilowday — meelahaas keliya ku noqo.",
+      "Fur buugga oo ku calaamadee qalin cas meelaha aad ilowday, meelahaas keliya ku noqo.",
     ],
     avoid: "Ha ku lumin waqti badan inaad qoraallo midabyo ku xarriiqdo adigoon is tijaabin.",
   },
@@ -65,11 +65,11 @@ export const top10StudyTricks: Top10Trick[] = [
     tag: "Xeeladda 3aad · Past Papers",
     title: "Buugga Qaladaadka (Error Logbook)",
     whyItWorks:
-      "Ardayda ugu dhibcaha sarreeya kama shaqeeyaan oo keliya imtixaannadii hore (2018–2026); waxay qoraan qalad kasta oo ay sameeyaan si uusan u soo noqon.",
+      "Ardayda ugu dhibcaha sarreeya kama shaqeeyaan oo keliya imtixaannadii hore (2018 ilaa 2026); waxay qoraan qalad kasta oo ay sameeyaan si uusan u soo noqon.",
     steps: [
       "Qaado buug gaar ah oo qeybi 12-ka maado (2 bog maado kasta).",
       "Markasta oo aad su'aal ku qaldanto tijaabada, qor: Su'aasha, qaladkaagii, iyo jawaabta saxda ah.",
-      "Toddobaadka ka hor imtixaanka, dib u eeg Buugga Qaladaadka — waxaad hagaajinaysaa dhibcaha kaa lumi jiray.",
+      "Toddobaadka ka hor imtixaanka, dib u eeg Buugga Qaladaadka; waxaad hagaajinaysaa dhibcaha kaa lumi jiray.",
     ],
     avoid: "Ha ku farxin oo keliya inta aad saxday; baro sababta aad u qaladday kuwa yar ee kaa tagay.",
   },
@@ -106,7 +106,7 @@ export const top10StudyTricks: Top10Trick[] = [
     whyItWorks:
       "Imtixaannada gelitaanka jaamacadaha (JUS) iyo qaybaha MCQ waxay leeyihiin doorashooyin lagu qaldo ardayga degdega ah.",
     steps: [
-      "Akhri su'aasha oo dhan ilaa dhammaadka — iska ilaali ereyada sida: EXCEPT, NOT, ALWAYS.",
+      "Akhri su'aasha oo dhan ilaa dhammaadka. Iska ilaali ereyada sida: EXCEPT, NOT, ALWAYS.",
       "Ka saar 2 doorasho oo aan macquul ahayn ama halbeeggoodu (Unit) uusan la mid ahayn jawaabta la rabo.",
       "Labada haray midba midda kale la barbardhig adigoo eegaya qaanuunka ama xogta su'aasha.",
     ],
@@ -118,7 +118,7 @@ export const examHallRules: ExamHallRule[] = [
   {
     id: "sleep_protocol",
     phase: "Habeenka Ka Horreeya",
-    title: "Hurdo 7–8 Saacadood ah (Ha Soo Jeedin)",
+    title: "Hurdo 7 ilaa 8 Saacadood ah (Ha Soo Jeedin)",
     detail:
       "Maskaxdu waxay xogta u beddeshaa xusuus adag xilliga hurdada qoto dheer. Soo jeedka habeenka imtixaanku wuxuu hoos u dhigaa xisaabta iyo xasuusta.",
   },
@@ -141,7 +141,7 @@ export const examHallRules: ExamHallRule[] = [
     phase: "Dhibcaha Qaybta ah (Partial Credit)",
     title: "Ha Ka Tegin Meel Banaan (Qor Qaanuunka)",
     detail:
-      "Xitaa haddii xisaabtu kugu adkaato, qor Xogta la siiyay (Given) iyo Qaanuunka (Formula) — waxay ku siinayaan dhibco sharci ah.",
+      "Xitaa haddii xisaabtu kugu adkaato, qor Xogta la siiyay (Given) iyo Qaanuunka (Formula); waxay ku siinayaan dhibco sharci ah.",
   },
 ];
 
@@ -154,9 +154,9 @@ export const legalSubjectSecrets: LegalSubjectSecret[] = [
     groupLabel: "Saynis",
     accent: "#4189DD",
     examinerFocus:
-      "Macallinka saxaya wuxuu dhibcaha ugu badan (60%–70%) ku bixiyaa qaabka xallinta (Method Marks), ma aha tirada ugu dambeysa oo keliya.",
+      "Macallinka saxaya wuxuu dhibcaha ugu badan (60% ilaa 70%) ku bixiyaa qaabka xallinta (Method Marks), ma aha tirada ugu dambeysa oo keliya.",
     legalSecrets: [
-      "Qor tallaabo kasta si cad — haddii xisaabta ugu dambeysa kaa qaldanto, tallaabooyinka saxda ah dhibco ayaad ku helaysaa.",
+      "Qor tallaabo kasta si cad; haddii xisaabta ugu dambeysa kaa qaldanto, tallaabooyinka saxda ah dhibco ayaad ku helaysaa.",
       "Ku hubi jawaabta adigoo dib ugu geliya isla'egta asalka ah (Substitute back) haddii waqti kuu haro.",
       "Sawir jaantuska (Graph ama Triangle) su'aalaha Trigonometry iyo Geometry si aadan u khaldin xaglaha.",
     ],
@@ -174,7 +174,7 @@ export const legalSubjectSecrets: LegalSubjectSecret[] = [
       "Su'aalaha xisaabta ah waxaa lagu saxaa afar tallaabo oo aan kala go'in: Given -> Formula -> Substitution -> Unit.",
     legalSecrets: [
       "Beddel halbeegyada ka hor xisaabta (tusaale: cm u beddel m, g u beddel kg, daqiiqo u beddel ilbiriqsi).",
-      "Qor halbeegga saxda ah (N, J, W, Ω, m/s²) dhammaadka jawaabta — halbeeg la'aan dhibic baa go'da.",
+      "Qor halbeegga saxda ah (N, J, W, Ω, m/s²) dhammaadka jawaabta; halbeeg la'aan dhibic baa go'da.",
       "Su'aalaha qeexidda ah (Definitions) ku dar qaanuunka iyo hal tusaale oo kooban.",
     ],
     highYieldTopics: ["Newton's Laws & Momentum", "Electricity & Ohm's Law", "Waves, Optics & Lenses", "Electromagnetism"],
@@ -207,7 +207,7 @@ export const legalSubjectSecrets: LegalSubjectSecret[] = [
     examinerFocus:
       "Erayada cilmiga ah ee saxda ah (Keywords) iyo jaantusyada calaamadeysan ayaa si toos ah dhibco loo siiyaa.",
     legalSecrets: [
-      "Xariiq qallafsan ha ku qorin jaantusyada — isticmaal qalin qori ah, xariiqyo toosan oo calaamadaha geesaha u saaran yihiin.",
+      "Xariiq qallafsan ha ku qorin jaantusyada, isticmaal qalin qori ah, xariiqyo toosan oo calaamadaha geesaha u saaran yihiin.",
       "Su'aalaha isbarbardhigga (sida Mitosis vs Meiosis, ama Artery vs Vein) u samee shax (Table).",
       "Adeegso ereyada saxda ah halkii aad sheeko dheer qori lahayd (tusaale: Active Transport, Osmosis, ATP, Enzyme specificity).",
     ],
@@ -309,7 +309,7 @@ export const legalSubjectSecrets: LegalSubjectSecret[] = [
     examinerFocus:
       "Dheellitirnaanta xisaabaadka (Accounting Equation), fahamka suuq-geynta, iyo maaraynta kharashka.",
     legalSecrets: [
-      "Xasuuso qaanuunka dahabiga ah: Assets = Liabilities + Capital — haddii Balance Sheet-ku isku dheellitirmi waayo dib u hubi.",
+      "Xasuuso qaanuunka dahabiga ah: Assets = Liabilities + Capital. Haddii Balance Sheet-ku isku dheellitirmi waayo dib u hubi.",
       "Kala saar Fixed Costs (kirada, mushaarka joogtada ah) iyo Variable Costs (alaabta cayriin ee tirada la socota).",
       "Jawaabaha maamulka ku xooji tusaale ganacsi oo Soomaaliya ka jira.",
     ],
@@ -345,7 +345,7 @@ export const legalSubjectSecrets: LegalSubjectSecret[] = [
     legalSecrets: [
       "Aayadaha iyo Xadiisyada u qor si sax ah iyadoon erey laga boodin; haddii aadan xasuusan erayada oo buuxa, sheeg macnaha saxda ah adigoon wax ku darin.",
       "Qaybta Fiqh-ga kala caddee Arkaan, Shuruud, iyo Waxyaabaha buriya (tusaale: Salaadda, Soonka, Zakada).",
-      "U qor casharrada laga faa'iidaysanayo si nidaamsan (3–4 qodob oo cad).",
+      "U qor casharrada laga faa'iidaysanayo si nidaamsan (3 ilaa 4 qodob oo cad).",
     ],
     highYieldTopics: ["Tafsiirka & Axaadiista", "Fiqh-ga Cibaadada & Mucaamalaadka", "Siirada & Akhlaaqda (Diidmada Qishka)"],
     commonTrap: "Isku darka Shuruudda Salaadda (ka hor salaadda) iyo Arkaanta Salaadda (gudaha salaadda).",

@@ -1,5 +1,5 @@
 -- ============================================================================
--- HIRAAL (Hagaha Kulliyadda) Unlock+ — Security Hardening & 6-Month Plan Update
+-- HIRAAL (Hagaha Kulliyadda) Unlock+ | Security Hardening & 6-Month Plan Update
 -- Run this script once in your Supabase Dashboard -> SQL Editor
 -- ============================================================================
 -- Fixes:
@@ -188,3 +188,141 @@ GRANT EXECUTE ON FUNCTION public.pro_status(text) TO anon, authenticated;
 
 REVOKE ALL ON FUNCTION public.pro_redeem(text, text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.pro_redeem(text, text) TO anon, authenticated;
+
+-- 5. Predict Exam Rankings Table & RPCs (Real student results only)
+CREATE TABLE IF NOT EXISTS public.predict_rankings (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  device_id_short text NOT NULL,
+  scope text NOT NULL CHECK (scope IN ('school', 'jus')),
+  subject_id text NOT NULL,
+  subject_name text NOT NULL,
+  student_name text NOT NULL,
+  score_pct integer NOT NULL CHECK (score_pct BETWEEN 0 AND 100),
+  correct_count integer NOT NULL CHECK (correct_count >= 0),
+  total_questions integer NOT NULL CHECK (total_questions BETWEEN 1 AND 200),
+  elapsed_sec integer NOT NULL CHECK (elapsed_sec >= 0 AND elapsed_sec <= 14400),
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.predict_rankings ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON TABLE public.predict_rankings FROM anon, authenticated;
+
+CREATE INDEX IF NOT EXISTS idx_predict_rankings_scope_score
+  ON public.predict_rankings (scope, score_pct DESC, correct_count DESC, elapsed_sec ASC, created_at ASC);
+
+CREATE OR REPLACE FUNCTION public.submit_predict_ranking(
+  p_device text,
+  p_scope text,
+  p_subject_id text,
+  p_subject_name text,
+  p_student_name text,
+  p_score_pct integer,
+  p_correct_count integer,
+  p_total_questions integer,
+  p_elapsed_sec integer
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_dev text := trim(coalesce(p_device, ''));
+  v_short text;
+  v_name text;
+  v_id uuid;
+BEGIN
+  IF length(v_dev) < 16 OR lower(v_dev) IN ('null', 'undefined', 'default', 'web', 'guest', 'anonymous') THEN
+    RAISE EXCEPTION 'bad_device';
+  END IF;
+  IF p_scope NOT IN ('school', 'jus') THEN
+    RAISE EXCEPTION 'bad_scope';
+  END IF;
+  IF p_total_questions < 1 OR p_total_questions > 200 OR p_correct_count < 0 OR p_correct_count > p_total_questions THEN
+    RAISE EXCEPTION 'bad_score';
+  END IF;
+
+  v_short := upper(left(regexp_replace(v_dev, '^hkd_', ''), 5) || '-' || right(regexp_replace(v_dev, '^hkd_', ''), 4));
+  v_name := left(regexp_replace(trim(coalesce(p_student_name, 'Arday')), '[<>`"'']', '', 'g'), 36);
+  IF v_name = '' THEN
+    v_name := 'Arday';
+  END IF;
+
+  INSERT INTO public.predict_rankings (
+    device_id_short,
+    scope,
+    subject_id,
+    subject_name,
+    student_name,
+    score_pct,
+    correct_count,
+    total_questions,
+    elapsed_sec
+  )
+  VALUES (
+    v_short,
+    p_scope,
+    left(trim(p_subject_id), 40),
+    left(trim(p_subject_name), 64),
+    v_name,
+    greatest(0, least(100, p_score_pct)),
+    p_correct_count,
+    p_total_questions,
+    greatest(0, least(14400, p_elapsed_sec))
+  )
+  RETURNING id INTO v_id;
+
+  RETURN jsonb_build_object('ok', true, 'id', v_id);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.public_predict_rankings(
+  p_scope text,
+  p_subject_id text DEFAULT NULL,
+  p_limit integer DEFAULT 50
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_limit integer := greatest(1, least(100, coalesce(p_limit, 50)));
+  v_items jsonb;
+BEGIN
+  IF p_scope NOT IN ('school', 'jus') THEN
+    RETURN '[]'::jsonb;
+  END IF;
+
+  SELECT coalesce(jsonb_agg(t), '[]'::jsonb)
+    INTO v_items
+    FROM (
+      SELECT
+        id,
+        device_id_short,
+        scope,
+        subject_id,
+        subject_name,
+        student_name,
+        score_pct,
+        correct_count,
+        total_questions,
+        elapsed_sec,
+        extract(epoch from created_at) * 1000 AS submitted_at
+      FROM public.predict_rankings
+      WHERE scope = p_scope
+        AND (p_subject_id IS NULL OR p_subject_id = 'all' OR subject_id = p_subject_id)
+      ORDER BY score_pct DESC, correct_count DESC, elapsed_sec ASC, created_at ASC
+      LIMIT v_limit
+    ) t;
+
+  RETURN v_items;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.submit_predict_ranking(text, text, text, text, text, integer, integer, integer, integer) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.submit_predict_ranking(text, text, text, text, text, integer, integer, integer, integer) TO anon, authenticated;
+
+REVOKE ALL ON FUNCTION public.public_predict_rankings(text, text, integer) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.public_predict_rankings(text, text, integer) TO anon, authenticated;
+

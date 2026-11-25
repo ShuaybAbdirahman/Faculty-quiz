@@ -191,7 +191,7 @@ export function QuizScreen({
           </div>
         ) : adapt && pos + 1 === Math.ceil(total / 2) ? (
           <div className="mt-1 text-xs font-bold text-[#5D7BFF]">
-            {tr("Kala bar waad dhaaftay — natiijadaadu way soo dhowdahay.")}
+            {tr("Kala bar waad dhaaftay, natiijadaadu way soo dhowdahay.")}
           </div>
         ) : adapt ? (
           <div className="mt-1 inline-flex items-center gap-1.5 text-xs font-semibold text-[#5D7BFF]">

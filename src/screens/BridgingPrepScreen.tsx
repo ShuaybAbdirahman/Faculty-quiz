@@ -9,31 +9,76 @@ import {
   Lock,
   LockOpen,
   Target,
+  Trophy,
   UploadCloud,
 } from "lucide-react";
-import { bridgeExamTracks, GAP_EXAM_DATE, type BridgeExamTrack } from "../data/bridgingPrepData";
+import {
+  bridgeExamTracks,
+  bridgeSubjects,
+  GAP_EXAM_DATE,
+  type BridgeExamTrack,
+} from "../data/bridgingPrepData";
 import { useApp } from "../context/AppContext";
 import { HiraalLogoMark } from "../components/ModernUI";
 import { ProContentShield } from "../components/ProContentShield";
 import { ReadinessTracker, SomaliaChallengesHub } from "../components/ProHubContent";
 import { PredictExamGateCard, PredictExamRunner } from "../components/PredictExamRunner";
+import { PredictRankingBoard } from "../components/PredictRankingBoard";
+import { saveLocalPredictScore } from "../lib/predictRanking";
+import { submitPredictRanking } from "../lib/api";
+
+export type BridgingSectionTab = "exams" | "readiness" | "challenges" | "ranking";
 
 export function BridgingPrepScreen({
   initialSection = "exams",
   onBackHome,
   onUnlockBridge,
+  onOpenPaywall,
 }: {
-  initialSection?: "exams" | "readiness" | "challenges";
+  initialSection?: BridgingSectionTab;
   onBackHome: () => void;
   onUnlockBridge: (track: BridgeExamTrack) => void;
+  onOpenPaywall: () => void;
 }) {
-  const { hasBridgeAccess } = useApp();
-  const [section, setSection] = useState<"exams" | "readiness" | "challenges">(initialSection);
-  const [trackId, setTrackId] = useState<string>(bridgeExamTracks[0].id);
+  const { hasBridgeAccess, proActive, deviceId, userName } = useApp();
+  const [section, setSection] = useState<BridgingSectionTab>(initialSection);
+  const [subjectId, setSubjectId] = useState<string>(bridgeSubjects[0].id);
   const [examSubTab, setExamSubTab] = useState<"pdfs" | "predict">("pdfs");
 
-  const activeTrack = bridgeExamTracks.find((t) => t.id === trackId) ?? bridgeExamTracks[0];
-  const unlocked = hasBridgeAccess(activeTrack.id);
+  const activeTrack = bridgeExamTracks[0];
+  const activeSubject = bridgeSubjects.find((s) => s.id === subjectId) ?? bridgeSubjects[0];
+  const unlocked = proActive || hasBridgeAccess(activeTrack.id) || hasBridgeAccess(activeSubject.id);
+
+  const handleRecordJusScore = (res: {
+    correctCount: number;
+    totalQuestions: number;
+    scorePct: number;
+    elapsedSec: number;
+    studentName: string;
+  }) => {
+    saveLocalPredictScore(localStorage, {
+      scope: "jus",
+      subjectId: activeSubject.id,
+      subjectName: activeSubject.name,
+      studentName: res.studentName,
+      deviceId,
+      scorePct: res.scorePct,
+      correctCount: res.correctCount,
+      totalQuestions: res.totalQuestions,
+      elapsedSec: res.elapsedSec,
+    });
+    void submitPredictRanking({
+      deviceId,
+      scope: "jus",
+      subjectId: activeSubject.id,
+      subjectName: activeSubject.name,
+      studentName: res.studentName,
+      scorePct: res.scorePct,
+      correctCount: res.correctCount,
+      totalQuestions: res.totalQuestions,
+      elapsedSec: res.elapsedSec,
+    });
+  };
 
   return (
     <div
@@ -63,10 +108,10 @@ export function BridgingPrepScreen({
               </div>
               <div className="min-w-0">
                 <h1 className="font-head font-extrabold text-[15px] sm:text-lg leading-tight truncate">
-                  Gap · School ilaa University
+                  Diyaarinta Jaamacadda (JUS · 5 Maado)
                 </h1>
                 <p className="text-[11px] text-white/75 truncate">
-                  Imtixaanka Jaamacadaha · {GAP_EXAM_DATE}
+                  Tartanka Jaamacadda Ummadda · {GAP_EXAM_DATE}
                 </p>
               </div>
             </div>
@@ -78,54 +123,54 @@ export function BridgingPrepScreen({
         </div>
       </header>
 
-      <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 space-y-6">
-        {/* Prepared Gap Intro Banner (October 2027) */}
+      <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 space-y-5">
+        {/* Focused JUS Stage Header */}
         <section className="rounded-3xl p-5 sm:p-6 border border-emerald-300/30 bg-white/[0.08] backdrop-blur-md space-y-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-emerald-300">
               <Target className="w-4 h-4" />
-              <span>Qeybta 2aad · Gap (Diyaargarowga Jaamacadda)</span>
+              <span>Qeybta 2aad · Jaamacadda Ummadda (JUS Keliya)</span>
             </div>
             <div className="inline-flex items-center gap-2 text-xs font-bold text-white/85 tabular-nums">
               <Calendar className="w-3.5 h-3.5 text-[#FFD86B]" />
-              <span>Imtixaanka: {GAP_EXAM_DATE}</span>
+              <span>{GAP_EXAM_DATE}</span>
               <span className="text-white/35" aria-hidden="true">·</span>
-              <span>Predict $0.50</span>
+              <span>JUS $0.50 · Total $1.20 (20% Off)</span>
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <h2 className="font-head font-extrabold text-2xl sm:text-3xl text-white leading-tight">
-              Diyaar u ah Tartanka Jaamacadaha ({GAP_EXAM_DATE})
-            </h2>
-            <p className="text-sm text-white/85 leading-relaxed max-w-3xl">
-              Qeybtani waxay u diyaarsan tahay waqtiga u dhexeeya Form 4 iyo Jaamacadda. PDF-yada iyo su'aalaha Predict Exam-ka waxaa la soo gelin doonaa ka hor {GAP_EXAM_DATE} insha Allah.
-            </p>
-          </div>
+          <h2 className="font-head font-extrabold text-xl sm:text-2xl text-white leading-tight">
+            Tartanka JUS (4 Saynis + Ingiriisi), 90 Maalmood &amp; Ranking
+          </h2>
 
-          <div className="grid sm:grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
             {[
               {
                 id: "exams" as const,
-                label: "Tartanka Jaamacadaha",
+                label: "Imtixaanka JUS (5 Maado)",
                 icon: <Target className="w-4 h-4" />,
               },
               {
                 id: "readiness" as const,
-                label: "Diyaargarowga 90 Maalmood",
+                label: "90 Maalmood (Free)",
                 icon: <ClipboardCheck className="w-4 h-4" />,
               },
               {
                 id: "challenges" as const,
-                label: "Xalka Caqabadaha Kala-Guurka",
+                label: "Xalka Caqabadaha (Free)",
                 icon: <Lightbulb className="w-4 h-4" />,
+              },
+              {
+                id: "ranking" as const,
+                label: "Ranking JUS",
+                icon: proActive ? <Trophy className="w-4 h-4" /> : <Lock className="w-4 h-4" />,
               },
             ].map((tab) => (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => setSection(tab.id)}
-                className={`px-4 py-3 rounded-2xl text-xs sm:text-sm font-extrabold border inline-flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+                className={`px-3.5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold border inline-flex items-center justify-center gap-2 cursor-pointer transition-colors ${
                   section === tab.id
                     ? "bg-white text-[#06212C] border-white shadow-sm"
                     : "bg-white/[0.08] text-white border-white/20 hover:bg-white/15"
@@ -140,56 +185,72 @@ export function BridgingPrepScreen({
 
         {section === "exams" && (
           <div className="space-y-5 animate-pro-enter">
-            {/* Select Track */}
-            <div className="grid md:grid-cols-2 gap-3.5">
-              {bridgeExamTracks.map((tr) => {
-                const isSel = tr.id === activeTrack.id;
-                const isOpen = hasBridgeAccess(tr.id);
-                return (
-                  <button
-                    key={tr.id}
-                    type="button"
-                    onClick={() => setTrackId(tr.id)}
-                    className={`text-start rounded-3xl p-5 border transition-all cursor-pointer space-y-2 ${
-                      isSel
-                        ? "bg-emerald-500/25 border-white shadow-lg"
-                        : "bg-white/[0.06] hover:bg-white/[0.12] border-white/15"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-200">
-                        {tr.badge}
-                      </span>
-                      <span className={`text-xs font-extrabold ${isOpen ? "text-emerald-300" : "text-[#FFD86B]"}`}>
-                        {isOpen ? "Furan" : tr.price}
-                      </span>
-                    </div>
-                    <h3 className="font-head font-extrabold text-lg text-white leading-snug">
-                      {tr.title}
-                    </h3>
-                    <div className="text-xs text-white/75 flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-[#FFD86B]" />
-                      <span>Imtixaanka: {tr.examDate}</span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+            {/* 5 Core JUS Entrance Subjects Selector (4 Scientific + English) */}
+            <section aria-label="5-ta Maado ee Jaamacadda Ummadda (JUS)" className="space-y-2.5">
+              <div className="flex items-center justify-between gap-2 flex-wrap px-1">
+                <h3 className="font-head font-extrabold text-sm sm:text-base text-white">
+                  5-ta Maado ee JUS (4 Saynis + Ingiriisi)
+                </h3>
+                <span className="text-xs font-bold text-emerald-200">
+                  {activeTrack.examDate}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                {bridgeSubjects.map((sub) => {
+                  const isSel = sub.id === activeSubject.id;
+                  const subOpen =
+                    proActive || hasBridgeAccess(activeTrack.id) || hasBridgeAccess(sub.id);
+                  return (
+                    <button
+                      key={sub.id}
+                      type="button"
+                      onClick={() => setSubjectId(sub.id)}
+                      className={`text-start rounded-2xl p-3.5 border transition-all cursor-pointer flex items-center justify-between gap-2 ${
+                        isSel
+                          ? "bg-white text-[#06212C] border-white shadow-md"
+                          : "bg-white/[0.06] hover:bg-white/[0.12] text-white border-white/15"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span
+                          className="w-9 h-9 rounded-xl flex items-center justify-center font-head font-black text-[11px] text-white shrink-0"
+                          style={{ backgroundColor: sub.accent }}
+                        >
+                          {sub.code}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="font-head font-extrabold text-xs leading-tight truncate">
+                            {sub.name}
+                          </div>
+                          <div
+                            className={`text-[10.5px] font-semibold mt-0.5 truncate ${
+                              isSel ? "text-emerald-800" : "text-white/65"
+                            }`}
+                          >
+                            {subOpen ? "Furan" : sub.groupLabel}
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
 
-            {/* Track Detail Workspace */}
+            {/* Subject Workspace */}
             <div className="rounded-3xl p-5 sm:p-6 border border-white/20 bg-white/[0.08] space-y-4">
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div className="space-y-1">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-200">
-                    {activeTrack.badge} · {activeTrack.examDate}
+                    {activeTrack.badge} · {activeSubject.groupLabel} · {activeSubject.examDate}
                   </span>
                   <h3 className="font-head font-extrabold text-xl sm:text-2xl text-white">
-                    {activeTrack.title}
+                    {activeSubject.name}
                   </h3>
                 </div>
 
                 {!unlocked ? (
-                  activeTrack.predictQuestions.length > 0 ? (
+                  activeSubject.predictQuestions.length > 0 || activeTrack.predictQuestions.length > 0 ? (
                     <button
                       type="button"
                       onClick={() => onUnlockBridge(activeTrack)}
@@ -201,13 +262,13 @@ export function BridgingPrepScreen({
                   ) : (
                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-200 shrink-0">
                       <UploadCloud className="w-4 h-4" />
-                      <span>Soo Socda ({activeTrack.examDate})</span>
+                      <span>Diyaar ({activeSubject.examDate})</span>
                     </span>
                   )
                 ) : (
                   <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-300 shrink-0">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>Predict Waa Furan Yahay</span>
+                    <span>{proActive ? "Unlock+ Furan" : "Predict Furan"}</span>
                   </span>
                 )}
               </div>
@@ -241,43 +302,47 @@ export function BridgingPrepScreen({
             </div>
 
             {examSubTab === "pdfs" ? (
-              <div className="rounded-3xl p-6 sm:p-8 border border-white/20 bg-white/[0.07] text-center space-y-4 animate-pro-enter">
-                <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/25 border border-emerald-300/40 text-emerald-200 flex items-center justify-center">
-                  <UploadCloud className="w-7 h-7" />
+              <div className="rounded-3xl p-6 sm:p-8 border border-white/20 bg-white/[0.07] text-center space-y-3 animate-pro-enter">
+                <div className="w-12 h-12 mx-auto rounded-2xl bg-emerald-500/25 border border-emerald-300/40 text-emerald-200 flex items-center justify-center">
+                  <UploadCloud className="w-6 h-6" />
                 </div>
-                <div className="space-y-1.5 max-w-md mx-auto">
+                <div className="space-y-1.5">
                   <div className="text-xs font-extrabold uppercase tracking-wider text-emerald-300">
-                    PDF-yada · {activeTrack.title}
+                    PDF-yada JUS · {activeSubject.name}
                   </div>
-                  <h4 className="font-head font-extrabold text-lg sm:text-xl text-white">
-                    Diyaar u ah Soo-Gelinta ({activeTrack.examDate})
+                  <h4 className="font-head font-extrabold text-lg text-white">
+                    Diyaar · Markii PDFs la soo geliyo ({activeSubject.examDate})
                   </h4>
-                  <p className="text-sm text-white/80 leading-relaxed">
-                    Weli lama soo gelin faylasha PDF-ka ee tartankan. Waxaa si bilaash ah loo soo gelin doonaa ka hor {activeTrack.examDate} insha Allah.
+                  <p className="text-xs text-white/75 max-w-md mx-auto leading-relaxed">
+                    Kaydka PDF-yada imtixaannadii hore waa xog dadweyne oo mar walba bilaash u ah arday kasta.
                   </p>
                 </div>
               </div>
             ) : !unlocked ? (
               <PredictExamGateCard
-                badgeText={activeTrack.badge}
-                title={`Predict Exam · ${activeTrack.title}`}
+                badgeText={`${activeTrack.badge} · ${activeSubject.code}`}
+                title={`Predict Exam · ${activeSubject.name}`}
                 subtitle=""
-                examDate={activeTrack.examDate}
-                questionCount={activeTrack.predictQuestions.length}
-                durationMin={activeTrack.durationMin}
+                examDate={activeSubject.examDate}
+                questionCount={activeSubject.predictQuestions.length}
+                durationMin={activeSubject.durationMin}
                 price={activeTrack.price}
+                blueprint={activeSubject.examBlueprint}
                 onUnlock={() => onUnlockBridge(activeTrack)}
               />
             ) : (
               <ProContentShield
                 active={unlocked}
-                sectionLabel={`Qeybta 2aad · Gap (${activeTrack.title})`}
+                sectionLabel={`Qeybta 2aad · JUS (${activeSubject.name})`}
               >
                 <PredictExamRunner
-                  title={activeTrack.title}
-                  durationMin={activeTrack.durationMin}
-                  examDate={activeTrack.examDate}
-                  questions={activeTrack.predictQuestions}
+                  title={`${activeSubject.name} (JUS)`}
+                  durationMin={activeSubject.durationMin}
+                  examDate={activeSubject.examDate}
+                  blueprint={activeSubject.examBlueprint}
+                  questions={activeSubject.predictQuestions}
+                  defaultStudentName={userName}
+                  onExamCompleted={handleRecordJusScore}
                 />
               </ProContentShield>
             )}
@@ -286,13 +351,25 @@ export function BridgingPrepScreen({
 
         {section === "readiness" && (
           <div className="animate-pro-enter">
-            <ReadinessTracker locked={false} />
+            <ReadinessTracker locked={false} onUnlockClick={onOpenPaywall} />
           </div>
         )}
 
         {section === "challenges" && (
           <div className="animate-pro-enter">
-            <SomaliaChallengesHub locked={false} />
+            <SomaliaChallengesHub locked={false} onUnlockClick={onOpenPaywall} />
+          </div>
+        )}
+
+        {section === "ranking" && (
+          <div className="animate-pro-enter">
+            <PredictRankingBoard
+              scope="jus"
+              title="Kaalmaha Sare · Tartanka JUS (5 Maado)"
+              subjects={bridgeSubjects}
+              proActive={proActive}
+              onUnlock={onOpenPaywall}
+            />
           </div>
         )}
       </main>

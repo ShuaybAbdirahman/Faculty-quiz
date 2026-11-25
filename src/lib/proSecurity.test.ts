@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  calculateTotalBundlePricing,
   clearStoredEntitlement,
   EVC_PAYMENT_CONFIG,
   formatShortDeviceId,
@@ -13,6 +14,7 @@ import {
   readStoredEntitlement,
   rotateDeviceId,
   syncServerEntitlement,
+  TOTAL_BUNDLE_CONFIG,
   writeStoredEntitlement,
   type StorageLike,
 } from "./proSecurity";
@@ -173,13 +175,46 @@ test("Pro Languages and Pro Departments packages stay cleanly separated and merg
   assert.equal(hasDepartmentsAccess(fullEnt, deviceId, now), true);
 });
 
-test("School Form 4 ($0.25 per subject) and Bridging Exam ($0.50) unlocks stay isolated per item", async () => {
+test("HIRAAL Total bundle applies 20% discount ($1.50 -> $1.20) and scope full unlocks all stages + languages", async () => {
+  const {
+    hasBridgeExamAccess,
+    hasDepartmentsAccess,
+    hasLanguagesAccess,
+    hasSchoolSubjectAccess,
+    saveRequestedProScope,
+  } = await import("./proSecurity");
+
+  const pricing = calculateTotalBundlePricing();
+  assert.equal(TOTAL_BUNDLE_CONFIG.originalAmount, 1.5);
+  assert.equal(TOTAL_BUNDLE_CONFIG.discountPct, 20);
+  assert.equal(pricing.finalAmount, 1.2);
+  assert.equal(pricing.savedAmount, 0.3);
+  assert.equal(pricing.formattedFinal, "$1.20");
+  assert.equal(pricing.formattedOriginal, "$1.50");
+  assert.equal(pricing.ussdAmount, "1.2");
+
+  const storage = createMemoryStorage();
+  const deviceId = getOrCreateSecureDeviceId(storage);
+  const now = 1_700_000_000_000;
+  const future = now + 180 * 24 * 3600 * 1000;
+
+  saveRequestedProScope(storage, deviceId, "full");
+  const totalEnt = writeStoredEntitlement(storage, deviceId, future, now);
+  assert.equal(hasLanguagesAccess(totalEnt, deviceId, now), true);
+  assert.equal(hasDepartmentsAccess(totalEnt, deviceId, now), true);
+  assert.equal(hasSchoolSubjectAccess(totalEnt, deviceId, "bio", now), true);
+  assert.equal(hasSchoolSubjectAccess(totalEnt, deviceId, "math", now), true);
+  assert.equal(hasBridgeExamAccess(totalEnt, deviceId, "snu_tartanka", now), true);
+});
+
+test("School Form 4 ($0.50) and Bridging Exam ($0.50) item unlocks stay isolated until stage/full unlock", async () => {
   const {
     hasBridgeExamAccess,
     hasDepartmentsAccess,
     hasLanguagesAccess,
     hasSchoolSubjectAccess,
     saveRequestedProItem,
+    saveRequestedProScope,
   } = await import("./proSecurity");
 
   const storage = createMemoryStorage();
@@ -187,7 +222,7 @@ test("School Form 4 ($0.25 per subject) and Bridging Exam ($0.50) unlocks stay i
   const now = 1_700_000_000_000;
   const future = now + 365 * 24 * 3600 * 1000;
 
-  // Unlock Biology Predict Exam ($0.25) only
+  // Unlock Biology Predict Exam item only
   saveRequestedProItem(storage, deviceId, "school:bio");
   const bioOnly = writeStoredEntitlement(storage, deviceId, future, now);
   assert.equal(hasSchoolSubjectAccess(bioOnly, deviceId, "bio", now), true);
@@ -203,6 +238,16 @@ test("School Form 4 ($0.25 per subject) and Bridging Exam ($0.50) unlocks stay i
   assert.equal(hasSchoolSubjectAccess(merged, deviceId, "phys", now), false);
   assert.equal(hasBridgeExamAccess(merged, deviceId, "snu_tartanka", now), true);
   assert.equal(hasBridgeExamAccess(merged, deviceId, "uni_placement", now), false);
+
+  // Unlock+ (departments or full scope) automatically unlocks EVERY Form 4 & Bridge JUS Predict Exam
+  saveRequestedProScope(storage, deviceId, "departments");
+  const unlockPlusEnt = writeStoredEntitlement(storage, deviceId, future, now);
+  assert.equal(hasDepartmentsAccess(unlockPlusEnt, deviceId, now), true);
+  assert.equal(hasSchoolSubjectAccess(unlockPlusEnt, deviceId, "phys", now), true);
+  assert.equal(hasSchoolSubjectAccess(unlockPlusEnt, deviceId, "math", now), true);
+  assert.equal(hasBridgeExamAccess(unlockPlusEnt, deviceId, "snu_tartanka", now), true);
+  assert.equal(hasBridgeExamAccess(unlockPlusEnt, deviceId, "jus_bio", now), true);
+  assert.equal(hasBridgeExamAccess(unlockPlusEnt, deviceId, "jus_eng", now), true);
 });
 
 test("Pro content shield blocks screenshot/print/save/copy shortcuts and stamps personal watermark", async () => {

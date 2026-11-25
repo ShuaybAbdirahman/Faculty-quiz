@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   ArrowLeftRight,
   ArrowRight,
   Briefcase,
+  CalendarCheck,
   CheckSquare,
   Compass,
   Copy,
@@ -11,8 +12,10 @@ import {
   HelpCircle,
   Lightbulb,
   ListChecks,
+  LockOpen,
   Moon,
   RotateCcw,
+  Sparkles,
   Sun,
 } from "lucide-react";
 import type { Faculty } from "../data/quizData";
@@ -20,14 +23,17 @@ import { useApp } from "../context/AppContext";
 import { backendEnabled } from "../lib/config";
 import { argbToHex, darkenHex, hexToRgba, plainFacultyName } from "../lib/i18n";
 import { minNeeded, type FacultyMatch } from "../lib/scoring";
+import { buildPersonalCareerStrategy } from "../lib/careerFitInsights";
 import {
   ConfettiBurst,
   CountUp,
   FacultyBanner,
   FacultyIcon,
   Footer,
+  ProBadge,
   ProgressRing,
 } from "../components/ModernUI";
+import { ProContentShield } from "../components/ProContentShield";
 import { ShareSection } from "../components/ShareCard";
 import { SaveResultCard } from "../components/SaveResultCard";
 import { ReviewCard } from "../components/ReviewsComponents";
@@ -152,7 +158,13 @@ function Celebration({ top, onDone }: { top: FacultyMatch; onDone: () => void })
   );
 }
 
-function ResultCard({ rank, m }: { rank: number; m: FacultyMatch }) {
+function ResultCard({
+  rank,
+  m,
+}: {
+  rank: number;
+  m: FacultyMatch;
+}) {
   const { lang, tr, tx, txl, darkMode } = useApp();
   const f = m.f;
   const hex = argbToHex(f.color);
@@ -260,6 +272,7 @@ export function ResultScreen({
   onCompare,
   onRestart,
   onOpenPro,
+  onOpenPaywall,
 }: {
   matches: FacultyMatch[];
   answered: number;
@@ -268,8 +281,9 @@ export function ResultScreen({
   onCompare: () => void;
   onRestart: () => void;
   onOpenPro: (faculty: Faculty) => void;
+  onOpenPaywall: () => void;
 }) {
-  const { tr, trf, tx, darkMode, setDarkMode, userName, showToast } = useApp();
+  const { tr, trf, tx, darkMode, setDarkMode, userName, showToast, proActive } = useApp();
   const confident = answered >= minNeeded(planLen);
   const [celebrate, setCelebrate] = useState(confident);
 
@@ -279,11 +293,13 @@ export function ResultScreen({
     return () => window.clearTimeout(t);
   }, [celebrate]);
 
+  const top = useMemo(() => matches.slice(0, 3), [matches]);
+  const strategy = useMemo(() => buildPersonalCareerStrategy(top, profile), [top, profile]);
+
   if (celebrate && matches.length > 0) {
     return <Celebration top={matches[0]} onDone={() => setCelebrate(false)} />;
   }
 
-  const top = matches.slice(0, 3);
   const unclear = top.length === 3 && top[0].percent - top[2].percent < 6;
 
   const nextSteps = [
@@ -434,11 +450,94 @@ export function ResultScreen({
           </p>
         </div>
 
-        {/* Top 3 Faculty Cards */}
+        {/* Top 3 Faculty Cards (100% Free Core Guidance) */}
         <div id="top-faculty-details" className="mt-2 scroll-mt-20">
           {top.map((m, i) => (
             <ResultCard key={m.f.id} rank={i + 1} m={m} />
           ))}
+
+          {/* Unique HIRAAL Unlock+: Personal Career & 30-Day Decision Strategy */}
+          {strategy && (
+            <ProContentShield
+              active={proActive}
+              sectionLabel="Qeybta 3aad · Qorshaha Go'aanka & 30-ka Maalmood"
+            >
+              <section
+                className={`mt-5 rounded-[22px] p-5 border ${
+                  darkMode
+                    ? "bg-[#121A30] border-[#FFC93C]/35 text-white"
+                    : "bg-indigo-50/70 border-indigo-200 text-slate-900"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-[#FFC93C]" />
+                    <h3 className="font-head font-extrabold text-base sm:text-lg">
+                      Qorshaha Go'aanka &amp; 30-ka Maalmood (Gaar Kuu ah)
+                    </h3>
+                  </div>
+                  <ProBadge small />
+                </div>
+
+                {proActive ? (
+                  <div className="mt-4 space-y-4">
+                    <div
+                      className={`rounded-2xl p-4 border space-y-1.5 ${
+                        darkMode
+                          ? "bg-white/[0.04] border-white/12"
+                          : "bg-white border-slate-200"
+                      }`}
+                    >
+                      <div className="text-xs font-extrabold uppercase tracking-wider text-[#FFC93C]">
+                        {strategy.clarityTitle} · Farqiga #{1} vs #{2}: {strategy.gap}%
+                      </div>
+                      <p className="text-sm leading-relaxed opacity-90">{strategy.claritySummary}</p>
+                      <p className="text-xs sm:text-[13px] opacity-80 leading-relaxed pt-1">
+                        <strong>Falanqaynta Tiirarka ({strategy.strongestPillar} vs {strategy.growthPillar}):</strong>{" "}
+                        {strategy.pillarAdvice}
+                      </p>
+                    </div>
+
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      {strategy.actionPlan30Days.map((step) => (
+                        <div
+                          key={step.weekLabel}
+                          className={`rounded-2xl p-3.5 border space-y-1.5 ${
+                            darkMode
+                              ? "bg-white/[0.04] border-white/10"
+                              : "bg-white border-slate-200"
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#5D7BFF]">
+                            <CalendarCheck className="w-3.5 h-3.5" />
+                            <span>{step.weekLabel}</span>
+                          </div>
+                          <div className="font-head font-bold text-sm leading-snug">{step.title}</div>
+                          <p className="text-xs opacity-80 leading-relaxed">{step.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p className="text-xs opacity-85 leading-relaxed">{strategy.marketAdvantageNote}</p>
+                  </div>
+                ) : (
+                  <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <p className="text-xs sm:text-sm opacity-80 leading-relaxed">
+                      Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u hesho falanqaynta farqiga labada kulliyadood ee kuugu sarreysa, meesha aad ku xooggan tahay, iyo qorshaha tallaabo-tallaabo ee 30-ka maalmood.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={onOpenPaywall}
+                      className="shrink-0 px-4 h-10 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <LockOpen className="w-3.5 h-3.5" />
+                      <span>{tr("Fur Unlock+ ($0.50 | $1.20 Total)")}</span>
+                    </button>
+                  </div>
+                )}
+              </section>
+            </ProContentShield>
+          )}
         </div>
 
         {/* Anonymous Save + Review */}
@@ -449,7 +548,7 @@ export function ResultScreen({
           </div>
         )}
 
-        {/* Next Steps */}
+        {/* Next Steps (100% Free) */}
         <div
           className={`mt-5 rounded-2xl p-5 border ${
             darkMode ? "bg-[#121A30] border-white/10" : "bg-white border-slate-200 shadow-xs"

@@ -5,7 +5,7 @@ import { backendEnabled } from "./lib/config";
 import { AppProvider, useApp } from "./context/AppContext";
 import { HomeScreen } from "./screens/HomeScreen";
 import { SchoolForm4Screen } from "./screens/SchoolForm4Screen";
-import { BridgingPrepScreen } from "./screens/BridgingPrepScreen";
+import { BridgingPrepScreen, type BridgingSectionTab } from "./screens/BridgingPrepScreen";
 import { WelcomeScreen } from "./screens/WelcomeScreen";
 import { FounderIntroScreen } from "./screens/FounderIntroScreen";
 import { QuizScreen, type QuizOutcome } from "./screens/QuizScreen";
@@ -21,7 +21,7 @@ import { BottomNavBar, type MainNavTab } from "./components/BottomNavBar";
 type Route =
   | { name: "home" }
   | { name: "school"; subjectId?: string }
-  | { name: "bridging"; section?: "exams" | "readiness" | "challenges" }
+  | { name: "bridging"; section?: BridgingSectionTab }
   | { name: "faculty_home" }
   | { name: "founder"; after: "quiz" | "back" }
   | { name: "quiz" }
@@ -71,7 +71,7 @@ function AppShell() {
     if (verified) {
       push({ name: "pro_guide", faculty, outcome });
     } else {
-      push({ name: "pro_paywall", faculty, outcome, plan: "departments" });
+      push({ name: "pro_paywall", faculty, outcome, plan: "total" });
     }
   };
 
@@ -131,6 +131,13 @@ function AppShell() {
               returnTo: "school",
             })
           }
+          onOpenPaywall={() =>
+            push({
+              name: "pro_paywall",
+              plan: "total",
+              returnTo: "school",
+            })
+          }
         />
       );
       break;
@@ -144,6 +151,13 @@ function AppShell() {
               name: "pro_paywall",
               plan: "bridge_exam",
               itemKey: `bridge:${track.id}`,
+              returnTo: "bridging",
+            })
+          }
+          onOpenPaywall={() =>
+            push({
+              name: "pro_paywall",
+              plan: "total",
               returnTo: "bridging",
             })
           }
@@ -161,7 +175,7 @@ function AppShell() {
           onOpenSettings={() => push({ name: "settings" })}
           onOpenReviews={() => push({ name: "reviews" })}
           onOpenProHub={(tab, facultyId) => push({ name: "pro_hub", tab, facultyId })}
-          onOpenPaywall={() => push({ name: "pro_paywall", plan: "departments" })}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "total" })}
         />
       );
       break;
@@ -195,11 +209,18 @@ function AppShell() {
           onOpenPro={(faculty) => {
             void handleOpenPro(faculty, current.outcome);
           }}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "total" })}
         />
       );
       break;
     case "compare":
-      screen = <CompareScreen matches={current.outcome.matches} onBack={pop} />;
+      screen = (
+        <CompareScreen
+          matches={current.outcome.matches}
+          onBack={pop}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "total" })}
+        />
+      );
       break;
     case "settings":
       screen = (
@@ -221,7 +242,7 @@ function AppShell() {
           initialTab={current.tab}
           initialFacultyId={current.facultyId}
           onBack={pop}
-          onOpenPaywall={() => push({ name: "pro_paywall", plan: "departments" })}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "total" })}
         />
       );
       break;
@@ -232,7 +253,7 @@ function AppShell() {
           ratings={current.outcome.ratings}
           onBack={pop}
           onLocked={() =>
-            replace({ name: "pro_paywall", faculty: current.faculty, outcome: current.outcome, plan: "departments" })
+            replace({ name: "pro_paywall", faculty: current.faculty, outcome: current.outcome, plan: "total" })
           }
         />
       );
@@ -240,7 +261,7 @@ function AppShell() {
     case "pro_paywall":
       screen = (
         <ProPaywallScreen
-          initialPlan={current.plan ?? "departments"}
+          initialPlan={current.plan ?? "total"}
           initialItemKey={current.itemKey}
           onBack={pop}
           onUnlocked={(unlockedItem) => {

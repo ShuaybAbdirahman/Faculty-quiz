@@ -71,12 +71,12 @@ export const facultyFunPrompts: Record<string, FacultyFunPrompt> = {
       so: [
         "Run weeye, aasaaska xisaabta adag waa lama huraan! Injineerku wuxuu marka hore hubiyaa in 1 + 1 ay si sax ah u tahay 2 ka hor inta uusan naqshadayn mishiin ama dhisme hal millimetir khalad lahayn.",
         "Sax! Waxaad isla markiiba fahamtay sirta Injineernimada: 'Factor of Safety'. Buundadu uma dhisna culayska maanta oo keliya, ee waxaa loogu daraa kayd badbaado oo ka ilaaliya culays lama filaan ah.",
-        "Maskax hal-abuur leh! Injineerrada waaweyn mararka qaar xeerarka caadiga ah way ka gudbaan si ay u curiyaan fikrad cusub—sida tamarta qorraxda ama naqshad dhisme oo aan hore loo arag.",
+        "Maskax hal-abuur leh! Injineerrada waaweyn mararka qaar xeerarka caadiga ah way ka gudbaan si ay u curiyaan fikrad cusub, sida tamarta qorraxda ama naqshad dhisme oo aan hore loo arag.",
       ],
       en: [
-        "Spot on—rock-solid math precision comes first! Every engineer verifies exact numbers down to the millimeter before turning calculations into a machine or structure.",
+        "Spot on: rock-solid math precision comes first! Every engineer verifies exact numbers down to the millimeter before turning calculations into a machine or structure.",
         "Bullseye! You immediately nailed the core engineering rule: Factor of Safety. A bridge is never built for just today's weight; it includes extra margin for the unexpected.",
-        "Inventor mindset! Great engineers know the rules—and also see 11 when combining two ideas side by side to invent cleaner energy, smarter systems, and bold designs.",
+        "Inventor mindset! Great engineers know the rules, and also see 11 when combining two ideas side by side to invent cleaner energy, smarter systems, and bold designs.",
       ],
       ar: [
         "أحسنت! الدقة الحسابية هي الأساس الأول؛ فالمهندس يتأكد من صحة الأرقام حتى أصغر مليمتر قبل تحويل الحسابات إلى بناء أو آلة.",
@@ -111,7 +111,7 @@ export const facultyFunPrompts: Record<string, FacultyFunPrompt> = {
       so: [
         "Geesinnimadaas ayaa laga rabaa kulliyadda Caafimaadka! Marka aad leedahay go'aan adag oo 6 sano ah, habeen kasta oo aad wax akhriso wuxuu berri badbaadinayaa nolol qof bini'aadam ah.",
         "Haddaba waxaad jebisay sheekadii caanka ahayd ee dhakhaatiirta! Far-qor cad oo la fahmo wuxuu bukaanka siiyaa kalsooni wuxuuna yareeyaa khaladaadka warqadda daawada.",
-        "Run sheegga iyo is-hoosaysiinta ayaa dhakhtarka ka dhiga mid barasho joogto ah ku jira. Xitaa dhakhaatiirta khibradda leh maalin walba cilmi cusub ayay bartaan—tallaabo tallaabo ayaad ku gaari doontaa!",
+        "Run sheegga iyo is-hoosaysiinta ayaa dhakhtarka ka dhiga mid barasho joogto ah ku jira. Xitaa dhakhaatiirta khibradda leh maalin walba cilmi cusub ayay bartaan; tallaabo tallaabo ayaad ku gaari doontaa!",
       ],
       en: [
         "That bold commitment is what Medicine demands! With a 6-year mindset locked in, every late night of anatomy and clinical study turns into a life saved tomorrow.",
@@ -156,7 +156,7 @@ export const facultyFunPrompts: Record<string, FacultyFunPrompt> = {
       en: [
         "Calm communication is half the cure! Explaining each step gently lowers a patient's stress before you even pick up an instrument.",
         "Steady hands and painless technique are what make patients rave about their dentist. Precision down to a millimeter turns fear into confidence.",
-        "The gold standard of Dentistry! Combining warm reassurance with gentle clinical skill makes nervous patients walk out smiling—and referring their whole family.",
+        "The gold standard of Dentistry! Combining warm reassurance with gentle clinical skill makes nervous patients walk out smiling, and referring their whole family.",
       ],
       ar: [
         "الكلام الهادئ والمطمئن هو نصف العلاج! شرح الخطوات بلطف يبدّد خوف المريض قبل أن تبدأ العمل أصلاً.",
@@ -194,9 +194,9 @@ export const facultyFunPrompts: Record<string, FacultyFunPrompt> = {
         "Halkaas ayaad ka guulaysanaysaa: farmashiistuhu ma wada xifdiyo maalin qura, balse ku-celcelinta shaybaarka iyo la-tashiga bukaanka ayaa magacyada ka dhiga sida luqaddaada koowaad.",
       ],
       en: [
-        "A sharp memory is a massive edge in Pharmacy—especially when catching dangerous drug interactions and exact dosages before they reach a patient.",
+        "A sharp memory is a massive edge in Pharmacy, especially when catching dangerous drug interactions and exact dosages before they reach a patient.",
         "True pro thinking! Once you understand chemical families and suffixes (like -cillin or -statin), hundreds of scary names suddenly follow clean logical patterns.",
-        "Growth mindset wins every time! Nobody memorizes the whole formulary on day one—hands-on lab work and patient cases turn complex names into second nature.",
+        "Growth mindset wins every time! Nobody memorizes the whole formulary on day one; hands-on lab work and patient cases turn complex names into second nature.",
       ],
       ar: [
         "الذاكرة القوية ميزة عظيمة في الصيدلة، خصوصاً عند مراجعة الجرعات واكتشاف التفاعلات الدوائية قبل وصول الدواء للمريض.",
@@ -270,11 +270,11 @@ export const facultyFunPrompts: Record<string, FacultyFunPrompt> = {
     optionInsights: {
       so: [
         "Indho fiiqan ayaad leedahay! Dhakhtarka xoolaha ee fiican wuxuu socodka, cunitaanka, iyo neefsiga neefka ka akhriyaa calaamado uusan qof caadi ah arki karin.",
-        "Saynis iyo caddeyn! Shaybaarku wuxuu si degdeg ah u xaqiijiyaa cudurka si daawada saxda ah loogu badbaadiyo xoolaha—taas oo muhiim u ah dhaqaalaha Soomaaliya.",
+        "Saynis iyo caddeyn! Shaybaarku wuxuu si degdeg ah u xaqiijiyaa cudurka si daawada saxda ah loogu badbaadiyo xoolaha, taas oo muhiim u ah dhaqaalaha Soomaaliya.",
         "Xeeladda baadhaha dhabta ah! Marka la isku daro il-qabashada dhaqanka iyo baadhitaanka shaybaarka, xanuunka waxaa la helaa goor hore iyadoo kharash iyo khatarba yar tahay.",
       ],
       en: [
-        "Sharp clinical eye! Skilled vets read posture, appetite, and subtle breathing changes like an open book—even without a single word spoken.",
+        "Sharp clinical eye! Skilled vets read posture, appetite, and subtle breathing changes like an open book, even without a single word spoken.",
         "Evidence-driven science! Lab diagnostics lock in the exact pathogen fast, protecting herds and safeguarding Somalia's vital livestock economy.",
         "True medical detective work! Pairing sharp physical observation with rapid lab testing catches disease early before it spreads through a herd.",
       ],
@@ -314,7 +314,7 @@ export const facultyFunPrompts: Record<string, FacultyFunPrompt> = {
         "Maskaxda Data-driven-ka! Adduunka casriga ah ee AI iyo cilmi-baarista wuxuu ku dhisan yahay dadka cabbira caddeynta ee aan hadal iska dhihin.",
       ],
       en: [
-        "Refusing to walk past 'Why?' is how every major scientific discovery begins—from clean energy to next-generation medicine.",
+        "Refusing to walk past 'Why?' is how every major scientific discovery begins, from clean energy to next-generation medicine.",
         "The lab is your playground! Testing hypotheses with your own hands turns textbook formulas into living breakthroughs.",
         "A true data-first mind! Modern research, climate modeling, and AI all depend on scientists who measure the evidence instead of guessing.",
       ],
@@ -349,14 +349,14 @@ export const facultyFunPrompts: Record<string, FacultyFunPrompt> = {
     },
     optionInsights: {
       so: [
-        "Maskax ganacsato dhab ah! Waxaad eegaysaa wareegga lacagta iyo baahida suuqa si $100 ay u dhasho faa'iido—taasina waa aasaaska ganacsiga guulaysta.",
+        "Maskax ganacsato dhab ah! Waxaad eegaysaa wareegga lacagta iyo baahida suuqa si $100 ay u dhasho faa'iido; taasina waa aasaaska ganacsiga guulaysta.",
         "Isku-dheellitir caqli leh! Qayb maalgashi ah iyo qayb badbaado ah waa xeerka ay adeegsadaan maamulayaasha maaliyadda (Portfolio Managers) si ay khatarta u yareeyaan.",
         "Disibiliinka maaliyadeed (Budgeting) waa halka ay shirkadaha waaweyn ka bilaabmaan! Qofka aan xisaabin kharashka ma maamuli karo faa'iidada.",
       ],
       en: [
         "Pure entrepreneurial drive! Spotting market demand and multiplying capital is the core engine of business growth and startups.",
         "Smart risk-balancing! Splitting funds between growth investment and cash reserve is exactly how top finance managers build lasting wealth.",
-        "Master of financial discipline! Every giant corporation starts with a clear budget—if you track every dollar, you control the outcome.",
+        "Master of financial discipline! Every giant corporation starts with a clear budget: if you track every dollar, you control the outcome.",
       ],
       ar: [
         "روح ريادية حقيقية! التفكير في مضاعفة رأس المال وتلبية حاجة السوق هو محرك المشاريع والشركات الناجحة.",
@@ -391,11 +391,11 @@ export const facultyFunPrompts: Record<string, FacultyFunPrompt> = {
       so: [
         "Awoodda hadalka iyo qancinta waa hubka qareenka! Kulliyadda Sharciga waxay qaabaysaa xirfaddaas si aad u difaacdo heshiisyada iyo xuquuqda dadka.",
         "Taasi waa mabaadi'da cadaaladda! Qareenka iyo garsooraha sharafka leh kuma doodo guul-raadis madhan, balse wuxuu difaacaa xaqa iyo runta.",
-        "Xirfadle maxkamadeed! Maxkamaduhu kuma go'aan qaataan hadal badan ee waxay eegaan caddeynta iyo qodobka sharciga—aad baad ugu diyaar tahay.",
+        "Xirfadle maxkamadeed! Maxkamaduhu kuma go'aan qaataan hadal badan ee waxay eegaan caddeynta iyo qodobka sharciga; aad baad ugu diyaar tahay.",
       ],
       en: [
         "Natural courtroom persuasion! Law school sharpens that instinct into structured legal arguments that win cases and protect contracts.",
-        "True sense of justice! The most respected judges and lawyers fight for principle and fairness—never just for the sake of arguing.",
+        "True sense of justice! The most respected judges and lawyers fight for principle and fairness, never just for the sake of arguing.",
         "Evidence wins verdicts! Bringing verified facts and clean documentation sets elite legal minds apart from loud talkers.",
       ],
       ar: [
@@ -549,13 +549,13 @@ export const facultyFunPrompts: Record<string, FacultyFunPrompt> = {
     },
     optionInsights: {
       so: [
-        "Xaqiiqo lama taabtaan ah! Waddan kasta oo isku filnaansho cunto gaara wuxuu haystaa xorriyad iyo dhaqaale adag—Soomaaliyana wabiyadeeda iyo dhulkeeda ayaa fursaddaas leh.",
+        "Xaqiiqo lama taabtaan ah! Waddan kasta oo isku filnaansho cunto gaara wuxuu haystaa xorriyad iyo dhaqaale adag, Soomaaliyana wabiyadeeda iyo dhulkeeda ayaa fursaddaas leh.",
         "Fikir casri ah! AgriTech (waraabka dhibicda, sensors-ka carrada, iyo beeraha smart-ka ah) waxay wax-soo-saarka labanlaabaan iyadoo biyo yar la isticmaalayo.",
         "Ilaaliyaha nolosha! Deegaanka nadiifka ah, dhirta, iyo maamulka biyaha ayaa hubiya in jiilalka soo socda helaan dhul barwaaqo ah.",
       ],
       en: [
-        "Undeniable truth! Nations that secure their own food supply hold real independence—and Somalia's fertile rivers and farmland have huge untapped potential.",
-        "Forward-thinking vision! AgriTech—drip irrigation, soil sensors, and climate-smart farming—doubles yields while saving precious water.",
+        "Undeniable truth! Nations that secure their own food supply hold real independence, and Somalia's fertile rivers and farmland have huge untapped potential.",
+        "Forward-thinking vision! AgriTech (drip irrigation, soil sensors, and climate-smart farming) doubles yields while saving precious water.",
         "Guardian of ecosystems! Protecting soil health, forests, and sustainable water systems keeps communities thriving for generations.",
       ],
       ar: [

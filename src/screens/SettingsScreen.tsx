@@ -269,7 +269,7 @@ export function SettingsScreen({
             })}
           </div>
           <p className="mt-2 text-xs opacity-70">
-            {tr("Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Unlock+ ($0.50, 6 bilood).")}
+            {tr("Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Unlock+ ($0.50 qeyb ama $1.20 Total · 20% Off).")}
           </p>
           <p className="mt-1 text-xs opacity-55">
             {tr("Beddelka luqadda wuxuu ku celinayaa bogga hore.")}

@@ -396,7 +396,7 @@ export const futureJobsNews: FutureJobReport[] = [
       en: "Big Data Specialists",
       ar: "متخصصو البيانات الضخمة (Big Data)",
     },
-    growthStat: "+113% (2025 - 2030)",
+    growthStat: "+113% (2025 ilaa 2030)",
     facultyTag: {
       so: "Kombiyuutarka & Xisaabta",
       en: "CS & Statistics",
@@ -423,7 +423,7 @@ export const futureJobsNews: FutureJobReport[] = [
       en: "FinTech Engineers",
       ar: "مهندسو التكنولوجيا المالية (FinTech)",
     },
-    growthStat: "+93% (2025 - 2030)",
+    growthStat: "+93% (2025 ilaa 2030)",
     facultyTag: {
       so: "Dhaqaalaha & Kombiyuutarka",
       en: "Finance & CS",
@@ -450,7 +450,7 @@ export const futureJobsNews: FutureJobReport[] = [
       en: "AI & Machine Learning Specialists",
       ar: "متخصصو الذكاء الاصطناعي وتعلم الآلة",
     },
-    growthStat: "+82% (2025 - 2030)",
+    growthStat: "+82% (2025 ilaa 2030)",
     facultyTag: {
       so: "Kombiyuutarka & Injineernimada",
       en: "CS & Engineering",
@@ -477,7 +477,7 @@ export const futureJobsNews: FutureJobReport[] = [
       en: "Information & Cybersecurity Specialists",
       ar: "متخصصو الأمن السيبراني",
     },
-    growthStat: "+53% (2025 - 2030)",
+    growthStat: "+53% (2025 ilaa 2030)",
     facultyTag: {
       so: "Kombiyuutarka & Shabakadaha",
       en: "CS & Networking",

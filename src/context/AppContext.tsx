@@ -141,7 +141,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const setLang = useCallback(
     (l: Lang): boolean => {
       if (!canUseLanguage(l, proLanguagesActive)) {
-        setToast(trFn(lang, "Af-Soomaaligu waa bilaash. Fur Unlock+ ($0.50, 6 bilood) si aad u hesho Ingiriisi iyo Carabi."));
+        setToast(trFn(lang, "Af-Soomaaligu waa bilaash. Fur Unlock+ ($0.50 ama $1.20 Total) si aad u hesho Ingiriisi iyo Carabi."));
         return false;
       }
       setLangState(l);

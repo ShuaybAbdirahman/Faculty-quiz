@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
   Calendar,
   CheckCircle2,
   Clock,
+  FileCheck2,
   Lock,
+  LockOpen,
   Play,
   RotateCcw,
   ShieldCheck,
-  LockOpen,
   Trophy,
   UploadCloud,
+  User,
   XCircle,
 } from "lucide-react";
-import type { PredictQuestion } from "../data/schoolForm4Data";
+import type { OfficialExamBlueprint, PredictQuestion } from "../data/schoolForm4Data";
 
 export function PredictExamGateCard({
   title,
@@ -22,8 +24,9 @@ export function PredictExamGateCard({
   questionCount,
   durationMin,
   examDate,
-  price = "$0.25",
+  price = "$0.50",
   badgeText,
+  blueprint,
   onUnlock,
 }: {
   title: string;
@@ -33,12 +36,13 @@ export function PredictExamGateCard({
   examDate?: string;
   price?: string;
   badgeText: string;
+  blueprint?: OfficialExamBlueprint;
   onUnlock: () => void;
 }) {
   return (
     <div
       dir="ltr"
-      className="rounded-3xl p-5 sm:p-7 border border-[#4189DD]/45 bg-gradient-to-br from-[#0A2B5E] via-[#072047] to-[#051531] text-white space-y-5 shadow-xl"
+      className="rounded-3xl p-5 sm:p-6 border border-[#4189DD]/45 bg-gradient-to-br from-[#0A2B5E] via-[#072047] to-[#051531] text-white space-y-4 shadow-xl"
     >
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2.5">
@@ -57,69 +61,73 @@ export function PredictExamGateCard({
         </span>
       </div>
 
-      <div className="space-y-2">
-        <h3 className="font-head font-extrabold text-xl sm:text-2xl text-white leading-snug">
-          {title}
-        </h3>
-        {subtitle ? (
-          <p className="text-sm text-white/80 leading-relaxed">{subtitle}</p>
-        ) : (
-          <p className="text-sm text-white/80 leading-relaxed">
-            Su'aalaha Predict Exam-ka waxaa la soo gelin doonaa ka hor {examDate ?? "imtixaanka"} insha Allah.
-          </p>
-        )}
+      <div className="space-y-1.5">
+        <h3 className="font-head font-extrabold text-xl text-white leading-snug">{title}</h3>
+        {subtitle && <p className="text-xs sm:text-sm text-white/75 leading-relaxed">{subtitle}</p>}
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-semibold text-white/85 pt-1">
+      {blueprint && (
+        <div className="rounded-2xl p-3.5 bg-white/[0.06] border border-white/12 space-y-2">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FFD86B] inline-flex items-center gap-1.5">
+              <FileCheck2 className="w-3.5 h-3.5" />
+              <span>Qaabka Imtixaanka</span>
+            </span>
+            <span className="text-xs font-bold text-emerald-300 tabular-nums">
+              {blueprint.questionScale} · {blueprint.totalMarks} Dhibcood
+            </span>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-2 text-xs text-white/85">
+            <div className="rounded-xl px-3 py-2 bg-[#061836]/80 border border-white/10">
+              {blueprint.part1Label}
+            </div>
+            <div className="rounded-xl px-3 py-2 bg-[#061836]/80 border border-white/10">
+              {blueprint.part2Label}
+            </div>
+          </div>
+          <p className="text-[11px] text-emerald-200/90 flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+            <span>{blueprint.pastPaperPolicy}</span>
+          </p>
+        </div>
+      )}
+
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-semibold text-white/85">
         {examDate && (
           <>
             <span className="inline-flex items-center gap-1.5 text-[#93C5FD]">
               <Calendar className="w-3.5 h-3.5" />
-              <span>Imtixaanka: {examDate}</span>
+              <span>{examDate}</span>
             </span>
             <span className="text-white/30" aria-hidden="true">·</span>
           </>
         )}
         <span className="tabular-nums">
-          {questionCount > 0 ? `${questionCount} Su'aalood` : "Diyaar u ah soo-gelinta"}
+          {questionCount > 0 ? `${questionCount} Su'aalood` : blueprint?.questionScale ?? "Diyaar"}
         </span>
         <span className="text-white/30" aria-hidden="true">·</span>
         <span className="tabular-nums">{durationMin} Daqiiqo</span>
       </div>
 
-      <div className="space-y-2.5">
-        {questionCount > 0 ? (
-          <>
-            <button
-              type="button"
-              onClick={onUnlock}
-              className="w-full h-[50px] rounded-2xl bg-[#4189DD] hover:bg-[#5CA2F2] text-white font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
-            >
-              <LockOpen className="w-4 h-4 text-[#FFD86B]" />
-              <span>Fur Predict Exam ({price})</span>
-            </button>
-
-            <p className="text-[11.5px] text-center text-white/65 leading-relaxed">
-              6 Bilood (180 Maalmood) · {price} (EVC Plus: 610999089 · Shuceyb Abdirahman).
-            </p>
-          </>
-        ) : (
-          <>
-            <button
-              type="button"
-              disabled
-              className="w-full h-[50px] rounded-2xl bg-white/10 text-white/70 border border-white/20 font-head font-extrabold text-sm flex items-center justify-center gap-2 cursor-not-allowed"
-            >
-              <UploadCloud className="w-4 h-4 text-[#93C5FD]" />
-              <span>Diyaarinta Socota · Soo Gelinta {examDate ?? "2027"}</span>
-            </button>
-
-            <p className="text-[11.5px] text-center text-white/65 leading-relaxed">
-              Furitaanka ({price}) wuxuu shaqaynayaa isla marka su'aalaha rasmiga ah la soo geliyo.
-            </p>
-          </>
-        )}
-      </div>
+      {questionCount > 0 ? (
+        <button
+          type="button"
+          onClick={onUnlock}
+          className="w-full h-[50px] rounded-2xl bg-[#4189DD] hover:bg-[#5CA2F2] text-white font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
+        >
+          <LockOpen className="w-4 h-4 text-[#FFD86B]" />
+          <span>Fur Predict Exam ({price} · Total $1.20 -20%)</span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          disabled
+          className="w-full h-[48px] rounded-2xl bg-white/10 text-white/70 border border-white/20 font-head font-extrabold text-sm flex items-center justify-center gap-2 cursor-not-allowed"
+        >
+          <UploadCloud className="w-4 h-4 text-[#93C5FD]" />
+          <span>Diyaar · Markii PDFs la soo geliyo ({examDate ?? "2027"})</span>
+        </button>
+      )}
     </div>
   );
 }
@@ -128,24 +136,47 @@ export function PredictExamRunner({
   title,
   durationMin,
   examDate,
+  blueprint,
   questions,
+  defaultStudentName = "",
+  onExamCompleted,
 }: {
   title: string;
   durationMin: number;
   examDate?: string;
+  blueprint?: OfficialExamBlueprint;
   questions: PredictQuestion[];
+  defaultStudentName?: string;
+  onExamCompleted?: (res: {
+    correctCount: number;
+    totalQuestions: number;
+    scorePct: number;
+    elapsedSec: number;
+    studentName: string;
+  }) => void;
 }) {
   const [phase, setPhase] = useState<"ready" | "active" | "done">("ready");
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [secondsLeft, setSecondsLeft] = useState(durationMin * 60);
+  const [studentName, setStudentName] = useState(defaultStudentName);
+  const [recordedToRanking, setRecordedToRanking] = useState(false);
+  const recordedOnceRef = useRef(false);
 
   useEffect(() => {
     setPhase("ready");
     setIdx(0);
     setAnswers({});
     setSecondsLeft(durationMin * 60);
+    setRecordedToRanking(false);
+    recordedOnceRef.current = false;
   }, [title, durationMin]);
+
+  useEffect(() => {
+    if (defaultStudentName && !studentName) {
+      setStudentName(defaultStudentName);
+    }
+  }, [defaultStudentName, studentName]);
 
   useEffect(() => {
     if (phase !== "active") return;
@@ -159,22 +190,50 @@ export function PredictExamRunner({
     return () => window.clearInterval(timer);
   }, [phase, secondsLeft]);
 
+  useEffect(() => {
+    if (phase !== "done" || recordedOnceRef.current || questions.length === 0) return;
+    recordedOnceRef.current = true;
+    const correctCount = questions.filter((q) => answers[q.id] === q.correctIndex).length;
+    const scorePct = Math.round((correctCount / questions.length) * 100);
+    const elapsedSec = Math.max(1, durationMin * 60 - secondsLeft);
+    if (onExamCompleted) {
+      onExamCompleted({
+        correctCount,
+        totalQuestions: questions.length,
+        scorePct,
+        elapsedSec,
+        studentName: studentName.trim() || "Arday",
+      });
+      setRecordedToRanking(true);
+    }
+  }, [phase, questions, answers, durationMin, secondsLeft, onExamCompleted, studentName]);
+
   if (questions.length === 0) {
     return (
       <div
         dir="ltr"
-        className="rounded-3xl p-6 sm:p-8 border border-[#4189DD]/40 bg-gradient-to-br from-[#0A2B5E] via-[#072047] to-[#051531] text-white space-y-4 text-center"
+        className="rounded-3xl p-6 sm:p-8 border border-[#4189DD]/40 bg-gradient-to-br from-[#0A2B5E] via-[#072047] to-[#051531] text-white space-y-4"
       >
-        <div className="w-14 h-14 mx-auto rounded-2xl bg-[#4189DD]/20 border border-[#4189DD]/45 text-[#93C5FD] flex items-center justify-center">
-          <UploadCloud className="w-7 h-7" />
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-300">
+            <ShieldCheck className="w-4 h-4" />
+            <span>Unlock+ Waa Diyaar</span>
+          </span>
+          <span className="text-xs font-bold text-[#FFD86B] tabular-nums">
+            {blueprint?.questionScale ?? "40 ilaa 50 su'aalood"} · {durationMin} Daqiiqo
+          </span>
         </div>
-        <div className="space-y-1.5 max-w-md mx-auto">
+
+        <div className="text-center space-y-2 py-2">
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-[#4189DD]/20 border border-[#4189DD]/45 text-[#93C5FD] flex items-center justify-center">
+            <UploadCloud className="w-6 h-6" />
+          </div>
           <div className="text-xs font-extrabold uppercase tracking-wider text-[#93C5FD]">
             Predict Exam · {examDate ?? "2027"}
           </div>
           <h3 className="font-head font-extrabold text-xl text-white">{title}</h3>
-          <p className="text-sm text-white/75 leading-relaxed">
-            Su'aalaha Predict Exam-ka weli lama soo gelin. Waxaa la soo gelin doonaa ka hor {examDate ?? "2027"} insha Allah.
+          <p className="text-xs sm:text-sm text-white/75">
+            Diyaar · Markii PDFs la soo geliyo.
           </p>
         </div>
       </div>
@@ -185,6 +244,8 @@ export function PredictExamRunner({
     setAnswers({});
     setIdx(0);
     setSecondsLeft(durationMin * 60);
+    setRecordedToRanking(false);
+    recordedOnceRef.current = false;
     setPhase("active");
   };
 
@@ -196,7 +257,7 @@ export function PredictExamRunner({
     return (
       <div
         dir="ltr"
-        className="rounded-3xl p-5 sm:p-7 border border-emerald-400/35 bg-gradient-to-br from-[#0A2B5E] via-[#072047] to-[#051531] text-white space-y-5"
+        className="rounded-3xl p-5 sm:p-6 border border-emerald-400/35 bg-gradient-to-br from-[#0A2B5E] via-[#072047] to-[#051531] text-white space-y-4"
       >
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-300">
@@ -208,11 +269,25 @@ export function PredictExamRunner({
           </span>
         </div>
 
-        <div className="space-y-2">
-          <h3 className="font-head font-extrabold text-xl sm:text-2xl text-white">{title}</h3>
-          <p className="text-sm text-white/75 leading-relaxed">
-            Isku tijaabi imtixaan la mid ah qaabka rasmiga ah. Markaad dhammayso waxaad heli doontaa dhibcahaaga (%) iyo sharaxaadda su'aal kasta.
-          </p>
+        <h3 className="font-head font-extrabold text-xl sm:text-2xl text-white">{title}</h3>
+
+        <div className="max-w-sm space-y-1.5">
+          <label
+            htmlFor="predict-student-name"
+            className="flex items-center gap-1.5 text-xs font-bold text-white/80"
+          >
+            <User className="w-3.5 h-3.5 text-[#FFD86B]" />
+            <span>Magacaaga Ranking-ga (Kaalmaha Sare)</span>
+          </label>
+          <input
+            id="predict-student-name"
+            type="text"
+            value={studentName}
+            maxLength={36}
+            onChange={(e) => setStudentName(e.target.value)}
+            placeholder="Geli magacaaga (tusaale: Axmed)"
+            className="w-full rounded-xl px-3.5 py-2.5 text-sm bg-[#041430] border border-white/20 outline-none focus:border-[#FFC93C] placeholder:text-white/35"
+          />
         </div>
 
         <button
@@ -234,10 +309,10 @@ export function PredictExamRunner({
       pct >= 85
         ? "Heer Sare (A)"
         : pct >= 70
-        ? "Wanaagsan (B)"
-        : pct >= 50
-        ? "Dhexdhexaad (C)"
-        : "U Baahan Ku-celin";
+          ? "Wanaagsan (B)"
+          : pct >= 50
+            ? "Dhexdhexaad (C)"
+            : "U Baahan Ku-celin";
 
     return (
       <div dir="ltr" className="space-y-5">
@@ -249,8 +324,14 @@ export function PredictExamRunner({
             </div>
             <h3 className="font-head font-extrabold text-2xl text-white">{title}</h3>
             <p className="text-sm text-white/80 tabular-nums">
-              Waxaad saxday <strong>{correctCount}</strong> ka mid ah <strong>{questions.length}</strong> su'aalood · Darajada: <strong className="text-[#FFD86B]">{gradeLabel}</strong>
+              Waxaad saxday <strong>{correctCount}</strong> / <strong>{questions.length}</strong> · Darajada: <strong className="text-[#FFD86B]">{gradeLabel}</strong>
             </p>
+            {recordedToRanking && (
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-300 pt-0.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Natiijadaada waxaa lagu daray Ranking-ga ({studentName.trim() || "Arday"})</span>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
@@ -286,6 +367,7 @@ export function PredictExamRunner({
                   <div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-[#FFD86B]">
                       Su'aal {qIndex + 1} · {q.topic}
+                      {q.pastPaperYear ? ` (${q.pastPaperYear})` : ""}
                     </span>
                     <h4 className="font-head font-bold text-sm sm:text-base text-white mt-0.5 leading-snug">
                       {q.prompt}
@@ -339,6 +421,8 @@ export function PredictExamRunner({
         <div>
           <div className="text-[11px] font-bold uppercase tracking-wider text-[#93C5FD]">
             {currentQ.topic}
+            {currentQ.pastPaperYear ? ` · ${currentQ.pastPaperYear}` : ""}
+            {currentQ.marks ? ` · ${currentQ.marks} Dhibcood` : ""}
           </div>
           <div className="text-xs text-white/75 tabular-nums">
             Su'aal {idx + 1} / {questions.length} · La jawaabay: {answeredCount}/{questions.length}
@@ -354,6 +438,30 @@ export function PredictExamRunner({
           <Clock className="w-3.5 h-3.5" />
           <span>{timeText}</span>
         </div>
+      </div>
+
+      {/* Exam Question Number Navigator (National Exam Paper Style) */}
+      <div className="flex items-center gap-1.5 flex-wrap" aria-label="Lambarrada Su'aalaha">
+        {questions.map((q, qIndex) => {
+          const isCur = qIndex === idx;
+          const isAns = answers[q.id] !== undefined;
+          return (
+            <button
+              key={q.id}
+              type="button"
+              onClick={() => setIdx(qIndex)}
+              className={`min-w-[30px] h-7 px-1.5 rounded-lg text-[11px] font-bold tabular-nums border cursor-pointer transition-colors ${
+                isCur
+                  ? "bg-[#FFC93C] text-[#051531] border-[#FFC93C]"
+                  : isAns
+                    ? "bg-emerald-500/25 text-emerald-200 border-emerald-400/45"
+                    : "bg-white/[0.06] text-white/70 border-white/15 hover:bg-white/15"
+              }`}
+            >
+              {qIndex + 1}
+            </button>
+          );
+        })}
       </div>
 
       <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
@@ -421,7 +529,7 @@ export function PredictExamRunner({
             className="px-6 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#051531] font-head font-extrabold text-xs sm:text-sm inline-flex items-center gap-1.5 cursor-pointer"
           >
             <CheckCircle2 className="w-4 h-4" />
-            <span>Dhammaystir & Eeg Natiijada</span>
+            <span>Dhammaystir &amp; Eeg Natiijada</span>
           </button>
         )}
       </div>

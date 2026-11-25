@@ -25,15 +25,23 @@ export interface SomaliaChallenge {
   category: string;
   title: string;
   problem: string;
+  commonMistake: string;
   solutionSteps: string[];
+  actionKitTitle: string;
+  actionKitItems: string[];
   quickTip: string;
 }
 
+export type ReadinessPhase = "1-30 Maalmood" | "31-60 Maalmood" | "61-90 Maalmood";
+
 export interface ReadinessItem {
   id: string;
+  phase: ReadinessPhase;
   category: string;
   title: string;
   detail: string;
+  timeEstimate: string;
+  hiraalTip: string;
 }
 
 export const facultyRoadmaps: FacultyRoadmap[] = [
@@ -406,11 +414,19 @@ export const somaliaChallenges: SomaliaChallenge[] = [
     title: "Caqabadda 1: Ka guuridda Soomaali/Carabi una guuridda English-ka Jaamacadda",
     problem:
       "Arday badan oo dugsiga sare ku dhigtay Soomaali ama Carabi ayaa semester-ka koowaad ku adkaata fahamka buugaagta, slides-ka, iyo imtixaannada English-ka ah.",
+    commonMistake:
+      "Inaad cutubka oo dhan Google Translate geliso. Taasi waxay kaa luminaysaa erayada farsamada ah ee macallinku imtixaanka ku weydiiyo.",
     solutionSteps: [
       "90 maalmood ka hor jaamacadda, maalin kasta 30 daqiiqo baro erayada muhiimka ah ee kulliyaddaada (Academic Vocabulary).",
       "Isticmaal YouTube subtitles (English captions) marka aad daawanayso casharrada, hana ku tiirsanaan tarjumaad toos ah oo keliya.",
       "Samee buug yar oo 'Glossary' ah oo aad ku qorto 10 eray oo cusub maalin kasta oo kulliyaddaada la xiriira.",
       "La samee koox 3 arday ah oo usbuucii laba jeer English ku sharaxda casharka (Peer Explanation).",
+    ],
+    actionKitTitle: "Qorshaha 7-da Maalmood ee Luqadda Kulliyadda",
+    actionKitItems: [
+      "Maalinta 1-2: Soo ururi 30 eray oo aasaasi u ah kulliyaddaada (sida Anatomy, Algorithm, Balance Sheet).",
+      "Maalinta 3-4: Akhri 2 bog oo hordhac ah adigoo hoosta ka xarriiqaya erayada soo noqnoqda oo keliya.",
+      "Maalinta 5-7: Ku duub codkaaga 2 daqiiqo adigoo sharaxaya casharka, kadibna dhageyso si aad kalsooni u hesho.",
     ],
     quickTip: "Ha ka xishoon qaladka hadalka. Jaamacaddu waxay rabtaa faham iyo qoraal cad, ma aha lahjad Ingiriis ah.",
   },
@@ -420,11 +436,20 @@ export const somaliaChallenges: SomaliaChallenge[] = [
     title: "Caqabadda 2: Doorashada Jaamacadda Saxda ah iyo Maareynta Khidmadda",
     problem:
       "Jaamacado badan ayaa dalka ka jira, wayna adag tahay in la kala garto tayada, aqoonsiga, iyo sida loo helo deeq waxbarasho.",
+    commonMistake:
+      "Inaad isqorto jaamacad xayeysiiskeedu qurux badan yahay adigoon eegin shaybaarka kulliyaddaada ama weydiin ardayda hadda dhigata.",
     solutionSteps: [
       "Hubi in kulliyadda aad rabto ay jaamacaddaasi ku leedahay shaybaar, macallimiin khibrad leh, iyo arday hore u qalin-jabiyay oo shaqeeya.",
       "La hadal ugu yaraan 2 arday oo hadda dhigta sanadka 3aad ama 4aad ee jaamacaddaas, oo weydii tayada waxbarashada dhabta ah.",
       "Isbarbar dhig khidmadda xilli-dugsiyeedka, gaadiidka, iyo buugaagta si aadan dhexda uga joogsan.",
       "Diyaari shahaadada dugsiga sare iyo dhibco sare si aad u codsato deeqaha waxbarasho ee gudaha iyo dibadda.",
+    ],
+    actionKitTitle: "5 Su'aalood oo Aad Weydiiso Xafiiska Diiwaangelinta",
+    actionKitItems: [
+      "1. Kulliyaddan ma leedahay shaybaar u gaar ah iyo saacado tababar oo rasmi ah?",
+      "2. Imisa boqolkiiba qalin-jabiyayaasha kulliyaddan ayaa hela internship ama shaqo sanadka ugu horreeya?",
+      "3. Khidmadda semester-ka ma ku jiraan imtixaanka, aqoonsiga (ID), iyo shaybaarka mise waa lacag gooni ah?",
+      "4. Haddii darajadaydu ka sarrayso 3.7 GPA, ma jirtaa deeq ama dhimis khidmad ah (Merit Discount)?",
     ],
     quickTip: "Jaamacadda ugu magaca weyn mar walba ma aha tan ugu fiican kulliyaddaada. Eeg tayada kulliyadda gaarka ah.",
   },
@@ -434,11 +459,19 @@ export const somaliaChallenges: SomaliaChallenge[] = [
     title: "Caqabadda 3: Shahaado Keliya Shaqo Ma Keento",
     problem:
       "Soomaaliya waxaa ka jira arday badan oo qalin-jabisay balse aan lahayn xirfad gacanta lagu qabto ama khibrad shaqo.",
+    commonMistake:
+      "Inaad sugto ilaa sanadka 4aad ama qalin-jabinta ka hor inta aadan baran xirfad suuqa shaqada laga rabo.",
     solutionSteps: [
       "Laga bilaabo Sanadka 1aad, raac khariidadda kulliyaddaada oo baro ugu yaraan hal xirfad oo suuqa laga rabo (Excel, Python, AutoCAD, KoboToolbox, PCB, iwm).",
       "Sanadka 2aad bilow inaad samayso mashaariic dhab ah oo aad ku kaydiso fayl shaqo (Portfolio).",
       "Sanadka 3aad raadi tababar bilaash ah (Internship ama mutadawacnimo) xitaa 2 bilood. Khibraddaas ayaa kaa saaraysa tartanka.",
       "Sameyso akoon LinkedIn ah oo nadiif ah oo la xiriir dadka ka shaqeeya mihnaddaada gudaha Soomaaliya iyo dibadda.",
+    ],
+    actionKitTitle: "Qaaciddada Sanad-Sanadka ee Dhisidda Xirfadda",
+    actionKitItems: [
+      "Sanadka 1aad: Baro Computer + Excel/English + xirfad aasaasi ah oo kulliyaddaada la xiriirta.",
+      "Sanadka 2aad: Dhis 2 mashruuc oo la taaban karo (sida xog-falanqayn, naqshad, ama warbixin cilmiyeed).",
+      "Sanadka 3aad: U shaqee si mutadawacnimo ah xitaa 6 toddobaad xilli fasax si aad CV dhab ah u hesho.",
     ],
     quickTip: "Qaaciddada guusha: Shahaadada Jaamacadda + Hal Xirfad Adag + Hal Tababar Shaqo = Fursad shaqo oo degdeg ah.",
   },
@@ -448,10 +481,18 @@ export const somaliaChallenges: SomaliaChallenge[] = [
     title: "Caqabadda 4: Rabitaanka Waalidka iyo Doonistaada Dhabta ah",
     problem:
       "Waalidiin badan waxay jecel yihiin kulliyado gaar ah (sida Caafimaadka ama Injineernimada) iyagoo u raba wanaaggaaga, xitaa haddii kartidaadu meel kale jirto.",
+    commonMistake:
+      "Inaad waalidka la muranto adigoon tusin xog cad, shaqooyinka kulliyadda aad rabto, iyo qorshe dhaqaale.",
     solutionSteps: [
       "Ha la murmin waalidka. Tusi ixtiraam, kadibna la wadaag natiijadaada Hagaha Kulliyadda iyo boqolkiiba ku habboonaantaada.",
       "U sharax 3-da shaqo ee laga helo kulliyadda aad doorbidayso iyo dadka guulaystay ee ka baxay.",
       "Haddii aad u dhaxayso labo kulliyadood, samee isbarbardhig cad oo wadajir u eega.",
+    ],
+    actionKitTitle: "Qoraalka Wadahadalka Waalidka (La Soco Tallaabooyinkan)",
+    actionKitItems: [
+      "Bilow ixtiraam: 'Aabbo/Hooyo, waxaan ogahay inaad wanaaggayga rabtaan, waana idinkaga mahadcelinayaa.'",
+      "Tusi xogta: 'Imtixaankan cilmiyeed wuxuu ii soo saaray inaan X% ku habboonahay kulliyaddan.'",
+      "Tusi mustaqbalka: 'Kulliyaddani waxay leedahay shaqooyinkan, waxaana diyaar u ahay inaan dadaal buuxa geliyo.'",
     ],
     quickTip: "Waalidku wuxuu rabaa mustaqbal ammaan ah. Marka aad tusto qorshe waxbarasho oo cad, way ku garab istaagayaan.",
   },
@@ -461,11 +502,19 @@ export const somaliaChallenges: SomaliaChallenge[] = [
     title: "Caqabadda 5: Habka Waxbarashada Jaamacadda iyo Ilaalinta Darajada (GPA)",
     problem:
       "Jaamacaddu ma aha sida dugsiga sare oo macallinku wax walba kuu yeeriyo. Ardayda qaar darajadoodu way hoos u dhacdaa bilowga hore.",
+    commonMistake:
+      "Inaad ka maqnaato fasallada labada toddobaad ee hore ama aad sugto toddobaadka imtixaanka (Midterm/Final).",
     solutionSteps: [
       "Isticmaal habka is-weydiinta su’aalaha (Active Recall) halkii aad qoraalka 10 jeer ka akhrin lahayd.",
       "Sannadka koowaad ula dhaqan sida midka ugu muhiimsan: darajo sare oo bilowga ah way fududahay in la ilaaliyo.",
       "Maalin kasta 90 daqiiqo oo joogto ah ayaa ka fiican 10 saac oo habeenka imtixaanka la soo jeedo.",
       "Isticmaal habka Pomodoro (25 daqiiqo waxbarasho iyo 5 daqiiqo nasasho) adigoo taleefanka fogeynaya.",
+    ],
+    actionKitTitle: "Nidaamka Ilaalinta 3.5+ GPA ee Semester-ka 1aad",
+    actionKitItems: [
+      "Toddobaad kasta Jimcaha: Dib u eeg 3-da mawduuc ee toddobaadkaas la dhigtay muddo 45 daqiiqo ah.",
+      "Midterm ka hor: Xalli ugu yaraan 2 imtixaan oo hore (Past Quizzes) oo saacad ku cabbiran.",
+      "La xiriir macallinka (Office Hours) isla marka hal cutub kugu adkaado inta uusan urursamin.",
     ],
     quickTip: "Haddii aad rabto deeq waxbarasho oo heerka labaad ah (Master’s) qalin-jabinta kadib, ilaali in darajadaadu ka sarreyso 3.5 / 4.0.",
   },
@@ -475,10 +524,18 @@ export const somaliaChallenges: SomaliaChallenge[] = [
     title: "Caqabadda 6: Waxbarashada haddii aadan haysan Kombiyuutar qaali ah ama Internet degdeg ah",
     problem:
       "Arday badan oo cusub ma haystaan kombiyuutar bilowga jaamacadda, internetkuna wuu xaddidnaan karaa.",
+    commonMistake:
+      "Inaad waxbarashada dib u dhigto ilaa aad ka iibsato laptop qaali ah, adigoo taleefanka iyo shaybaarka jaamacadda ka faa'iidaysan karay.",
     solutionSteps: [
       "Soo degso buugaagta PDF iyo muuqaallada waxbarashada marka aad Wi-Fi hesho (jaamacadda ama maktabadda).",
       "Isticmaal barnaamijyo bilaash ah oo taleefanka ka shaqeeya: AnkiDroid, Google Docs offline, iyo Khan Academy.",
       "Ka faa’iidayso shaybaarka kombiyuutarka ee jaamacadda saacadaha firaaqada si aad ugu tababarto Excel, AutoCAD, ama barnaamij-qorista.",
+    ],
+    actionKitTitle: "Qalabka Bilaashka ah ee Taleefanka (Offline Ready)",
+    actionKitItems: [
+      "AnkiDroid / Quizlet: Xifdinta erayada iyo qaacidooyinka adigoon internet isticmaalin.",
+      "Google Docs & Sheets Offline: Qorista warbixinada iyo xisaabaadka meel kasta.",
+      "Termux / SoloLearn / Khan Academy: Tababar barnaamij-qoris iyo saynis oo ku jira taleefanka.",
     ],
     quickTip: "Qalab qaali ah kuguma xirna bilowga. Joogteynta iyo ka faa’iidaysiga shaybaarka jaamacadda ayaa ku filan.",
   },
@@ -487,50 +544,110 @@ export const somaliaChallenges: SomaliaChallenge[] = [
 export const readinessChecklist: ReadinessItem[] = [
   {
     id: "rc-1",
+    phase: "1-30 Maalmood",
     category: "Dukumiinti",
-    title: "Diyaari Shahaadada Dugsiga Sare & Transcript-ka",
-    detail: "Hubi in magacaagu isku mid yahay shahaadada, aqoonsiga (ID), iyo baasaboorka.",
+    title: "Diyaari Shahaadada Dugsiga Sare, Transcript-ka & Aqoonsiga",
+    detail: "Hubi in magacaagu saddexda magac isku mid ka yahay shahaadada, aqoonsiga (ID), iyo baasaboorka.",
+    timeEstimate: "Maalinta 1 ilaa 7",
+    hiraalTip: "Khadlad yar oo xarfaha magaca ah wuxuu dib u dhigi karaa diiwaangelinta JUS iyo deeqaha.",
   },
   {
     id: "rc-2",
+    phase: "1-30 Maalmood",
     category: "Go’aan",
-    title: "Xulo 2 kulliyadood oo aad u kala dhowdahay",
-    detail: "Isticmaal natiijada Hagaha Kulliyadda + Hagaha Waaxda Pro si aad u hubiso.",
+    title: "Xulo Kulliyadda 1aad & Keydka 2aad (Option B)",
+    detail: "Isticmaal natiijada Hagaha Kulliyadda + Isbarbardhigga Pro si aad u hubiso inaad leedahay labo waddo oo cad.",
+    timeEstimate: "Maalinta 8 ilaa 14",
+    hiraalTip: "Mar walba hay Option B haddii tartanka gelitaanka ama khidmaddu isbeddelaan.",
   },
   {
     id: "rc-3",
-    category: "Jaamacad",
-    title: "Booqo 2 jaamacadood oo la hadal arday dhigata",
-    detail: "Weydii tayada macallimiinta, shaybaarka, iyo shuruudaha gelitaanka.",
+    phase: "1-30 Maalmood",
+    category: "Dhaqaale",
+    title: "Xisaabi Miisaaniyadda Semester-ka (Khidmad + Gaadiid + Buugaag)",
+    detail: "La fariiso qoyskaaga oo deji qorshe dhaqaale oo daboolaya ugu yaraan 2 semester ee ugu horreeya.",
+    timeEstimate: "Maalinta 15 ilaa 22",
+    hiraalTip: "Ku dar 15% kharash kayd ah oo loogu talagalay daabacaadda, shaybaarka, iyo gaadiidka.",
   },
   {
     id: "rc-4",
-    category: "Luqad",
-    title: "Bilow 30 daqiiqo oo English / Academic Reading ah maalin kasta",
-    detail: "Ku tababaro erayada kulliyaddaada ka hor inta uusan Semester 1 bilaaban.",
+    phase: "1-30 Maalmood",
+    category: "Wadaagis Qoys",
+    title: "La fariiso Waalidka oo Tusi Qorshahaaga Waxbarasho",
+    detail: "U sharax natiijadaada, sababta kulliyaddan kuugu habboon tahay, iyo 3 shaqo oo laga helo.",
+    timeEstimate: "Maalinta 23 ilaa 30",
+    hiraalTip: "Tusaalaynta qorshe cad waxay waalidka siisaa kalsooni ay kugu garab istaagaan.",
   },
   {
     id: "rc-5",
-    category: "Qorshe",
-    title: "Dooro Roadmap-kaaga oo calaamadee marxaladda 1aad",
-    detail: "Ogow xirfadaha iyo tools-ka aad baran doonto 6-da bilood ee soo socda.",
+    phase: "31-60 Maalmood",
+    category: "Luqad",
+    title: "Bilow 30 Daqiiqo oo Academic English & Glossary ah",
+    detail: "Maalin kasta qor oo xifdi 10 eray oo kulliyaddaada la xiriira si Semester 1 kuugu fududaado.",
+    timeEstimate: "Maalinta 31 ilaa 45",
+    hiraalTip: "Daawo casharro leh English Subtitles halkii aad ka akhrin lahayd tarjumaad keliya.",
   },
   {
     id: "rc-6",
-    category: "Dhaqaale",
-    title: "Xisaabi miisaaniyadda Semester-ka (Khidmad + Gaadiid + Buugaag)",
-    detail: "La fariiso qoyskaaga oo deji qorshe dhaqaale oo cad.",
+    phase: "31-60 Maalmood",
+    category: "Tartanka JUS",
+    title: "Dib u Eeg 5-ta Maado ee JUS (4 Saynis + Ingiriisi)",
+    detail: "Ku tababaro PDFs-ka bilaashka ah iyo Imtixaanka Predict ee JUS adigoo saacad iska eegaya.",
+    timeEstimate: "Maalinta 35 ilaa 55",
+    hiraalTip: "Xoogga saar su'aalaha xallinta iyo fahamka ereyada Sayniska ee Ingiriisiga.",
   },
   {
     id: "rc-7",
+    phase: "31-60 Maalmood",
     category: "Xirfad",
-    title: "Baro aasaaska Computer-ka (Word, PowerPoint, Email rasmi ah)",
-    detail: "Sameyso email xirfad leh (magacaaga@gmail.com) oo diyaar u ah jaamacadda.",
+    title: "Baro Aasaaska Computer-ka (Word, PowerPoint, Email Rasmi ah)",
+    detail: "Sameyso email xirfad leh (magacaaga@gmail.com) oo baro sida loo qoro warqad iyo presentation.",
+    timeEstimate: "Maalinta 45 ilaa 52",
+    hiraalTip: "Assignment-yada jaamacadda badankood waxay rabaan Word, PDF, iyo PowerPoint nadiif ah.",
   },
   {
     id: "rc-8",
+    phase: "31-60 Maalmood",
+    category: "Jaamacad",
+    title: "Booqo 2 Jaamacadood oo La Hadal Arday Sanadka 3aad ah",
+    detail: "Weydii tayada macallimiinta, xaaladda shaybaarka, iyo nidaamka imtixaannada dhabta ah.",
+    timeEstimate: "Maalinta 53 ilaa 60",
+    hiraalTip: "Ardayga dhigta jaamacadda wuxuu kuu sheegayaa runta uusan xayeysiisku qorin.",
+  },
+  {
+    id: "rc-9",
+    phase: "61-90 Maalmood",
+    category: "Qorshe",
+    title: "Dooro Roadmap-kaaga oo Calaamadee Marxaladda 1aad",
+    detail: "Ogow xirfadaha iyo tools-ka suuqa shaqada ee aad baran doonto 6-da bilood ee soo socda.",
+    timeEstimate: "Maalinta 61 ilaa 70",
+    hiraalTip: "Ardayda bilaaba hal xirfad gacan-qabasho ah Sanadka 1aad way ka horreeyaan kuwa suga qalin-jabinta.",
+  },
+  {
+    id: "rc-10",
+    phase: "61-90 Maalmood",
+    category: "Imtixaan",
+    title: "Dhammaystir 3 Tijaabo oo Predict ah & Eeg Ranking-ka",
+    detail: "Hubi heerkaaga tartanka JUS ama School si aad u saxdo meelaha daciifka ah ka hor maalinta rasmiga ah.",
+    timeEstimate: "Maalinta 71 ilaa 80",
+    hiraalTip: "Qor buug yar oo qaladaadkaaga ah si aadan hal su'aal laba jeer ugu khaldamin.",
+  },
+  {
+    id: "rc-11",
+    phase: "61-90 Maalmood",
+    category: "Diiwaangelin",
+    title: "Hubi Waqtiga Diiwaangelinta & Codsiga Deeqaha",
+    detail: "U diyaari fayl PDF ah oo ku jira shahaadada, sawirka passport-size, iyo ID-gaaga si degdeg ah.",
+    timeEstimate: "Maalinta 81 ilaa 86",
+    hiraalTip: "Diiwaangelinta hore waxay kaa badbaadinaysaa boos buuxsama ama khidmad dheeraad ah.",
+  },
+  {
+    id: "rc-12",
+    phase: "61-90 Maalmood",
     category: "Mustaqbal",
-    title: "Sameyso akoon LinkedIn ah oo raac khubaro mihnaddaada ah",
-    detail: "Bilow dhisidda xiriirkaaga xirfadeed (Networking) laga bilaabo maalinta 1aad.",
+    title: "Sameyso Akoon LinkedIn ah & Koox Waxbarasho (3 Arday)",
+    detail: "Bilow dhisidda xiriirkaaga xirfadeed oo hel 2 arday oo kula mid ah oo kula diyaargarooba.",
+    timeEstimate: "Maalinta 87 ilaa 90",
+    hiraalTip: "Koox waxbarasho oo dhab ah waxay labanlaabtaa joogteynta iyo GPA-gaaga Sanadka 1aad.",
   },
 ];

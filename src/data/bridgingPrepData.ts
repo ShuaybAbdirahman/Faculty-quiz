@@ -1,10 +1,110 @@
-import type { PdfSlot, PredictQuestion } from "./schoolForm4Data";
+import type { OfficialExamBlueprint, PdfSlot, PredictQuestion } from "./schoolForm4Data";
 import { somaliaChallenges, readinessChecklist, type SomaliaChallenge, type ReadinessItem } from "./proHubData";
 
 export type { SomaliaChallenge, ReadinessItem };
 export { somaliaChallenges, readinessChecklist };
 
 export const GAP_EXAM_DATE = "October 2027";
+
+export const JUS_EXAM_BLUEPRINT: OfficialExamBlueprint = {
+  questionScale: "40 ilaa 50 su'aalood",
+  part1Label: "Qaybta 1aad: Goobo-gelin (MCQ)",
+  part2Label: "Qaybta 2aad: Xallin & Faham",
+  totalMarks: 100,
+  pastPaperPolicy: "Xulashada imtixaannadii hore (JUS) · Qish ma ahan.",
+};
+
+export interface BridgeSubject {
+  id: string;
+  code: string;
+  name: string;
+  group: "science" | "language";
+  groupLabel: string;
+  accent: string;
+  examDate: string;
+  durationMin: number;
+  price: string;
+  examBlueprint: OfficialExamBlueprint;
+  pdfs: PdfSlot[];
+  predictQuestions: PredictQuestion[];
+}
+
+/**
+ * 5-ta Maado ee Imtixaanka Gelitaanka Jaamacadda Ummadda (JUS) & Jaamacadaha:
+ * 4 Maado oo Saynis ah (Bayoolaji, Kimistari, Fiisigis, Xisaab) + Ingiriisi (English).
+ */
+export const bridgeSubjects: BridgeSubject[] = [
+  {
+    id: "jus_bio",
+    code: "BIO",
+    name: "Bayoolaji (Biology)",
+    group: "science",
+    groupLabel: "Saynis (1/4) · JUS",
+    accent: "#16A34A",
+    examDate: GAP_EXAM_DATE,
+    durationMin: 60,
+    price: "$0.50",
+    examBlueprint: JUS_EXAM_BLUEPRINT,
+    pdfs: [],
+    predictQuestions: [],
+  },
+  {
+    id: "jus_chem",
+    code: "CHM",
+    name: "Kimistari (Chemistry)",
+    group: "science",
+    groupLabel: "Saynis (2/4) · JUS",
+    accent: "#0284C7",
+    examDate: GAP_EXAM_DATE,
+    durationMin: 60,
+    price: "$0.50",
+    examBlueprint: JUS_EXAM_BLUEPRINT,
+    pdfs: [],
+    predictQuestions: [],
+  },
+  {
+    id: "jus_phys",
+    code: "PHY",
+    name: "Fiisigis (Physics)",
+    group: "science",
+    groupLabel: "Saynis (3/4) · JUS",
+    accent: "#2563EB",
+    examDate: GAP_EXAM_DATE,
+    durationMin: 60,
+    price: "$0.50",
+    examBlueprint: JUS_EXAM_BLUEPRINT,
+    pdfs: [],
+    predictQuestions: [],
+  },
+  {
+    id: "jus_math",
+    code: "MTH",
+    name: "Xisaab (Mathematics)",
+    group: "science",
+    groupLabel: "Saynis (4/4) · JUS",
+    accent: "#4189DD",
+    examDate: GAP_EXAM_DATE,
+    durationMin: 60,
+    price: "$0.50",
+    examBlueprint: JUS_EXAM_BLUEPRINT,
+    pdfs: [],
+    predictQuestions: [],
+  },
+  {
+    id: "jus_eng",
+    code: "ENG",
+    name: "Ingiriisi (English)",
+    group: "language",
+    groupLabel: "Luqadda (5/5) · JUS",
+    accent: "#0D9488",
+    examDate: GAP_EXAM_DATE,
+    durationMin: 60,
+    price: "$0.50",
+    examBlueprint: JUS_EXAM_BLUEPRINT,
+    pdfs: [],
+    predictQuestions: [],
+  },
+];
 
 export interface BridgeExamTrack {
   id: string;
@@ -13,6 +113,8 @@ export interface BridgeExamTrack {
   examDate: string;
   subtitle: string;
   description: string;
+  subjectCount: number;
+  subjectSummary: string;
   durationMin: number;
   price: string;
   freeTips: string[];
@@ -24,24 +126,13 @@ export const bridgeExamTracks: BridgeExamTrack[] = [
   {
     id: "snu_tartanka",
     badge: "Tartanka Jaamacadda Ummadda (JUS)",
-    title: "Imtixaanka Tartanka Jaamacadda Ummadda",
+    title: "Imtixaanka Tartanka JUS (5 Maado)",
     examDate: GAP_EXAM_DATE,
     subtitle: "",
     description: "",
-    durationMin: 15,
-    price: "$0.50",
-    freeTips: [],
-    pdfs: [],
-    predictQuestions: [],
-  },
-  {
-    id: "uni_placement",
-    badge: "Tartanka Jaamacadaha Kale & Deeqaha",
-    title: "Imtixaannada Gelitaanka Jaamacadaha",
-    examDate: GAP_EXAM_DATE,
-    subtitle: "",
-    description: "",
-    durationMin: 15,
+    subjectCount: 5,
+    subjectSummary: "4 Saynis (Bayoolaji, Kimistari, Fiisigis, Xisaab) + Ingiriisi",
+    durationMin: 60,
     price: "$0.50",
     freeTips: [],
     pdfs: [],
@@ -52,3 +143,4 @@ export const bridgeExamTracks: BridgeExamTrack[] = [
 export function getBridgeTrack(id: string): BridgeExamTrack {
   return bridgeExamTracks.find((t) => t.id === id) ?? bridgeExamTracks[0];
 }
+

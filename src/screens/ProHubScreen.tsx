@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Award,
-  BookOpenCheck,
   Building2,
   CheckCircle2,
   Lock,
@@ -13,7 +12,6 @@ import {
   Rocket,
   ShieldCheck,
   TrendingUp,
-  Trophy,
   Wrench,
   X,
 } from "lucide-react";
@@ -28,15 +26,9 @@ import {
   SomaliaUniversitiesSection,
   WorldPioneersSection,
 } from "../components/ProWorldHubSections";
-import {
-  LegalSubjectSecretsSection,
-  Top10TricksSection,
-} from "../components/TopStudentHubSection";
 
 export type HubTab =
   | "roadmaps"
-  | "top10_tricks"
-  | "subject_secrets"
   | "universities"
   | "pioneers"
   | "future_jobs"
@@ -116,10 +108,10 @@ export function ProHubScreen({
       icon: <TrendingUp className="w-4 h-4" />,
       gateHeadline: tr("Wararka Shaqooyinka Cusub & AI (Unlock+ Keliya)"),
       gateSummary: tr(
-        "Xog rasmi ah oo ku saabsan shaqooyinka ugu kororka badan 2025 ilaa 2030 iyo fursadaha gudaha Soomaaliya."
+        "Xog rasmi ah oo ku saabsan shaqooyinka ugu kororka badan iyo fursadaha gudaha Soomaaliya."
       ),
       highlights: [
-        tr("Falanqaynta warbixinta World Economic Forum (2025 - 2030)"),
+        tr("Falanqaynta shaqooyinka ugu kororka badan adduunka"),
         tr("Fursadaha suuqa shaqada ee gudaha Soomaaliya"),
         tr("Xirfadaha AI iyo xogta ee shirkaduhu raadinayaan"),
       ],
@@ -136,34 +128,6 @@ export function ProHubScreen({
         tr("Qorshaha 30-ka maalmood ee bilowga xirfad kasta"),
         tr("Sida ardaygu dakhli uga sameeyo gudaha iyo dibadda"),
         tr("Koorsooyin bilaash ah oo rasmi ah"),
-      ],
-    },
-    {
-      id: "top10_tricks",
-      label: tr("Sirta Ardayda Top-10"),
-      icon: <Trophy className="w-4 h-4" />,
-      gateHeadline: tr("Xeeladaha Ardayda Top-10 Galaan (Xalaal · Unlock+)"),
-      gateSummary: tr(
-        "Baro hababka cilmiyeysan ee ardayda kaalmaha sare galaan ku diyaar-garoobaan — qishku waa xaaraam, HIRAAL-na ma taageero qish iyo khiyaano."
-      ),
-      highlights: [
-        tr("6 xeeladood oo xusuusta & fahamka kordhiya (Active Recall, 1-3-7-21, Feynman)"),
-        tr("Xeerka maareynta waqtiga hoolka imtixaanka (60% · 25% · 15%)"),
-        tr("Hababka xalaasha ah ee MCQ Elimination iyo Buugga Qaladaadka"),
-      ],
-    },
-    {
-      id: "subject_secrets",
-      label: tr("Sirta Maaddooyinka (12 Maado)"),
-      icon: <BookOpenCheck className="w-4 h-4" />,
-      gateHeadline: tr("Sirta Xalaasha ah ee 12-ka Maado (Unlock+ Keliya)"),
-      gateSummary: tr(
-        "Ogow meelaha saxaha imtixaannadu dhibcaha ku bixiyaan (Method Marks, Keywords, Diagrams) maaddo kasta — si sharci ah oo xalaal ah."
-      ),
-      highlights: [
-        tr("Dhammaan 12-ka maado ee Form 4 (Saynis, Luqado, Bulsho, Ganacsi, Tech & Tarbiyo)"),
-        tr("Mowduucyada ugu muhiimsan imtixaannada Form 4 iyo Tartanka JUS"),
-        tr("Khaladaadka yaryar ee dhibcaha lumiya iyo sida looga fogaado"),
       ],
     },
     {
@@ -240,7 +204,7 @@ export function ProHubScreen({
                 className="relative overflow-hidden px-3 sm:px-4 py-2 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[11.5px] sm:text-xs inline-flex items-center gap-1.5 cursor-pointer transition-transform active:scale-[0.97] whitespace-nowrap shrink-0 shadow-[0_6px_18px_rgba(255,201,60,0.3)]"
               >
                 <LockOpen className="w-3.5 h-3.5 shrink-0" />
-                <span>{tr("Fur Unlock+ ($0.50)")}</span>
+                <span>{tr("Fur Unlock+ ($0.50 | $1.20 Total)")}</span>
               </button>
             ) : (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-400/35 text-[11px] sm:text-xs font-bold text-emerald-300 whitespace-nowrap shrink-0">
@@ -270,7 +234,7 @@ export function ProHubScreen({
                     </span>
                     <ProBadge small />
                   </div>
-                  <span className="text-[11px] font-semibold text-[#FFD86B]">8 {tr("Qaybood")}</span>
+                  <span className="text-[11px] font-semibold text-[#FFD86B]">6 {tr("Qaybood")}</span>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-1.5">
@@ -327,7 +291,7 @@ export function ProHubScreen({
                     className="mt-2 w-full py-2.5 px-4 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
                   >
                     <LockOpen className="w-4 h-4" />
-                    <span>{tr("Fur Unlock+ ($0.50 · 6 Bilood)")}</span>
+                    <span>{tr("Fur Unlock+ ($0.50 · Total $1.20)")}</span>
                   </button>
                 )}
               </div>
@@ -390,18 +354,18 @@ export function ProHubScreen({
                 className="w-full h-[52px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
               >
                 <LockOpen className="w-4 h-4" />
-                <span>{tr("Fur Unlock+ ($0.50 · 6 Bilood)")}</span>
+                <span>{tr("Fur Unlock+ ($0.50 · Total $1.20)")}</span>
               </button>
 
               <p className="text-[11.5px] text-center text-white/60 leading-relaxed">
                 {tr(
-                  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) — waxaa kuu furmaya dhammaan 8-da qaybood ee Unlock+ Hub muddo 6 bilood ah (180 maalmood)."
+                  "Bixi $0.50 hal qeyb ama $1.20 HIRAAL Total (20% Qiimo Dhimis) EVC Plus: 610999089 · Shuceyb Abdirahman muddo 6 bilood ah."
                 )}
               </p>
             </div>
           </section>
         ) : (
-          /* PRO ACTIVE: Full unlocked access to all 8 interactive Unlock+ Hub sections under ProContentShield */
+          /* PRO ACTIVE: Full unlocked access to all 6 University & Career Unlock+ Hub sections under ProContentShield */
           <ProContentShield
             active={proActive}
             sectionLabel={`Qeybta 3aad · University (${activeTabObj.label})`}
@@ -413,12 +377,6 @@ export function ProHubScreen({
                   initialFacultyId={initialFacultyId}
                   onUnlockClick={onOpenPaywall}
                 />
-              )}
-              {tab === "top10_tricks" && (
-                <Top10TricksSection isPro={true} onUnlock={onOpenPaywall} />
-              )}
-              {tab === "subject_secrets" && (
-                <LegalSubjectSecretsSection isPro={true} onUnlock={onOpenPaywall} />
               )}
               {tab === "universities" && (
                 <SomaliaUniversitiesSection

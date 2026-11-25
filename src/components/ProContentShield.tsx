@@ -354,7 +354,7 @@ export function ProContentShield({
 
       {/* Print / PDF Export Blocker Fallback */}
       <div className="pro-print-block hidden">
-        <h2>HIRAAL Unlock+ - Daabacaadda iyo Kaydinta PDF waa Xiran Yihiin</h2>
+        <h2>HIRAAL Unlock+ | Daabacaadda iyo Kaydinta PDF waa Xiran Yihiin</h2>
         <p>
           Xogtan Unlock+ waxay si gaar ah ugu furan tahay ardayga furtay (ID: {shortDev}) lamana daabacan karo, lamana dajisan karo, lamana wadaagi karo amar la'aan.
         </p>

@@ -3,6 +3,8 @@ import { Check, Copy, Download, Share2, X } from "lucide-react";
 import { qrDisplayUrl, qrRows, qrUrl } from "../data/qrData";
 import { useApp } from "../context/AppContext";
 
+export type PromoPosterFormat = "tiktok916" | "poster34";
+
 function drawSomaliStar(
   ctx: CanvasRenderingContext2D,
   cx: number,
@@ -24,12 +26,17 @@ function drawSomaliStar(
 }
 
 /**
- * Draws the official 1080x1440 HIRAAL promotional poster in Somalia Flag Blue
- * with School (June 2027), Gap (Oct 2027), University (RIASEC), and real scannable QR code.
+ * Draws the official HIRAAL promotional poster in Somalia Flag Blue
+ * in either Post (3:4, 1080x1440) or TikTok & WhatsApp Status (9:16, 1080x1920)
+ * with School (June 2027), Diyaarinta Jaamacadda JUS (5 Maado, Oct 2027), University (RIASEC), and real scannable QR code.
  */
-export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
+export function renderCaawiyePromoPoster(
+  canvas: HTMLCanvasElement,
+  format: PromoPosterFormat = "poster34"
+): void {
+  const isTikTok = format === "tiktok916";
   const w = 1080;
-  const h = 1440;
+  const h = isTikTok ? 1920 : 1440;
   canvas.width = w;
   canvas.height = h;
 
@@ -46,15 +53,15 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
   ctx.fillRect(0, 0, w, h);
 
   // Subtle top-right Somali Sky Blue radial glow
-  const glow1 = ctx.createRadialGradient(w * 0.85, h * 0.1, 10, w * 0.85, h * 0.1, 540);
+  const glow1 = ctx.createRadialGradient(w * 0.85, h * 0.1, 10, w * 0.85, h * 0.1, 560);
   glow1.addColorStop(0, "rgba(124, 183, 255, 0.34)");
   glow1.addColorStop(1, "rgba(65, 137, 221, 0)");
   ctx.fillStyle = glow1;
   ctx.fillRect(0, 0, w, h);
 
   // Subtle emerald lower accent glow
-  const glow2 = ctx.createRadialGradient(w * 0.15, h * 0.72, 10, w * 0.15, h * 0.72, 460);
-  glow2.addColorStop(0, "rgba(16, 185, 129, 0.16)");
+  const glow2 = ctx.createRadialGradient(w * 0.15, h * 0.72, 10, w * 0.15, h * 0.72, 500);
+  glow2.addColorStop(0, "rgba(16, 185, 129, 0.18)");
   glow2.addColorStop(1, "rgba(16, 185, 129, 0)");
   ctx.fillStyle = glow2;
   ctx.fillRect(0, 0, w, h);
@@ -78,7 +85,7 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
 
   // 2. Top Brand Header: Somali Star Badge + HIRAAL Wordmark
   const badgeX = 76;
-  const badgeY = 72;
+  const badgeY = isTikTok ? 96 : 72;
   const badgeSize = 86;
   const starBg = ctx.createLinearGradient(badgeX, badgeY, badgeX + badgeSize, badgeY + badgeSize);
   starBg.addColorStop(0, "#5CA2F2");
@@ -105,14 +112,14 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
   ctx.textBaseline = "top";
   ctx.textAlign = "left";
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = '800 54px "Bricolage Grotesque", "DM Sans", system-ui, sans-serif';
+  ctx.font = '800 54px "Outfit", "Plus Jakarta Sans", system-ui, sans-serif';
   ctx.fillText("HIRAAL", badgeX + badgeSize + 24, badgeY + 4);
 
   ctx.fillStyle = "#BFDBFE";
-  ctx.font = '700 22px "DM Sans", system-ui, sans-serif';
-  ctx.fillText("SCHOOL  ·  GAP  ·  UNIVERSITY", badgeX + badgeSize + 24, badgeY + 62);
+  ctx.font = '700 20px "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.fillText("SCHOOL  ·  DIYAARINTA JUS  ·  UNIVERSITY", badgeX + badgeSize + 24, badgeY + 62);
 
-  // Right Flag Pill Tag
+  // Right Flag Badge Tag
   ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
   ctx.beginPath();
   ctx.roundRect(w - 280, badgeY + 18, 204, 48, 16);
@@ -123,33 +130,34 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
   ctx.fillStyle = "#FFE484";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.font = '800 19px "DM Sans", system-ui, sans-serif';
+  ctx.font = '800 19px "Plus Jakarta Sans", system-ui, sans-serif';
   ctx.fillText("HAL MADAL · 2027", w - 178, badgeY + 42);
   ctx.textBaseline = "top";
 
   // 3. Main Hero Headline
+  const heroY = isTikTok ? 250 : 206;
   ctx.textAlign = "left";
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = '800 62px "Bricolage Grotesque", "DM Sans", system-ui, sans-serif';
-  ctx.fillText("Safarkaaga Waxbarasho", 76, 206);
+  ctx.font = '800 62px "Outfit", "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.fillText("Safarkaaga Waxbarasho", 76, heroY);
 
   ctx.fillStyle = "#FFC93C";
-  ctx.font = '800 58px "Bricolage Grotesque", "DM Sans", system-ui, sans-serif';
-  ctx.fillText("Hal Meel Ku Diyaari", 76, 276);
+  ctx.font = '800 58px "Outfit", "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.fillText("Hal Meel Ku Diyaari", 76, heroY + 70);
 
-  ctx.fillStyle = "rgba(235, 245, 255, 0.88)";
-  ctx.font = '500 24px "DM Sans", system-ui, sans-serif';
-  ctx.fillText("Imtixaanka Qaranka, Tartanka Jaamacadaha & Doorashada Kulliyadda", 76, 354);
+  ctx.fillStyle = "rgba(235, 245, 255, 0.9)";
+  ctx.font = '500 23px "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.fillText("Imtixaanka Qaranka, Tartanka JUS (5 Maado) & Doorashada Kulliyadda", 76, heroY + 148);
 
   // 4. Three Distinct Colored Stage Cards
   const cards = [
     {
       num: "01",
-      tag: "QEYBTA 1AAD · SCHOOL",
+      tag: "QEYBTA 1AAD · SCHOOL FORM 4",
       title: "Dugsiga Sare · Form 4 (12 Maado)",
-      sub: "Imtixaanka Qaranka (June 2027) · Saynis, Luqado & Tech",
+      sub: "June 2027 · Sirta Top-10 & Ranking",
       topStat: "PDFs: Free",
-      botStat: "Predict: $0.25",
+      botStat: "Predict $0.50 | Total $1.20",
       c1: "#4189DD",
       c2: "#165FB8",
       numBg: "#FFFFFF",
@@ -158,11 +166,11 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
     },
     {
       num: "02",
-      tag: "QEYBTA 2AAD · GAP",
-      title: "School ilaa University (Gap)",
-      sub: "Tartanka JUS (Oct 2027) · 90 Maalmood & Xalka",
+      tag: "QEYBTA 2AAD · DIYAARINTA JUS",
+      title: "Tartanka Jaamacadda (JUS · 5 Maado)",
+      sub: "4 Saynis + Ingiriisi (Oct 2027) · Ranking",
       topStat: "PDFs: Free",
-      botStat: "Predict: $0.50",
+      botStat: "Predict $0.50 | Total $1.20",
       c1: "#059669",
       c2: "#047857",
       numBg: "#FFFFFF",
@@ -171,11 +179,11 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
     },
     {
       num: "03",
-      tag: "QEYBTA 3AAD · UNIVERSITY",
+      tag: "QEYBTA 3AAD · UNIVERSITY & UNLOCK+",
       title: "Hagaha Kulliyadda & Unlock+ Hub",
-      sub: "RIASEC · 14 Kulliyadood · Waaxaha & Jaamacadaha",
+      sub: "RIASEC · 14 Kulliyadood · 6 Qaybood",
       topStat: "RIASEC: Free",
-      botStat: "Unlock+ Hub: $0.50",
+      botStat: "Qeyb $0.50 | Total $1.20 (-20%)",
       c1: "#4338CA",
       c2: "#312E81",
       numBg: "#FFC93C",
@@ -184,10 +192,10 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
     },
   ];
 
-  let cy = 418;
+  let cy = isTikTok ? 490 : 418;
   const cw = w - 152;
-  const ch = 176;
-  const gap = 22;
+  const ch = isTikTok ? 204 : 176;
+  const gap = isTikTok ? 28 : 22;
 
   for (const card of cards) {
     const cg = ctx.createLinearGradient(76, cy, 76 + cw, cy + ch);
@@ -211,58 +219,61 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
     ctx.stroke();
 
     // Left number tile
+    const numSize = isTikTok ? 78 : 72;
     ctx.fillStyle = card.numBg;
     ctx.beginPath();
-    ctx.roundRect(104, cy + 52, 72, 72, 20);
+    ctx.roundRect(104, cy + (ch - numSize) / 2, numSize, numSize, 20);
     ctx.fill();
 
     ctx.fillStyle = card.numFg;
     ctx.textAlign = "center";
-    ctx.font = '800 30px "Bricolage Grotesque", system-ui, sans-serif';
-    ctx.fillText(card.num, 140, cy + 72);
+    ctx.font = '800 30px "Outfit", system-ui, sans-serif';
+    ctx.fillText(card.num, 104 + numSize / 2, cy + ch / 2 - 14);
 
     // Center title & info
+    const textX = 204;
+    const topOff = isTikTok ? 40 : 30;
     ctx.textAlign = "left";
-    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
-    ctx.font = '800 18px "DM Sans", system-ui, sans-serif';
-    ctx.fillText(card.tag, 200, cy + 32);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+    ctx.font = '800 17px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText(card.tag, textX, cy + topOff);
 
     ctx.fillStyle = "#FFFFFF";
-    ctx.font = '800 30px "Bricolage Grotesque", "DM Sans", system-ui, sans-serif';
-    ctx.fillText(card.title, 200, cy + 64);
+    ctx.font = '800 28px "Outfit", "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText(card.title, textX, cy + topOff + 32);
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-    ctx.font = '500 19px "DM Sans", system-ui, sans-serif';
-    ctx.fillText(card.sub, 200, cy + 112);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
+    ctx.font = '500 18.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText(card.sub, textX, cy + topOff + 78);
 
     // Right price / free summary
     ctx.textAlign = "right";
     ctx.fillStyle = "#A7F3D0";
-    ctx.font = '800 20px "DM Sans", system-ui, sans-serif';
-    ctx.fillText(card.topStat, 76 + cw - 28, cy + 58);
+    ctx.font = '800 19px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText(card.topStat, 76 + cw - 28, cy + (isTikTok ? 68 : 56));
 
     ctx.fillStyle = "#FFE484";
-    ctx.font = '800 22px "DM Sans", system-ui, sans-serif';
-    ctx.fillText(card.botStat, 76 + cw - 28, cy + 96);
+    ctx.font = '800 19px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText(card.botStat, 76 + cw - 28, cy + (isTikTok ? 106 : 92));
 
     cy += ch + gap;
   }
 
   // 5. Highlight Metrics Strip (hairline divider style)
-  const statY = 1020;
-  ctx.fillStyle = "rgba(5, 20, 46, 0.55)";
+  const statY = isTikTok ? 1202 : 1020;
+  ctx.fillStyle = "rgba(5, 20, 46, 0.58)";
   ctx.beginPath();
   ctx.roundRect(76, statY, cw, 114, 24);
   ctx.fill();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
   const metrics = [
     { val: "12 Maado", lbl: "Form 4 Exam" },
-    { val: "2027", lbl: "June & Oct" },
+    { val: "5 Maado", lbl: "JUS (4 Saynis + EN)" },
     { val: "14", lbl: "Kulliyadood" },
-    { val: "Af-Soomaali", lbl: "100% Diyaar" },
+    { val: "Af-Soomaali", lbl: "100% Bilaash" },
   ];
   const colW = cw / 4;
   metrics.forEach((m, i) => {
@@ -276,17 +287,51 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
     }
     ctx.textAlign = "center";
     ctx.fillStyle = "#FFC93C";
-    ctx.font = '800 28px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.font = '800 26px "Outfit", system-ui, sans-serif';
     ctx.fillText(m.val, cx, statY + 26);
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-    ctx.font = '600 18px "DM Sans", system-ui, sans-serif';
+    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+    ctx.font = '600 16.5px "Plus Jakarta Sans", system-ui, sans-serif';
     ctx.fillText(m.lbl, cx, statY + 66);
   });
 
+  // Extra Ethical & Unlock+ Banner in 9:16 TikTok / Status layout
+  if (isTikTok) {
+    const trustY = 1350;
+    const trustH = 176;
+    ctx.fillStyle = "rgba(6, 78, 59, 0.42)";
+    ctx.beginPath();
+    ctx.roundRect(76, trustY, cw, trustH, 26);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(52, 211, 153, 0.45)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#6EE7B7";
+    ctx.font = '800 20px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText("100% XALAAL AH OO SHARCI AH · QISH MA AHAN", w / 2, trustY + 28);
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = '700 24px "Outfit", "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText(
+      "Su'aalaha Ugu Muhiimsan ee Imtixaannadii Hore (PDFs)",
+      w / 2,
+      trustY + 68
+    );
+
+    ctx.fillStyle = "#FFE484";
+    ctx.font = '700 18.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.fillText(
+      "HIRAAL Total ($1.20 · 20% Off) wuxuu furaa Dhammaan Qeybaha",
+      w / 2,
+      trustY + 114
+    );
+  }
+
   // 6. Bottom CTA Strip + Real Scannable QR Code
-  const qrBarY = 1166;
-  const qrBarH = 212;
+  const qrBarY = isTikTok ? 1568 : 1166;
+  const qrBarH = isTikTok ? 248 : 212;
   ctx.fillStyle = "#041126";
   ctx.beginPath();
   ctx.roundRect(76, qrBarY, cw, qrBarH, 30);
@@ -295,35 +340,36 @@ export function renderCaawiyePromoPoster(canvas: HTMLCanvasElement): void {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Left pill
+  // Left badge
+  const ctaY = isTikTok ? qrBarY + 38 : qrBarY + 28;
   ctx.fillStyle = "#FFC93C";
   ctx.beginPath();
-  ctx.roundRect(108, qrBarY + 28, 290, 34, 17);
+  ctx.roundRect(108, ctaY, 310, 36, 18);
   ctx.fill();
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillStyle = "#051428";
-  ctx.font = '800 16px "DM Sans", system-ui, sans-serif';
-  ctx.fillText("ISKAAN GAREE OO BILOW", 253, qrBarY + 45);
+  ctx.font = '800 16px "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.fillText("ISKAAN GAREE OO BILOW HADDA", 263, ctaY + 18);
   ctx.textBaseline = "top";
 
   ctx.textAlign = "left";
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = '800 34px "Bricolage Grotesque", system-ui, sans-serif';
-  ctx.fillText("Ku Bilow Taleefankaaga Hadda", 108, qrBarY + 78);
+  ctx.font = '800 34px "Outfit", system-ui, sans-serif';
+  ctx.fillText("Ku Bilow Taleefankaaga Hadda", 108, ctaY + 52);
 
   ctx.fillStyle = "#7CB7FF";
-  ctx.font = '700 22px "DM Sans", system-ui, sans-serif';
-  ctx.fillText(qrDisplayUrl, 108, qrBarY + 128);
+  ctx.font = '700 22px "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.fillText(qrDisplayUrl, 108, ctaY + 104);
 
-  ctx.fillStyle = "rgba(255, 255, 255, 0.58)";
-  ctx.font = '600 17px "DM Sans", system-ui, sans-serif';
-  ctx.fillText("HIRAAL · ShuaybAbdirahman · 1 Qalab = 1 Arday", 108, qrBarY + 164);
+  ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+  ctx.font = '600 17px "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.fillText("HIRAAL · ShuaybAbdirahman · 1 Qalab = 1 Arday", 108, ctaY + 144);
 
   // Right Crisp White QR Box with Real Matrix
-  const boxSize = 172;
-  const boxX = 76 + cw - boxSize - 22;
-  const boxY = qrBarY + 20;
+  const boxSize = isTikTok ? 196 : 172;
+  const boxX = 76 + cw - boxSize - 24;
+  const boxY = qrBarY + (qrBarH - boxSize) / 2;
 
   ctx.fillStyle = "#FFFFFF";
   ctx.beginPath();
@@ -355,7 +401,7 @@ export function PromoPosterThumb({ className = "w-full h-auto block" }: { classN
 
   useEffect(() => {
     if (canvasRef.current) {
-      renderCaawiyePromoPoster(canvasRef.current);
+      renderCaawiyePromoPoster(canvasRef.current, "poster34");
     }
   }, []);
 
@@ -371,15 +417,21 @@ export function PromoPosterThumb({ className = "w-full h-auto block" }: { classN
 export function PromoPosterModal({ onClose }: { onClose: () => void }) {
   const { darkMode, tr, showToast } = useApp();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [format, setFormat] = useState<PromoPosterFormat>("tiktok916");
   const [ready, setReady] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    renderCaawiyePromoPoster(canvas);
+    renderCaawiyePromoPoster(canvas, format);
     setReady(true);
-  }, []);
+  }, [format]);
+
+  const fileName =
+    format === "tiktok916"
+      ? "HIRAAL-TikTok-Status-9x16.png"
+      : "HIRAAL-Sawirka-Xayeysiinta-3x4.png";
 
   const handleDownload = () => {
     const canvas = canvasRef.current;
@@ -387,7 +439,7 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
     const href = canvas.toDataURL("image/png");
     const a = document.createElement("a");
     a.href = href;
-    a.download = "HIRAAL-Sawirka-Xayeysiinta.png";
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -402,13 +454,13 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
           canvas.toBlob((b) => res(b), "image/png")
         );
         if (blob) {
-          const file = new File([blob], "HIRAAL-Sawirka-Xayeysiinta.png", {
+          const file = new File([blob], fileName, {
             type: "image/png",
           });
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({
-              title: "HIRAAL · School, Gap & University",
-              text: `Barnaamijka HIRAAL (School Form 4, Gap & University): ${qrUrl}`,
+              title: "HIRAAL · School, Diyaarinta JUS & University",
+              text: `Barnaamijka HIRAAL (School Form 4, Diyaarinta JUS & University): ${qrUrl}`,
               files: [file],
             });
             return;
@@ -417,7 +469,7 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
       }
       if (navigator.share) {
         await navigator.share({
-          title: "HIRAAL · School, Gap & University",
+          title: "HIRAAL · School, Diyaarinta JUS & University",
           text: "Barnaamijka HIRAAL ee ardayda Soomaaliyeed!",
           url: qrUrl,
         });
@@ -470,8 +522,38 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <div className="p-4 sm:p-5 flex flex-col items-center gap-4">
-          <div className="w-full max-w-[360px] rounded-2xl overflow-hidden shadow-xl border border-[#4189DD]/35 bg-[#061D42]">
+        <div className="p-4 sm:p-5 flex flex-col items-center gap-3.5">
+          {/* Format Switcher: TikTok / Status 9:16 vs Post 3:4 */}
+          <div className="inline-flex rounded-xl p-1 border border-current/15 bg-black/10">
+            <button
+              type="button"
+              onClick={() => setFormat("tiktok916")}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                format === "tiktok916"
+                  ? "bg-[#FFC93C] text-[#050A1C] shadow-sm"
+                  : "opacity-75 hover:opacity-100"
+              }`}
+            >
+              {tr("TikTok / WhatsApp Status (9:16)")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setFormat("poster34")}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                format === "poster34"
+                  ? "bg-[#FFC93C] text-[#050A1C] shadow-sm"
+                  : "opacity-75 hover:opacity-100"
+              }`}
+            >
+              {tr("Post Caadi ah (3:4)")}
+            </button>
+          </div>
+
+          <div
+            className={`w-full ${
+              format === "tiktok916" ? "max-w-[270px]" : "max-w-[350px]"
+            } rounded-2xl overflow-hidden shadow-xl border border-[#4189DD]/35 bg-[#061D42] transition-all duration-200`}
+          >
             <canvas ref={canvasRef} className="w-full h-auto block" />
           </div>
 

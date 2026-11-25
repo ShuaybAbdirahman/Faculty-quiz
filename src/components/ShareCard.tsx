@@ -34,13 +34,13 @@ async function renderShareCardPng(
   tr: (k: string) => string,
   trf: (k: string, a: Record<string, string | number>) => string,
   rtl: boolean,
-  format: ShareFormat = "post"
+  format: ShareFormat = "story"
 ): Promise<Blob | null> {
   const isStory = format === "story";
   const W = 1080;
   const H = isStory ? 1920 : 1440;
   const S = 3; // 360x480 or 360x640 * 3
-  const yOff = isStory ? 52 * S : 0;
+  const yOff = isStory ? 34 * S : 0;
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
@@ -57,7 +57,7 @@ async function renderShareCardPng(
   // Background gradient (Somalia Flag Blue)
   const bg = ctx.createLinearGradient(0, 0, W, H);
   bg.addColorStop(0, "#061D42");
-  bg.addColorStop(0.5, "#165FB8");
+  bg.addColorStop(0.52, "#165FB8");
   bg.addColorStop(1, "#4189DD");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
@@ -70,9 +70,9 @@ async function renderShareCardPng(
     ctx.fillStyle = g;
     ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
   };
-  drawGlow(60 * S, 40 * S, 150 * S, "rgba(34,211,238,0.34)");
-  drawGlow(340 * S, 210 * S, 150 * S, "rgba(255,106,162,0.30)");
-  drawGlow(160 * S, 470 * S, 140 * S, "rgba(255,201,60,0.22)");
+  drawGlow(60 * S, 40 * S, 150 * S, "rgba(124,183,255,0.34)");
+  drawGlow(340 * S, 210 * S, 150 * S, "rgba(16,185,129,0.22)");
+  drawGlow(160 * S, (isStory ? 600 : 470) * S, 150 * S, "rgba(255,201,60,0.24)");
 
   // Subtle dots
   ctx.fillStyle = "rgba(255,255,255,0.07)";
@@ -84,21 +84,45 @@ async function renderShareCardPng(
     }
   }
 
+  const drawRoundRect = (x: number, y: number, w: number, h: number, rad: number) => {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, rad);
+  };
+
   // Brand header
-  ctx.fillStyle = "rgba(255,255,255,0.94)";
-  ctx.font = `700 ${11 * S}px ${bodyFont}`;
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.font = `800 ${11 * S}px ${bodyFont}`;
   ctx.textAlign = rtl ? "right" : "left";
-  ctx.fillText("HIRAAL · " + tr("Hagaha Kulliyadda").toUpperCase(), rtl ? (360 - 22) * S : 22 * S, 37 * S);
+  ctx.fillText(
+    "HIRAAL · " + tr("Hagaha Kulliyadda").toUpperCase(),
+    rtl ? (360 - 22) * S : 22 * S,
+    36 * S
+  );
+
+  // 2027 pill badge on opposite side
+  const pillW = 68 * S;
+  const pillH = 20 * S;
+  const pillX = rtl ? 22 * S : (360 - 22) * S - pillW;
+  drawRoundRect(pillX, 22 * S, pillW, pillH, 10 * S);
+  ctx.fillStyle = "rgba(255, 201, 60, 0.22)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255, 201, 60, 0.55)";
+  ctx.lineWidth = 1 * S;
+  ctx.stroke();
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#FFE484";
+  ctx.font = `800 ${9 * S}px ${bodyFont}`;
+  ctx.fillText("2027", pillX + pillW / 2, 35 * S);
 
   // Title
   ctx.textAlign = "center";
-  ctx.fillStyle = "rgba(255,255,255,0.85)";
+  ctx.fillStyle = "rgba(255,255,255,0.88)";
   ctx.font = `600 ${14 * S}px ${bodyFont}`;
-  ctx.fillText(title, W / 2, 68 * S + yOff);
+  ctx.fillText(title, W / 2, 66 * S + yOff);
 
   // Ring
   const cx = W / 2;
-  const cy = 142 * S + yOff;
+  const cy = 140 * S + yOff;
   const rr = 54.5 * S;
   ctx.lineWidth = 9 * S;
   ctx.strokeStyle = "rgba(255,255,255,0.2)";
@@ -120,70 +144,82 @@ async function renderShareCardPng(
   ctx.fillStyle = "#FFD86B";
   ctx.font = `800 ${34 * S}px ${headFont}`;
   ctx.fillText(`${top.percent}%`, cx, cy + 8 * S);
-  ctx.fillStyle = "rgba(255,255,255,0.78)";
+  ctx.fillStyle = "rgba(255,255,255,0.82)";
   ctx.font = `600 ${10.5 * S}px ${bodyFont}`;
   ctx.fillText(tr("Ku habboonaan"), cx, cy + 25 * S);
 
   // Top faculty name
   ctx.fillStyle = "#FFFFFF";
   ctx.font = `800 ${(top.name.length > 36 ? 17 : 20) * S}px ${headFont}`;
-  ctx.fillText(top.name.slice(0, 44), cx, 232 * S + yOff);
+  ctx.fillText(top.name.slice(0, 44), cx, 230 * S + yOff);
 
   ctx.fillStyle = "#FFD86B";
   ctx.font = `700 ${11.5 * S}px ${bodyFont}`;
-  ctx.fillText(tr("Kulliyadda kugu habboon"), cx, 254 * S + yOff);
+  ctx.fillText(tr("Kulliyadda kugu habboon"), cx, 252 * S + yOff);
 
   // Other rows
-  const drawRoundRect = (x: number, y: number, w: number, h: number, rad: number) => {
-    ctx.beginPath();
-    ctx.roundRect(x, y, w, h, rad);
-  };
-
   others.forEach((entry, idx) => {
-    const y = (270 + idx * 48) * S + yOff;
-    drawRoundRect(22 * S, y, 316 * S, 40 * S, 14 * S);
-    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    const y = (268 + idx * 46) * S + yOff;
+    drawRoundRect(22 * S, y, 316 * S, 39 * S, 14 * S);
+    ctx.fillStyle = "rgba(255,255,255,0.13)";
     ctx.fill();
     ctx.lineWidth = 1 * S;
-    ctx.strokeStyle = "rgba(255,255,255,0.26)";
+    ctx.strokeStyle = "rgba(255,255,255,0.28)";
     ctx.stroke();
 
     const rowHex = argbToHex(entry.faculty.color);
     ctx.beginPath();
-    ctx.arc(43 * S, y + 20 * S, 11 * S, 0, Math.PI * 2);
+    ctx.arc(43 * S, y + 19.5 * S, 11 * S, 0, Math.PI * 2);
     ctx.fillStyle = rowHex;
     ctx.fill();
 
     ctx.fillStyle = "#FFFFFF";
     ctx.textAlign = "center";
     ctx.font = `800 ${11 * S}px ${bodyFont}`;
-    ctx.fillText(String(idx + 2), 43 * S, y + 24 * S);
+    ctx.fillText(String(idx + 2), 43 * S, y + 23.5 * S);
 
     ctx.textAlign = "left";
     ctx.font = `600 ${12.5 * S}px ${bodyFont}`;
-    ctx.fillText(entry.name.slice(0, 28), 64 * S, y + 24.5 * S);
+    ctx.fillText(entry.name.slice(0, 28), 64 * S, y + 24 * S);
 
     ctx.textAlign = "right";
     ctx.fillStyle = "#FFD86B";
     ctx.font = `800 ${13 * S}px ${headFont}`;
-    ctx.fillText(`${entry.percent}%`, 326 * S, y + 24.5 * S);
+    ctx.fillText(`${entry.percent}%`, 326 * S, y + 24 * S);
   });
 
   if (isStory) {
+    // 2027 HIRAAL Platform Highlight Bar (TikTok & Status 9:16)
+    const platY = 404 * S;
+    drawRoundRect(22 * S, platY, 316 * S, 46 * S, 14 * S);
+    ctx.fillStyle = "rgba(4, 17, 38, 0.56)";
+    ctx.fill();
+    ctx.lineWidth = 1 * S;
+    ctx.strokeStyle = "rgba(124, 183, 255, 0.38)";
+    ctx.stroke();
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#BFDBFE";
+    ctx.font = `800 ${9.5 * S}px ${bodyFont}`;
+    ctx.fillText("HIRAAL 2027 · FORM 4 · DIYAARINTA JUS · UNIVERSITY", W / 2, platY + 18 * S);
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.font = `600 ${9.5 * S}px ${bodyFont}`;
+    ctx.fillText("12 Maado Form 4 · 5 Maado JUS · 14 Kulliyadood · $0.50 | $1.20 Total", W / 2, platY + 34 * S);
+
     // Viral Story Prompt Box
-    const py = 435 * S;
-    drawRoundRect(22 * S, py, 316 * S, 54 * S, 16 * S);
-    ctx.fillStyle = "rgba(255,201,60,0.14)";
+    const py = 462 * S;
+    drawRoundRect(22 * S, py, 316 * S, 56 * S, 16 * S);
+    ctx.fillStyle = "rgba(255,201,60,0.16)";
     ctx.fill();
     ctx.lineWidth = 1.5 * S;
-    ctx.strokeStyle = "rgba(255,201,60,0.45)";
+    ctx.strokeStyle = "rgba(255,201,60,0.48)";
     ctx.stroke();
 
     ctx.textAlign = "center";
     ctx.fillStyle = "#FFD86B";
     ctx.font = `800 ${13 * S}px ${headFont}`;
     ctx.fillText(tr("Adigu kulliyaddee kugu habboon?"), W / 2, py + 23 * S);
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
     ctx.font = `600 ${10.5 * S}px ${bodyFont}`;
     ctx.fillText(tr("Scan garee QR-ka oo tijaabi 8 daqiiqo (Bilaash)"), W / 2, py + 41 * S);
   }
@@ -194,8 +230,8 @@ async function renderShareCardPng(
   ctx.fillStyle = "#FFFFFF";
   ctx.font = `700 ${12 * S}px ${bodyFont}`;
   ctx.fillText(tr("Qaado imtixaanka Hagaha Kulliyadda").slice(0, 36), 22 * S, (baseH - 58) * S);
-  ctx.fillStyle = "rgba(255,255,255,0.75)";
-  ctx.font = `500 ${9.5 * S}px ${bodyFont}`;
+  ctx.fillStyle = "rgba(255,255,255,0.8)";
+  ctx.font = `600 ${9.5 * S}px ${bodyFont}`;
   ctx.fillText(qrDisplayUrl, 22 * S, (baseH - 38) * S);
 
   // QR white box
@@ -209,7 +245,7 @@ async function renderShareCardPng(
   const pad = 5 * S;
   const n = qrRows.length;
   const cell = (qSize - pad * 2) / n;
-  ctx.fillStyle = "#0B1533";
+  ctx.fillStyle = "#061D42";
   for (let r = 0; r < n; r++) {
     for (let c = 0; c < n; c++) {
       if (qrRows[r][c] === "1") {
@@ -246,11 +282,14 @@ export function ShareSection({
   const title = name ? trf("Natiijada {n}", { n: name }) : tr("Natiijadayda");
   const topHex = argbToHex(top.faculty.color);
 
+  const fileName =
+    format === "story" ? "hiraal-tiktok-status-9x16.png" : "hiraal-natiijo-3x4.png";
+
   const downloadBlob = (blob: Blob) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = format === "story" ? "hagaha-kulliyadda-status.png" : "hagaha-kulliyadda-natiijo.png";
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -276,20 +315,16 @@ export function ShareSection({
         p: top.percent,
         url: qrUrl,
       });
-      const file = new File(
-        [blob],
-        format === "story" ? "hagaha-kulliyadda-status.png" : "hagaha-kulliyadda-natiijo.png",
-        { type: "image/png" }
-      );
+      const file = new File([blob], fileName, { type: "image/png" });
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
-          title: tr("Hagaha Kulliyadda"),
+          title: `HIRAAL · ${tr("Hagaha Kulliyadda")}`,
           text,
           files: [file],
         });
       } else if (navigator.share) {
         await navigator.share({
-          title: tr("Hagaha Kulliyadda"),
+          title: `HIRAAL · ${tr("Hagaha Kulliyadda")}`,
           text,
           url: qrUrl,
         });
@@ -312,18 +347,18 @@ export function ShareSection({
           onClick={() => setFormat("story")}
           className={`px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
             format === "story"
-              ? "bg-[#4A6CF7] text-white shadow-sm"
+              ? "bg-[#165FB8] text-white shadow-sm"
               : "opacity-75 hover:opacity-100"
           }`}
         >
-          {tr("WhatsApp Status / TikTok (9:16)")}
+          {tr("TikTok / WhatsApp Status (9:16)")}
         </button>
         <button
           type="button"
           onClick={() => setFormat("post")}
           className={`px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
             format === "post"
-              ? "bg-[#4A6CF7] text-white shadow-sm"
+              ? "bg-[#165FB8] text-white shadow-sm"
               : "opacity-75 hover:opacity-100"
           }`}
         >
@@ -331,28 +366,28 @@ export function ShareSection({
         </button>
       </div>
 
-      {/* Share Card Preview */}
+      {/* Share Card Preview (Somalia Flag Blue matching PNG export) */}
       <div
         className={`relative w-full max-w-[360px] ${
           format === "story" ? "aspect-[9/16]" : "aspect-[3/4]"
         } rounded-[26px] overflow-hidden text-white select-none transition-all duration-200`}
         style={{
-          background: "linear-gradient(135deg, #070D26 0%, #1B3A9E 52%, #6A47E0 100%)",
-          boxShadow: "0 14px 28px rgba(106, 71, 224, 0.35)",
+          background: "linear-gradient(135deg, #061D42 0%, #165FB8 52%, #4189DD 100%)",
+          boxShadow: "0 14px 28px rgba(22, 95, 184, 0.38)",
         }}
       >
         {/* Glows */}
         <div
           className="pointer-events-none absolute -top-24 -left-20 w-[260px] h-[260px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(34,211,238,0.34), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(124,183,255,0.34), transparent 70%)" }}
         />
         <div
           className="pointer-events-none absolute top-14 -right-28 w-[260px] h-[260px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(255,106,162,0.30), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(16,185,129,0.22), transparent 70%)" }}
         />
         <div
           className="pointer-events-none absolute -bottom-24 left-4 w-[240px] h-[240px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(255,201,60,0.22), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(255,201,60,0.24), transparent 70%)" }}
         />
         <div
           className="pointer-events-none absolute inset-0 opacity-20"
@@ -364,16 +399,21 @@ export function ShareSection({
 
         <div className="relative z-10 h-full flex flex-col px-5 pt-4 pb-4">
           {/* Header */}
-          <div className="flex items-center gap-2">
-            <div className="w-[30px] h-[30px] rounded-[10px] bg-white/15 border border-white/30 flex items-center justify-center">
-              <GraduationCap className="w-[18px] h-[18px] text-white" />
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-[30px] h-[30px] rounded-[10px] bg-white/15 border border-white/30 flex items-center justify-center shrink-0">
+                <GraduationCap className="w-[18px] h-[18px] text-white" />
+              </div>
+              <span className="text-[11px] font-extrabold tracking-[0.16em] uppercase text-white/95 truncate">
+                HIRAAL · {tr("Hagaha Kulliyadda")}
+              </span>
             </div>
-            <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-white/90 truncate">
-              {tr("Hagaha Kulliyadda")}
+            <span className="px-2 py-0.5 rounded-full bg-[#FFC93C]/22 border border-[#FFC93C]/55 text-[#FFE484] text-[9px] font-extrabold shrink-0">
+              2027
             </span>
           </div>
 
-          <p className="mt-2.5 text-center text-[14px] font-semibold text-white/85 truncate">{title}</p>
+          <p className="mt-2.5 text-center text-[14px] font-semibold text-white/90 truncate">{title}</p>
 
           {/* Ring & Top Icon */}
           <div className="mt-2 mx-auto relative w-[124px] h-[118px] flex items-center justify-center">
@@ -402,7 +442,7 @@ export function ShareSection({
               <span className="font-head font-extrabold text-[32px] leading-none text-[#FFD86B]">
                 {top.percent}%
               </span>
-              <span className="mt-0.5 text-[10.5px] font-semibold text-white/80">
+              <span className="mt-0.5 text-[10.5px] font-semibold text-white/85">
                 {tr("Ku habboonaan")}
               </span>
             </div>
@@ -456,14 +496,25 @@ export function ShareSection({
           </div>
 
           {format === "story" && (
-            <div className="mt-4 rounded-2xl px-3.5 py-2.5 bg-[#FFC93C]/14 border border-[#FFC93C]/45 text-center">
-              <p className="font-head font-extrabold text-[13px] text-[#FFD86B]">
-                {tr("Adigu kulliyaddee kugu habboon?")}
-              </p>
-              <p className="text-[10.5px] font-semibold text-white/90 mt-0.5">
-                {tr("Scan garee QR-ka oo tijaabi 8 daqiiqo (Bilaash)")}
-              </p>
-            </div>
+            <>
+              <div className="mt-3 rounded-xl px-3 py-2 bg-[#041126]/55 border border-[#7CB7FF]/35 text-center">
+                <p className="text-[9.5px] font-extrabold tracking-wide text-[#BFDBFE] uppercase">
+                  HIRAAL 2027 · FORM 4 · DIYAARINTA JUS · UNIVERSITY
+                </p>
+                <p className="text-[9.5px] font-semibold text-white/85 mt-0.5">
+                  12 Maado Form 4 · 5 Maado JUS · 14 Kulliyadood · $0.50 | $1.20 Total
+                </p>
+              </div>
+
+              <div className="mt-2.5 rounded-2xl px-3.5 py-2.5 bg-[#FFC93C]/16 border border-[#FFC93C]/48 text-center">
+                <p className="font-head font-extrabold text-[13px] text-[#FFD86B]">
+                  {tr("Adigu kulliyaddee kugu habboon?")}
+                </p>
+                <p className="text-[10.5px] font-semibold text-white/92 mt-0.5">
+                  {tr("Scan garee QR-ka oo tijaabi 8 daqiiqo (Bilaash)")}
+                </p>
+              </div>
+            </>
           )}
 
           {/* Bottom QR Row */}
@@ -472,7 +523,7 @@ export function ShareSection({
               <p className="text-[12px] font-bold leading-snug line-clamp-2">
                 {tr("Qaado imtixaanka Hagaha Kulliyadda")}
               </p>
-              <p className="mt-1 text-[9.5px] font-medium text-white/75 truncate">{qrDisplayUrl}</p>
+              <p className="mt-1 text-[9.5px] font-semibold text-white/80 truncate">{qrDisplayUrl}</p>
             </div>
             <div className="w-[70px] h-[70px] p-1.5 rounded-[12px] bg-white shrink-0 flex items-center justify-center">
               <QrSvg size={58} />

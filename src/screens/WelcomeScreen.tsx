@@ -383,7 +383,7 @@ export function WelcomeScreen({
             className="min-h-[40px] px-4 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-600 dark:text-[#FFD86B] font-head font-extrabold text-xs inline-flex items-center gap-1.5 cursor-pointer transition-colors self-start sm:self-auto whitespace-nowrap"
           >
             <LockOpen className="w-3.5 h-3.5" />
-            <span>{tr("Unlock+ Hub · Khariidadaha")} ($0.50)</span>
+            <span>{tr("Unlock+ Hub · Khariidadaha")}</span>
           </button>
         </div>
 
@@ -505,6 +505,19 @@ export function WelcomeScreen({
                 </div>
                 <p className="text-xs sm:text-sm opacity-85">{txl(peekFaculty.jobs).join(" · ")}</p>
               </div>
+
+              {txl(peekFaculty.tips).length > 0 && (
+                <div
+                  className={`rounded-2xl p-3.5 border text-xs leading-relaxed ${
+                    darkMode
+                      ? "bg-[#FFC93C]/10 border-[#FFC93C]/30 text-[#FFE599]"
+                      : "bg-amber-50 border-amber-200 text-amber-950"
+                  }`}
+                >
+                  <strong className="block mb-1">{tr("Talooyin")}:</strong>
+                  <span>{txl(peekFaculty.tips)[0]}</span>
+                </div>
+              )}
 
               <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
                 <button

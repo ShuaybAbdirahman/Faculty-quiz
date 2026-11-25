@@ -11,10 +11,21 @@ export interface PdfSlot {
 export interface PredictQuestion {
   id: string;
   topic: string;
+  part?: "part1_mcq" | "part2_structured";
+  marks?: number;
+  pastPaperYear?: string;
   prompt: string;
   options: [string, string, string, string];
   correctIndex: 0 | 1 | 2 | 3;
   explanation: string;
+}
+
+export interface OfficialExamBlueprint {
+  questionScale: string;
+  part1Label: string;
+  part2Label: string;
+  totalMarks: number;
+  pastPaperPolicy: string;
 }
 
 export interface Form4Subject {
@@ -31,10 +42,19 @@ export interface Form4Subject {
   pdfs: PdfSlot[];
   predictDurationMin: number;
   predictPrice: string;
+  examBlueprint: OfficialExamBlueprint;
   predictQuestions: PredictQuestion[];
 }
 
 export const FORM4_EXAM_DATE = "June 2027";
+
+export const NATIONAL_EXAM_BLUEPRINT: OfficialExamBlueprint = {
+  questionScale: "40 ilaa 50 su'aalood",
+  part1Label: "Qaybta 1aad: Goobo-gelin (MCQ)",
+  part2Label: "Qaybta 2aad: Xallin & Qoraal Kooban",
+  totalMarks: 100,
+  pastPaperPolicy: "Xulashada imtixaannadii hore (Form 4) · Qish ma ahan.",
+};
 
 export const FORM4_GROUPS: { id: "all" | SchoolSubjectGroup; label: string }[] = [
   { id: "all", label: "Dhammaan (12)" },
@@ -58,8 +78,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
   {
@@ -74,8 +95,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
   {
@@ -90,8 +112,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
   {
@@ -106,8 +129,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
 
@@ -124,8 +148,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
   {
@@ -140,8 +165,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
   {
@@ -156,8 +182,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
 
@@ -174,8 +201,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
   {
@@ -190,8 +218,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
 
@@ -208,8 +237,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
   {
@@ -224,8 +254,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
   {
@@ -240,8 +271,9 @@ export const form4Subjects: Form4Subject[] = [
     freeTopics: [],
     freeExamTip: "",
     pdfs: [],
-    predictDurationMin: 15,
-    predictPrice: "$0.25",
+    predictDurationMin: 60,
+    predictPrice: "$0.50",
+    examBlueprint: NATIONAL_EXAM_BLUEPRINT,
     predictQuestions: [],
   },
 ];

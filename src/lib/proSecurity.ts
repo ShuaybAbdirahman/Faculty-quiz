@@ -10,6 +10,39 @@ export const EVC_PAYMENT_CONFIG = {
   defaultDays: 180,
 } as const;
 
+export const TOTAL_BUNDLE_CONFIG = {
+  originalAmount: 1.5,
+  discountPct: 20,
+  finalAmount: 1.2,
+  savedAmount: 0.3,
+  originalPrice: "$1.50",
+  finalPrice: "$1.20",
+  priceText: "$1.20 · 6 Bilood (20% Off)",
+  ussdAmount: "1.2",
+  days: 180,
+} as const;
+
+export function calculateTotalBundlePricing(
+  originalAmount: number = TOTAL_BUNDLE_CONFIG.originalAmount,
+  discountPct: number = TOTAL_BUNDLE_CONFIG.discountPct
+) {
+  const safeOriginal = Math.max(0.5, Number.isFinite(originalAmount) ? originalAmount : 1.5);
+  const safePct = Math.min(50, Math.max(0, Number.isFinite(discountPct) ? discountPct : 20));
+  const saved = Number(((safeOriginal * safePct) / 100).toFixed(2));
+  const final = Number((safeOriginal - saved).toFixed(2));
+  const ussdAmount = final % 1 === 0 ? final.toFixed(0) : final.toFixed(1).replace(/\.0$/, "");
+  return {
+    originalAmount: safeOriginal,
+    discountPct: safePct,
+    savedAmount: saved,
+    finalAmount: final,
+    formattedOriginal: `$${safeOriginal.toFixed(2)}`,
+    formattedSaved: `$${saved.toFixed(2)}`,
+    formattedFinal: `$${final.toFixed(2)}`,
+    ussdAmount,
+  };
+}
+
 export const DEVICE_ID_STORAGE_KEY = "hk_device_id_v2";
 export const LEGACY_DEVICE_ID_KEY = "device_id";
 export const ENTITLEMENT_STORAGE_KEY = "hk_pro_entitlement_v2";
@@ -254,6 +287,7 @@ export function hasSchoolSubjectAccess(
   subjectId: string,
   now: number = Date.now()
 ): boolean {
+  if (hasDepartmentsAccess(ent, deviceId, now)) return true;
   return hasUnlockedItem(ent, deviceId, `school:${subjectId}`, now);
 }
 
@@ -263,6 +297,7 @@ export function hasBridgeExamAccess(
   examId: string,
   now: number = Date.now()
 ): boolean {
+  if (hasDepartmentsAccess(ent, deviceId, now)) return true;
   return hasUnlockedItem(ent, deviceId, `bridge:${examId}`, now);
 }
 
@@ -544,7 +579,7 @@ export function buildProWatermarkTileDataUri(stamp: string): string {
 
 export const PRO_PERSONAL_REMINDER = {
   title: "Xasuusin Muhiim ah · Qalabkaaga Keliya (1 Qalab = 1 Arday)",
-  body: "Qeybtan Unlock+ waxay si gaar ah ugu furan tahay adiga keligaa. Fadlan ha qaadin screenshot, ha dajisan, hana la wadaagin asxaabtaada ama dad kale. Arday kasta si xor ah ayuu $0.50 ugu furan karaa naftiisa si aan xogta gaarka ah loo helin amar la'aan.",
+  body: "Qeybtan Unlock+ waxay si gaar ah ugu furan tahay adiga keligaa. Fadlan ha qaadin screenshot, ha dajisan, hana la wadaagin dad kale. Arday kasta naftiisa ayuu ku furan karaa ($0.50 hal qeyb ama $1.20 dhammaan oo leh 20% qiimo dhimis ah).",
 } as const;
 
 export const PAYMENT_COOLDOWN_MS = 30_000;

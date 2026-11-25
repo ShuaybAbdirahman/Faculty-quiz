@@ -19,6 +19,7 @@ import { Footer, HiraalBrandIcon, SomaliStarIcon } from "../components/ModernUI"
 import { HeroSpotlightTicker } from "../components/HeroSpotlightTicker";
 import { PromoPosterModal } from "../components/PromoPosterModal";
 import type { HubTab } from "./ProHubScreen";
+import type { BridgingSectionTab } from "./BridgingPrepScreen";
 
 function daysUntil(year: number, monthIndex: number, day: number): number {
   const now = new Date();
@@ -36,7 +37,7 @@ export function HomeScreen({
   onOpenReviews,
 }: {
   onEnterSchool: (subjectId?: string) => void;
-  onEnterBridging: (section?: "exams" | "readiness" | "challenges") => void;
+  onEnterBridging: (section?: BridgingSectionTab) => void;
   onEnterFacultyGuide: () => void;
   onOpenProHub: (tab?: HubTab, facultyId?: string) => void;
   onOpenSettings: () => void;
@@ -120,7 +121,7 @@ export function HomeScreen({
                   className="font-head font-extrabold text-[26px] sm:text-[34px] leading-[1.12] tracking-tight text-white"
                   style={{ textWrap: "balance" }}
                 >
-                  HIRAAL: <span className="text-[#FFE484]">School, Gap &amp; University</span>
+                  HIRAAL: <span className="text-[#FFE484]">School, Diyaarinta JUS &amp; University</span>
                 </h1>
                 <p className="text-[13.5px] sm:text-[15px] text-white/88 leading-relaxed">
                   {tr("Ogow kulliyadda kugu habboon, imtixaannada 2027, iyo xirfadaha mustaqbalka.")}
@@ -150,7 +151,7 @@ export function HomeScreen({
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#A7F3D0]">
                   <Calendar className="w-3.5 h-3.5 shrink-0" />
-                  <span>Gap · Oct 2027</span>
+                  <span>JUS · Oct 2027</span>
                 </div>
                 <div className="font-head font-extrabold text-sm sm:text-base text-white tabular-nums mt-0.5">
                   {octDays} Maalmood
@@ -174,7 +175,7 @@ export function HomeScreen({
           </div>
 
           <div className="grid lg:grid-cols-3 gap-4">
-            {/* 1. SCHOOL — Vibrant Ocean Cyan-Blue */}
+            {/* 1. SCHOOL: Vibrant Ocean Cyan-Blue */}
             <article
               className="animate-card-delay-1 relative overflow-hidden rounded-3xl p-5 sm:p-6 text-white flex flex-col justify-between gap-4 transition-transform duration-200 hover:-translate-y-1 shadow-lg border border-cyan-300/35"
               style={{
@@ -199,7 +200,7 @@ export function HomeScreen({
                     Form 4 (12 Maado)
                   </h3>
                   <p className="mt-1 text-xs sm:text-[13.5px] text-white/90 leading-relaxed">
-                    12 maado: PDFs bilaash ah iyo Predict Exam.
+                    12 maado (PDFs &amp; Predict), Sirta Top-10 &amp; Maaddooyinka, iyo Ranking.
                   </p>
                 </div>
 
@@ -208,7 +209,7 @@ export function HomeScreen({
                     <FileText className="w-3.5 h-3.5" />
                     <span>PDFs Free</span>
                   </span>
-                  <span className="font-extrabold text-[#FFE484] tabular-nums">Predict $0.25</span>
+                  <span className="font-extrabold text-[#FFE484] tabular-nums">Qeyb $0.50 · Total $1.20</span>
                 </div>
               </div>
 
@@ -222,7 +223,7 @@ export function HomeScreen({
               </button>
             </article>
 
-            {/* 2. GAP — Vibrant Emerald-Teal */}
+            {/* 2. DIYAARINTA JAAMACADDA: Vibrant Emerald-Teal */}
             <article
               className="animate-card-delay-2 relative overflow-hidden rounded-3xl p-5 sm:p-6 text-white flex flex-col justify-between gap-4 transition-transform duration-200 hover:-translate-y-1 shadow-lg border border-emerald-300/35"
               style={{
@@ -236,7 +237,7 @@ export function HomeScreen({
                       <Target className="w-5 h-5" />
                     </span>
                     <span className="text-xs font-extrabold uppercase tracking-wider text-white/95">
-                      Gap
+                      Heerka JUS &amp; Gelitaanka
                     </span>
                   </div>
                   <span className="text-xs font-bold text-emerald-100 tabular-nums">Oct 2027</span>
@@ -244,19 +245,19 @@ export function HomeScreen({
 
                 <div>
                   <h3 className="font-head font-extrabold text-xl sm:text-2xl leading-snug text-white">
-                    Kala-Guurka (JUS)
+                    Diyaarinta JUS (Keliya)
                   </h3>
                   <p className="mt-1 text-xs sm:text-[13.5px] text-white/90 leading-relaxed">
-                    Tartanka Jaamacadaha, qorshaha 90 maalmood &amp; xalka caqabadaha.
+                    Jaamacadda Ummadda (5 maado: 4 Saynis + English), 90 maalmood &amp; Ranking JUS.
                   </p>
                 </div>
 
-                <div className="pt-2.5 border-t border-white/20 flex items-center justify-between text-xs">
+                <div className="pt-2.5 border-t border-white/20 flex items-center justify-between gap-2 text-xs">
                   <span className="inline-flex items-center gap-1.5 text-white/90">
                     <FileText className="w-3.5 h-3.5" />
-                    <span>90 Maalmood Free</span>
+                    <span>PDFs Free</span>
                   </span>
-                  <span className="font-extrabold text-[#FFE484] tabular-nums">Predict $0.50</span>
+                  <span className="font-extrabold text-[#FFE484] tabular-nums">Qeyb $0.50 · Total $1.20</span>
                 </div>
               </div>
 
@@ -265,12 +266,12 @@ export function HomeScreen({
                 onClick={() => onEnterBridging("exams")}
                 className="w-full min-h-[46px] rounded-2xl bg-white hover:bg-emerald-50 text-[#064E3B] font-head font-extrabold text-sm flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm whitespace-nowrap"
               >
-                <span>Gal Gap</span>
+                <span>Gal Diyaarinta</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </article>
 
-            {/* 3. UNIVERSITY — Royal Indigo-Violet */}
+            {/* 3. UNIVERSITY: Royal Indigo-Violet */}
             <article
               className="animate-card-delay-3 relative overflow-hidden rounded-3xl p-5 sm:p-6 text-white flex flex-col justify-between gap-4 transition-transform duration-200 hover:-translate-y-1 shadow-lg border border-violet-300/35"
               style={{
@@ -301,7 +302,7 @@ export function HomeScreen({
 
                 <div className="pt-2.5 border-t border-white/20 flex items-center justify-between text-xs">
                   <span className="text-emerald-200 font-bold">RIASEC Free</span>
-                  <span className="font-extrabold text-[#FFE484] tabular-nums">Unlock+ $0.50 · 6 Bilood</span>
+                  <span className="font-extrabold text-[#FFE484] tabular-nums">Qeyb $0.50 · Total $1.20 (-20%)</span>
                 </div>
               </div>
 
@@ -317,9 +318,9 @@ export function HomeScreen({
           </div>
         </section>
 
-        {/* Clean 2-Column Utility Row (No Stacked Text Walls) */}
+        {/* Clean 2-Column Utility Row */}
         <section className="grid md:grid-cols-2 gap-4">
-          {/* Pro Hub Highlight Card — Warm Amber-Orange */}
+          {/* Unlock+ Hub Highlight Card: Warm Amber-Orange */}
           <div
             className="rounded-3xl p-5 sm:p-6 text-white flex flex-col justify-between gap-4 border border-amber-300/35 shadow-md"
             style={{
@@ -332,13 +333,13 @@ export function HomeScreen({
                   <LockOpen className="w-4 h-4 text-[#FFE484]" />
                   <span>Unlock+ Hub</span>
                 </span>
-                <span className="text-xs font-extrabold text-[#FFE484] tabular-nums">$0.50 · 6 Bilood</span>
+                <span className="text-xs font-extrabold text-[#FFE484] tabular-nums">$0.50 | $1.20 Total (-20%)</span>
               </div>
               <h3 className="font-head font-extrabold text-lg sm:text-xl leading-snug">
-                Sirta Top-10, Khariidadaha &amp; Jaamacadaha
+                Khariidadaha, Jaamacadaha &amp; Xirfadaha
               </h3>
               <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
-                Xeeladaha xalaasha ah ee Top-10, sirta 12-ka maado, AI &amp; Caafimaad, jaamacadaha, iyo xirfadaha dakhliga.
+                6-da qaybood ee University Hub: Khariidadaha, Jaamacadaha Soomaaliya, Dadka Caanka ah, Shaqooyinka Casriga ah &amp; Xirfadaha Dakhliga.
               </p>
             </div>
             <button
