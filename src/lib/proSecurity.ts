@@ -41,7 +41,7 @@ export const PRO_BILLING_PLANS: Record<ProBillingCycle, ProBillingPlan> = {
   yearly: {
     id: "yearly",
     title: "Sanadle (Yearly)",
-    subtitle: "Helitaan buuxa sanadka oo dhan (Form 4, JUS & Jaamacad)",
+    subtitle: "Helitaan buuxa sanadka oo dhan (Form 4, Diyaarinta & Jaamacad)",
     amount: 5.0,
     priceText: "$5.00",
     ussdAmount: "5",

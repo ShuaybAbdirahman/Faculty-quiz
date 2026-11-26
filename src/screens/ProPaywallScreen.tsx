@@ -80,7 +80,7 @@ const CYCLE_ORDER: ProBillingCycle[] = ["weekly", "monthly", "yearly"];
 const UNIFIED_PRO_BENEFITS = [
   "Qalabka Ardayga: Xisaabiyaha Darajada & GPA, Jadwalka Toddobaadlaha & Saacadda Focus-ka",
   "Hagaha Waaxda (70 Su'aalood), Khariidadaha Xirfadaha & Isbarbardhigga Kulliyadaha",
-  "Sirta Ardayda Top-10, Predict Exams (12 Maado Form 4 + 5 Maado JUS) & Kaalmaha Sare",
+  "Sirta Ardayda Top-10, Predict Exams (12 Maado Form 4 + 5 Maado Gelitaan) & Kaalmaha Sare",
   "Jaamacadaha Soomaaliya, Shaqooyinka Mustaqbalka, Xirfadaha Dakhliga & Luqadaha (EN/AR)",
 ];
 

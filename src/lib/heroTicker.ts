@@ -67,8 +67,8 @@ export const baseHeroSlides: HeroTickerSlide[] = [
     id: "hiraal_brand",
     tag: { so: "HIRAAL", en: "HIRAAL", ar: "هيرال" },
     text: {
-      so: "School · Diyaarinta JUS · University (Hal Meel)",
-      en: "School · JUS Prep · University Platform",
+      so: "School · Diyaarinta Jaamacadda · University (Hal Meel)",
+      en: "School · University Prep · Faculty Guide Platform",
       ar: "المدرسة · الإعداد الجامعي · الجامعة",
     },
     accent: "sky",
@@ -85,11 +85,11 @@ export const baseHeroSlides: HeroTickerSlide[] = [
   },
   {
     id: "gap_oct_2027",
-    tag: { so: "Diyaarinta JUS", en: "JUS Prep", ar: "الإعداد الجامعي" },
+    tag: { so: "Diyaarinta", en: "Uni Prep", ar: "الإعداد الجامعي" },
     text: {
-      so: "Tartanka JUS: 5 Maado (4 Saynis + EN · Oct 2027)",
-      en: "SNU Entrance: 5 Subjects (4 Science + EN · Oct 2027)",
-      ar: "اختبار قبول الجامعة الوطنية: 5 مواد (أكتوبر ٢٠٢٧)",
+      so: "Gelitaanka Jaamacadaha: 5 Maado (4 Saynis + EN · Oct 2027)",
+      en: "University Entrance: 5 Subjects (4 Science + EN · Oct 2027)",
+      ar: "اختبارات القبول الجامعي: 5 مواد (أكتوبر ٢٠٢٧)",
     },
     accent: "emerald",
   },
@@ -127,7 +127,7 @@ export const baseHeroSlides: HeroTickerSlide[] = [
     id: "somali_free",
     tag: { so: "Af-Soomaali", en: "Somali Free", ar: "الصومالية مجاناً" },
     text: {
-      so: "Af-Soomaaliga: 100% Bilaash (School, JUS & Uni)",
+      so: "Af-Soomaaliga: 100% Bilaash (School, Diyaarinta & Uni)",
       en: "Somali Language: 100% Free Across HIRAAL",
       ar: "اللغة الصومالية مجانية ١٠٠٪",
     },

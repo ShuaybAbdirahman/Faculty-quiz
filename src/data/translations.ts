@@ -1615,9 +1615,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "All 12 Form 4 subjects (Sciences, Languages, Social Studies, Business, Tech & Islamic)",
     "جميع مواد الصف الرابع ثانوي الـ 12 (العلوم، اللغات، الاجتماعيات، الأعمال، التقنية والتربية)"
   ],
-  "Mowduucyada ugu muhiimsan imtixaannada Form 4 iyo Tartanka JUS": [
-    "High-yield core topics for Form 4 Nationals and SNU Entrance",
-    "أهم الموضوعات المتكررة في امتحانات الثانوية وقبول الجامعة"
+  "Mowduucyada ugu muhiimsan imtixaannada Form 4 iyo Gelitaanka Jaamacadaha": [
+    "High-yield core topics for Form 4 Nationals and University Entrance",
+    "أهم الموضوعات المتكررة في امتحانات الثانوية وقبول الجامعات"
   ],
   "Khaladaadka yaryar ee dhibcaha lumiya iyo sida looga fogaado": [
     "Common mark-losing traps and how to avoid them",
@@ -1635,9 +1635,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Evidence-based study techniques and exam-hall pacing rules, with zero cheating.",
     "أساليب مذاكرة علمية وتنظيم وقت الامتحان، بدون أي غش."
   ],
-  "Sirta Xalaasha ah ee Maaddooyinka (Form 4 & JUS)": [
-    "Ethical Subject Blueprints (Form 4 & SNU)",
-    "أسرار المواد المشروعة (الثانوية وقبول الجامعة)"
+  "Sirta Xalaasha ah ee Maaddooyinka (Form 4 & Gelitaan)": [
+    "Ethical Subject Blueprints (Form 4 & University Entrance)",
+    "أسرار المواد المشروعة (الثانوية وقبول الجامعات)"
   ],
   "Meelaha Dhibcaha Laga Helo Maaddo Kasta (12 Maado)": [
     "Where Marks Are Earned in Every Subject (12 Subjects)",

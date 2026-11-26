@@ -247,7 +247,7 @@ export function LegalSubjectSecretsSection({
       <div>
         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FFD86B]">
           <BookOpenCheck className="w-4 h-4" />
-          <span>{tr("Sirta Xalaasha ah ee Maaddooyinka (Form 4 & JUS)")}</span>
+          <span>{tr("Sirta Xalaasha ah ee Maaddooyinka (Form 4 & Gelitaan)")}</span>
         </div>
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
           {tr("Meelaha Dhibcaha Laga Helo Maaddo Kasta (12 Maado)")}

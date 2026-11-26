@@ -38,7 +38,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     id: "bridging",
-    label: "JUS Prep",
+    label: "Diyaarinta",
     icon: Target,
     activeGradient: "linear-gradient(135deg, #059669 0%, #10B981 100%)",
     activeShadow: "0 6px 18px rgba(16, 185, 129, 0.40)",

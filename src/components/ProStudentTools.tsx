@@ -152,7 +152,7 @@ export function ProStudentTools() {
               <div>
                 <h3 className="font-head font-bold text-lg">Geli Dhibcahaaga Qiyaasta ah</h3>
                 <p className={`text-xs mt-0.5 ${mutedCls}`}>
-                  Ku tijaabi dhibcaha Form 4 ama JUS si aad u aragto kulliyadaha kuu furmaya.
+                  Ku tijaabi dhibcaha Form 4 ama imtixaanka gelitaanka si aad u aragto kulliyadaha kuu furmaya.
                 </p>
               </div>
               <div

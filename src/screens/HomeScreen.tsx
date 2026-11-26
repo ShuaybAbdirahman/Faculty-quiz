@@ -121,7 +121,7 @@ export function HomeScreen({
                   className="font-head font-extrabold text-[26px] sm:text-[34px] leading-[1.12] tracking-tight text-white"
                   style={{ textWrap: "balance" }}
                 >
-                  HIRAAL: <span className="text-[#FFE484]">School, Diyaarinta JUS &amp; University</span>
+                  HIRAAL: <span className="text-[#FFE484]">School, Diyaarinta Jaamacadda &amp; University</span>
                 </h1>
                 <p className="text-[13.5px] sm:text-[15px] text-white/88 leading-relaxed">
                   {tr("Ogow kulliyadda kugu habboon, imtixaannada 2027, iyo xirfadaha mustaqbalka.")}
@@ -151,7 +151,7 @@ export function HomeScreen({
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#A7F3D0]">
                   <Calendar className="w-3.5 h-3.5 shrink-0" />
-                  <span>JUS · Oct 2027</span>
+                  <span>Diyaarinta · Oct 2027</span>
                 </div>
                 <div className="font-head font-extrabold text-sm sm:text-base text-white tabular-nums mt-0.5">
                   {octDays} Maalmood
@@ -192,7 +192,7 @@ export function HomeScreen({
                       School
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-cyan-100 tabular-nums">June 2027</span>
+                  <span className="text-xs font-bold text-cyan-100 tabular-nums whitespace-nowrap shrink-0">June 2027</span>
                 </div>
 
                 <div>
@@ -236,19 +236,19 @@ export function HomeScreen({
                     <span className="w-10 h-10 rounded-xl bg-white/20 border border-white/35 flex items-center justify-center shrink-0">
                       <Target className="w-5 h-5" />
                     </span>
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-white/95">
-                      Heerka JUS &amp; Gelitaanka
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-white/95 whitespace-nowrap">
+                      Gelitaanka
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-emerald-100 tabular-nums">Oct 2027</span>
+                  <span className="text-xs font-bold text-emerald-100 tabular-nums whitespace-nowrap shrink-0">Oct 2027</span>
                 </div>
 
                 <div>
                   <h3 className="font-head font-extrabold text-xl sm:text-2xl leading-snug text-white">
-                    Diyaarinta JUS (Keliya)
+                    Diyaarinta Jaamacadda
                   </h3>
                   <p className="mt-1 text-xs sm:text-[13.5px] text-white/90 leading-relaxed">
-                    Jaamacadda Ummadda (5 maado: 4 Saynis + English), 90 maalmood &amp; Ranking JUS.
+                    5 maado (4 Saynis + English), imtixaannada jaamacadaha &amp; JUS, 90 maalmood &amp; Ranking.
                   </p>
                 </div>
 
@@ -288,7 +288,7 @@ export function HomeScreen({
                       Jaamacad
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-[#FFE484] tabular-nums">14 Kulliyad</span>
+                  <span className="text-xs font-bold text-[#FFE484] tabular-nums whitespace-nowrap shrink-0">14 Kulliyad</span>
                 </div>
 
                 <div>

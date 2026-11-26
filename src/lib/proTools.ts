@@ -62,7 +62,7 @@ export function calculateGradeInsight(
   if (averagePct >= 85) {
     tierTitle = "Heerka Tartanka Sare & Deeqaha";
     summary =
-      "Celceliskaagu wuxuu ku jiraa kaalmaha ugu sarreeya ee tartanka JUS, kulliyadaha adag, iyo deeqaha waxbarasho.";
+      "Celceliskaagu wuxuu ku jiraa kaalmaha ugu sarreeya ee tartanka gelitaanka jaamacadaha, kulliyadaha adag, iyo deeqaha waxbarasho.";
     eligibleFaculties = bank.high;
   } else if (averagePct >= 70) {
     tierTitle = "Heerka Kalsoonida & Xulashada Wanaagsan";

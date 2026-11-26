@@ -201,10 +201,10 @@ async function renderShareCardPng(
     ctx.textAlign = "center";
     ctx.fillStyle = "#BFDBFE";
     ctx.font = `800 ${9.5 * S}px ${bodyFont}`;
-    ctx.fillText("HIRAAL 2027 · FORM 4 · DIYAARINTA JUS · UNIVERSITY", W / 2, platY + 18 * S);
+    ctx.fillText("HIRAAL 2027 · FORM 4 · DIYAARINTA JAAMACADDA · UNIVERSITY", W / 2, platY + 18 * S);
     ctx.fillStyle = "rgba(255,255,255,0.85)";
     ctx.font = `600 ${9.5 * S}px ${bodyFont}`;
-    ctx.fillText("12 Maado Form 4 · 5 Maado JUS · 14 Kulliyadood · $0.50 | $1.20 Total", W / 2, platY + 34 * S);
+    ctx.fillText("12 Maado Form 4 · 5 Maado Gelitaan · 14 Kulliyadood · $0.50 | $1.20 Total", W / 2, platY + 34 * S);
 
     // Viral Story Prompt Box
     const py = 462 * S;
@@ -499,10 +499,10 @@ export function ShareSection({
             <>
               <div className="mt-3 rounded-xl px-3 py-2 bg-[#041126]/55 border border-[#7CB7FF]/35 text-center">
                 <p className="text-[9.5px] font-extrabold tracking-wide text-[#BFDBFE] uppercase">
-                  HIRAAL 2027 · FORM 4 · DIYAARINTA JUS · UNIVERSITY
+                  HIRAAL 2027 · FORM 4 · DIYAARINTA JAAMACADDA · UNIVERSITY
                 </p>
                 <p className="text-[9.5px] font-semibold text-white/85 mt-0.5">
-                  12 Maado Form 4 · 5 Maado JUS · 14 Kulliyadood · Rukun
+                  12 Maado Form 4 · 5 Maado Gelitaan · 14 Kulliyadood · Rukun
                 </p>
               </div>
 

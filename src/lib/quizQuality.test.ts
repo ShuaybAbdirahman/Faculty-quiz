@@ -226,7 +226,7 @@ describe("CAAWIYE School (June 2027) & Diyaarinta Jaamacadda (Oct 2027) Clean Pr
     }
   });
 
-  it("prepares exact 5 JUS entrance subjects (4 scientific + English) and 60-min competitive entrance tracks for October 2027", () => {
+  it("prepares exact 5 university entrance subjects (4 scientific + English) and 60-min general entrance tracks for October 2027", () => {
     assert.equal(GAP_EXAM_DATE, "October 2027");
     assert.equal(bridgeSubjects.length, 5);
     assert.equal(bridgeSubjects.filter((s) => s.group === "science").length, 4);
@@ -245,8 +245,9 @@ describe("CAAWIYE School (June 2027) & Diyaarinta Jaamacadda (Oct 2027) Clean Pr
       assert.equal(sub.predictQuestions.length, 0);
     }
 
-    assert.equal(bridgeExamTracks.length, 1, "Section 2 must target JUS only until other universities announce exams");
+    assert.equal(bridgeExamTracks.length, 1, "Section 2 keeps one unified entrance track across universities");
     assert.equal(bridgeExamTracks[0].id, "snu_tartanka");
+    assert.ok(!/keliya|kaliya/i.test(bridgeExamTracks[0].title));
     for (const tr of bridgeExamTracks) {
       assert.equal(tr.examDate, "October 2027");
       assert.equal(tr.price, "$0.50");
@@ -320,6 +321,7 @@ describe("CAAWIYE School (June 2027) & Diyaarinta Jaamacadda (Oct 2027) Clean Pr
       [/—/, "Em-dash (—)"],
       [/–/, "En-dash (–)"],
       [/kala.?guur/i, "Old Kala-Guur label"],
+      [/Diyaarinta JUS\s*\((?:Keliya|Kaliya)\)/i, "Exclusive JUS-only stage label"],
       [/Bricolage Grotesque/i, "Legacy Bricolage Grotesque font"],
       [/\bDM Sans\b/i, "Legacy DM Sans font"],
       [/Instrument Serif/i, "Legacy Instrument Serif font"],

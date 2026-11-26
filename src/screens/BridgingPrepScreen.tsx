@@ -108,10 +108,10 @@ export function BridgingPrepScreen({
               </div>
               <div className="min-w-0">
                 <h1 className="font-head font-extrabold text-[15px] sm:text-lg leading-tight truncate">
-                  Diyaarinta Jaamacadda (JUS · 5 Maado)
+                  Diyaarinta Jaamacadda (5 Maado)
                 </h1>
                 <p className="text-[11px] text-white/75 truncate">
-                  Tartanka Jaamacadda Ummadda · {GAP_EXAM_DATE}
+                  Imtixaannada Gelitaanka Jaamacadaha (sida JUS) · {GAP_EXAM_DATE}
                 </p>
               </div>
             </div>
@@ -124,12 +124,12 @@ export function BridgingPrepScreen({
       </header>
 
       <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 space-y-5">
-        {/* Focused JUS Stage Header */}
+        {/* General University Prep Stage Header */}
         <section className="rounded-3xl p-5 sm:p-6 border border-emerald-300/30 bg-white/[0.08] backdrop-blur-md space-y-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-emerald-300">
               <Target className="w-4 h-4" />
-              <span>Qeybta 2aad · Diyaarinta JUS</span>
+              <span>Qeybta 2aad · Diyaarinta Jaamacadda</span>
             </div>
             <div className="inline-flex items-center gap-2 text-xs font-bold text-white/85 tabular-nums">
               <Calendar className="w-3.5 h-3.5 text-[#FFD86B]" />
@@ -140,30 +140,30 @@ export function BridgingPrepScreen({
           </div>
 
           <h2 className="font-head font-extrabold text-xl sm:text-2xl text-white leading-tight">
-            Tartanka JUS (5 Maado), 90 Maalmood &amp; Ranking
+            Imtixaannada Gelitaanka (5 Maado), 90 Maalmood &amp; Ranking
           </h2>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
             {[
               {
                 id: "exams" as const,
-                label: "Imtixaanka JUS (5 Maado)",
-                icon: <Target className="w-4 h-4" />,
+                label: "5-ta Maado",
+                icon: <Target className="w-4 h-4 shrink-0" />,
               },
               {
                 id: "readiness" as const,
                 label: "90 Maalmood",
-                icon: proJusActive ? <ClipboardCheck className="w-4 h-4" /> : <Lock className="w-4 h-4 text-[#FFD86B]" />,
+                icon: proJusActive ? <ClipboardCheck className="w-4 h-4 shrink-0" /> : <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />,
               },
               {
                 id: "challenges" as const,
-                label: "Xalka Caqabadaha",
-                icon: proJusActive ? <Lightbulb className="w-4 h-4" /> : <Lock className="w-4 h-4 text-[#FFD86B]" />,
+                label: "Caqabadaha",
+                icon: proJusActive ? <Lightbulb className="w-4 h-4 shrink-0" /> : <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />,
               },
               {
                 id: "ranking" as const,
-                label: "Ranking JUS",
-                icon: proJusActive ? <Trophy className="w-4 h-4" /> : <Lock className="w-4 h-4 text-[#FFD86B]" />,
+                label: "Ranking",
+                icon: proJusActive ? <Trophy className="w-4 h-4 shrink-0" /> : <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />,
               },
             ].map((tab) => (
               <button
@@ -185,11 +185,11 @@ export function BridgingPrepScreen({
 
         {section === "exams" && (
           <div className="space-y-5 animate-pro-enter">
-            {/* 5 Core JUS Entrance Subjects Selector (4 Scientific + English) */}
-            <section aria-label="5-ta Maado ee Jaamacadda Ummadda (JUS)" className="space-y-2.5">
+            {/* 5 Core Entrance Subjects Selector (4 Scientific + English) */}
+            <section aria-label="5-ta Maado ee Gelitaanka Jaamacadaha" className="space-y-2.5">
               <div className="flex items-center justify-between gap-2 flex-wrap px-1">
                 <h3 className="font-head font-extrabold text-sm sm:text-base text-white">
-                  5-ta Maado ee JUS (4 Saynis + Ingiriisi)
+                  5-ta Maado ee Gelitaanka (4 Saynis + Ingiriisi)
                 </h3>
                 <span className="text-xs font-bold text-emerald-200">
                   {activeTrack.examDate}
@@ -268,7 +268,7 @@ export function BridgingPrepScreen({
                 ) : (
                   <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-300 shrink-0">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>{proJusActive ? "JUS Furan" : "Predict Furan"}</span>
+                    <span>{proJusActive ? "Diyaarinta Furan" : "Predict Furan"}</span>
                   </span>
                 )}
               </div>
@@ -308,7 +308,7 @@ export function BridgingPrepScreen({
                 </div>
                 <div className="space-y-1">
                   <div className="text-xs font-extrabold uppercase tracking-wider text-emerald-300">
-                    PDF-yada JUS (Free) · {activeSubject.name}
+                    PDF-yada Gelitaanka (Free) · {activeSubject.name}
                   </div>
                   <h4 className="font-head font-extrabold text-lg text-white">
                     Diyaar ({activeSubject.examDate})
@@ -330,10 +330,10 @@ export function BridgingPrepScreen({
             ) : (
               <ProContentShield
                 active={unlocked}
-                sectionLabel={`Qeybta 2aad · JUS (${activeSubject.name})`}
+                sectionLabel={`Qeybta 2aad · Diyaarinta (${activeSubject.name})`}
               >
                 <PredictExamRunner
-                  title={`${activeSubject.name} (JUS)`}
+                  title={`${activeSubject.name} (Gelitaan)`}
                   durationMin={activeSubject.durationMin}
                   examDate={activeSubject.examDate}
                   blueprint={activeSubject.examBlueprint}
@@ -362,7 +362,7 @@ export function BridgingPrepScreen({
           <div className="animate-pro-enter">
             <PredictRankingBoard
               scope="jus"
-              title="Kaalmaha Sare · Tartanka JUS (5 Maado)"
+              title="Kaalmaha Sare · Diyaarinta Jaamacadda (5 Maado)"
               subjects={bridgeSubjects}
               proActive={proJusActive}
               onUnlock={onOpenPaywall}

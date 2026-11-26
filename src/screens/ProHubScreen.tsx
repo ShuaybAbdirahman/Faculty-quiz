@@ -135,7 +135,7 @@ const UNIFIED_SECTIONS: UnifiedSectionMeta[] = [
   {
     id: "rankings",
     label: "Kaalmaha Sare",
-    shortDesc: "Ranking-ka Form 4 & JUS",
+    shortDesc: "Ranking-ka Form 4 & Diyaarinta",
     icon: Trophy,
   },
 ];
@@ -157,7 +157,7 @@ const FREE_VS_PRO_ROWS = [
     pro: true,
   },
   {
-    feature: "Predict Exams (12 Maado Form 4 + 5 Maado JUS) & Kaalmaha Sare",
+    feature: "Predict Exams (12 Maado Form 4 + 5 Maado Gelitaan) & Kaalmaha Sare",
     free: false,
     pro: true,
   },
@@ -187,12 +187,12 @@ const PREVIEW_SAMPLES = [
     bullets: [
       "Qiimeynta Sayniska, Tech & Suugaanta",
       "Tilmaanta diyaar-garowga deeqaha waxbarasho",
-      "Saadaasha kulliyadaha Soomaaliya & JUS",
+      "Saadaasha kulliyadaha & imtixaannada gelitaanka",
     ],
   },
   {
     id: "secrets",
-    title: "Sirta Ardayda Top-10 (Form 4 & JUS)",
+    title: "Sirta Ardayda Top-10 (Form 4 & Gelitaan)",
     tag: "12 Maado · 100% Xalaal",
     body: "Baro habka saxda ah ee saxayaasha imtixaanku u bixiyaan dhibcaha buuxa, khaladaadka keena in ardaygu lumiyo 15-20 dhibcood, iyo sida waqtiga loo maamulo hoolka.",
     bullets: [
@@ -787,7 +787,7 @@ export function ProHubScreen({
                         }`}
                       >
                         <TrendingUp className="w-3.5 h-3.5" />
-                        <span>Ranking JUS</span>
+                        <span>Ranking Diyaarinta</span>
                       </button>
                     </div>
 
@@ -797,7 +797,7 @@ export function ProHubScreen({
                         title={
                           rankingScope === "school"
                             ? "Kaalmaha Sare ee School Form 4"
-                            : "Kaalmaha Sare ee Diyaarinta JUS"
+                            : "Kaalmaha Sare ee Diyaarinta Jaamacadda"
                         }
                         subjects={rankingScope === "school" ? form4Subjects : bridgeSubjects}
                         proActive={proActive}

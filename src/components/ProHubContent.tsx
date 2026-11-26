@@ -619,7 +619,7 @@ export function ReadinessTracker({
           </div>
           <p className="mt-1 text-xs sm:text-sm text-white/75 leading-relaxed">
             {tr(
-              "12 tallaabo oo u qaybsan 3 marxaladood (Maalinta 1 ilaa 90) oo leh Sirta HIRAAL si aad jaamacadda iyo JUS ugu gasho kalsooni buuxda."
+              "12 tallaabo oo u qaybsan 3 marxaladood (Maalinta 1 ilaa 90) oo leh Sirta HIRAAL si aad jaamacadaha iyo imtixaannada gelitaanka ugu gasho kalsooni buuxda."
             )}
           </p>
         </div>

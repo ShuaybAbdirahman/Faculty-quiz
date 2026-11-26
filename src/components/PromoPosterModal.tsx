@@ -117,7 +117,7 @@ export function renderCaawiyePromoPoster(
 
   ctx.fillStyle = "#BFDBFE";
   ctx.font = '700 20px "Plus Jakarta Sans", system-ui, sans-serif';
-  ctx.fillText("SCHOOL  ·  DIYAARINTA JUS  ·  UNIVERSITY", badgeX + badgeSize + 24, badgeY + 62);
+  ctx.fillText("SCHOOL  ·  DIYAARINTA JAAMACADDA  ·  UNIVERSITY", badgeX + badgeSize + 24, badgeY + 62);
 
   // Right Flag Badge Tag
   ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
@@ -147,7 +147,7 @@ export function renderCaawiyePromoPoster(
 
   ctx.fillStyle = "rgba(235, 245, 255, 0.9)";
   ctx.font = '500 23px "Plus Jakarta Sans", system-ui, sans-serif';
-  ctx.fillText("Imtixaanka Qaranka, Tartanka JUS (5 Maado) & Doorashada Kulliyadda", 76, heroY + 148);
+  ctx.fillText("Imtixaanka Qaranka, Gelitaanka Jaamacadaha (5 Maado) & Kulliyadda", 76, heroY + 148);
 
   // 4. Three Distinct Colored Stage Cards
   const cards = [
@@ -166,8 +166,8 @@ export function renderCaawiyePromoPoster(
     },
     {
       num: "02",
-      tag: "QEYBTA 2AAD · DIYAARINTA JUS",
-      title: "Tartanka Jaamacadda (JUS · 5 Maado)",
+      tag: "QEYBTA 2AAD · DIYAARINTA JAAMACADDA",
+      title: "Gelitaanka Jaamacadaha (5 Maado)",
       sub: "4 Saynis + Ingiriisi (Oct 2027) · Ranking",
       topStat: "PDFs: Free",
       botStat: "Rukun $0.25+ · Total -20%",
@@ -271,7 +271,7 @@ export function renderCaawiyePromoPoster(
 
   const metrics = [
     { val: "12 Maado", lbl: "Form 4 Exam" },
-    { val: "5 Maado", lbl: "JUS (4 Saynis + EN)" },
+    { val: "5 Maado", lbl: "Gelitaan (4 Saynis + EN)" },
     { val: "14", lbl: "Kulliyadood" },
     { val: "Af-Soomaali", lbl: "100% Bilaash" },
   ];
@@ -459,8 +459,8 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
           });
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({
-              title: "HIRAAL · School, Diyaarinta JUS & University",
-              text: `Barnaamijka HIRAAL (School Form 4, Diyaarinta JUS & University): ${qrUrl}`,
+              title: "HIRAAL · School, Diyaarinta Jaamacadda & University",
+              text: `Barnaamijka HIRAAL (School Form 4, Diyaarinta Jaamacadda & University): ${qrUrl}`,
               files: [file],
             });
             return;
@@ -469,7 +469,7 @@ export function PromoPosterModal({ onClose }: { onClose: () => void }) {
       }
       if (navigator.share) {
         await navigator.share({
-          title: "HIRAAL · School, Diyaarinta JUS & University",
+          title: "HIRAAL · School, Diyaarinta Jaamacadda & University",
           text: "Barnaamijka HIRAAL ee ardayda Soomaaliyeed!",
           url: qrUrl,
         });

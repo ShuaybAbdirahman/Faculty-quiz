@@ -66,7 +66,7 @@ export function SettingsScreen({
 
   const unlockedStageLabels = [
     proSchoolActive ? "School" : null,
-    proJusActive ? "Diyaarinta JUS" : null,
+    proJusActive ? "Diyaarinta Jaamacadda" : null,
     proUniversityActive ? "University" : null,
     proLanguagesActive ? "Luqadaha" : null,
   ].filter(Boolean) as string[];
