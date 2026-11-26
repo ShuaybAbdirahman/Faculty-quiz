@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import type { Faculty } from "./data/quizData";
-import type { ProItemKey } from "./lib/proSecurity";
+import { faculties, type Faculty } from "./data/quizData";
+import type { ProBillingCycle, ProItemKey } from "./lib/proSecurity";
 import { backendEnabled } from "./lib/config";
 import { AppProvider, useApp } from "./context/AppContext";
 import { HomeScreen } from "./screens/HomeScreen";
@@ -36,6 +36,7 @@ type Route =
       faculty?: Faculty;
       outcome?: QuizOutcome;
       plan?: ProPlanType;
+      billing?: ProBillingCycle;
       itemKey?: ProItemKey;
       returnTo?: "school" | "bridging" | "faculty_home";
     };
@@ -90,7 +91,7 @@ function AppShell() {
         setStack([{ name: "home" }, { name: "faculty_home" }]);
         break;
       case "pro_hub":
-        setStack([{ name: "home" }, { name: "pro_hub", tab: "roadmaps" }]);
+        setStack([{ name: "home" }, { name: "pro_hub", tab: "tools" }]);
         break;
     }
   };
@@ -242,7 +243,19 @@ function AppShell() {
           initialTab={current.tab}
           initialFacultyId={current.facultyId}
           onBack={pop}
-          onOpenPaywall={() => push({ name: "pro_paywall", plan: "total" })}
+          onOpenPaywall={(cycle) =>
+            push({ name: "pro_paywall", plan: "total", billing: cycle ?? "monthly" })
+          }
+          onOpenDepartmentGuide={(facultyId) => {
+            const f = faculties.find((item) => item.id === facultyId);
+            if (f) {
+              push({
+                name: "pro_guide",
+                faculty: f,
+                outcome: { matches: [], ratings: [4, 4, 4, 4, 4, 4], answered: 0, planLen: 0, profile: [] },
+              });
+            }
+          }}
         />
       );
       break;
@@ -262,6 +275,7 @@ function AppShell() {
       screen = (
         <ProPaywallScreen
           initialPlan={current.plan ?? "total"}
+          initialBilling={current.billing ?? "monthly"}
           initialItemKey={current.itemKey}
           onBack={pop}
           onUnlocked={(unlockedItem) => {
@@ -275,7 +289,7 @@ function AppShell() {
             } else if (current.plan === "languages") {
               pop();
             } else {
-              replace({ name: "pro_hub", tab: "roadmaps" });
+              replace({ name: "pro_hub", tab: "tools" });
             }
           }}
         />

@@ -1,15 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Ban, EyeOff, Lock, ShieldAlert, Smartphone } from "lucide-react";
+import { EyeOff } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import {
-  buildProWatermarkStamp,
   buildProWatermarkTileDataUri,
-  formatShortDeviceId,
-  formatWatermarkTimeTag,
   isBlockedProShortcut,
   isTamperedOverlayStyle,
   PRO_IDLE_LOCK_MS,
-  PRO_PERSONAL_REMINDER,
 } from "../lib/proSecurity";
 
 function isEditableElement(target: EventTarget | null): boolean {
@@ -27,32 +23,23 @@ export function ProContentShield({
   sectionLabel: string;
   children: React.ReactNode;
 }) {
-  const { deviceId, userName, showToast } = useApp();
+  const { userName, showToast } = useApp();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const watermarkRef = useRef<HTMLDivElement | null>(null);
   const outboundClickAtRef = useRef<number>(0);
   const [curtainReason, setCurtainReason] = useState<string | null>(null);
-  const [timeTag, setTimeTag] = useState<string>(() => formatWatermarkTimeTag());
   const [watermarkRev, setWatermarkRev] = useState<number>(0);
 
-  const shortDev = useMemo(() => formatShortDeviceId(deviceId), [deviceId]);
-  const watermarkStamp = useMemo(
-    () => buildProWatermarkStamp(deviceId, userName, timeTag),
-    [deviceId, userName, timeTag]
-  );
-  const watermarkTileUri = useMemo(
-    () => buildProWatermarkTileDataUri(watermarkStamp),
-    [watermarkStamp]
-  );
+  // Subtle personal watermark without noisy Device IDs or clock timestamps
+  const cleanStamp = useMemo(() => {
+    const cleanName = (userName ?? "").replace(/\s+/g, " ").trim().slice(0, 22);
+    return cleanName ? `HIRAAL PRO · ${cleanName}` : "HIRAAL PRO · Ardaygaaga";
+  }, [userName]);
 
-  useEffect(() => {
-    if (!active) return;
-    setTimeTag(formatWatermarkTimeTag());
-    const id = window.setInterval(() => {
-      setTimeTag(formatWatermarkTimeTag());
-    }, 60_000);
-    return () => window.clearInterval(id);
-  }, [active]);
+  const watermarkTileUri = useMemo(
+    () => buildProWatermarkTileDataUri(cleanStamp),
+    [cleanStamp]
+  );
 
   useEffect(() => {
     if (!active) {
@@ -65,13 +52,13 @@ export function ProContentShield({
 
     const triggerBlockToast = (action: string) => {
       if (action === "screenshot") {
-        showToast("Screenshot lama ogola qeybta Unlock+. Qalabkaaga keliya ayay u furan tahay.");
+        showToast("Screenshot lama ogola qeybta Pro. Akoonkaaga keliya ayay u furan tahay.");
       } else if (action === "print" || action === "save") {
-        showToast("Dajinta ama daabacaadda (PDF/Save) waa ka xiran tahay qeybta Unlock+.");
+        showToast("Dajinta ama daabacaadda (PDF/Save) waa ka xiran tahay qeybta Pro.");
       } else if (action === "devtools") {
-        showToast("Furista DevTools iyo baaritaanka koodhka waa ka xiran tahay qeybta Unlock+.");
+        showToast("Furista DevTools waa ka xiran tahay qeybta Pro.");
       } else {
-        showToast("Nuqul-qaadista iyo wadaagidda xogta Unlock+ waa xiran tahay.");
+        showToast("Nuqul-qaadista xogta Pro waa xiran tahay.");
       }
     };
 
@@ -93,8 +80,8 @@ export function ProContentShield({
           blocked === "screenshot"
             ? "Isku-day screenshot ama sawir-qaadis ayaa la joojiyay."
             : blocked === "devtools"
-            ? "Isku-day furista DevTools ama baaritaanka koodhka waa la xiray."
-            : "Isku-day dajin ama daabacaad (PDF/Save) ayaa la joojiyay."
+              ? "Isku-day furista baaritaanka koodhka waa la xiray."
+              : "Isku-day dajin ama daabacaad (PDF/Save) ayaa la joojiyay."
         );
       }
       if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
@@ -105,7 +92,7 @@ export function ProContentShield({
 
     const handleVisibility = () => {
       if (document.hidden) {
-        setCurtainReason("Shaashadda Unlock+ waa la qariyay intii aad ka baxday si looga ilaaliyo screenshot ama duubis.");
+        setCurtainReason("Shaashadda Pro waa la qariyay intii aad ka baxday si xogtaada loo ilaaliyo.");
       }
     };
 
@@ -116,15 +103,15 @@ export function ProContentShield({
       if (Date.now() - outboundClickAtRef.current < 1500) {
         return;
       }
-      setCurtainReason("Shaashadda Unlock+ waa la qariyay si looga ilaaliyo duubis ama sawir-qaadis.");
+      setCurtainReason("Shaashadda Pro waa la qariyay si looga ilaaliyo duubis ama sawir-qaadis.");
     };
 
     const handlePageHide = () => {
-      setCurtainReason("Shaashadda Unlock+ waa la xiray si looga ilaaliyo qabashada xogta.");
+      setCurtainReason("Shaashadda Pro waa la xiray si xogtaada loo ilaaliyo.");
     };
 
     const handleBeforePrint = () => {
-      setCurtainReason("Daabacaadda iyo kaydinta PDF waa ka xiran yihiin qeybta Unlock+.");
+      setCurtainReason("Daabacaadda iyo kaydinta PDF waa ka xiran yihiin qeybta Pro.");
       triggerBlockToast("print");
     };
 
@@ -132,11 +119,10 @@ export function ProContentShield({
       if (isEditableElement(e.target)) return;
       e.preventDefault();
       if (e.type !== "selectstart" && e.type !== "dragstart") {
-        showToast("Qeybta Unlock+ lama koobiyeeyo, lama dajisto, lamana wadaago.");
+        showToast("Qeybta Pro lama koobiyeeyo, lama dajisto, lamana wadaago.");
       }
     };
 
-    // Idle auto-lock if student leaves phone unattended on Unlock+ screen
     let idleTimer: number | null = null;
     const resetIdleTimer = (e?: Event) => {
       if (e && e.target instanceof Element && e.target.closest('a[target="_blank"]')) {
@@ -144,26 +130,29 @@ export function ProContentShield({
       }
       if (idleTimer !== null) window.clearTimeout(idleTimer);
       idleTimer = window.setTimeout(() => {
-        setCurtainReason("Shaashadda Unlock+ waa la xiray muddo aan la taaban si loo ilaaliyo xogtaada.");
+        setCurtainReason("Shaashadda Pro waa la xiray muddo aan la taaban si loo ilaaliyo xogtaada.");
       }, PRO_IDLE_LOCK_MS);
     };
     resetIdleTimer();
 
-    // Anti-tampering guard: locks & re-mounts watermark if deleted or hidden via DevTools
     const checkWatermarkIntegrity = () => {
       const wm = watermarkRef.current;
       if (!wm || !document.body.contains(wm)) {
-        setCurtainReason("Isku-day ka-saarid calaamadda amniga ah ayaa la joojiyay.");
+        setCurtainReason("Isku-day ka-saarid ilaalinta amniga ah ayaa la joojiyay.");
         setWatermarkRev((r) => r + 1);
         return;
       }
       const computed = window.getComputedStyle(wm);
-      if (isTamperedOverlayStyle({
-        display: computed.display,
-        visibility: computed.visibility,
-        opacity: computed.opacity,
-      }) || !computed.backgroundImage || computed.backgroundImage === "none") {
-        setCurtainReason("Isku-day wax-ka-beddel calaamadda amniga ah ayaa la joojiyay.");
+      if (
+        isTamperedOverlayStyle({
+          display: computed.display,
+          visibility: computed.visibility,
+          opacity: computed.opacity,
+        }) ||
+        !computed.backgroundImage ||
+        computed.backgroundImage === "none"
+      ) {
+        setCurtainReason("Isku-day wax-ka-beddel ilaalinta amniga ah ayaa la joojiyay.");
         setWatermarkRev((r) => r + 1);
       }
     };
@@ -229,7 +218,7 @@ export function ProContentShield({
   const handleBlockedInteraction = (e: React.SyntheticEvent) => {
     if (isEditableElement(e.target)) return;
     e.preventDefault();
-    showToast("Qeybta Unlock+ lama koobiyeeyo, lama dajisto, lamana wadaago.");
+    showToast("Qeybta Pro lama koobiyeeyo, lama dajisto, lamana wadaago.");
   };
 
   return (
@@ -240,71 +229,23 @@ export function ProContentShield({
         onCopy={handleBlockedInteraction}
         onCut={handleBlockedInteraction}
         onDragStart={handleBlockedInteraction}
-        className="pro-shield-active relative space-y-4"
+        className="pro-shield-active relative"
         data-pro-shield="active"
       >
-        {/* Qoraal Xasuusin ah: Strictly 1 Student = 1 Device, No Screenshot/Download/Share */}
-        <aside
-          aria-label="Xasuusinta Ilaalinta Unlock+"
-          className="rounded-2xl p-4 sm:p-5 border border-[#FFC93C]/50 bg-[#051836]/92 shadow-[0_10px_28px_rgba(0,0,0,0.28)] space-y-3"
-        >
-          <div className="flex items-start justify-between gap-3 flex-wrap">
-            <div className="flex items-start gap-2.5 min-w-0">
-              <span className="w-9 h-9 rounded-xl bg-[#FFC93C]/18 border border-[#FFC93C]/45 text-[#FFD86B] flex items-center justify-center shrink-0 mt-0.5">
-                <ShieldAlert className="w-5 h-5" />
-              </span>
-              <div className="min-w-0">
-                <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#FFD86B]">
-                  Qoraal Xasuusin ah · {sectionLabel}
-                </div>
-                <h3 className="font-head font-extrabold text-sm sm:text-base text-white leading-snug mt-0.5">
-                  {PRO_PERSONAL_REMINDER.title}
-                </h3>
-              </div>
-            </div>
-
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-[#93C5FD] shrink-0">
-              <Smartphone className="w-3.5 h-3.5" />
-              <span>ID: {shortDev}</span>
-            </span>
-          </div>
-
-          <p className="text-xs sm:text-[13px] text-white/85 leading-relaxed">
-            {PRO_PERSONAL_REMINDER.body}
-          </p>
-
-          <div className="pt-2.5 border-t border-white/12 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] font-bold text-white/75">
-            <span className="inline-flex items-center gap-1 text-rose-300">
-              <Ban className="w-3.5 h-3.5" />
-              <span>Screenshot: Waa Xiran Yahay</span>
-            </span>
-            <span className="inline-flex items-center gap-1 text-rose-300">
-              <Ban className="w-3.5 h-3.5" />
-              <span>Dajin / Download: Waa Xiran Yahay</span>
-            </span>
-            <span className="inline-flex items-center gap-1 text-emerald-300">
-              <Lock className="w-3.5 h-3.5" />
-              <span>Wadaagid La'aan: Naftaada Keliya</span>
-            </span>
-          </div>
-        </aside>
-
-        {/* Protected Content Area with Viewport-Fixed Anti-Leak Watermark + Privacy Curtain */}
-        <div className="relative rounded-3xl">
-          {/* Repeating Full-Viewport Timestamped Watermark (visible at every scroll depth) */}
+        <div className="relative">
+          {/* Subtle Anti-Leak Watermark Overlay without raw Device ID or Clock Time */}
           <div
             key={watermarkRev}
             ref={watermarkRef}
             aria-hidden="true"
             data-testid="pro-watermark-layer"
-            className="pointer-events-none select-none fixed inset-0 z-30"
+            className="pointer-events-none select-none fixed inset-0 z-30 opacity-45"
             style={{
               backgroundImage: `url("${watermarkTileUri}")`,
               backgroundRepeat: "repeat",
             }}
           />
 
-          {/* Unlocked Pro Content */}
           <div
             className={
               curtainReason
@@ -317,47 +258,43 @@ export function ProContentShield({
         </div>
       </div>
 
-      {/* Fixed Viewport-Centered Privacy Blur Curtain on Screenshot Attempt / App Switch / Print / Idle */}
       {curtainReason && (
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Ilaalinta Xogta Unlock+"
+          aria-label="Ilaalinta Xogta HIRAAL Pro"
           data-testid="pro-privacy-curtain"
-          className="fixed inset-0 z-50 bg-[#041024]/95 backdrop-blur-2xl flex items-center justify-center p-5 text-center overflow-y-auto"
+          className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-5 text-center overflow-y-auto"
         >
-          <div className="w-full max-w-md rounded-3xl p-6 border border-[#FFC93C]/45 bg-[#072047] space-y-4 shadow-2xl">
-            <div className="w-12 h-12 mx-auto rounded-2xl bg-[#FFC93C]/20 border border-[#FFC93C]/50 text-[#FFD86B] flex items-center justify-center">
+          <div className="w-full max-w-md rounded-2xl p-6 border border-amber-400/35 bg-slate-900 space-y-4 shadow-2xl text-white">
+            <div className="w-12 h-12 mx-auto rounded-xl bg-amber-400/15 border border-amber-400/40 text-amber-300 flex items-center justify-center">
               <EyeOff className="w-6 h-6" />
             </div>
             <div className="space-y-1.5">
-              <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#FFD86B]">
-                Ilaalinta Xogta Unlock+ · {shortDev}
+              <div className="text-xs font-semibold text-amber-300">
+                {sectionLabel}
               </div>
-              <h4 className="font-head font-extrabold text-lg text-white">
+              <h4 className="font-head font-bold text-lg text-white">
                 {curtainReason}
               </h4>
-              <p className="text-xs text-white/75 leading-relaxed">
-                Xogta Unlock+ waxay u furan tahay qalabkaaga keliya; lama duubi karo, lama dajisan karo, lamana la wadaagi karo dad kale.
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Xogta HIRAAL Pro waxay u furan tahay akoonkaaga keliya; lama duubi karo, lama dajisan karo, lamana wadaagi karo.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setCurtainReason(null)}
-              className="w-full h-11 rounded-xl bg-[#4189DD] hover:bg-[#5CA2F2] text-white font-head font-extrabold text-xs cursor-pointer transition-colors"
+              className="w-full h-11 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-head font-bold text-xs cursor-pointer transition-colors"
             >
-              Sii Wad Akhriska Qeybta Unlock+
+              Sii Wad Akhriska
             </button>
           </div>
         </div>
       )}
 
-      {/* Print / PDF Export Blocker Fallback */}
       <div className="pro-print-block hidden">
-        <h2>HIRAAL Unlock+ | Daabacaadda iyo Kaydinta PDF waa Xiran Yihiin</h2>
-        <p>
-          Xogtan Unlock+ waxay si gaar ah ugu furan tahay ardayga furtay (ID: {shortDev}) lamana daabacan karo, lamana dajisan karo, lamana wadaagi karo amar la'aan.
-        </p>
+        <h2>HIRAAL Pro | Daabacaadda iyo Kaydinta PDF waa Xiran Yihiin</h2>
+        <p>Xogtan waxay si gaar ah ugu furan tahay ardayga furtay lamana daabacan karo.</p>
       </div>
     </>
   );

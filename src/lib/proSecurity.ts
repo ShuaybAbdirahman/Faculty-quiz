@@ -1,13 +1,89 @@
 import type { ProInfo } from "./api";
 
+export type ProBillingCycle = "weekly" | "monthly" | "yearly";
+
+export interface ProBillingPlan {
+  id: ProBillingCycle;
+  title: string;
+  subtitle: string;
+  amount: number;
+  priceText: string;
+  ussdAmount: string;
+  days: number;
+  durationLabel: string;
+  badge?: string;
+  savingsLabel?: string;
+}
+
+export const PRO_BILLING_PLANS: Record<ProBillingCycle, ProBillingPlan> = {
+  weekly: {
+    id: "weekly",
+    title: "Todobaadle (Weekly)",
+    subtitle: "Ku tijaabi dhammaan qeybaha Pro muddo 7 maalmood ah",
+    amount: 0.5,
+    priceText: "$0.50",
+    ussdAmount: "0.5",
+    days: 7,
+    durationLabel: "7 Maalmood",
+  },
+  monthly: {
+    id: "monthly",
+    title: "Bille (Monthly)",
+    subtitle: "Doorashada ugu caansan ardayda · Xirfad, Imtixaan & Jaamacad",
+    amount: 1.2,
+    priceText: "$1.20",
+    ussdAmount: "1.2",
+    days: 30,
+    durationLabel: "30 Maalmood",
+    badge: "Ugu Caansan",
+    savingsLabel: "Kaydi 40%",
+  },
+  yearly: {
+    id: "yearly",
+    title: "Sanadle (Yearly)",
+    subtitle: "Helitaan buuxa sanadka oo dhan (Form 4, JUS & Jaamacad)",
+    amount: 5.0,
+    priceText: "$5.00",
+    ussdAmount: "5",
+    days: 365,
+    durationLabel: "365 Maalmood",
+    badge: "Qiimo Dhimis Weyn",
+    savingsLabel: "Kaydi 65%",
+  },
+};
+
+export function getProBillingPlan(cycle: ProBillingCycle = "monthly"): ProBillingPlan {
+  return PRO_BILLING_PLANS[cycle] ?? PRO_BILLING_PLANS.monthly;
+}
+
+export function maskPaymentNumber(number: string): string {
+  const digits = number.replace(/[^0-9]/g, "");
+  const tail = digits.slice(-2) || "••";
+  return `••• ••• •${tail}`;
+}
+
+export function canRevealPaymentDetails(params: {
+  step: number;
+  phone: string;
+  name: string;
+  committed: boolean;
+}): boolean {
+  if (params.step < 3) return false;
+  if (!params.committed) return false;
+  if (!validateEvcPhone(params.phone).ok) return false;
+  const clean = sanitizeCheckoutName(params.name);
+  const letters = clean.match(/\p{L}/gu);
+  return Boolean(letters && letters.length >= 2);
+}
+
 export const EVC_PAYMENT_CONFIG = {
   methodName: "EVC Plus",
   number: "610999089",
   holder: "Shuceyb Abdirahman",
   whatsapp: "252610999089",
-  defaultPrice: "$0.50 · 6 Bilood",
-  ussdAmount: "0.5",
-  defaultDays: 180,
+  defaultPrice: "$1.20 · 30 Maalmood",
+  ussdAmount: "1.2",
+  defaultDays: 30,
 } as const;
 
 export const TOTAL_BUNDLE_CONFIG = {
@@ -17,9 +93,9 @@ export const TOTAL_BUNDLE_CONFIG = {
   savedAmount: 0.3,
   originalPrice: "$1.50",
   finalPrice: "$1.20",
-  priceText: "$1.20 · 6 Bilood (20% Off)",
+  priceText: "$1.20 · 30 Maalmood",
   ussdAmount: "1.2",
-  days: 180,
+  days: 30,
 } as const;
 
 export function calculateTotalBundlePricing(

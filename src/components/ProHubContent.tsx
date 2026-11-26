@@ -222,7 +222,7 @@ export function ProRoadmapsExplorer({
                   {isStageLocked && (
                     <span className="inline-flex items-center gap-1 text-xs font-bold text-[#FFD86B]">
                       <Lock className="w-3.5 h-3.5" />
-                      <span>UNLOCK+</span>
+                      <span>HIRAAL PRO</span>
                     </span>
                   )}
                 </div>
@@ -231,7 +231,7 @@ export function ProRoadmapsExplorer({
                   <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
                     <p className="text-xs text-white/65">
                       {tr(
-                        "Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan."
+                        "Fur HIRAAL Pro (Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan."
                       )}
                     </p>
                     {onUnlockClick && (
@@ -240,7 +240,7 @@ export function ProRoadmapsExplorer({
                         onClick={onUnlockClick}
                         className="px-4 py-2 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
                       >
-                        {tr("Fur Unlock+ ($0.50 | $1.20 Total)")}
+                        {tr("Fur HIRAAL Pro (laga bilaabo $0.50)")}
                       </button>
                     )}
                   </div>
@@ -334,7 +334,7 @@ export function ProRoadmapsExplorer({
           <div className="flex items-center gap-2 min-w-0">
             <Compass className="w-4 h-4 text-[#FFD86B] shrink-0" />
             <h4 className="font-head font-bold text-sm text-white leading-snug">
-              {tr("Khariidado Cusub oo Soo Socda (Bilaash u ah Unlock+)")}
+              {tr("Khariidado Cusub oo Soo Socda (Bilaash u ah HIRAAL Pro)")}
             </h4>
           </div>
           <span className="text-[11px] font-bold text-[#FFD86B] shrink-0">{tr("Dhawaan")}</span>
@@ -408,7 +408,7 @@ export function SomaliaChallengesHub({
               className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs inline-flex items-center gap-1.5 cursor-pointer transition-colors"
             >
               <LockOpen className="w-4 h-4" />
-              <span>{tr("Fur Unlock+ ($0.50 | $1.20 Total)")}</span>
+              <span>{tr("Fur HIRAAL Pro (laga bilaabo $0.50)")}</span>
             </button>
           )
         ) : (
@@ -424,10 +424,10 @@ export function SomaliaChallengesHub({
             <Lock className="w-5 h-5 text-[#FFD86B] shrink-0 mt-0.5" />
             <div className="space-y-0.5">
               <div className="font-head font-extrabold text-sm text-white">
-                Qeybta Xalka Caqabadaha &amp; Qalabka Ficilka (Unlock+ Keliya)
+                Qeybta Xalka Caqabadaha &amp; Qalabka Ficilka (HIRAAL Pro Keliya)
               </div>
               <p className="text-xs text-white/80 leading-relaxed">
-                Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u hesho xalka tallaabo-tallaabo, khaladaadka la baaqsado, qoraalka wadahadalka waalidka, iyo su'aalaha xafiiska jaamacadda.
+                Fur HIRAAL Pro (Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00) si aad u hesho xalka tallaabo-tallaabo, khaladaadka la baaqsado, qoraalka wadahadalka waalidka, iyo su'aalaha xafiiska jaamacadda.
               </p>
             </div>
           </div>
@@ -437,7 +437,7 @@ export function SomaliaChallengesHub({
               onClick={onUnlockClick}
               className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
             >
-              {tr("Fur Unlock+ ($0.50 | $1.20 Total)")}
+              {tr("Fur HIRAAL Pro (laga bilaabo $0.50)")}
             </button>
           )}
         </div>
@@ -643,10 +643,10 @@ export function ReadinessTracker({
             <Lock className="w-5 h-5 text-[#FFD86B] shrink-0 mt-0.5" />
             <div className="space-y-0.5">
               <div className="font-head font-extrabold text-sm text-white">
-                Qorshaha Buuxa ee 90-ka Maalmood (Unlock+ Keliya)
+                Qorshaha Buuxa ee 90-ka Maalmood (HIRAAL Pro Keliya)
               </div>
               <p className="text-xs text-white/80 leading-relaxed">
-                Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u furto dhammaan 12-ka tallaabo, xisaabiyaha horumarka, iyo Sirta HIRAAL ee marxalad kasta.
+                Fur HIRAAL Pro (Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00) si aad u furto dhammaan 12-ka tallaabo, xisaabiyaha horumarka, iyo Sirta HIRAAL ee marxalad kasta.
               </p>
             </div>
           </div>
@@ -656,7 +656,7 @@ export function ReadinessTracker({
               onClick={onUnlockClick}
               className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
             >
-              {tr("Fur Unlock+ ($0.50 | $1.20 Total)")}
+              {tr("Fur HIRAAL Pro (laga bilaabo $0.50)")}
             </button>
           )}
         </div>
@@ -741,7 +741,7 @@ export function ReadinessTracker({
                 </div>
                 {locked ? (
                   <p className="text-[11.5px] text-[#FFE599]/80 mt-1">
-                    {tr("Fur Unlock+ ($0.50 | $1.20 Total) si aad u aragto faahfaahinta iyo Sirta HIRAAL.")}
+                    {tr("Fur HIRAAL Pro si aad u aragto faahfaahinta iyo Sirta HIRAAL.")}
                   </p>
                 ) : (
                   <>
@@ -774,15 +774,15 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
         <div className="flex items-center gap-2 flex-wrap">
           <ProBadge small />
           <span className="text-xs font-extrabold text-[#FFD86B]">
-            {tr("$0.50 Qeyb · $1.20 Total (20% Off) · 6 Bilood")}
+            {tr("Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00")}
           </span>
         </div>
         <h3 className="font-head font-extrabold text-[17px] sm:text-lg text-white leading-snug">
-          {tr("Fur dhammaan Khariidadaha Waxbarashada, Jaamacadaha iyo Hagaha Waaxda")}
+          {tr("Fur dhammaan Qalabka Ardayga, Khariidadaha, Jaamacadaha iyo Hagaha Waaxda")}
         </h3>
         <p className="text-xs text-white/80 leading-relaxed">
           {tr(
-            "Bixi $0.50 hal qeyb ama $1.20 HIRAAL Total (20% Qiimo Dhimis) EVC Plus: 610999089 · Shuceyb Abdirahman muddo 6 bilood ah."
+            "Dooro xirmada kugu habboon (7 maalmood, 30 maalmood, ama 1 sano). Lambarka lacag bixinta waxaa la furaa tallaabooyinka dambe ee xaqiijinta ardayga."
           )}
         </p>
       </div>
@@ -792,7 +792,7 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
         className="shrink-0 px-5 py-3 rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
       >
         <CheckCircle2 className="w-4 h-4" />
-        <span>{tr("Fur Unlock+ ($0.50 | $1.20 Total)")}</span>
+        <span>{tr("Fur HIRAAL Pro")}</span>
       </button>
     </div>
   );

@@ -105,7 +105,7 @@ export function PredictRankingBoard({
             </span>
             <div>
               <div className="text-[11px] font-black uppercase tracking-wider text-[#FFD86B]">
-                Kaalmaha Sare (Unlock+ Keliya)
+                Kaalmaha Sare (HIRAAL Pro Keliya)
               </div>
               <div className="text-xs text-white/75">{title}</div>
             </div>
@@ -118,7 +118,7 @@ export function PredictRankingBoard({
             Arag Kaalmaha Sare &amp; Natiijooyinka Ardayda
           </h3>
           <p className="text-sm text-white/80 leading-relaxed">
-            Qof kasta oo furta Unlock+ ($0.50 qeyb ama $1.20 Total · 20% Off) wuxuu arki karaa kaalinta uu kaga jiro imtixaanka Predict Exam, magacyada ardayda ugu sarreysa, dhibcaha, iyo waqtiga ay ku dhameeyeen.
+            Qof kasta oo furta HIRAAL Pro (Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00) wuxuu arki karaa kaalinta uu kaga jiro imtixaanka Predict Exam, magacyada ardayda ugu sarreysa, dhibcaha, iyo waqtiga ay ku dhameeyeen.
           </p>
         </div>
 
@@ -147,12 +147,12 @@ export function PredictRankingBoard({
           className="w-full h-[52px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
         >
           <LockOpen className="w-4 h-4" />
-          <span>Fur Unlock+ ($0.50 | Total $1.20)</span>
+          <span>Fur HIRAAL Pro (laga bilaabo $0.50)</span>
         </button>
 
         <div className="flex items-center justify-center gap-1.5 text-[11.5px] text-white/65">
           <Lock className="w-3.5 h-3.5 text-[#FFD86B]" />
-          <span>Magacyada iyo dhibcaha ardayda waxaa fura Unlock+ keliya</span>
+          <span>Magacyada iyo dhibcaha ardayda waxaa fura HIRAAL Pro keliya</span>
         </div>
       </section>
     );
@@ -168,7 +168,7 @@ export function PredictRankingBoard({
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#FFD86B]">
               <Trophy className="w-4 h-4" />
-              <span>Ranking · Kaalmaha Sare (Unlock+)</span>
+              <span>Ranking · Kaalmaha Sare (HIRAAL Pro)</span>
             </div>
             <h3 className="font-head font-extrabold text-xl sm:text-2xl text-white">
               {title}

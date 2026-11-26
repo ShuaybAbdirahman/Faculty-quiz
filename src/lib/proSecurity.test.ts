@@ -102,10 +102,10 @@ test("rotateDeviceId issues new device ID and revokes previous Pro entitlement",
   clearStoredEntitlement(storage);
 });
 
-test("normalizeProInfo enforces EVC Plus 610999089, Shuceyb Abdirahman, and 180-day seasonal pricing", () => {
+test("normalizeProInfo enforces EVC Plus 610999089, Shuceyb Abdirahman, and updated Monthly default", () => {
   const info = normalizeProInfo({
     priceText: "0.1",
-    days: 180,
+    days: 30,
     whatsapp: "252614632360",
     note: "",
     methods: [
@@ -119,21 +119,66 @@ test("normalizeProInfo enforces EVC Plus 610999089, Shuceyb Abdirahman, and 180-
   assert.equal(info.methods[0].number, "610999089");
   assert.equal(info.methods[0].holder, "Shuceyb Abdirahman");
   assert.equal(info.whatsapp, "252610999089");
-  assert.equal(info.priceText, "$0.50 · 6 Bilood");
-  assert.equal(info.days, 180);
+  assert.equal(info.priceText, "$1.20 · 30 Maalmood");
+  assert.equal(info.days, 30);
 
-  const ninetyDay = normalizeProInfo({ priceText: "$0.50 · 3 Bilood", days: 90 });
-  assert.equal(ninetyDay.priceText, "$0.50 · 3 Bilood");
-  assert.equal(ninetyDay.days, 90);
+  const yearly = normalizeProInfo({ priceText: "$5.00 · 365 Maalmood", days: 365 });
+  assert.equal(yearly.priceText, "$5.00 · 365 Maalmood");
+  assert.equal(yearly.days, 365);
 
-  // Legacy $0.10/3650/Abid values fall back to balanced $0.50 · 6 Bilood (180-day) limit
   const legacyTiny = normalizeProInfo({ priceText: "$0.10 · 6 Bilood", days: 180 });
-  assert.equal(legacyTiny.priceText, "$0.50 · 6 Bilood");
+  assert.equal(legacyTiny.priceText, "$1.20 · 30 Maalmood");
   const legacyLifetime = normalizeProInfo({ priceText: "$0.10 · Abid (Hal mar)", days: 3650 });
-  assert.equal(legacyLifetime.priceText, "$0.50 · 6 Bilood");
-  assert.equal(legacyLifetime.days, 180);
+  assert.equal(legacyLifetime.priceText, "$1.20 · 30 Maalmood");
+  assert.equal(legacyLifetime.days, 30);
 
   assert.equal(formatShortDeviceId("hkd_abcdef1234567890"), "ABCDE-7890");
+});
+
+test("Weekly, Monthly, and Yearly plans and last-step payment reveal gate behave securely", async () => {
+  const { PRO_BILLING_PLANS, canRevealPaymentDetails, maskPaymentNumber, getProBillingPlan } =
+    await import("./proSecurity");
+
+  assert.equal(PRO_BILLING_PLANS.weekly.amount, 0.5);
+  assert.equal(PRO_BILLING_PLANS.weekly.days, 7);
+  assert.equal(PRO_BILLING_PLANS.monthly.amount, 1.2);
+  assert.equal(PRO_BILLING_PLANS.monthly.days, 30);
+  assert.equal(PRO_BILLING_PLANS.yearly.amount, 5.0);
+  assert.equal(PRO_BILLING_PLANS.yearly.days, 365);
+  assert.equal(getProBillingPlan("yearly").ussdAmount, "5");
+
+  // Payment number must be masked before final step
+  assert.equal(maskPaymentNumber("610999089"), "••• ••• •89");
+
+  // Step 1 and Step 2 must NEVER reveal full payment number
+  assert.equal(
+    canRevealPaymentDetails({ step: 1, phone: "0615123456", name: "Axmed Cali", committed: true }),
+    false
+  );
+  assert.equal(
+    canRevealPaymentDetails({ step: 2, phone: "0615123456", name: "Axmed Cali", committed: true }),
+    false
+  );
+
+  // Step 3 without valid phone, valid name, or commitment must still refuse reveal
+  assert.equal(
+    canRevealPaymentDetails({ step: 3, phone: "123", name: "Axmed Cali", committed: true }),
+    false
+  );
+  assert.equal(
+    canRevealPaymentDetails({ step: 3, phone: "0615123456", name: "A", committed: true }),
+    false
+  );
+  assert.equal(
+    canRevealPaymentDetails({ step: 3, phone: "0615123456", name: "Axmed Cali", committed: false }),
+    false
+  );
+
+  // Valid Step 3 with serious committed student reveals payment details
+  assert.equal(
+    canRevealPaymentDetails({ step: 3, phone: "0615123456", name: "Axmed Cali", committed: true }),
+    true
+  );
 });
 
 test("Somali language is always free while English and Arabic require Pro", async () => {

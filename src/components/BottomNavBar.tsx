@@ -1,5 +1,5 @@
 import React from "react";
-import { BookOpen, GraduationCap, Home, LockOpen, Target } from "lucide-react";
+import { BookOpen, Crown, GraduationCap, Home, Target } from "lucide-react";
 import { useApp } from "../context/AppContext";
 
 export type MainNavTab = "home" | "school" | "bridging" | "faculty_home" | "pro_hub";
@@ -58,8 +58,8 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     id: "pro_hub",
-    label: "Unlock+",
-    icon: LockOpen,
+    label: "HIRAAL Pro",
+    icon: Crown,
     activeGradient: "linear-gradient(135deg, #F59E0B 0%, #EA580C 100%)",
     activeShadow: "0 6px 18px rgba(245, 158, 11, 0.42)",
     inactiveIconClass: "text-[#D97706] dark:text-[#FBBF24]",
@@ -97,7 +97,7 @@ export function BottomNavBar({
             item.id === "faculty_home"
               ? tr("Jaamacad")
               : item.id === "pro_hub"
-                ? tr("Unlock+")
+                ? "HIRAAL Pro"
                 : item.label;
 
           return (

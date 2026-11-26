@@ -95,11 +95,11 @@ export const baseHeroSlides: HeroTickerSlide[] = [
   },
   {
     id: "predict_exam_price",
-    tag: { so: "Predict Exam", en: "Predict Exam", ar: "اختبار التوقع" },
+    tag: { so: "HIRAAL Pro", en: "HIRAAL Pro", ar: "HIRAAL Pro" },
     text: {
-      so: "Qeybta: $0.50 · HIRAAL Total: $1.20 (20% Qiimo Dhimis)",
-      en: "Single Pack: $0.50 · HIRAAL Total: $1.20 (20% Off)",
-      ar: "الباقة الواحدة: 0.50$ · الباقة الشاملة: 1.20$ (خصم 20%)",
+      so: "Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00",
+      en: "Weekly $0.50 · Monthly $1.20 · Yearly $5.00",
+      ar: "أسبوعي 0.50$ · شهري 1.20$ · سنوي 5.00$",
     },
     accent: "gold",
   },
@@ -135,11 +135,11 @@ export const baseHeroSlides: HeroTickerSlide[] = [
   },
   {
     id: "pro_70_questions",
-    tag: { so: "Unlock+ Waaxaha", en: "Unlock+ Guide", ar: "دليل Unlock+" },
+    tag: { so: "Pro Waaxaha", en: "Pro Guide", ar: "دليل Pro" },
     text: {
-      so: "Su'aalaha Waaxaha Unlock+: 70 Su'aalood",
-      en: "Unlock+ Department Guide: 70 Precision Questions",
-      ar: "دليل الأقسام Unlock+: ٧٠ سؤالاً",
+      so: "Su'aalaha Waaxaha HIRAAL Pro: 70 Su'aalood",
+      en: "HIRAAL Pro Department Guide: 70 Precision Questions",
+      ar: "دليل الأقسام HIRAAL Pro: ٧٠ سؤالاً",
     },
     accent: "violet",
   },
@@ -155,11 +155,11 @@ export const baseHeroSlides: HeroTickerSlide[] = [
   },
   {
     id: "universities_jobs",
-    tag: { so: "Jaamacadaha", en: "Unlock+ Hub", ar: "مركز Unlock+" },
+    tag: { so: "HIRAAL Pro Hub", en: "HIRAAL Pro Hub", ar: "مركز HIRAAL Pro" },
     text: {
-      so: "Jaamacadaha Soomaaliya & Dadka Caanka ah",
-      en: "Somalia Universities & 21st-Century Pioneers",
-      ar: "جامعات الصومال وروّاد القرن ٢١",
+      so: "Jaamacadaha Soomaaliya, Xisaabiyaha GPA & Dadka Caanka ah",
+      en: "Somalia Universities, GPA Planner & 21st-Century Pioneers",
+      ar: "جامعات الصومال وحاسبة المعدل وروّاد القرن ٢١",
     },
     accent: "rose",
   },

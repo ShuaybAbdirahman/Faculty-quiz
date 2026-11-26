@@ -57,7 +57,7 @@ export function PredictExamGateCard({
           </div>
         </div>
         <span className="px-3 py-1 rounded-lg bg-[#FFC93C]/20 border border-[#FFC93C]/45 font-head font-black text-xs text-[#FFD86B] tabular-nums">
-          UNLOCK+ · {price}
+          HIRAAL PRO · {price}
         </span>
       </div>
 
@@ -116,7 +116,7 @@ export function PredictExamGateCard({
           className="w-full h-[50px] rounded-2xl bg-[#4189DD] hover:bg-[#5CA2F2] text-white font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
         >
           <LockOpen className="w-4 h-4 text-[#FFD86B]" />
-          <span>Fur Predict Exam ({price} · Total $1.20 -20%)</span>
+          <span>Fur Predict Exam ({price} · Pro $1.20/Bil)</span>
         </button>
       ) : (
         <button
