@@ -553,10 +553,37 @@ export function ProHubScreen({
         ) : (
           /* UNLOCKED UNIFIED HIRAAL PRO SUITE: ALL 8 Modules Unified Under Silent ProContentShield */
           <div className="space-y-6">
-            {/* Clean Horizontal Section Navigation (Single-line controls, zero clutter) */}
+            {/* Cohesive Royal Blue & Gold Pro Workspace Header (Zero Device ID / Zero Time Clutter) */}
+            <section
+              className="rounded-3xl p-5 sm:p-6 text-white border border-[#7CB7FF]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md"
+              style={{
+                background: "linear-gradient(135deg, #071F48 0%, #0F397E 58%, #165FB8 100%)",
+              }}
+            >
+              <div className="space-y-1 min-w-0">
+                <div className="inline-flex items-center gap-2 text-xs font-bold text-[#FFD86B]">
+                  <ShieldCheck className="w-4 h-4 shrink-0" />
+                  <span>HIRAAL Pro · Akoonkaagu Waa Furan Yahay</span>
+                </div>
+                <h1 className="font-head font-extrabold text-xl sm:text-2xl tracking-tight text-white">
+                  {UNIFIED_SECTIONS.find((s) => s.id === tab)?.label ?? "HIRAAL Pro"}
+                </h1>
+                <p className="text-xs sm:text-sm text-sky-100/85">
+                  {UNIFIED_SECTIONS.find((s) => s.id === tab)?.shortDesc} · 8 Qaybood oo Wada Shaqeynaya
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-200 bg-emerald-500/18 border border-emerald-400/35 rounded-xl px-3.5 py-2 shrink-0 self-start sm:self-center">
+                <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
+                <span>Ilaalinta Ammaanka Way Shaqaynaysaa</span>
+              </div>
+            </section>
+
+            {/* Clean Horizontal Section Navigation (Single-line controls, smooth Somalia Blue & Gold states) */}
             <nav
               aria-label="Qaybaha HIRAAL Pro"
-              className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1"
+              className={`flex items-center gap-2 overflow-x-auto hide-scrollbar p-1.5 rounded-2xl border ${
+                darkMode ? "bg-[#0F1B35] border-white/10" : "bg-white border-slate-200 shadow-xs"
+              }`}
             >
               {UNIFIED_SECTIONS.map((sec) => {
                 const Icon = sec.icon;
@@ -566,12 +593,14 @@ export function ProHubScreen({
                     key={sec.id}
                     type="button"
                     onClick={() => setTab(sec.id)}
-                    className={`min-h-[42px] px-3.5 py-2 rounded-xl border text-xs sm:text-sm font-head font-semibold inline-flex items-center gap-2 cursor-pointer transition-colors whitespace-nowrap shrink-0 ${
+                    className={`min-h-[40px] px-3.5 py-2 rounded-xl text-xs sm:text-sm font-head font-semibold inline-flex items-center gap-2 cursor-pointer transition-all duration-200 whitespace-nowrap shrink-0 ${
                       active
-                        ? "bg-blue-600 border-blue-600 text-white shadow-xs"
+                        ? darkMode
+                          ? "bg-[#FFC93C] text-[#050A1C] shadow-xs"
+                          : "bg-[#165FB8] text-white shadow-xs"
                         : darkMode
-                          ? "bg-[#111C33] border-white/10 text-slate-300 hover:text-white hover:border-white/25"
-                          : "bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:border-slate-300"
+                          ? "text-slate-300 hover:text-white hover:bg-white/8"
+                          : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                     }`}
                   >
                     <Icon className="w-4 h-4 shrink-0" />
@@ -589,13 +618,13 @@ export function ProHubScreen({
                 {tab === "tools" && <ProStudentTools />}
 
                 {tab === "departments" && (
-                  <section className={`rounded-2xl p-5 sm:p-6 border ${cardCls} space-y-5`}>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <section className="rounded-3xl p-5 sm:p-6 border border-[#2B4B8C]/50 bg-[#0A1C3E] text-white space-y-6 shadow-lg">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/12">
                       <div>
-                        <p className="text-xs font-semibold text-blue-600 dark:text-amber-400">
+                        <p className="text-xs font-semibold text-[#FFD86B]">
                           Hagaha Waaxda &amp; Takhasuska
                         </p>
-                        <h2 className="font-head font-bold text-xl sm:text-2xl mt-0.5">
+                        <h2 className="font-head font-bold text-xl sm:text-2xl mt-0.5 text-white">
                           Dooro Kulliyad si aad u Barato Waaxahaaga
                         </h2>
                       </div>
@@ -603,7 +632,7 @@ export function ProHubScreen({
                         <button
                           type="button"
                           onClick={() => onOpenDepartmentGuide(activeFac.id)}
-                          className="min-h-[42px] px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-head font-bold text-xs sm:text-sm inline-flex items-center gap-2 cursor-pointer transition-colors whitespace-nowrap shrink-0"
+                          className="min-h-[42px] px-4 py-2 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-bold text-xs sm:text-sm inline-flex items-center gap-2 cursor-pointer transition-colors whitespace-nowrap shrink-0"
                         >
                           <GraduationCap className="w-4 h-4" />
                           <span>Fur 70-ka Su&apos;aalood ee {tx(activeFac.name).split("(")[0].trim()}</span>
@@ -621,10 +650,8 @@ export function ProHubScreen({
                             onClick={() => setSelectedFacId(f.id)}
                             className={`text-start rounded-xl p-3 border flex items-center gap-2.5 cursor-pointer transition-colors ${
                               isSel
-                                ? "border-blue-600 dark:border-amber-400 bg-blue-50 dark:bg-amber-400/12"
-                                : darkMode
-                                  ? "border-white/10 bg-[#0B1324] hover:border-white/25"
-                                  : "border-slate-200 bg-slate-50 hover:border-slate-300"
+                                ? "border-[#FFC93C] bg-[#FFC93C]/16 text-white"
+                                : "border-white/12 bg-white/[0.04] text-slate-200 hover:bg-white/[0.08] hover:border-white/25"
                             }`}
                           >
                             <FacultyIcon faculty={f} size={20} />
@@ -634,7 +661,7 @@ export function ProHubScreen({
                       })}
                     </div>
 
-                    <div className="rounded-3xl p-4 sm:p-6 bg-[#0F1B33] text-white">
+                    <div className="pt-2 border-t border-white/12">
                       <ProRoadmapsExplorer
                         locked={false}
                         initialFacultyId={activeFac.id}
@@ -645,7 +672,7 @@ export function ProHubScreen({
                 )}
 
                 {tab === "roadmaps" && (
-                  <div className="rounded-3xl p-4 sm:p-6 bg-[#0F1B33] text-white">
+                  <div className="rounded-3xl p-5 sm:p-6 border border-[#2B4B8C]/50 bg-[#0A1C3E] text-white shadow-lg">
                     <ProRoadmapsExplorer
                       locked={false}
                       initialFacultyId={initialFacultyId}
@@ -658,7 +685,7 @@ export function ProHubScreen({
                   <div className="space-y-4">
                     <div
                       className={`inline-flex flex-wrap gap-1 p-1 rounded-xl border ${
-                        darkMode ? "bg-[#111C33] border-white/10" : "bg-white border-slate-200"
+                        darkMode ? "bg-[#0F1B35] border-white/10" : "bg-white border-slate-200 shadow-xs"
                       }`}
                     >
                       {[
@@ -674,7 +701,9 @@ export function ProHubScreen({
                             onClick={() => setSecretsTab(st.id)}
                             className={`px-3.5 py-2 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer transition-colors whitespace-nowrap ${
                               secretsTab === st.id
-                                ? "bg-blue-600 text-white"
+                                ? darkMode
+                                  ? "bg-[#FFC93C] text-[#050A1C]"
+                                  : "bg-[#165FB8] text-white"
                                 : `${mutedCls} hover:text-slate-900 dark:hover:text-white`
                             }`}
                           >
@@ -685,7 +714,7 @@ export function ProHubScreen({
                       })}
                     </div>
 
-                    <div className="rounded-3xl p-4 sm:p-6 bg-[#0F1B33] text-white">
+                    <div className="rounded-3xl p-5 sm:p-6 border border-[#2B4B8C]/50 bg-[#0A1C3E] text-white shadow-lg">
                       {secretsTab === "tricks" && (
                         <Top10TricksSection isPro={true} onUnlock={() => onOpenPaywall(selectedCycle)} />
                       )}
@@ -698,29 +727,29 @@ export function ProHubScreen({
                 )}
 
                 {tab === "universities" && (
-                  <div className="space-y-6 rounded-3xl p-4 sm:p-6 bg-[#0F1B33] text-white">
+                  <div className="space-y-6 rounded-3xl p-5 sm:p-6 border border-[#2B4B8C]/50 bg-[#0A1C3E] text-white shadow-lg">
                     <SomaliaUniversitiesSection
                       isPro={true}
                       onUnlock={() => onOpenPaywall(selectedCycle)}
                       initialFacultyId={initialFacultyId}
                     />
-                    <div className="pt-4 border-t border-white/10">
+                    <div className="pt-4 border-t border-white/12">
                       <SomaliaGrowthSection isPro={true} onUnlock={() => onOpenPaywall(selectedCycle)} />
                     </div>
                   </div>
                 )}
 
                 {tab === "skills" && (
-                  <div className="space-y-6 rounded-3xl p-4 sm:p-6 bg-[#0F1B33] text-white">
+                  <div className="space-y-6 rounded-3xl p-5 sm:p-6 border border-[#2B4B8C]/50 bg-[#0A1C3E] text-white shadow-lg">
                     <HighIncomeSkillsSection isPro={true} onUnlock={() => onOpenPaywall(selectedCycle)} />
-                    <div className="pt-4 border-t border-white/10">
+                    <div className="pt-4 border-t border-white/12">
                       <FutureJobsNewsSection isPro={true} onUnlock={() => onOpenPaywall(selectedCycle)} />
                     </div>
                   </div>
                 )}
 
                 {tab === "pioneers" && (
-                  <div className="rounded-3xl p-4 sm:p-6 bg-[#0F1B33] text-white">
+                  <div className="rounded-3xl p-5 sm:p-6 border border-[#2B4B8C]/50 bg-[#0A1C3E] text-white shadow-lg">
                     <WorldPioneersSection isPro={true} onUnlock={() => onOpenPaywall(selectedCycle)} />
                   </div>
                 )}
@@ -729,14 +758,18 @@ export function ProHubScreen({
                   <div className="space-y-4">
                     <div
                       className={`inline-flex gap-1 p-1 rounded-xl border ${
-                        darkMode ? "bg-[#111C33] border-white/10" : "bg-white border-slate-200"
+                        darkMode ? "bg-[#0F1B35] border-white/10" : "bg-white border-slate-200 shadow-xs"
                       }`}
                     >
                       <button
                         type="button"
                         onClick={() => setRankingScope("school")}
                         className={`px-4 py-2 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer transition-colors ${
-                          rankingScope === "school" ? "bg-blue-600 text-white" : mutedCls
+                          rankingScope === "school"
+                            ? darkMode
+                              ? "bg-[#FFC93C] text-[#050A1C]"
+                              : "bg-[#165FB8] text-white"
+                            : mutedCls
                         }`}
                       >
                         <Trophy className="w-3.5 h-3.5" />
@@ -746,7 +779,11 @@ export function ProHubScreen({
                         type="button"
                         onClick={() => setRankingScope("jus")}
                         className={`px-4 py-2 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer transition-colors ${
-                          rankingScope === "jus" ? "bg-blue-600 text-white" : mutedCls
+                          rankingScope === "jus"
+                            ? darkMode
+                              ? "bg-[#FFC93C] text-[#050A1C]"
+                              : "bg-[#165FB8] text-white"
+                            : mutedCls
                         }`}
                       >
                         <TrendingUp className="w-3.5 h-3.5" />
@@ -754,7 +791,7 @@ export function ProHubScreen({
                       </button>
                     </div>
 
-                    <div className="rounded-3xl p-4 sm:p-6 bg-[#0F1B33] text-white">
+                    <div className="rounded-3xl p-5 sm:p-6 border border-[#2B4B8C]/50 bg-[#0A1C3E] text-white shadow-lg">
                       <PredictRankingBoard
                         scope={rankingScope}
                         title={

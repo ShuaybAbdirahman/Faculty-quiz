@@ -96,16 +96,6 @@ export function ProContentShield({
       }
     };
 
-    const handleWindowBlur = () => {
-      if (isEditableElement(document.activeElement)) {
-        return;
-      }
-      if (Date.now() - outboundClickAtRef.current < 1500) {
-        return;
-      }
-      setCurtainReason("Shaashadda Pro waa la qariyay si looga ilaaliyo duubis ama sawir-qaadis.");
-    };
-
     const handlePageHide = () => {
       setCurtainReason("Shaashadda Pro waa la xiray si xogtaada loo ilaaliyo.");
     };
@@ -172,7 +162,6 @@ export function ProContentShield({
 
     window.addEventListener("keydown", handleKey, true);
     window.addEventListener("keyup", handleKey, true);
-    window.addEventListener("blur", handleWindowBlur);
     window.addEventListener("pagehide", handlePageHide);
     window.addEventListener("beforeprint", handleBeforePrint);
     window.addEventListener("scroll", resetIdleTimer, { passive: true });
@@ -194,7 +183,6 @@ export function ProContentShield({
       tamperObserver.disconnect();
       window.removeEventListener("keydown", handleKey, true);
       window.removeEventListener("keyup", handleKey, true);
-      window.removeEventListener("blur", handleWindowBlur);
       window.removeEventListener("pagehide", handlePageHide);
       window.removeEventListener("beforeprint", handleBeforePrint);
       window.removeEventListener("scroll", resetIdleTimer);
@@ -233,13 +221,13 @@ export function ProContentShield({
         data-pro-shield="active"
       >
         <div className="relative">
-          {/* Subtle Anti-Leak Watermark Overlay without raw Device ID or Clock Time */}
+          {/* Subtle Anti-Leak Watermark Overlay: opacity-100 avoids false tamper triggers while SVG uses 6% fill */}
           <div
             key={watermarkRev}
             ref={watermarkRef}
             aria-hidden="true"
             data-testid="pro-watermark-layer"
-            className="pointer-events-none select-none fixed inset-0 z-30 opacity-45"
+            className="pointer-events-none select-none fixed inset-0 z-20 opacity-100"
             style={{
               backgroundImage: `url("${watermarkTileUri}")`,
               backgroundRepeat: "repeat",

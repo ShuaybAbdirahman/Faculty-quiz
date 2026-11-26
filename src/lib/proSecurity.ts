@@ -752,14 +752,11 @@ function escapeSvgText(value: string): string {
 }
 
 export function buildProWatermarkTileDataUri(stamp: string): string {
-  const safeStamp = escapeSvgText(stamp || "HIRAAL UNLOCK+");
+  const safeStamp = escapeSvgText(stamp || "HIRAAL PRO");
   const svg = [
-    '<svg xmlns="http://www.w3.org/2000/svg" width="420" height="200" viewBox="0 0 420 200">',
-    '<g transform="rotate(-22 210 100)">',
-    '<text x="210" y="60" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10.5" font-weight="800" letter-spacing="0.9" fill="rgba(255,255,255,0.17)" stroke="rgba(4,16,36,0.22)" stroke-width="0.6">',
-    safeStamp,
-    "</text>",
-    '<text x="210" y="148" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="10.5" font-weight="800" letter-spacing="0.9" fill="rgba(255,255,255,0.15)" stroke="rgba(4,16,36,0.2)" stroke-width="0.6">',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="520" height="260" viewBox="0 0 520 260">',
+    '<g transform="rotate(-20 260 130)">',
+    '<text x="260" y="135" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.4" fill="rgba(100,116,139,0.06)">',
     safeStamp,
     "</text>",
     "</g>",
@@ -770,7 +767,7 @@ export function buildProWatermarkTileDataUri(stamp: string): string {
 
 export const PRO_PERSONAL_REMINDER = {
   title: "Xasuusin · 1 Qalab = 1 Arday",
-  body: "Qeybtan Unlock+ adiga keligaa ayay kuu furan tahay. Ha qaadin screenshot hana la wadaagin dad kale; arday kasta naftiisa ayuu ku furan karaa (Rukun Asbuucle $0.25, Bille $0.50 ama Sanadle $1.50).",
+  body: "Qeybtan HIRAAL Pro adiga keligaa ayay kuu furan tahay. Ha qaadin screenshot hana la wadaagin dad kale; arday kasta naftiisa ayuu ku furan karaa (Todobaadle $0.50, Bille $1.20 ama Sanadle $5.00).",
 } as const;
 
 export const PAYMENT_COOLDOWN_MS = 30_000;

@@ -111,7 +111,7 @@ export function ProStudentTools() {
           <div
             role="tablist"
             aria-label="Qalabka Ardayga Pro"
-            className={`inline-flex p-1 rounded-xl border ${
+            className={`flex items-center gap-1 p-1 rounded-xl border max-w-full overflow-x-auto hide-scrollbar ${
               darkMode ? "bg-[#0B1325] border-white/10" : "bg-slate-100 border-slate-200"
             }`}
           >
@@ -135,7 +135,7 @@ export function ProStudentTools() {
                       : `${mutedCls} hover:text-slate-900 dark:hover:text-white`
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-3.5 h-3.5 shrink-0" />
                   <span>{t.label}</span>
                 </button>
               );
