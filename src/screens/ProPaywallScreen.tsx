@@ -776,7 +776,7 @@ export function ProPaywallScreen({
                     </button>
                   </div>
 
-                  {/* Protected Merchant Number Card — Rendered ONLY at Step 3 */}
+                  {/* Protected Merchant Number Card - Rendered ONLY at Step 3 */}
                   <div
                     className={`rounded-2xl p-5 border ${
                       darkMode

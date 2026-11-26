@@ -8,9 +8,11 @@ import {
   clearStoredEntitlement,
   getOrCreateSecureDeviceId,
   hasBridgeExamAccess,
-  hasDepartmentsAccess,
+  hasJusStageAccess,
   hasLanguagesAccess,
+  hasSchoolStageAccess,
   hasSchoolSubjectAccess,
+  hasUniversityStageAccess,
   readStoredEntitlement,
   resolveAllowedLang,
   rotateDeviceId,
@@ -52,6 +54,10 @@ interface AppContextValue {
   userName: string;
   setUserName: (v: string) => void;
   proActive: boolean;
+  proAnyActive: boolean;
+  proSchoolActive: boolean;
+  proJusActive: boolean;
+  proUniversityActive: boolean;
   proLanguagesActive: boolean;
   proDepartmentsActive: boolean;
   hasSchoolAccess: (subjectId: string) => boolean;
@@ -80,10 +86,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [entitlement, setEntitlement] = useState<ProEntitlement | null>(() =>
     readStoredEntitlement(localStorage, getOrCreateSecureDeviceId(localStorage))
   );
+  const proSchoolActive = hasSchoolStageAccess(entitlement, deviceId);
+  const proJusActive = hasJusStageAccess(entitlement, deviceId);
+  const proUniversityActive = hasUniversityStageAccess(entitlement, deviceId);
   const proLanguagesActive = hasLanguagesAccess(entitlement, deviceId);
-  const proDepartmentsActive = hasDepartmentsAccess(entitlement, deviceId);
-  const proActive = proDepartmentsActive;
-  const proExpiresAt = (proLanguagesActive || proDepartmentsActive || (entitlement?.unlockedItems?.length ?? 0) > 0) && entitlement ? entitlement.expiresAt : 0;
+  const proDepartmentsActive = proUniversityActive;
+  const proActive = proUniversityActive;
+  const proAnyActive =
+    proSchoolActive ||
+    proJusActive ||
+    proUniversityActive ||
+    proLanguagesActive ||
+    (entitlement?.unlockedItems?.length ?? 0) > 0;
+  const proExpiresAt = proAnyActive && entitlement ? entitlement.expiresAt : 0;
 
   const hasSchoolAccess = useCallback(
     (subjectId: string) => hasSchoolSubjectAccess(entitlement, deviceId, subjectId),
@@ -141,7 +156,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const setLang = useCallback(
     (l: Lang): boolean => {
       if (!canUseLanguage(l, proLanguagesActive)) {
-        setToast(trFn(lang, "Af-Soomaaligu waa bilaash. Fur Unlock+ ($0.50 ama $1.20 Total) si aad u hesho Ingiriisi iyo Carabi."));
+        setToast(trFn(lang, "Af-Soomaaligu waa bilaash. Fur Unlock+ (Rukun Asbuucle, Bille ama Sanadle) si aad u hesho Ingiriisi iyo Carabi."));
         return false;
       }
       setLangState(l);
@@ -276,6 +291,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       userName,
       setUserName,
       proActive,
+      proAnyActive,
+      proSchoolActive,
+      proJusActive,
+      proUniversityActive,
       proLanguagesActive,
       proDepartmentsActive,
       hasSchoolAccess,
@@ -309,6 +328,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       userName,
       setUserName,
       proActive,
+      proAnyActive,
+      proSchoolActive,
+      proJusActive,
+      proUniversityActive,
       proLanguagesActive,
       proDepartmentsActive,
       hasSchoolAccess,

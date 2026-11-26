@@ -288,17 +288,13 @@ export function CompareScreen({
               <ProBadge small />
             </div>
 
-            <p className="text-xs sm:text-sm text-white/85 leading-relaxed">
-              Marka aad furto Unlock+ ($0.50 qeyb ama $1.20 Total · 20% Off), waxaad dooran kartaa miisaanka mudnaantaada, arki kartaa sida labadan kulliyadood isugu xirmaan, iyo 3 su'aalood oo go'aan-qaadasho ah.
-            </p>
-
             <button
               type="button"
               onClick={onOpenPaywall}
               className="w-full sm:w-auto px-5 h-11 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs sm:text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-colors"
             >
               <LockOpen className="w-4 h-4" />
-              <span>Fur Unlock+ ($0.50 | Total $1.20)</span>
+              <span>Fur University Unlock+</span>
             </button>
           </section>
         ) : (

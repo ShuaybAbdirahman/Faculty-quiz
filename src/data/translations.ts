@@ -931,9 +931,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Unlock All Roadmaps, Transition Solutions, Languages & Department Guide",
     "افتح جميع المسارات والحلول واللغات ودليل الأقسام"
   ],
-  "Hal mar bixi $0.10 (EVC Plus: 610999089 · Shuceyb Abdirahman), waligaa Pro ayaad ahaanaysaa iyadoo adeegyo cusub ay bilaash kuugu soo kordhayaan.": [
-    "Pay $0.10 once (EVC Plus: 610999089 · Shuceyb Abdirahman) and enjoy Lifetime Pro access with all future updates included.",
-    "ادفع 0.10$ مرة واحدة (EVC Plus: 610999089 · Shuceyb Abdirahman) واحصل على Pro مدى الحياة مع جميع التحديثات القادمة."
+  "Hal mar bixi $0.10 (EVC Plus), waligaa Pro ayaad ahaanaysaa iyadoo adeegyo cusub ay bilaash kuugu soo kordhayaan.": [
+    "Pay via EVC Plus to unlock Pro access.",
+    "ادفع عبر EVC Plus لتفعيل Pro."
   ],
   "Sharafka iyo Haybadda Afkeenna Hooyo": [
     "Pride in Our Mother Tongue",
@@ -1259,21 +1259,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Scan the QR code and test in 8 minutes (Free)",
     "امسح رمز QR وجرّب في 8 دقائق (مجاناً)"
   ],
-  "Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u aragto dhammaan xogta, ilaha la hubiyay, iyo qorshayaasha.": [
-    "Get Unlock+ ($0.50 per section or $1.20 Total · 20% Off) to view all verified insights, sources, and action plans.",
-    "فعّل Unlock+ (0.50$ للقسم أو 1.20$ للباقة الشاملة بخصم 20%) لعرض جميع البيانات والمصادر والخطط."
-  ],
-  "Fur Unlock+ ($0.50 | $1.20 Total)": [
-    "Get Unlock+ ($0.50 | $1.20 Total)",
-    "تفعيل Unlock+ (0.50$ | الشامل 1.20$)"
-  ],
-  "Fur Unlock+ ($0.50 · Total $1.20)": [
-    "Get Unlock+ ($0.50 · Total $1.20)",
-    "تفعيل Unlock+ (0.50$ · الشامل 1.20$)"
-  ],
-  "Bixi $0.50 hal qeyb ama $1.20 HIRAAL Total (20% Qiimo Dhimis) EVC Plus: 610999089 · Shuceyb Abdirahman muddo 6 bilood ah.": [
-    "Pay $0.50 for one section or $1.20 for HIRAAL Total (20% Off) via EVC Plus: 610999089 · Shuceyb Abdirahman for 6 months.",
-    "ادفع 0.50$ لقسم واحد أو 1.20$ لباقة HIRAAL الشاملة (خصم 20%) عبر EVC Plus: 610999089 · Shuceyb Abdirahman لمدة 6 أشهر."
+  "Fur Unlock+ (Rukun)": [
+    "Unlock+ (Rukun Plans)",
+    "تفعيل Unlock+"
   ],
   "Fur Pro si aad u aragto kulliyadaha, faahfaahinta, iyo website-ka rasmiga ah.": [
     "Unlock Pro to view faculties, details, and the official university website.",
@@ -1379,9 +1367,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Somalia Universities",
     "جامعات الصومال"
   ],
-  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) si ay kuugu furmaan dhammaan 6-da qaybood ee Xarunta Unlock+ muddo 6 bilood ah (180 maalmood).": [
-    "Pay $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 6 Unlock+ Hub sections for 6 months (180 days).",
-    "ادفع 0.50$ (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Unlock+ الستة لمدة 6 أشهر (180 يوماً)."
+  "Fur Unlock+ si ay kuugu furmaan dhammaan 6-da qaybood ee Xarunta Unlock+.": [
+    "Unlock to access all 6 Unlock+ Hub sections.",
+    "فعّل لتصفح جميع أقسام مركز Unlock+ الستة."
   ],
   "Hagaha Waaxaha (14 kulliyadood + 70 su'aalood), Khariidadaha, Jaamacadaha, Dadka Caanka ah, Wararka AI, Xirfadaha & Horumarinta.": [
     "Department Guide (14 faculties + 70 questions), Roadmaps, Somalia Universities, Pioneers, AI Jobs News, High-Income Skills & Growth.",
@@ -1443,13 +1431,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "If another student is using this device, click here to lock Unlock+ and issue a fresh device ID.",
     "إذا كان طالب آخر يستخدم هذا الجهاز، اضغط هنا لقفل Unlock+ وإنشاء معرّف جهاز جديد."
   ],
-  "Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Unlock+ ($0.50, 6 bilood).": [
-    "Somali is free. English & Arabic are included in Unlock+ ($0.50, 6 months).",
-    "الصومالية مجانية. الإنجليزية والعربية ضمن Unlock+ (0.50$ لمدة 6 أشهر)."
-  ],
-  "Af-Soomaaligu waa bilaash. Fur Unlock+ ($0.50, 6 bilood) si aad u hesho Ingiriisi iyo Carabi.": [
-    "Somali is 100% free. Get Unlock+ ($0.50, 6 months) to switch to English or Arabic.",
-    "اللغة الصومالية مجانية بالكامل. فعّل Unlock+ (0.50$ لمدة 6 أشهر) لاستخدام الإنجليزية أو العربية."
+  "Af-Soomaaligu waa bilaash. Fur Unlock+ (Rukun Asbuucle, Bille ama Sanadle) si aad u hesho Ingiriisi iyo Carabi.": [
+    "Somali is 100% free. Get Unlock+ (Weekly, Monthly or Yearly Rukun) to switch to English or Arabic.",
+    "اللغة الصومالية مجانية بالكامل. فعّل باقة اللغات لاستخدام الإنجليزية أو العربية."
   ],
   "Fur Unlock+": [
     "Get Unlock+",
@@ -1459,17 +1443,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Open Unlock+ Guide",
     "افتح دليل Unlock+"
   ],
-  "Fur Unlock+ ($0.50)": [
-    "Get Unlock+ ($0.50)",
-    "تفعيل Unlock+ (0.50$)"
-  ],
-  "Fur Unlock+ ($0.50 · 6 Bilood)": [
-    "Get Unlock+ ($0.50 · 6 Months)",
-    "تفعيل Unlock+ (0.50$ · 6 أشهر)"
-  ],
-  "$0.50 Keliya · 6 Bilood (180 Maalmood)": [
-    "Only $0.50 · 6 Months (180 Days)",
-    "0.50$ فقط · 6 أشهر (180 يوماً)"
+  "Rukun: Asbuucle $0.25 · Bille $0.50 · Sanadle $1.50 · Total -20%": [
+    "Rukun: Weekly $0.25 · Monthly $0.50 · Yearly $1.50 · Total -20%",
+    "الاشتراك: أسبوعي 0.25$ · شهري 0.50$ · سنوي 1.50$ · الشامل خصم 20%"
   ],
   "Su'aalaha Gaarka ah ee Waaxda (Unlock+)": [
     "Faculty-Specific Precision Questions (Unlock+)",
@@ -1511,9 +1487,9 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Somalia Student Growth (Unlock+ Only)",
     "تطوير الطالب الصومالي (Unlock+ فقط)"
   ],
-  "Bixi $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) si ay kuugu furmaan dhammaan 6-da qaybood ee Unlock+ Hub muddo 6 bilood ah (180 maalmood).": [
-    "Pay $0.50 (EVC Plus: 610999089 · Shuceyb Abdirahman) to unlock all 6 Unlock+ Hub sections for 6 months (180 days).",
-    "ادفع 0.50$ (EVC Plus: 610999089 · Shuceyb Abdirahman) لتفعيل جميع أقسام مركز Unlock+ الستة لمدة 6 أشهر (180 يوماً)."
+  "Fur Unlock+ si ay kuugu furmaan 6-da qaybood ee Unlock+ Hub.": [
+    "Unlock to access the 6 Unlock+ Hub sections.",
+    "فعّل لتصفح أقسام Unlock+ Hub الستة."
   ],
   "Fur Unlock+ ($0.50 · 6 Bilood) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan.": [
     "Get Unlock+ ($0.50 · 6 Months) to view skills, tools, and projects for this stage.",
@@ -1687,16 +1663,8 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Analysis of the fastest-growing careers worldwide",
     "تحليل لأسرع الوظائف نمواً في العالم"
   ],
-  "Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Unlock+ ($0.50 qeyb ama $1.20 Total · 20% Off).": [
-    "Somali is 100% free. English & Arabic are in Unlock+ ($0.50 single or $1.20 Total · 20% Off).",
-    "الصومالية مجانية بالكامل. الإنجليزية والعربية ضمن Unlock+ (0.50$ أو 1.20$ للباقة الشاملة بخصم 20%)."
-  ],
-  "Af-Soomaaligu waa bilaash. Fur Unlock+ ($0.50 ama $1.20 Total) si aad u hesho Ingiriisi iyo Carabi.": [
-    "Somali is 100% free. Get Unlock+ ($0.50 single or $1.20 Total) to unlock English & Arabic.",
-    "الصومالية مجانية بالكامل. فعّل Unlock+ (0.50$ أو 1.20$ للباقة الشاملة) لاستخدام الإنجليزية أو العربية."
-  ],
-  "Fur Unlock+ ($0.50 | $1.20 Total) si aad u aragto faahfaahinta iyo Sirta HIRAAL.": [
-    "Get Unlock+ ($0.50 | $1.20 Total) to view full steps and HIRAAL Insider Tips.",
-    "فعّل Unlock+ (0.50$ | الشامل 1.20$) لعرض التفاصيل وأسرار HIRAAL."
+  "Af-Soomaaligu waa bilaash. Fur Rukun (Asbuucle, Bille ama Sanadle) si aad u hesho Ingiriisi iyo Carabi.": [
+    "Somali is 100% free. Get a Rukun plan to unlock English & Arabic.",
+    "الصومالية مجانية بالكامل. فعّل باقة اللغات لاستخدام الإنجليزية أو العربية."
   ]
 };

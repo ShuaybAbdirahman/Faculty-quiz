@@ -252,47 +252,105 @@ test("HIRAAL Total bundle applies 20% discount ($1.50 -> $1.20) and scope full u
   assert.equal(hasBridgeExamAccess(totalEnt, deviceId, "snu_tartanka", now), true);
 });
 
-test("School Form 4 ($0.50) and Bridging Exam ($0.50) item unlocks stay isolated until stage/full unlock", async () => {
+test("Rukun plans (Asbuucle, Bille, Sanadle) enforce exact prices and 20% Total discount", async () => {
+  const { getRukunPricing } = await import("./proSecurity");
+
+  const wSingle = getRukunPricing("weekly", false);
+  const wTotal = getRukunPricing("weekly", true);
+  assert.equal(wSingle.days, 7);
+  assert.equal(wSingle.priceFormatted, "$0.25");
+  assert.equal(wTotal.originalFormatted, "$0.75");
+  assert.equal(wTotal.priceFormatted, "$0.60");
+  assert.equal(wTotal.savedFormatted, "$0.15");
+  assert.equal(wTotal.ussdAmount, "0.6");
+
+  const mSingle = getRukunPricing("monthly", false);
+  const mTotal = getRukunPricing("monthly", true);
+  assert.equal(mSingle.days, 30);
+  assert.equal(mSingle.priceFormatted, "$0.50");
+  assert.equal(mTotal.originalFormatted, "$1.50");
+  assert.equal(mTotal.priceFormatted, "$1.20");
+  assert.equal(mTotal.savedFormatted, "$0.30");
+
+  const ySingle = getRukunPricing("yearly", false);
+  const yTotal = getRukunPricing("yearly", true);
+  assert.equal(ySingle.days, 365);
+  assert.equal(ySingle.priceFormatted, "$1.50");
+  assert.equal(yTotal.originalFormatted, "$4.50");
+  assert.equal(yTotal.priceFormatted, "$3.60");
+  assert.equal(yTotal.savedFormatted, "$0.90");
+});
+
+test("Strict Stage Isolation: unlocking one stage never unlocks other stages; Total unlocks all", async () => {
   const {
     hasBridgeExamAccess,
     hasDepartmentsAccess,
+    hasJusStageAccess,
     hasLanguagesAccess,
+    hasSchoolStageAccess,
     hasSchoolSubjectAccess,
+    hasUniversityStageAccess,
     saveRequestedProItem,
     saveRequestedProScope,
   } = await import("./proSecurity");
 
-  const storage = createMemoryStorage();
-  const deviceId = getOrCreateSecureDeviceId(storage);
   const now = 1_700_000_000_000;
-  const future = now + 365 * 24 * 3600 * 1000;
+  const future = now + 30 * 24 * 3600 * 1000;
 
-  // Unlock Biology Predict Exam item only
-  saveRequestedProItem(storage, deviceId, "school:bio");
-  const bioOnly = writeStoredEntitlement(storage, deviceId, future, now);
-  assert.equal(hasSchoolSubjectAccess(bioOnly, deviceId, "bio", now), true);
-  assert.equal(hasSchoolSubjectAccess(bioOnly, deviceId, "chem", now), false);
-  assert.equal(hasBridgeExamAccess(bioOnly, deviceId, "snu_tartanka", now), false);
-  assert.equal(hasDepartmentsAccess(bioOnly, deviceId, now), false);
-  assert.equal(hasLanguagesAccess(bioOnly, deviceId, now), false);
+  // 1. School ONLY
+  const s1 = createMemoryStorage();
+  const d1 = getOrCreateSecureDeviceId(s1);
+  saveRequestedProItem(s1, d1, "stage:school");
+  const schoolOnly = writeStoredEntitlement(s1, d1, future, now);
+  assert.equal(hasSchoolStageAccess(schoolOnly, d1, now), true);
+  assert.equal(hasSchoolSubjectAccess(schoolOnly, d1, "bio", now), true);
+  assert.equal(hasJusStageAccess(schoolOnly, d1, now), false);
+  assert.equal(hasBridgeExamAccess(schoolOnly, d1, "snu_tartanka", now), false);
+  assert.equal(hasUniversityStageAccess(schoolOnly, d1, now), false);
+  assert.equal(hasDepartmentsAccess(schoolOnly, d1, now), false);
+  assert.equal(hasLanguagesAccess(schoolOnly, d1, now), false);
 
-  // Unlock SNU Entrance Predict Exam ($0.50) -> preserves school:bio without unlocking other school subjects
-  saveRequestedProItem(storage, deviceId, "bridge:snu_tartanka");
-  const merged = writeStoredEntitlement(storage, deviceId, future, now);
-  assert.equal(hasSchoolSubjectAccess(merged, deviceId, "bio", now), true);
-  assert.equal(hasSchoolSubjectAccess(merged, deviceId, "phys", now), false);
-  assert.equal(hasBridgeExamAccess(merged, deviceId, "snu_tartanka", now), true);
-  assert.equal(hasBridgeExamAccess(merged, deviceId, "uni_placement", now), false);
+  // 2. Adding JUS unlocks School + JUS, keeping University & Languages locked
+  saveRequestedProItem(s1, d1, "stage:jus");
+  const schoolAndJus = writeStoredEntitlement(s1, d1, future, now);
+  assert.equal(hasSchoolStageAccess(schoolAndJus, d1, now), true);
+  assert.equal(hasJusStageAccess(schoolAndJus, d1, now), true);
+  assert.equal(hasBridgeExamAccess(schoolAndJus, d1, "snu_tartanka", now), true);
+  assert.equal(hasUniversityStageAccess(schoolAndJus, d1, now), false);
+  assert.equal(hasLanguagesAccess(schoolAndJus, d1, now), false);
 
-  // Unlock+ (departments or full scope) automatically unlocks EVERY Form 4 & Bridge JUS Predict Exam
-  saveRequestedProScope(storage, deviceId, "departments");
-  const unlockPlusEnt = writeStoredEntitlement(storage, deviceId, future, now);
-  assert.equal(hasDepartmentsAccess(unlockPlusEnt, deviceId, now), true);
-  assert.equal(hasSchoolSubjectAccess(unlockPlusEnt, deviceId, "phys", now), true);
-  assert.equal(hasSchoolSubjectAccess(unlockPlusEnt, deviceId, "math", now), true);
-  assert.equal(hasBridgeExamAccess(unlockPlusEnt, deviceId, "snu_tartanka", now), true);
-  assert.equal(hasBridgeExamAccess(unlockPlusEnt, deviceId, "jus_bio", now), true);
-  assert.equal(hasBridgeExamAccess(unlockPlusEnt, deviceId, "jus_eng", now), true);
+  // 3. University ONLY never unlocks School, JUS, or Languages
+  const s2 = createMemoryStorage();
+  const d2 = getOrCreateSecureDeviceId(s2);
+  saveRequestedProItem(s2, d2, "stage:university");
+  const uniOnly = writeStoredEntitlement(s2, d2, future, now);
+  assert.equal(hasUniversityStageAccess(uniOnly, d2, now), true);
+  assert.equal(hasDepartmentsAccess(uniOnly, d2, now), true);
+  assert.equal(hasSchoolStageAccess(uniOnly, d2, now), false);
+  assert.equal(hasJusStageAccess(uniOnly, d2, now), false);
+  assert.equal(hasLanguagesAccess(uniOnly, d2, now), false);
+
+  // 4. Languages ONLY never unlocks School, JUS, or University
+  const s3 = createMemoryStorage();
+  const d3 = getOrCreateSecureDeviceId(s3);
+  saveRequestedProItem(s3, d3, "stage:languages");
+  const langOnly = writeStoredEntitlement(s3, d3, future, now);
+  assert.equal(hasLanguagesAccess(langOnly, d3, now), true);
+  assert.equal(hasSchoolStageAccess(langOnly, d3, now), false);
+  assert.equal(hasJusStageAccess(langOnly, d3, now), false);
+  assert.equal(hasUniversityStageAccess(langOnly, d3, now), false);
+
+  // 5. HIRAAL Total (full) unlocks ALL stages + Languages
+  const s4 = createMemoryStorage();
+  const d4 = getOrCreateSecureDeviceId(s4);
+  saveRequestedProScope(s4, d4, "full");
+  const totalEnt = writeStoredEntitlement(s4, d4, future, now);
+  assert.equal(hasSchoolStageAccess(totalEnt, d4, now), true);
+  assert.equal(hasSchoolSubjectAccess(totalEnt, d4, "math", now), true);
+  assert.equal(hasJusStageAccess(totalEnt, d4, now), true);
+  assert.equal(hasBridgeExamAccess(totalEnt, d4, "snu_tartanka", now), true);
+  assert.equal(hasUniversityStageAccess(totalEnt, d4, now), true);
+  assert.equal(hasLanguagesAccess(totalEnt, d4, now), true);
 });
 
 test("Pro content shield blocks screenshot/print/save/copy shortcuts and stamps personal watermark", async () => {

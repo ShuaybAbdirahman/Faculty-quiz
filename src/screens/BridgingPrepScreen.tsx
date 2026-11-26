@@ -40,14 +40,14 @@ export function BridgingPrepScreen({
   onUnlockBridge: (track: BridgeExamTrack) => void;
   onOpenPaywall: () => void;
 }) {
-  const { hasBridgeAccess, proActive, deviceId, userName } = useApp();
+  const { hasBridgeAccess, proJusActive, deviceId, userName } = useApp();
   const [section, setSection] = useState<BridgingSectionTab>(initialSection);
   const [subjectId, setSubjectId] = useState<string>(bridgeSubjects[0].id);
   const [examSubTab, setExamSubTab] = useState<"pdfs" | "predict">("pdfs");
 
   const activeTrack = bridgeExamTracks[0];
   const activeSubject = bridgeSubjects.find((s) => s.id === subjectId) ?? bridgeSubjects[0];
-  const unlocked = proActive || hasBridgeAccess(activeTrack.id) || hasBridgeAccess(activeSubject.id);
+  const unlocked = proJusActive || hasBridgeAccess(activeTrack.id) || hasBridgeAccess(activeSubject.id);
 
   const handleRecordJusScore = (res: {
     correctCount: number;
@@ -129,18 +129,18 @@ export function BridgingPrepScreen({
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-emerald-300">
               <Target className="w-4 h-4" />
-              <span>Qeybta 2aad · Jaamacadda Ummadda (JUS Keliya)</span>
+              <span>Qeybta 2aad · Diyaarinta JUS</span>
             </div>
             <div className="inline-flex items-center gap-2 text-xs font-bold text-white/85 tabular-nums">
               <Calendar className="w-3.5 h-3.5 text-[#FFD86B]" />
               <span>{GAP_EXAM_DATE}</span>
               <span className="text-white/35" aria-hidden="true">·</span>
-              <span>JUS $0.50 · Total $1.20 (20% Off)</span>
+              <span>Rukun $0.25+ · Total -20%</span>
             </div>
           </div>
 
           <h2 className="font-head font-extrabold text-xl sm:text-2xl text-white leading-tight">
-            Tartanka JUS (4 Saynis + Ingiriisi), 90 Maalmood &amp; Ranking
+            Tartanka JUS (5 Maado), 90 Maalmood &amp; Ranking
           </h2>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
@@ -152,18 +152,18 @@ export function BridgingPrepScreen({
               },
               {
                 id: "readiness" as const,
-                label: "90 Maalmood (Free)",
-                icon: <ClipboardCheck className="w-4 h-4" />,
+                label: "90 Maalmood",
+                icon: proJusActive ? <ClipboardCheck className="w-4 h-4" /> : <Lock className="w-4 h-4 text-[#FFD86B]" />,
               },
               {
                 id: "challenges" as const,
-                label: "Xalka Caqabadaha (Free)",
-                icon: <Lightbulb className="w-4 h-4" />,
+                label: "Xalka Caqabadaha",
+                icon: proJusActive ? <Lightbulb className="w-4 h-4" /> : <Lock className="w-4 h-4 text-[#FFD86B]" />,
               },
               {
                 id: "ranking" as const,
                 label: "Ranking JUS",
-                icon: proActive ? <Trophy className="w-4 h-4" /> : <Lock className="w-4 h-4" />,
+                icon: proJusActive ? <Trophy className="w-4 h-4" /> : <Lock className="w-4 h-4 text-[#FFD86B]" />,
               },
             ].map((tab) => (
               <button
@@ -199,7 +199,7 @@ export function BridgingPrepScreen({
                 {bridgeSubjects.map((sub) => {
                   const isSel = sub.id === activeSubject.id;
                   const subOpen =
-                    proActive || hasBridgeAccess(activeTrack.id) || hasBridgeAccess(sub.id);
+                    proJusActive || hasBridgeAccess(activeTrack.id) || hasBridgeAccess(sub.id);
                   return (
                     <button
                       key={sub.id}
@@ -268,7 +268,7 @@ export function BridgingPrepScreen({
                 ) : (
                   <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-300 shrink-0">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>{proActive ? "Unlock+ Furan" : "Predict Furan"}</span>
+                    <span>{proJusActive ? "JUS Furan" : "Predict Furan"}</span>
                   </span>
                 )}
               </div>
@@ -306,16 +306,13 @@ export function BridgingPrepScreen({
                 <div className="w-12 h-12 mx-auto rounded-2xl bg-emerald-500/25 border border-emerald-300/40 text-emerald-200 flex items-center justify-center">
                   <UploadCloud className="w-6 h-6" />
                 </div>
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <div className="text-xs font-extrabold uppercase tracking-wider text-emerald-300">
-                    PDF-yada JUS · {activeSubject.name}
+                    PDF-yada JUS (Free) · {activeSubject.name}
                   </div>
                   <h4 className="font-head font-extrabold text-lg text-white">
-                    Diyaar · Markii PDFs la soo geliyo ({activeSubject.examDate})
+                    Diyaar ({activeSubject.examDate})
                   </h4>
-                  <p className="text-xs text-white/75 max-w-md mx-auto leading-relaxed">
-                    Kaydka PDF-yada imtixaannadii hore waa xog dadweyne oo mar walba bilaash u ah arday kasta.
-                  </p>
                 </div>
               </div>
             ) : !unlocked ? (
@@ -351,13 +348,13 @@ export function BridgingPrepScreen({
 
         {section === "readiness" && (
           <div className="animate-pro-enter">
-            <ReadinessTracker locked={false} onUnlockClick={onOpenPaywall} />
+            <ReadinessTracker locked={!proJusActive} onUnlockClick={onOpenPaywall} />
           </div>
         )}
 
         {section === "challenges" && (
           <div className="animate-pro-enter">
-            <SomaliaChallengesHub locked={false} onUnlockClick={onOpenPaywall} />
+            <SomaliaChallengesHub locked={!proJusActive} onUnlockClick={onOpenPaywall} />
           </div>
         )}
 
@@ -367,7 +364,7 @@ export function BridgingPrepScreen({
               scope="jus"
               title="Kaalmaha Sare · Tartanka JUS (5 Maado)"
               subjects={bridgeSubjects}
-              proActive={proActive}
+              proActive={proJusActive}
               onUnlock={onOpenPaywall}
             />
           </div>

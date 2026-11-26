@@ -45,7 +45,7 @@ export function SchoolForm4Screen({
   onUnlockSubject: (subject: Form4Subject) => void;
   onOpenPaywall: () => void;
 }) {
-  const { hasSchoolAccess, proActive, deviceId, userName } = useApp();
+  const { hasSchoolAccess, proSchoolActive, deviceId, userName } = useApp();
   const [stageTab, setStageTab] = useState<SchoolStageTab>("subjects");
   const [groupFilter, setGroupFilter] = useState<"all" | SchoolSubjectGroup>("all");
   const [selectedId, setSelectedId] = useState<string>(initialSubjectId || form4Subjects[0].id);
@@ -65,7 +65,7 @@ export function SchoolForm4Screen({
     );
   }, [visibleSubjects, selectedId]);
 
-  const subjectUnlocked = proActive || hasSchoolAccess(activeSubject.id);
+  const subjectUnlocked = proSchoolActive || hasSchoolAccess(activeSubject.id);
 
   const handleRecordScore = (res: {
     correctCount: number;
@@ -153,7 +153,7 @@ export function SchoolForm4Screen({
               <Calendar className="w-3.5 h-3.5 text-[#FFD86B]" />
               <span>{FORM4_EXAM_DATE}</span>
               <span className="text-white/35" aria-hidden="true">·</span>
-              <span>School $0.50 · Total $1.20 (20% Off)</span>
+              <span>Rukun $0.25+ · Total -20%</span>
             </div>
           </div>
 
@@ -172,12 +172,12 @@ export function SchoolForm4Screen({
               {
                 id: "secrets" as const,
                 label: "Sirta Top-10 & Maaddooyinka",
-                icon: proActive ? <Sparkles className="w-4 h-4" /> : <Lock className="w-4 h-4" />,
+                icon: proSchoolActive ? <Sparkles className="w-4 h-4" /> : <Lock className="w-4 h-4 text-[#FFD86B]" />,
               },
               {
                 id: "ranking" as const,
                 label: "Ranking (Kaalmaha Sare)",
-                icon: proActive ? <Trophy className="w-4 h-4" /> : <Lock className="w-4 h-4" />,
+                icon: proSchoolActive ? <Trophy className="w-4 h-4" /> : <Lock className="w-4 h-4 text-[#FFD86B]" />,
               },
             ].map((t) => (
               <button
@@ -226,7 +226,7 @@ export function SchoolForm4Screen({
               >
                 {visibleSubjects.map((sub) => {
                   const isSelected = sub.id === activeSubject.id;
-                  const unlocked = proActive || hasSchoolAccess(sub.id);
+                  const unlocked = proSchoolActive || hasSchoolAccess(sub.id);
                   return (
                     <button
                       key={sub.id}
@@ -307,7 +307,7 @@ export function SchoolForm4Screen({
                     ) : (
                       <span className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-300 shrink-0">
                         <CheckCircle2 className="w-4 h-4" />
-                        <span>{proActive ? "Unlock+ Furan" : "Predict Furan"}</span>
+                        <span>{proSchoolActive ? "School Furan" : "Predict Furan"}</span>
                       </span>
                     )}
                   </div>
@@ -344,16 +344,13 @@ export function SchoolForm4Screen({
                     <div className="w-12 h-12 mx-auto rounded-2xl bg-[#4189DD]/25 border border-[#93C5FD]/40 text-[#BFDBFE] flex items-center justify-center">
                       <UploadCloud className="w-6 h-6" />
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       <div className="text-xs font-extrabold uppercase tracking-wider text-[#93C5FD]">
-                        PDF-yada · {activeSubject.name}
+                        PDF-yada (Free) · {activeSubject.name}
                       </div>
                       <h4 className="font-head font-extrabold text-lg text-white">
-                        Diyaar · Markii PDFs la soo geliyo ({FORM4_EXAM_DATE})
+                        Diyaar ({FORM4_EXAM_DATE})
                       </h4>
-                      <p className="text-xs text-white/75 max-w-md mx-auto leading-relaxed">
-                        Kaydka PDF-yada imtixaannadii hore waa xog dadweyne oo mar walba bilaash u ah arday kasta.
-                      </p>
                     </div>
                   </div>
                 )}
@@ -395,10 +392,10 @@ export function SchoolForm4Screen({
           </div>
         )}
 
-        {/* TAB 2: School Pro Content (Sirta Top-10 & 12-ka Maado · Strictly Unlock+ Gated) */}
+        {/* TAB 2: School Pro Content (Sirta Top-10 & 12-ka Maado · Strictly School Unlock+ Gated) */}
         {stageTab === "secrets" && (
           <div className="animate-pro-enter">
-            {!proActive ? (
+            {!proSchoolActive ? (
               <section
                 className="max-w-2xl mx-auto rounded-3xl p-5 sm:p-8 border border-[#FFC93C]/45 shadow-[0_20px_50px_rgba(0,0,0,0.45)] space-y-5"
                 style={{
@@ -421,14 +418,9 @@ export function SchoolForm4Screen({
                   <ProBadge />
                 </div>
 
-                <div className="space-y-2">
-                  <h3 className="font-head font-extrabold text-xl sm:text-2xl text-white leading-snug">
-                    Xeeladaha Ardayda Top-10 &amp; Sirta Xalaasha ah ee 12-ka Maado
-                  </h3>
-                  <p className="text-sm text-white/80 leading-relaxed">
-                    Baro hababka xalaasha ah ee ardayda kaalmaha sare galaan iyo meelaha saxayaashu dhibcaha ku bixiyaan maaddo kasta (qish ma ahan).
-                  </p>
-                </div>
+                <h3 className="font-head font-extrabold text-xl sm:text-2xl text-white leading-snug">
+                  Xeeladaha Top-10 &amp; Sirta Xalaasha ah (Qish Ma Ahan)
+                </h3>
 
                 <div className="rounded-2xl p-4 bg-[#070E29]/80 border border-white/10 space-y-2 text-xs sm:text-sm text-white/85">
                   <div className="flex items-start gap-2">
@@ -437,7 +429,7 @@ export function SchoolForm4Screen({
                   </div>
                   <div className="flex items-start gap-2">
                     <ShieldCheck className="w-4 h-4 text-emerald-300 shrink-0 mt-0.5" />
-                    <span>Sirta dhibcaha ee dhammaan 12-ka maado (Saynis, Luqad, Bulsho &amp; Applied)</span>
+                    <span>Sirta dhibcaha ee 12-ka maado</span>
                   </div>
                 </div>
 
@@ -447,12 +439,12 @@ export function SchoolForm4Screen({
                   className="w-full h-[52px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
                 >
                   <LockOpen className="w-4 h-4" />
-                  <span>Fur Unlock+ ($0.50 | Total $1.20)</span>
+                  <span>Fur School Unlock+</span>
                 </button>
               </section>
             ) : (
               <ProContentShield
-                active={proActive}
+                active={proSchoolActive}
                 sectionLabel="Qeybta 1aad · School (Sirta Top-10 & 12-ka Maado)"
               >
                 <div className="space-y-10">
@@ -471,7 +463,7 @@ export function SchoolForm4Screen({
               scope="school"
               title="Kaalmaha Sare · School Predict (Form 4)"
               subjects={form4Subjects}
-              proActive={proActive}
+              proActive={proSchoolActive}
               onUnlock={onOpenPaywall}
             />
           </div>

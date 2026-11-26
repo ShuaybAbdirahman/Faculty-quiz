@@ -502,7 +502,7 @@ export function ShareSection({
                   HIRAAL 2027 · FORM 4 · DIYAARINTA JUS · UNIVERSITY
                 </p>
                 <p className="text-[9.5px] font-semibold text-white/85 mt-0.5">
-                  12 Maado Form 4 · 5 Maado JUS · 14 Kulliyadood · $0.50 | $1.20 Total
+                  12 Maado Form 4 · 5 Maado JUS · 14 Kulliyadood · Rukun
                 </p>
               </div>
 

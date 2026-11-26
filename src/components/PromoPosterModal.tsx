@@ -157,7 +157,7 @@ export function renderCaawiyePromoPoster(
       title: "Dugsiga Sare · Form 4 (12 Maado)",
       sub: "June 2027 · Sirta Top-10 & Ranking",
       topStat: "PDFs: Free",
-      botStat: "Predict $0.50 | Total $1.20",
+      botStat: "Rukun $0.25+ · Total -20%",
       c1: "#4189DD",
       c2: "#165FB8",
       numBg: "#FFFFFF",
@@ -170,7 +170,7 @@ export function renderCaawiyePromoPoster(
       title: "Tartanka Jaamacadda (JUS · 5 Maado)",
       sub: "4 Saynis + Ingiriisi (Oct 2027) · Ranking",
       topStat: "PDFs: Free",
-      botStat: "Predict $0.50 | Total $1.20",
+      botStat: "Rukun $0.25+ · Total -20%",
       c1: "#059669",
       c2: "#047857",
       numBg: "#FFFFFF",
@@ -183,7 +183,7 @@ export function renderCaawiyePromoPoster(
       title: "Hagaha Kulliyadda & Unlock+ Hub",
       sub: "RIASEC · 14 Kulliyadood · 6 Qaybood",
       topStat: "RIASEC: Free",
-      botStat: "Qeyb $0.50 | Total $1.20 (-20%)",
+      botStat: "Rukun $0.25+ · Total -20%",
       c1: "#4338CA",
       c2: "#312E81",
       numBg: "#FFC93C",
@@ -323,7 +323,7 @@ export function renderCaawiyePromoPoster(
     ctx.fillStyle = "#FFE484";
     ctx.font = '700 18.5px "Plus Jakarta Sans", system-ui, sans-serif';
     ctx.fillText(
-      "HIRAAL Total ($1.20 · 20% Off) wuxuu furaa Dhammaan Qeybaha",
+      "Rukun: Asbuucle $0.25 · Bille $0.50 · Sanadle $1.50 (Total -20%)",
       w / 2,
       trustY + 114
     );

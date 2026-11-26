@@ -185,6 +185,44 @@ export function Top10TricksSection({
   );
 }
 
+export function ExamHallRulesSection() {
+  return (
+    <section className="space-y-5 min-w-0">
+      <div>
+        <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FFD86B]">
+          <Clock className="w-4 h-4" />
+          <span>Xeerka Habeenka & Hoolka Imtixaanka</span>
+        </div>
+        <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
+          Anshaxa & Maamulka Waqtiga Hoolka
+        </h2>
+        <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
+          Tallaabooyinka xalaasha ah ee ku siiya degganaan, nidaam qoraal oo nadiif ah, iyo dhibcaha qaybta ah (Partial Credit).
+        </p>
+      </div>
+
+      <IntegrityBanner />
+
+      <div className="grid sm:grid-cols-2 gap-3.5">
+        {examHallRules.map((rule) => (
+          <div
+            key={rule.id}
+            className="rounded-2xl p-4 sm:p-5 bg-[#091233]/90 border border-white/15 space-y-2"
+          >
+            <div className="text-[11px] font-bold uppercase tracking-wider text-[#FFD86B]">
+              {rule.phase}
+            </div>
+            <h3 className="font-head font-bold text-base text-white leading-snug">
+              {rule.title}
+            </h3>
+            <p className="text-xs sm:text-[13px] text-white/80 leading-relaxed">{rule.detail}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function LegalSubjectSecretsSection({
   isPro,
   onUnlock,

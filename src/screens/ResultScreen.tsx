@@ -523,7 +523,7 @@ export function ResultScreen({
                 ) : (
                   <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <p className="text-xs sm:text-sm opacity-80 leading-relaxed">
-                      Fur Unlock+ ($0.50 Qeyb ama $1.20 Total · 20% Off) si aad u hesho falanqaynta farqiga labada kulliyadood ee kuugu sarreysa, meesha aad ku xooggan tahay, iyo qorshaha tallaabo-tallaabo ee 30-ka maalmood.
+                      Falanqaynta farqiga &amp; qorshaha 30-ka maalmood (University Unlock+).
                     </p>
                     <button
                       type="button"
@@ -531,7 +531,7 @@ export function ResultScreen({
                       className="shrink-0 px-4 h-10 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <LockOpen className="w-3.5 h-3.5" />
-                      <span>{tr("Fur Unlock+ ($0.50 | $1.20 Total)")}</span>
+                      <span>{tr("Fur University Unlock+")}</span>
                     </button>
                   </div>
                 )}
@@ -609,11 +609,6 @@ export function ResultScreen({
           </button>
         </div>
 
-        <p className="mt-5 text-xs opacity-65 leading-relaxed text-center max-w-2xl mx-auto">
-          {tr(
-            "Qiimeyntani waxay ku salaysan tahay qaab Holland RIASEC oo la fududeeyay. Ma aha imtixaan rasmi ah. U isticmaal hage, ma aha go’aan kama dambeys ah."
-          )}
-        </p>
       </main>
 
       <Footer />

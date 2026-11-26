@@ -127,19 +127,18 @@ BEGIN
   v_exp := greatest(coalesce(v_exp, now()), now())
          + make_interval(days => greatest(1, least(730, coalesce(v_row.days, 180))));
 
-  v_code_scope := coalesce(v_row.scope, 'departments');
+  v_code_scope := coalesce(v_row.scope, 'university');
   v_merged_scope := CASE
     WHEN v_old_scope IS NULL OR v_old_scope = 'none' THEN v_code_scope
     WHEN v_code_scope = 'none' THEN v_old_scope
     WHEN v_old_scope = 'full' OR v_code_scope = 'full' THEN 'full'
-    WHEN v_old_scope <> v_code_scope THEN 'full'
-    ELSE v_old_scope
+    ELSE v_code_scope
   END;
 
   v_merged_items := ARRAY(
     SELECT DISTINCT x
     FROM unnest(coalesce(v_old_items, '{}') || coalesce(v_row.unlocked_items, '{}')) AS x
-    WHERE x ~ '^(school|bridge):[a-z0-9_]{2,32}$'
+    WHERE x ~ '^(school|bridge|stage):[a-z0-9_]{2,32}$'
   );
 
   UPDATE public.pro_codes

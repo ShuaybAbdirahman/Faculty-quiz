@@ -77,7 +77,7 @@ function NameField() {
         </div>
       </div>
 
-      <div className="mt-2 min-h-[22px]">
+      <div className="mt-2 min-h-[20px]">
         {userName ? (
           <p className="text-sm text-white/90 flex items-center gap-1.5">
             <span>{tr("Soo dhawoow,")}</span>
@@ -87,11 +87,7 @@ function NameField() {
           <p className="text-xs text-[#FFB4AB]">
             {tr("Magaca waa inuu ahaadaa ugu yaraan 2 xaraf, xarfo kaliya (tiro iyo calaamado lama oggola).")}
           </p>
-        ) : (
-          <p className="text-xs text-white/65">
-            {tr("Ku qor magacaaga si hambalyadaada ugu soo baxdo.")}
-          </p>
-        )}
+        ) : null}
       </div>
     </div>
   );
@@ -112,7 +108,7 @@ export function WelcomeScreen({
   onOpenProHub: (tab?: HubTab, facultyId?: string) => void;
   onOpenPaywall: () => void;
 }) {
-  const { lang, setLang, darkMode, setDarkMode, tr, trf, tx, txl, rtl, proActive } = useApp();
+  const { lang, setLang, darkMode, setDarkMode, tr, trf, tx, txl, rtl, proActive, proLanguagesActive } = useApp();
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [peekFaculty, setPeekFaculty] = useState<Faculty | null>(null);
   const [sectionTab, setSectionTab] = useState<"faculties" | "reviews">("faculties");
@@ -196,7 +192,7 @@ export function WelcomeScreen({
                       }`}
                     >
                       {(Object.keys(langNames) as Lang[]).map((code) => {
-                        const locked = code !== "so" && !proActive;
+                        const locked = code !== "so" && !proLanguagesActive;
                         return (
                           <button
                             key={code}

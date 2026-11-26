@@ -553,9 +553,6 @@ export function ProGuideScreen({
               )}
             </div>
 
-            <p className="pt-2 text-center text-xs text-white/60 leading-relaxed">
-              {tr("Waa hage, ma aha go’aan kama dambays ah. La tasho macallimiin ama arday jaamacad.")}
-            </p>
           </div>
         )}
         </ProContentShield>

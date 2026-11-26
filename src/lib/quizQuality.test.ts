@@ -302,7 +302,7 @@ describe("CAAWIYE School (June 2027) & Diyaarinta Jaamacadda (Oct 2027) Clean Pr
     assert.ok(!/kala.?guur/i.test(serializedData), "Old label Kala-Guurka must not appear");
   });
 
-  it("enforces universal fonts, zero AI dashes, zero $0.25 fragments, and clean copy across index.html and src/", () => {
+  it("enforces universal fonts, zero AI dashes, and hides merchant phone outside checkout across index.html and src/", () => {
     const filesToCheck: string[] = [path.resolve("index.html")];
     const walk = (dir: string) => {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -323,13 +323,17 @@ describe("CAAWIYE School (June 2027) & Diyaarinta Jaamacadda (Oct 2027) Clean Pr
       [/Bricolage Grotesque/i, "Legacy Bricolage Grotesque font"],
       [/\bDM Sans\b/i, "Legacy DM Sans font"],
       [/Instrument Serif/i, "Legacy Instrument Serif font"],
-      [/\$0\.25/, "Fragmented $0.25 micro-pricing"],
     ];
 
     for (const filePath of filesToCheck) {
       const content = fs.readFileSync(filePath, "utf8");
+      const rel = path.relative(process.cwd(), filePath);
       for (const [re, label] of forbiddenPatterns) {
-        assert.ok(!re.test(content), `${label} found in ${path.relative(process.cwd(), filePath)}`);
+        assert.ok(!re.test(content), `${label} found in ${rel}`);
+      }
+      if (!rel.endsWith("proSecurity.ts") && !rel.endsWith("ProPaywallScreen.tsx")) {
+        assert.ok(!/610999089/.test(content), `Merchant phone leaked in ${rel}`);
+        assert.ok(!/Shuceyb Abdirahman/i.test(content), `Merchant name leaked in ${rel}`);
       }
     }
   });

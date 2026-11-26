@@ -43,7 +43,7 @@ export function HomeScreen({
   onOpenSettings: () => void;
   onOpenReviews: () => void;
 }) {
-  const { darkMode, setDarkMode, tr, proActive } = useApp();
+  const { darkMode, setDarkMode, tr, proAnyActive } = useApp();
   const [promoOpen, setPromoOpen] = useState(false);
 
   const juneDays = useMemo(() => daysUntil(2027, 5, 1), []);
@@ -69,7 +69,7 @@ export function HomeScreen({
             </div>
 
             <nav className="flex items-center gap-1.5 shrink-0" aria-label="Main Controls">
-              {proActive && (
+              {proAnyActive && (
                 <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-emerald-500/25 border border-emerald-300/45 text-[11px] font-bold text-white whitespace-nowrap shrink-0">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>Unlock+</span>
@@ -209,7 +209,7 @@ export function HomeScreen({
                     <FileText className="w-3.5 h-3.5" />
                     <span>PDFs Free</span>
                   </span>
-                  <span className="font-extrabold text-[#FFE484] tabular-nums">Qeyb $0.50 · Total $1.20</span>
+                  <span className="font-extrabold text-[#FFE484] tabular-nums">Rukun $0.25+ · Total -20%</span>
                 </div>
               </div>
 
@@ -257,7 +257,7 @@ export function HomeScreen({
                     <FileText className="w-3.5 h-3.5" />
                     <span>PDFs Free</span>
                   </span>
-                  <span className="font-extrabold text-[#FFE484] tabular-nums">Qeyb $0.50 · Total $1.20</span>
+                  <span className="font-extrabold text-[#FFE484] tabular-nums">Rukun $0.25+ · Total -20%</span>
                 </div>
               </div>
 
@@ -302,7 +302,7 @@ export function HomeScreen({
 
                 <div className="pt-2.5 border-t border-white/20 flex items-center justify-between text-xs">
                   <span className="text-emerald-200 font-bold">RIASEC Free</span>
-                  <span className="font-extrabold text-[#FFE484] tabular-nums">Qeyb $0.50 · Total $1.20 (-20%)</span>
+                  <span className="font-extrabold text-[#FFE484] tabular-nums">Rukun $0.25+ · Total -20%</span>
                 </div>
               </div>
 
@@ -333,14 +333,11 @@ export function HomeScreen({
                   <LockOpen className="w-4 h-4 text-[#FFE484]" />
                   <span>Unlock+ Hub</span>
                 </span>
-                <span className="text-xs font-extrabold text-[#FFE484] tabular-nums">$0.50 | $1.20 Total (-20%)</span>
+                <span className="text-xs font-extrabold text-[#FFE484] tabular-nums">Asbuucle · Bille · Sanadle</span>
               </div>
               <h3 className="font-head font-extrabold text-lg sm:text-xl leading-snug">
                 Khariidadaha, Jaamacadaha &amp; Xirfadaha
               </h3>
-              <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
-                6-da qaybood ee University Hub: Khariidadaha, Jaamacadaha Soomaaliya, Dadka Caanka ah, Shaqooyinka Casriga ah &amp; Xirfadaha Dakhliga.
-              </p>
             </div>
             <button
               type="button"

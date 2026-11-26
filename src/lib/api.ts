@@ -3,6 +3,7 @@ import type { ProDeptData } from "./scoring";
 import {
   isValidDeviceId,
   isValidProItemKey,
+  isValidProScope,
   normalizeProInfo,
   type ProScope,
   type ServerEntitlementPayload,
@@ -188,9 +189,7 @@ export async function fetchProInfo(): Promise<ProInfo> {
 }
 
 function parseServerScope(raw: unknown): ProScope | undefined {
-  return raw === "full" || raw === "departments" || raw === "languages" || raw === "none"
-    ? raw
-    : undefined;
+  return isValidProScope(raw) ? raw : undefined;
 }
 
 function parseServerItems(raw: unknown): string[] | undefined {

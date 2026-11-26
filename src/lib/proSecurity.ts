@@ -119,6 +119,90 @@ export function calculateTotalBundlePricing(
   };
 }
 
+export type RukunCycle = "weekly" | "monthly" | "yearly";
+
+export interface RukunPlanMeta {
+  id: RukunCycle;
+  label: string;
+  periodText: string;
+  days: number;
+  singleAmount: number;
+  singleFormatted: string;
+  singleUssd: string;
+  totalOriginal: string;
+  totalAmount: number;
+  totalFormatted: string;
+  totalSaved: string;
+  totalUssd: string;
+}
+
+export const RUKUN_PLANS: Record<RukunCycle, RukunPlanMeta> = {
+  weekly: {
+    id: "weekly",
+    label: "Asbuucle",
+    periodText: "7 Maalmood",
+    days: 7,
+    singleAmount: 0.25,
+    singleFormatted: "$0.25",
+    singleUssd: "0.25",
+    totalOriginal: "$0.75",
+    totalAmount: 0.6,
+    totalFormatted: "$0.60",
+    totalSaved: "$0.15",
+    totalUssd: "0.6",
+  },
+  monthly: {
+    id: "monthly",
+    label: "Bille",
+    periodText: "30 Maalmood",
+    days: 30,
+    singleAmount: 0.5,
+    singleFormatted: "$0.50",
+    singleUssd: "0.5",
+    totalOriginal: "$1.50",
+    totalAmount: 1.2,
+    totalFormatted: "$1.20",
+    totalSaved: "$0.30",
+    totalUssd: "1.2",
+  },
+  yearly: {
+    id: "yearly",
+    label: "Sanadle",
+    periodText: "365 Maalmood",
+    days: 365,
+    singleAmount: 1.5,
+    singleFormatted: "$1.50",
+    singleUssd: "1.5",
+    totalOriginal: "$4.50",
+    totalAmount: 3.6,
+    totalFormatted: "$3.60",
+    totalSaved: "$0.90",
+    totalUssd: "3.6",
+  },
+};
+
+export function getRukunPricing(cycle: RukunCycle, isTotal: boolean) {
+  const meta = RUKUN_PLANS[cycle] ?? RUKUN_PLANS.monthly;
+  if (isTotal) {
+    return {
+      ...meta,
+      priceFormatted: meta.totalFormatted,
+      originalFormatted: meta.totalOriginal,
+      savedFormatted: meta.totalSaved,
+      ussdAmount: meta.totalUssd,
+      discountPct: 20,
+    };
+  }
+  return {
+    ...meta,
+    priceFormatted: meta.singleFormatted,
+    originalFormatted: meta.singleFormatted,
+    savedFormatted: "$0.00",
+    ussdAmount: meta.singleUssd,
+    discountPct: 0,
+  };
+}
+
 export const DEVICE_ID_STORAGE_KEY = "hk_device_id_v2";
 export const LEGACY_DEVICE_ID_KEY = "device_id";
 export const ENTITLEMENT_STORAGE_KEY = "hk_pro_entitlement_v2";
@@ -130,8 +214,9 @@ export const REQUESTED_ITEM_STORAGE_KEY = "hk_pro_requested_item_v1";
 /** Re-verify with Supabase if local cache is older than 5 minutes. */
 export const MAX_ENTITLEMENT_STALE_MS = 5 * 60 * 1000;
 
-export type ProScope = "full" | "departments" | "languages" | "none";
-export type ProItemKey = `school:${string}` | `bridge:${string}`;
+export type ProScope = "full" | "school" | "jus" | "university" | "departments" | "languages" | "none";
+export type ProStageId = "school" | "jus" | "university" | "languages";
+export type ProItemKey = `school:${string}` | `bridge:${string}` | `stage:${ProStageId}`;
 
 export interface ProEntitlement {
   deviceId: string;
@@ -150,7 +235,19 @@ export interface StorageLike {
 
 const WEAK_IDS = new Set(["", "null", "undefined", "default", "web", "guest", "anonymous"]);
 const VALID_DEVICE_RE = /^[a-zA-Z0-9_-]{16,64}$/;
-const VALID_ITEM_RE = /^(school|bridge):[a-z0-9_]{2,32}$/;
+const VALID_ITEM_RE = /^(school|bridge|stage):[a-z0-9_]{2,32}$/;
+
+export function isValidProScope(raw: unknown): raw is ProScope {
+  return (
+    raw === "full" ||
+    raw === "school" ||
+    raw === "jus" ||
+    raw === "university" ||
+    raw === "departments" ||
+    raw === "languages" ||
+    raw === "none"
+  );
+}
 
 export function isValidProItemKey(key: string | null | undefined): key is ProItemKey {
   return Boolean(key && typeof key === "string" && VALID_ITEM_RE.test(key));
@@ -250,10 +347,7 @@ export function readStoredEntitlement(
   try {
     const parsed = JSON.parse(raw) as Partial<ProEntitlement>;
     const rawScope = parsed.scope;
-    const scope: ProScope =
-      rawScope === "languages" || rawScope === "departments" || rawScope === "full" || rawScope === "none"
-        ? rawScope
-        : "full";
+    const scope: ProScope = isValidProScope(rawScope) ? rawScope : "full";
     const unlockedItems = Array.isArray(parsed.unlockedItems)
       ? parsed.unlockedItems.filter((item): item is string => isValidProItemKey(item))
       : [];
@@ -296,7 +390,7 @@ export function readRequestedProScope(storage: StorageLike, deviceId: string): P
   try {
     const parsed = JSON.parse(raw) as { deviceId?: string; scope?: string };
     if (parsed.deviceId !== deviceId) return null;
-    if (parsed.scope === "languages" || parsed.scope === "departments" || parsed.scope === "full") {
+    if (isValidProScope(parsed.scope) && parsed.scope !== "none") {
       return parsed.scope;
     }
     return null;
@@ -330,20 +424,42 @@ export function mergeProScope(existing: ProScope | null, next: ProScope): ProSco
   if (!existing || existing === "none") return next;
   if (next === "none") return existing;
   if (existing === "full" || next === "full") return "full";
-  if (existing !== next) return "full";
-  return existing;
+  if ((existing === "languages" && next === "departments") || (existing === "departments" && next === "languages")) {
+    return "full";
+  }
+  return existing === next ? existing : next;
 }
 
 export function hasLanguagesAccess(ent: ProEntitlement | null, deviceId: string, now: number = Date.now()): boolean {
   if (!isEntitlementValidForDevice(ent, deviceId, now)) return false;
   const sc = ent?.scope ?? "full";
-  return sc === "languages" || sc === "full";
+  if (sc === "languages" || sc === "full") return true;
+  return Boolean(ent?.unlockedItems?.includes("stage:languages"));
+}
+
+export function hasSchoolStageAccess(ent: ProEntitlement | null, deviceId: string, now: number = Date.now()): boolean {
+  if (!isEntitlementValidForDevice(ent, deviceId, now)) return false;
+  const sc = ent?.scope ?? "full";
+  if (sc === "school" || sc === "full") return true;
+  return Boolean(ent?.unlockedItems?.includes("stage:school"));
+}
+
+export function hasJusStageAccess(ent: ProEntitlement | null, deviceId: string, now: number = Date.now()): boolean {
+  if (!isEntitlementValidForDevice(ent, deviceId, now)) return false;
+  const sc = ent?.scope ?? "full";
+  if (sc === "jus" || sc === "full") return true;
+  return Boolean(ent?.unlockedItems?.includes("stage:jus"));
+}
+
+export function hasUniversityStageAccess(ent: ProEntitlement | null, deviceId: string, now: number = Date.now()): boolean {
+  if (!isEntitlementValidForDevice(ent, deviceId, now)) return false;
+  const sc = ent?.scope ?? "full";
+  if (sc === "university" || sc === "departments" || sc === "full") return true;
+  return Boolean(ent?.unlockedItems?.includes("stage:university"));
 }
 
 export function hasDepartmentsAccess(ent: ProEntitlement | null, deviceId: string, now: number = Date.now()): boolean {
-  if (!isEntitlementValidForDevice(ent, deviceId, now)) return false;
-  const sc = ent?.scope ?? "full";
-  return sc === "departments" || sc === "full";
+  return hasUniversityStageAccess(ent, deviceId, now);
 }
 
 export function hasUnlockedItem(
@@ -363,7 +479,7 @@ export function hasSchoolSubjectAccess(
   subjectId: string,
   now: number = Date.now()
 ): boolean {
-  if (hasDepartmentsAccess(ent, deviceId, now)) return true;
+  if (hasSchoolStageAccess(ent, deviceId, now)) return true;
   return hasUnlockedItem(ent, deviceId, `school:${subjectId}`, now);
 }
 
@@ -373,7 +489,7 @@ export function hasBridgeExamAccess(
   examId: string,
   now: number = Date.now()
 ): boolean {
-  if (hasDepartmentsAccess(ent, deviceId, now)) return true;
+  if (hasJusStageAccess(ent, deviceId, now)) return true;
   return hasUnlockedItem(ent, deviceId, `bridge:${examId}`, now);
 }
 
@@ -450,12 +566,11 @@ export function syncServerEntitlement(
     const validItems = Array.from(
       new Set((server.unlockedItems ?? []).filter((item): item is string => isValidProItemKey(item)))
     );
-    const resolvedScope: ProScope =
-      server.scope === "full" || server.scope === "departments" || server.scope === "languages" || server.scope === "none"
-        ? server.scope
-        : validItems.length > 0
-        ? "none"
-        : "departments";
+    const resolvedScope: ProScope = isValidProScope(server.scope)
+      ? server.scope
+      : validItems.length > 0
+      ? "none"
+      : "departments";
 
     const unsignedEnt: Omit<ProEntitlement, "sig"> = {
       deviceId,
@@ -654,8 +769,8 @@ export function buildProWatermarkTileDataUri(stamp: string): string {
 }
 
 export const PRO_PERSONAL_REMINDER = {
-  title: "Xasuusin Muhiim ah · Qalabkaaga Keliya (1 Qalab = 1 Arday)",
-  body: "Qeybtan Unlock+ waxay si gaar ah ugu furan tahay adiga keligaa. Fadlan ha qaadin screenshot, ha dajisan, hana la wadaagin dad kale. Arday kasta naftiisa ayuu ku furan karaa ($0.50 hal qeyb ama $1.20 dhammaan oo leh 20% qiimo dhimis ah).",
+  title: "Xasuusin · 1 Qalab = 1 Arday",
+  body: "Qeybtan Unlock+ adiga keligaa ayay kuu furan tahay. Ha qaadin screenshot hana la wadaagin dad kale; arday kasta naftiisa ayuu ku furan karaa (Rukun Asbuucle $0.25, Bille $0.50 ama Sanadle $1.50).",
 } as const;
 
 export const PAYMENT_COOLDOWN_MS = 30_000;

@@ -50,7 +50,10 @@ export function SettingsScreen({
     setTextScale,
     userName,
     setUserName,
-    proActive,
+    proAnyActive,
+    proSchoolActive,
+    proJusActive,
+    proUniversityActive,
     proLanguagesActive,
     proExpiresAt,
     deviceId,
@@ -60,6 +63,13 @@ export function SettingsScreen({
     tr,
     showToast,
   } = useApp();
+
+  const unlockedStageLabels = [
+    proSchoolActive ? "School" : null,
+    proJusActive ? "Diyaarinta JUS" : null,
+    proUniversityActive ? "University" : null,
+    proLanguagesActive ? "Luqadaha" : null,
+  ].filter(Boolean) as string[];
 
   const [nameInput, setNameInput] = useState(userName);
   const [nameError, setNameError] = useState<string | null>(null);
@@ -182,10 +192,22 @@ export function SettingsScreen({
             <div>
               <div className="text-sm font-bold flex items-center gap-2">
                 <span>{tr("Xaaladda Unlock+:")}</span>
-                <span className={proActive || proLanguagesActive ? "text-emerald-400" : "opacity-75"}>
-                  {tr(proActive || proLanguagesActive ? "Waa furan yahay" : "Waa xiran yahay")}
+                <span className={proAnyActive ? "text-emerald-400" : "opacity-75"}>
+                  {tr(proAnyActive ? "Waa furan yahay" : "Waa xiran yahay")}
                 </span>
               </div>
+              {unlockedStageLabels.length > 0 && (
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {unlockedStageLabels.map((lbl) => (
+                    <span
+                      key={lbl}
+                      className="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-400/35 text-[11px] font-bold text-emerald-400"
+                    >
+                      {lbl}
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="mt-1 text-xs font-mono opacity-70">Device ID: {shortDev}</div>
               {proExpiresAt > Date.now() && (
                 <div className="mt-1 text-xs text-emerald-400 font-semibold tabular-nums">
@@ -246,7 +268,7 @@ export function SettingsScreen({
           <div className="grid grid-cols-3 rounded-full p-1 border border-current/15 overflow-hidden gap-1">
             {(Object.keys(langNames) as Lang[]).map((code) => {
               const active = code === lang;
-              const locked = code !== "so" && !proActive;
+              const locked = code !== "so" && !proLanguagesActive;
               return (
                 <button
                   key={code}
@@ -269,10 +291,7 @@ export function SettingsScreen({
             })}
           </div>
           <p className="mt-2 text-xs opacity-70">
-            {tr("Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Unlock+ ($0.50 qeyb ama $1.20 Total · 20% Off).")}
-          </p>
-          <p className="mt-1 text-xs opacity-55">
-            {tr("Beddelka luqadda wuxuu ku celinayaa bogga hore.")}
+            {tr("Af-Soomaaligu waa bilaash. Ingiriisiga iyo Carabiga waa Unlock+ (Rukun).")}
           </p>
         </Section>
 

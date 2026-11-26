@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { faculties } from "../data/quizData";
+import { form4Subjects } from "../data/schoolForm4Data";
+import { bridgeSubjects } from "../data/bridgingPrepData";
 import { PRO_BILLING_PLANS, type ProBillingCycle } from "../lib/proSecurity";
 import { ProContentShield } from "../components/ProContentShield";
 import { ProRoadmapsExplorer } from "../components/ProHubContent";
@@ -760,6 +762,8 @@ export function ProHubScreen({
                             ? "Kaalmaha Sare ee School Form 4"
                             : "Kaalmaha Sare ee Diyaarinta JUS"
                         }
+                        subjects={rankingScope === "school" ? form4Subjects : bridgeSubjects}
+                        proActive={proActive}
                         onUnlock={() => onOpenPaywall(selectedCycle)}
                       />
                     </div>
