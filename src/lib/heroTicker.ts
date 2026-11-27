@@ -145,11 +145,11 @@ export const baseHeroSlides: HeroTickerSlide[] = [
   },
   {
     id: "roadmaps_skills",
-    tag: { so: "Xirfado", en: "Skills", ar: "مهارات" },
+    tag: { so: "Suuqa & Khariidadaha", en: "Career Market", ar: "سوق العمل" },
     text: {
-      so: "AI, Video Editing, Design & Khariidadaha",
-      en: "AI, Video Editing, Design & Career Roadmaps",
-      ar: "الذكاء الاصطناعي والمونتاج والتصميم",
+      so: "Khariidadaha Kulliyadaha & Warbixinta Suuqa Shaqada 2030",
+      en: "Faculty Career Roadmaps & 2030 Job Market Outlook",
+      ar: "خارطة طريق الكليات وتوقعات سوق العمل ٢٠٣٠",
     },
     accent: "sky",
   },

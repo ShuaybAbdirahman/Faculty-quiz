@@ -115,11 +115,8 @@ export function PredictRankingBoard({
 
         <div className="space-y-2">
           <h3 className="font-head font-extrabold text-xl sm:text-2xl text-white leading-snug">
-            Arag Kaalmaha Sare &amp; Natiijooyinka Ardayda
+            Kaalmaha Sare &amp; Natiijooyinka Ardayda
           </h3>
-          <p className="text-sm text-white/80 leading-relaxed">
-            Qof kasta oo furta HIRAAL Pro (Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00) wuxuu arki karaa kaalinta uu kaga jiro imtixaanka Predict Exam, magacyada ardayda ugu sarreysa, dhibcaha, iyo waqtiga ay ku dhameeyeen.
-          </p>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-2.5">
@@ -147,13 +144,8 @@ export function PredictRankingBoard({
           className="w-full h-[52px] rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-[15px] flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
         >
           <LockOpen className="w-4 h-4" />
-          <span>Fur HIRAAL Pro (laga bilaabo $0.50)</span>
+          <span>Fur Qeybtan ($0.25+)</span>
         </button>
-
-        <div className="flex items-center justify-center gap-1.5 text-[11.5px] text-white/65">
-          <Lock className="w-3.5 h-3.5 text-[#FFD86B]" />
-          <span>Magacyada iyo dhibcaha ardayda waxaa fura HIRAAL Pro keliya</span>
-        </div>
       </section>
     );
   }
@@ -223,9 +215,6 @@ export function PredictRankingBoard({
             <h4 className="font-head font-extrabold text-lg sm:text-xl text-white">
               Weli Natiijo Laguma Soo Gudbin
             </h4>
-            <p className="text-xs sm:text-sm text-white/75 max-w-md mx-auto leading-relaxed">
-              Marka su'aalaha PDF-ka la soo geliyo oo ardaydu dhammeeyaan Predict Exam-ka, kaalmaha 1aad, 2aad, 3aad iyo dhammaan ardayda ugu cadcad si toos ah ayay halkan uga soo muuqanayaan.
-            </p>
           </div>
         ) : (
           <div className="space-y-4">

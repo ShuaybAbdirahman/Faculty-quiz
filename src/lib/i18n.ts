@@ -8,11 +8,12 @@ export const langNames: Record<Lang, string> = {
 };
 
 export function detectInitialLang(): Lang {
-  const saved = localStorage.getItem("lang") as Lang | null;
-  if (saved && saved in langNames) return saved;
-  const nav = (navigator.language || "so").toLowerCase();
-  if (nav.startsWith("ar")) return "ar";
-  if (nav.startsWith("en")) return "en";
+  try {
+    const saved = localStorage.getItem("lang") as Lang | null;
+    if (saved && saved in langNames) return saved;
+  } catch {
+    // ignore storage errors
+  }
   return "so";
 }
 

@@ -1167,21 +1167,21 @@ export const uiTranslations: Record<string, [string, string]> = {
     "Opportunity in Somalia:",
     "الفرصة في الصومال:"
   ],
-  "Xirfadaha Dakhliga Sare (Baro Adigoo Arday ah)": [
-    "High-Income Skills (Learn as a Student)",
-    "المهارات عالية الدخل (تعلّمها وأنت طالب)"
+  "Xirfadaha Dakhliga Sare (Suuqa Shaqada)": [
+    "High-Demand Fields (Career Market Reference)",
+    "المجالات عالية الطلب (مرجع سوق العمل)"
   ],
-  "Xirfadaha Lacagta Laga Sameeyo (Video Editing, Design, Web & AI)": [
-    "Monetizable Digital Skills (Video Editing, Design, Web & AI)",
-    "مهارات رقمية مربحة (مونتاج الفيديو، التصميم، الويب وAI)"
+  "Qeybaha Loogu Baahida Badan Yahay (Video, Design, Web & AI)": [
+    "Most In-Demand Fields (Video Editing, Design, Web & AI)",
+    "المجالات الأكثر طلباً (مونتاج الفيديو، التصميم، الويب وAI)"
   ],
-  "Xirfado waxtar leh oo aad barbar baran karto jaamacadda, adigoo adeegsanaya koorsooyin bilaash ah oo rasmi ah si aad dakhli ugu samayso gudaha Soomaaliya iyo caalamkaba.": [
-    "Practical skills you can learn alongside university using official free courses to earn income locally and globally.",
-    "مهارات عملية يمكنك تعلمها بجانب الجامعة عبر دورات مجانية رسمية لتحقيق دخل محلياً وعالمياً."
+  "Xogta suuqa shaqada, heerarka bilowga ah, iyo ilaha tixraaca ee dibadda.": [
+    "Career market reference data, 30-day orientation plans, and external resources.",
+    "مرجع سوق العمل وخطط التوجيه لـ 30 يوماً والمصادر الخارجية."
   ],
-  "Fur Pro si aad u aragto qorshaha 30-ka maalmood, sida lacag looga sameeyo, iyo koorsada bilaashka ah.": [
-    "Unlock Pro to view the 30-day roadmap, monetization steps, and official free course.",
-    "فعّل Pro لعرض خطة 30 يوماً وطرق تحقيق الدخل والدورة المجانية الرسمية."
+  "Fur Pro si aad u aragto xogta suuqa shaqada iyo tixraacyada rasmiga ah.": [
+    "Unlock Pro to view the 30-day orientation data and verified external portals.",
+    "فعّل Pro لعرض بيانات التوجيه لـ 30 يوماً والمصادر الرسمية."
   ],
   "Qorshaha 30-ka Maalmood:": [
     "30-Day Starter Plan:",

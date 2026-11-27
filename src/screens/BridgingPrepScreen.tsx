@@ -40,7 +40,7 @@ export function BridgingPrepScreen({
   onUnlockBridge: (track: BridgeExamTrack) => void;
   onOpenPaywall: () => void;
 }) {
-  const { hasBridgeAccess, proJusActive, deviceId, userName } = useApp();
+  const { hasBridgeAccess, proJusActive, proLevel, hasProLevel, deviceId, userName } = useApp();
   const [section, setSection] = useState<BridgingSectionTab>(initialSection);
   const [subjectId, setSubjectId] = useState<string>(bridgeSubjects[0].id);
   const [examSubTab, setExamSubTab] = useState<"pdfs" | "predict">("pdfs");
@@ -348,13 +348,37 @@ export function BridgingPrepScreen({
 
         {section === "readiness" && (
           <div className="animate-pro-enter">
-            <ReadinessTracker locked={!proJusActive} onUnlockClick={onOpenPaywall} />
+            <ReadinessTracker
+              locked={!proJusActive}
+              maxLevel={proLevel === 0 ? 1 : proLevel}
+              onUnlockClick={onOpenPaywall}
+            />
           </div>
         )}
 
         {section === "challenges" && (
           <div className="animate-pro-enter">
-            <SomaliaChallengesHub locked={!proJusActive} onUnlockClick={onOpenPaywall} />
+            {!proJusActive ? (
+              <SomaliaChallengesHub locked={true} onUnlockClick={onOpenPaywall} />
+            ) : hasProLevel(2) ? (
+              <SomaliaChallengesHub locked={false} onUnlockClick={onOpenPaywall} />
+            ) : (
+              <div className="max-w-2xl mx-auto rounded-3xl p-6 sm:p-8 border border-emerald-400/40 bg-emerald-500/10 text-center space-y-4">
+                <div className="text-xs font-extrabold uppercase tracking-wider text-emerald-300">
+                  Heerka 2aad · Bille
+                </div>
+                <h3 className="font-head font-extrabold text-xl text-white">
+                  Caqabadaha Ardayga &amp; Xalkooda
+                </h3>
+                <button
+                  type="button"
+                  onClick={onOpenPaywall}
+                  className="px-6 py-3 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
+                >
+                  U Gudub Heerka 2
+                </button>
+              </div>
+            )}
           </div>
         )}
 

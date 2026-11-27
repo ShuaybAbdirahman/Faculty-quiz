@@ -22,9 +22,17 @@ import {
   type SubjectScoreInput,
 } from "../lib/proTools";
 
+import { type ProBillingCycle, type ProLevel } from "../lib/proSecurity";
+
 const STORAGE_STUDY_KEY = "hk_pro_weekly_study_v1";
 
-export function ProStudentTools() {
+export function ProStudentTools({
+  proLevel = 3,
+  onUpgrade,
+}: {
+  proLevel?: ProLevel;
+  onUpgrade?: (cycle: ProBillingCycle) => void;
+} = {}) {
   const { darkMode } = useApp();
   const [subTab, setSubTab] = useState<"gpa" | "planner" | "interview">("gpa");
 
@@ -151,9 +159,6 @@ export function ProStudentTools() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="font-head font-bold text-lg">Geli Dhibcahaaga Qiyaasta ah</h3>
-                <p className={`text-xs mt-0.5 ${mutedCls}`}>
-                  Ku tijaabi dhibcaha Form 4 ama imtixaanka gelitaanka si aad u aragto kulliyadaha kuu furmaya.
-                </p>
               </div>
               <div
                 className={`inline-flex p-1 rounded-lg border ${
@@ -256,54 +261,69 @@ export function ProStudentTools() {
           <div className={`lg:col-span-8 rounded-2xl p-5 sm:p-6 border ${cardCls} space-y-4`}>
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <div>
-                <h3 className="font-head font-bold text-lg">Jadwalka Toddobaadlaha ee Ardayga Sare</h3>
-                <p className={`text-xs mt-0.5 ${mutedCls}`}>
-                  Calaamadee maalin kasta marka aad dhammayso wax-akhriskaaga.
-                </p>
+                <h3 className="font-head font-bold text-lg">Jadwalka Toddobaadlaha</h3>
               </div>
               <span className="text-xs font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
-                {doneDaysCount}/{WEEKLY_STUDY_BLUEPRINT.length} Maalmood
+                {proLevel >= 2 ? `${doneDaysCount}/${WEEKLY_STUDY_BLUEPRINT.length} Maalmood` : "Heerka 2 · Bille"}
               </span>
             </div>
 
-            <div className="space-y-2.5">
-              {WEEKLY_STUDY_BLUEPRINT.map((block) => {
-                const done = Boolean(completedDays[block.id]);
-                return (
+            {proLevel < 2 ? (
+              <div className={`rounded-xl p-5 border text-center space-y-3 ${subtleSurface}`}>
+                <div className="text-xs font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                  Heerka 2aad · Bille
+                </div>
+                <div className="font-head font-bold text-base">Jadwalka Toddobaadlaha</div>
+                {onUpgrade && (
                   <button
-                    key={block.id}
                     type="button"
-                    onClick={() => toggleDay(block.id)}
-                    className={`w-full text-start rounded-xl p-4 border transition-colors cursor-pointer flex items-start gap-3 ${
-                      done
-                        ? "bg-emerald-50 dark:bg-emerald-500/12 border-emerald-300 dark:border-emerald-400/35"
-                        : `${subtleSurface} hover:border-blue-400 dark:hover:border-white/25`
-                    }`}
+                    onClick={() => onUpgrade("monthly")}
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-head font-bold text-xs cursor-pointer"
                   >
-                    <span
-                      className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 border ${
+                    U Gudub Heerka 2
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {WEEKLY_STUDY_BLUEPRINT.map((block) => {
+                  const done = Boolean(completedDays[block.id]);
+                  return (
+                    <button
+                      key={block.id}
+                      type="button"
+                      onClick={() => toggleDay(block.id)}
+                      className={`w-full text-start rounded-xl p-4 border transition-colors cursor-pointer flex items-start gap-3 ${
                         done
-                          ? "bg-emerald-600 border-emerald-600 text-white"
-                          : "border-slate-300 dark:border-white/30"
+                          ? "bg-emerald-50 dark:bg-emerald-500/12 border-emerald-300 dark:border-emerald-400/35"
+                          : `${subtleSurface} hover:border-blue-400 dark:hover:border-white/25`
                       }`}
                     >
-                      {done && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                    </span>
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <span className="font-head font-bold text-sm">
-                          {block.day} · {block.focus}
-                        </span>
-                        <span className={`text-xs font-semibold tabular-nums ${mutedCls}`}>
-                          {block.durationMin} daqiiqo
-                        </span>
+                      <span
+                        className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 border ${
+                          done
+                            ? "bg-emerald-600 border-emerald-600 text-white"
+                            : "border-slate-300 dark:border-white/30"
+                        }`}
+                      >
+                        {done && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                      </span>
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <span className="font-head font-bold text-sm">
+                            {block.day} · {block.focus}
+                          </span>
+                          <span className={`text-xs font-semibold tabular-nums ${mutedCls}`}>
+                            {block.durationMin} daqiiqo
+                          </span>
+                        </div>
+                        <p className={`text-xs leading-relaxed ${mutedCls}`}>{block.tip}</p>
                       </div>
-                      <p className={`text-xs leading-relaxed ${mutedCls}`}>{block.tip}</p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Pomodoro Study Focus Timer */}
@@ -312,10 +332,6 @@ export function ProStudentTools() {
               <Timer className="w-5 h-5 text-blue-600 dark:text-amber-400" />
               <h3 className="font-head font-bold text-lg">Saacadda Diiradda (25m)</h3>
             </div>
-
-            <p className={`text-xs leading-relaxed ${mutedCls}`}>
-              25 daqiiqo oo akhris buuxa ah adigoon eegin baraha bulshada, kadibna 5 daqiiqo oo nasasho ah.
-            </p>
 
             <div className={`rounded-2xl py-6 px-4 border text-center ${subtleSurface}`}>
               <div className="font-head font-extrabold text-4xl sm:text-5xl tabular-nums tracking-tight">
@@ -356,32 +372,50 @@ export function ProStudentTools() {
       )}
 
       {subTab === "interview" && (
-        <div className="space-y-4">
-          {PRO_INTERVIEW_PREP.map((item, idx) => (
-            <article key={item.id} className={`rounded-2xl p-5 sm:p-6 border ${cardCls} space-y-3`}>
-              <div className="flex items-start gap-3">
-                <span className="w-7 h-7 rounded-lg bg-blue-600/12 dark:bg-amber-400/15 text-blue-600 dark:text-amber-400 font-head font-bold text-xs flex items-center justify-center shrink-0 tabular-nums">
-                  0{idx + 1}
-                </span>
-                <div className="space-y-1">
-                  <h3 className="font-head font-bold text-base sm:text-lg leading-snug">
-                    {item.question}
-                  </h3>
-                  <p className={`text-xs ${mutedCls}`}>
-                    <strong>Sababta la isu weydiiyo:</strong> {item.whyAsked}
-                  </p>
+        proLevel < 3 ? (
+          <div className={`rounded-2xl p-6 sm:p-8 border text-center space-y-3 ${cardCls}`}>
+            <div className="text-xs font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+              Heerka 3+ · Sanadle
+            </div>
+            <h3 className="font-head font-bold text-xl">Diyaarinta Wareysiga Deeqaha</h3>
+            {onUpgrade && (
+              <button
+                type="button"
+                onClick={() => onUpgrade("yearly")}
+                className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
+              >
+                U Gudub Heerka 3+
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {PRO_INTERVIEW_PREP.map((item, idx) => (
+              <article key={item.id} className={`rounded-2xl p-5 sm:p-6 border ${cardCls} space-y-3`}>
+                <div className="flex items-start gap-3">
+                  <span className="w-7 h-7 rounded-lg bg-blue-600/12 dark:bg-amber-400/15 text-blue-600 dark:text-amber-400 font-head font-bold text-xs flex items-center justify-center shrink-0 tabular-nums">
+                    0{idx + 1}
+                  </span>
+                  <div className="space-y-1">
+                    <h3 className="font-head font-bold text-base sm:text-lg leading-snug">
+                      {item.question}
+                    </h3>
+                    <p className={`text-xs ${mutedCls}`}>
+                      <strong>Sababta la isu weydiiyo:</strong> {item.whyAsked}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className={`rounded-xl p-3.5 border ${subtleSurface} flex items-start gap-2.5 text-sm leading-relaxed`}>
-                <BookCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-emerald-700 dark:text-emerald-400">Qaabka Jawaabta Guusha: </strong>
-                  <span>{item.winningAnswerTip}</span>
+                <div className={`rounded-xl p-3.5 border ${subtleSurface} flex items-start gap-2.5 text-sm leading-relaxed`}>
+                  <BookCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-emerald-700 dark:text-emerald-400">Qaabka Jawaabta Guusha: </strong>
+                    <span>{item.winningAnswerTip}</span>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )
       )}
     </section>
   );

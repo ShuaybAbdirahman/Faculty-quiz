@@ -27,6 +27,7 @@ import {
   type ReadinessPhase,
 } from "../data/proHubData";
 import { useApp } from "../context/AppContext";
+import type { ProLevel } from "../lib/proSecurity";
 import { ProBadge, ProgressRing } from "./ModernUI";
 
 const STORAGE_ROADMAP_PROGRESS = "hk_pro_roadmap_done_v1";
@@ -115,11 +116,6 @@ export function ProRoadmapsExplorer({
                 {tr("Khariidadaha Kulliyadaha (La Hubiyay)")}
               </h2>
             </div>
-            <p className="mt-1 text-xs text-white/75 leading-relaxed">
-              {tr(
-                "Khariidado tallaabo-tallaabo ah oo ku salaysan halbeegyada caalamiga ah (roadmap.sh, IEEE, ABET, WHO). Calaamadee xirfadaha aad barato."
-              )}
-            </p>
           </div>
           {!locked && (
             <div className="flex items-center gap-2.5 bg-white/8 border border-white/15 rounded-2xl px-3.5 py-2">
@@ -229,18 +225,13 @@ export function ProRoadmapsExplorer({
 
                 {isStageLocked ? (
                   <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
-                    <p className="text-xs text-white/65">
-                      {tr(
-                        "Fur HIRAAL Pro (Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00) si aad u aragto xirfadaha, qalabka, iyo mashruuca marxaladdan."
-                      )}
-                    </p>
                     {onUnlockClick && (
                       <button
                         type="button"
                         onClick={onUnlockClick}
                         className="px-4 py-2 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
                       >
-                        {tr("Fur HIRAAL Pro (laga bilaabo $0.50)")}
+                        {tr("Fur University ($0.25+)")}
                       </button>
                     )}
                   </div>
@@ -393,11 +384,6 @@ export function SomaliaChallengesHub({
               {tr("Caqabadaha Ardayga Soomaaliya iyo Xalkooda")}
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-white/75 leading-relaxed">
-            {tr(
-              "Hage dhab ah oo leh khaladaadka la baaqsado, qoraalka wadahadalka waalidka, iyo su'aalaha jaamacadda."
-            )}
-          </p>
         </div>
 
         {locked ? (
@@ -408,7 +394,7 @@ export function SomaliaChallengesHub({
               className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs inline-flex items-center gap-1.5 cursor-pointer transition-colors"
             >
               <LockOpen className="w-4 h-4" />
-              <span>{tr("Fur HIRAAL Pro (laga bilaabo $0.50)")}</span>
+              <span>{tr("Fur Diyaarinta ($0.25+)")}</span>
             </button>
           )
         ) : (
@@ -420,15 +406,10 @@ export function SomaliaChallengesHub({
 
       {locked && (
         <div className="rounded-2xl p-4 sm:p-5 border border-[#FFC93C]/40 bg-[#FFC93C]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <Lock className="w-5 h-5 text-[#FFD86B] shrink-0 mt-0.5" />
-            <div className="space-y-0.5">
-              <div className="font-head font-extrabold text-sm text-white">
-                Qeybta Xalka Caqabadaha &amp; Qalabka Ficilka (HIRAAL Pro Keliya)
-              </div>
-              <p className="text-xs text-white/80 leading-relaxed">
-                Fur HIRAAL Pro (Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00) si aad u hesho xalka tallaabo-tallaabo, khaladaadka la baaqsado, qoraalka wadahadalka waalidka, iyo su'aalaha xafiiska jaamacadda.
-              </p>
+          <div className="flex items-center gap-3">
+            <Lock className="w-5 h-5 text-[#FFD86B] shrink-0" />
+            <div className="font-head font-extrabold text-sm text-white">
+              Xalka Caqabadaha · Diyaarinta Heerka 2+
             </div>
           </div>
           {onUnlockClick && (
@@ -437,7 +418,7 @@ export function SomaliaChallengesHub({
               onClick={onUnlockClick}
               className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
             >
-              {tr("Fur HIRAAL Pro (laga bilaabo $0.50)")}
+              {tr("Fur Diyaarinta ($0.25+)")}
             </button>
           )}
         </div>
@@ -574,11 +555,19 @@ const READINESS_PHASES: ("all" | ReadinessPhase)[] = [
   "61-90 Maalmood",
 ];
 
+function requiredLevelForPhase(phase: ReadinessPhase): ProLevel {
+  if (phase === "1-30 Maalmood") return 1;
+  if (phase === "31-60 Maalmood") return 2;
+  return 3;
+}
+
 export function ReadinessTracker({
   locked = false,
+  maxLevel = 3,
   onUnlockClick,
 }: {
   locked?: boolean;
+  maxLevel?: ProLevel;
   onUnlockClick?: () => void;
 }) {
   const { tr } = useApp();
@@ -595,8 +584,8 @@ export function ReadinessTracker({
   const doneCount = readinessChecklist.filter((it) => Boolean(checkedMap[it.id])).length;
   const pct = locked ? 0 : Math.round((doneCount / readinessChecklist.length) * 100);
 
-  const toggle = (id: string) => {
-    if (locked) {
+  const toggle = (id: string, itemLocked: boolean) => {
+    if (locked || itemLocked) {
       onUnlockClick?.();
       return;
     }
@@ -617,11 +606,6 @@ export function ReadinessTracker({
               {tr("Diyaargarowga Jaamacadda (90 Maalmood)")}
             </h2>
           </div>
-          <p className="mt-1 text-xs sm:text-sm text-white/75 leading-relaxed">
-            {tr(
-              "12 tallaabo oo u qaybsan 3 marxaladood (Maalinta 1 ilaa 90) oo leh Sirta HIRAAL si aad jaamacadaha iyo imtixaannada gelitaanka ugu gasho kalsooni buuxda."
-            )}
-          </p>
         </div>
 
         <ProgressRing
@@ -639,15 +623,10 @@ export function ReadinessTracker({
 
       {locked ? (
         <div className="rounded-2xl p-4 sm:p-5 border border-[#FFC93C]/45 bg-[#FFC93C]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <Lock className="w-5 h-5 text-[#FFD86B] shrink-0 mt-0.5" />
-            <div className="space-y-0.5">
-              <div className="font-head font-extrabold text-sm text-white">
-                Qorshaha Buuxa ee 90-ka Maalmood (HIRAAL Pro Keliya)
-              </div>
-              <p className="text-xs text-white/80 leading-relaxed">
-                Fur HIRAAL Pro (Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00) si aad u furto dhammaan 12-ka tallaabo, xisaabiyaha horumarka, iyo Sirta HIRAAL ee marxalad kasta.
-              </p>
+          <div className="flex items-center gap-3">
+            <Lock className="w-5 h-5 text-[#FFD86B] shrink-0" />
+            <div className="font-head font-extrabold text-sm text-white">
+              90-Maalmood · Diyaarinta ($0.25+)
             </div>
           </div>
           {onUnlockClick && (
@@ -656,7 +635,7 @@ export function ReadinessTracker({
               onClick={onUnlockClick}
               className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer"
             >
-              {tr("Fur HIRAAL Pro (laga bilaabo $0.50)")}
+              {tr("Fur Diyaarinta ($0.25+)")}
             </button>
           )}
         </div>
@@ -691,21 +670,23 @@ export function ReadinessTracker({
 
       <div className="grid sm:grid-cols-2 gap-3">
         {(locked ? readinessChecklist.slice(0, 6) : visibleItems).map((item) => {
-          const checked = !locked && Boolean(checkedMap[item.id]);
+          const itemReqLevel = requiredLevelForPhase(item.phase);
+          const itemLocked = locked || maxLevel < itemReqLevel;
+          const checked = !itemLocked && Boolean(checkedMap[item.id]);
           return (
             <button
               key={item.id}
               type="button"
-              onClick={() => toggle(item.id)}
+              onClick={() => toggle(item.id, itemLocked)}
               className={`text-start rounded-2xl p-4 border transition-all cursor-pointer flex items-start gap-3 ${
-                locked
+                itemLocked
                   ? "bg-[#091233]/75 border-white/12 hover:border-[#FFC93C]/45"
                   : checked
                   ? "bg-emerald-500/15 border-emerald-400/40"
                   : "bg-[#091233]/80 border-white/15 hover:border-white/30"
               }`}
             >
-              {locked ? (
+              {itemLocked ? (
                 <span className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5 border border-[#FFC93C]/40 bg-[#FFC93C]/12 text-[#FFD86B]">
                   <Lock className="w-3.5 h-3.5" />
                 </span>
@@ -725,7 +706,12 @@ export function ReadinessTracker({
                   <span>{item.phase}</span>
                   <span className="text-white/35" aria-hidden="true">·</span>
                   <span className="text-[#BAE6FD]">{item.category}</span>
-                  {!locked && (
+                  {itemLocked ? (
+                    <>
+                      <span className="text-white/35" aria-hidden="true">·</span>
+                      <span className="text-[#FFD86B]">Heerka {itemReqLevel}</span>
+                    </>
+                  ) : (
                     <>
                       <span className="text-white/35" aria-hidden="true">·</span>
                       <span className="text-white/65">{item.timeEstimate}</span>
@@ -739,9 +725,11 @@ export function ReadinessTracker({
                 >
                   {item.title}
                 </div>
-                {locked ? (
+                {itemLocked ? (
                   <p className="text-[11.5px] text-[#FFE599]/80 mt-1">
-                    {tr("Fur HIRAAL Pro si aad u aragto faahfaahinta iyo Sirta HIRAAL.")}
+                    {locked
+                      ? tr("Fur Diyaarinta ($0.25+)")
+                      : `U Gudub Heerka ${itemReqLevel === 2 ? "2 (Bille)" : "3+ (Sanadle)"}`}
                   </p>
                 ) : (
                   <>
@@ -770,21 +758,16 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
           "linear-gradient(135deg, rgba(255,201,60,0.16) 0%, rgba(59,91,219,0.22) 55%, rgba(168,85,247,0.16) 100%)",
       }}
     >
-      <div className="space-y-1.5 min-w-0">
+      <div className="space-y-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <ProBadge small />
           <span className="text-xs font-extrabold text-[#FFD86B]">
-            {tr("Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00")}
+            {tr("Asbuucle $0.25 · Bille $0.50 · Sanadle $1.50")}
           </span>
         </div>
         <h3 className="font-head font-extrabold text-[17px] sm:text-lg text-white leading-snug">
-          {tr("Fur dhammaan Qalabka Ardayga, Khariidadaha, Jaamacadaha iyo Hagaha Waaxda")}
+          {tr("Qalabka Ardayga, Jaamacadaha, Suuqa Shaqada & Hagaha Waaxda")}
         </h3>
-        <p className="text-xs text-white/80 leading-relaxed">
-          {tr(
-            "Dooro xirmada kugu habboon (7 maalmood, 30 maalmood, ama 1 sano). Lambarka lacag bixinta waxaa la furaa tallaabooyinka dambe ee xaqiijinta ardayga."
-          )}
-        </p>
       </div>
       <button
         type="button"
@@ -792,7 +775,7 @@ export function ProUnlockPromoBanner({ onUnlock }: { onUnlock: () => void }) {
         className="shrink-0 px-5 py-3 rounded-2xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-sm inline-flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-md"
       >
         <CheckCircle2 className="w-4 h-4" />
-        <span>{tr("Fur HIRAAL Pro")}</span>
+        <span>{tr("Fur University ($0.25+)")}</span>
       </button>
     </div>
   );

@@ -540,9 +540,9 @@ export const highIncomeSkills: HighIncomeSkill[] = [
       ar: "الإبداع والإعلام",
     },
     whyNow: {
-      so: "Ganacsi kasta, macallin kasta, iyo YouTuber kasta wuxuu u baahan yahay muuqaallo tayo leh (Reels, TikTok, YouTube). Waa xirfadda ugu dhaqsaha badan ee arday jaamacadeed lacag kaga samayn karo 60 maalmood gudahood.",
-      en: "Every business, educator, and creator needs high-retention Reels, Shorts, and YouTube videos. It is one of the fastest skills a student can monetize within 60 days.",
-      ar: "كل شركة وصانع محتوى يحتاج إلى فيديوهات احترافية. إنها من أسرع المهارات التي يمكن للطالب تحقيق دخل منها خلال 60 يوماً.",
+      so: "Ganacsiyada, macallimiinta, iyo kanaallada warbaahintu waxay u baahan yihiin muuqaallo tayo leh (Reels, TikTok, YouTube), taasoo ka dhigtay qeyb shaqo oo si degdeg ah u kobcaysa.",
+      en: "Every business, educator, and media channel needs high-retention Reels, Shorts, and YouTube videos, making this a fast-growing career field.",
+      ar: "كل شركة وصانع محتوى يحتاج إلى فيديوهات احترافية، مما يجعل هذا المجال من أسرع مجالات العمل نمواً.",
     },
     tools: ["DaVinci Resolve (Bilaash)", "CapCut Desktop", "Adobe Premiere Pro"],
     monthPlan: [

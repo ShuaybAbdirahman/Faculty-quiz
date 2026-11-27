@@ -6,10 +6,12 @@ import { backendEnabled } from "../lib/config";
 import {
   canUseLanguage,
   clearStoredEntitlement,
+  getActiveProLevel,
   getOrCreateSecureDeviceId,
   hasBridgeExamAccess,
   hasJusStageAccess,
   hasLanguagesAccess,
+  hasProLevelAccess,
   hasSchoolStageAccess,
   hasSchoolSubjectAccess,
   hasUniversityStageAccess,
@@ -20,6 +22,7 @@ import {
   writeStoredEntitlement,
   type ProEntitlement,
   type ProItemKey,
+  type ProLevel,
   type ProScope,
 } from "../lib/proSecurity";
 
@@ -60,10 +63,12 @@ interface AppContextValue {
   proUniversityActive: boolean;
   proLanguagesActive: boolean;
   proDepartmentsActive: boolean;
+  proLevel: ProLevel | 0;
+  hasProLevel: (required: ProLevel) => boolean;
   hasSchoolAccess: (subjectId: string) => boolean;
   hasBridgeAccess: (examId: string) => boolean;
   proExpiresAt: number;
-  setProUntil: (ms: number, scope?: ProScope, itemKey?: ProItemKey) => void;
+  setProUntil: (ms: number, scope?: ProScope, itemKey?: ProItemKey, level?: ProLevel) => void;
   refreshPro: () => Promise<boolean>;
   deviceId: string;
   resetDeviceSession: () => void;
@@ -98,7 +103,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     proUniversityActive ||
     proLanguagesActive ||
     (entitlement?.unlockedItems?.length ?? 0) > 0;
+  const proLevel = getActiveProLevel(entitlement, deviceId);
   const proExpiresAt = proAnyActive && entitlement ? entitlement.expiresAt : 0;
+
+  const hasProLevel = useCallback(
+    (required: ProLevel) => hasProLevelAccess(entitlement, deviceId, required),
+    [entitlement, deviceId]
+  );
 
   const hasSchoolAccess = useCallback(
     (subjectId: string) => hasSchoolSubjectAccess(entitlement, deviceId, subjectId),
@@ -188,8 +199,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setProUntil = useCallback(
-    (ms: number, scope?: ProScope, itemKey?: ProItemKey) => {
-      const saved = writeStoredEntitlement(localStorage, deviceId, ms, Date.now(), scope, itemKey);
+    (ms: number, scope?: ProScope, itemKey?: ProItemKey, level?: ProLevel) => {
+      const saved = writeStoredEntitlement(localStorage, deviceId, ms, Date.now(), scope, itemKey, level);
       setEntitlement(saved);
     },
     [deviceId]
@@ -297,6 +308,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       proUniversityActive,
       proLanguagesActive,
       proDepartmentsActive,
+      proLevel,
+      hasProLevel,
       hasSchoolAccess,
       hasBridgeAccess,
       proExpiresAt,
@@ -334,6 +347,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       proUniversityActive,
       proLanguagesActive,
       proDepartmentsActive,
+      proLevel,
+      hasProLevel,
       hasSchoolAccess,
       hasBridgeAccess,
       proExpiresAt,

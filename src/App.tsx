@@ -72,7 +72,7 @@ function AppShell() {
     if (verified) {
       push({ name: "pro_guide", faculty, outcome });
     } else {
-      push({ name: "pro_paywall", faculty, outcome, plan: "total" });
+      push({ name: "pro_paywall", faculty, outcome, plan: "university" });
     }
   };
 
@@ -91,7 +91,7 @@ function AppShell() {
         setStack([{ name: "home" }, { name: "faculty_home" }]);
         break;
       case "pro_hub":
-        setStack([{ name: "home" }, { name: "pro_hub", tab: "tools" }]);
+        setStack([{ name: "home" }, { name: "pro_hub" }]);
         break;
     }
   };
@@ -135,7 +135,7 @@ function AppShell() {
           onOpenPaywall={() =>
             push({
               name: "pro_paywall",
-              plan: "total",
+              plan: "school",
               returnTo: "school",
             })
           }
@@ -158,7 +158,7 @@ function AppShell() {
           onOpenPaywall={() =>
             push({
               name: "pro_paywall",
-              plan: "total",
+              plan: "jus",
               returnTo: "bridging",
             })
           }
@@ -176,7 +176,7 @@ function AppShell() {
           onOpenSettings={() => push({ name: "settings" })}
           onOpenReviews={() => push({ name: "reviews" })}
           onOpenProHub={(tab, facultyId) => push({ name: "pro_hub", tab, facultyId })}
-          onOpenPaywall={() => push({ name: "pro_paywall", plan: "total" })}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "university" })}
         />
       );
       break;
@@ -210,7 +210,7 @@ function AppShell() {
           onOpenPro={(faculty) => {
             void handleOpenPro(faculty, current.outcome);
           }}
-          onOpenPaywall={() => push({ name: "pro_paywall", plan: "total" })}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "university" })}
         />
       );
       break;
@@ -219,7 +219,7 @@ function AppShell() {
         <CompareScreen
           matches={current.outcome.matches}
           onBack={pop}
-          onOpenPaywall={() => push({ name: "pro_paywall", plan: "total" })}
+          onOpenPaywall={() => push({ name: "pro_paywall", plan: "university" })}
         />
       );
       break;
@@ -243,8 +243,12 @@ function AppShell() {
           initialTab={current.tab}
           initialFacultyId={current.facultyId}
           onBack={pop}
-          onOpenPaywall={(cycle) =>
-            push({ name: "pro_paywall", plan: "total", billing: cycle ?? "monthly" })
+          onOpenPaywall={(cycle, stagePlan) =>
+            push({
+              name: "pro_paywall",
+              plan: stagePlan ?? "university",
+              billing: cycle ?? "monthly",
+            })
           }
           onOpenDepartmentGuide={(facultyId) => {
             const f = faculties.find((item) => item.id === facultyId);
@@ -266,7 +270,7 @@ function AppShell() {
           ratings={current.outcome.ratings}
           onBack={pop}
           onLocked={() =>
-            replace({ name: "pro_paywall", faculty: current.faculty, outcome: current.outcome, plan: "total" })
+            replace({ name: "pro_paywall", faculty: current.faculty, outcome: current.outcome, plan: "university" })
           }
         />
       );
@@ -274,15 +278,15 @@ function AppShell() {
     case "pro_paywall":
       screen = (
         <ProPaywallScreen
-          initialPlan={current.plan ?? "total"}
+          initialPlan={current.plan ?? "university"}
           initialBilling={current.billing ?? "monthly"}
           initialItemKey={current.itemKey}
           onBack={pop}
-          onUnlocked={(unlockedItem) => {
-            if (current.returnTo === "school") {
+          onUnlocked={(unlockedItem, unlockedStage) => {
+            if (unlockedStage === "school" || current.returnTo === "school") {
               const sid = unlockedItem?.startsWith("school:") ? unlockedItem.slice("school:".length) : undefined;
               replace({ name: "school", subjectId: sid });
-            } else if (current.returnTo === "bridging") {
+            } else if (unlockedStage === "jus" || current.returnTo === "bridging") {
               replace({ name: "bridging", section: "exams" });
             } else if (current.faculty && current.outcome) {
               replace({ name: "pro_guide", faculty: current.faculty, outcome: current.outcome });

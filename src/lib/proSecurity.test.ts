@@ -476,3 +476,79 @@ test("tampered localStorage entitlement is rejected and purged immediately", asy
   assert.equal(validatePayTimeHHMM("29:99"), false);
   assert.equal(sanitizeCheckoutName("  Axmed <script> "), "Axmed script");
 });
+
+test("ProLevel progression binds weekly->1, monthly->2, yearly->3 and rejects tampered level", async () => {
+  const {
+    ENTITLEMENT_STORAGE_KEY,
+    getActiveProLevel,
+    getProLevelForCycle,
+    hasProLevelAccess,
+  } = await import("./proSecurity");
+  assert.equal(getProLevelForCycle("weekly"), 1);
+  assert.equal(getProLevelForCycle("monthly"), 2);
+  assert.equal(getProLevelForCycle("yearly"), 3);
+
+  const storage = createMemoryStorage();
+  const now = 1_700_000_000_000;
+  const deviceId = generateSecureDeviceId();
+
+  const lvl1 = writeStoredEntitlement(
+    storage,
+    deviceId,
+    now + 7 * 86400 * 1000,
+    now,
+    "none",
+    ["stage:school"],
+    1
+  );
+  assert.ok(lvl1);
+  assert.equal(getActiveProLevel(lvl1, deviceId, now + 1000), 1);
+  assert.equal(hasProLevelAccess(lvl1, deviceId, 1, now + 1000), true);
+  assert.equal(hasProLevelAccess(lvl1, deviceId, 2, now + 1000), false);
+  assert.equal(hasProLevelAccess(lvl1, deviceId, 3, now + 1000), false);
+
+  // Tampering level 1 -> 3 directly in storage must fail HMAC verification
+  const raw = JSON.parse(storage.getItem(ENTITLEMENT_STORAGE_KEY)!);
+  raw.level = 3;
+  storage.setItem(ENTITLEMENT_STORAGE_KEY, JSON.stringify(raw));
+  assert.equal(readStoredEntitlement(storage, deviceId, now + 1000), null);
+
+  const lvl3 = writeStoredEntitlement(
+    storage,
+    deviceId,
+    now + 365 * 86400 * 1000,
+    now,
+    "full",
+    undefined,
+    3
+  );
+  assert.ok(lvl3);
+  assert.equal(getActiveProLevel(lvl3, deviceId, now + 1000), 3);
+  assert.equal(hasProLevelAccess(lvl3, deviceId, 2, now + 1000), true);
+  assert.equal(hasProLevelAccess(lvl3, deviceId, 3, now + 1000), true);
+});
+
+test("detectInitialLang always defaults to Somali unless en or ar was explicitly saved", async () => {
+  const { detectInitialLang } = await import("./i18n");
+  const prevStorage = (globalThis as { localStorage?: unknown }).localStorage;
+  const store = new Map<string, string>();
+  (globalThis as { localStorage: unknown }).localStorage = {
+    getItem: (k: string) => store.get(k) ?? null,
+    setItem: (k: string, v: string) => store.set(k, v),
+    removeItem: (k: string) => store.delete(k),
+  };
+  try {
+    assert.equal(detectInitialLang(), "so");
+    store.set("lang", "en");
+    assert.equal(detectInitialLang(), "en");
+    store.set("lang", "ar");
+    assert.equal(detectInitialLang(), "ar");
+  } finally {
+    if (prevStorage === undefined) {
+      delete (globalThis as { localStorage?: unknown }).localStorage;
+    } else {
+      (globalThis as { localStorage?: unknown }).localStorage = prevStorage;
+    }
+  }
+});
+

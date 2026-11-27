@@ -123,9 +123,6 @@ export function HomeScreen({
                 >
                   HIRAAL: <span className="text-[#FFE484]">School, Diyaarinta Jaamacadda &amp; University</span>
                 </h1>
-                <p className="text-[13.5px] sm:text-[15px] text-white/88 leading-relaxed">
-                  {tr("Ogow kulliyadda kugu habboon, imtixaannada 2027, iyo xirfadaha mustaqbalka.")}
-                </p>
               </div>
             </div>
 
@@ -199,9 +196,6 @@ export function HomeScreen({
                   <h3 className="font-head font-extrabold text-xl sm:text-2xl leading-snug text-white">
                     Form 4 (12 Maado)
                   </h3>
-                  <p className="mt-1 text-xs sm:text-[13.5px] text-white/90 leading-relaxed">
-                    12 maado (PDFs &amp; Predict), Sirta Top-10 &amp; Maaddooyinka, iyo Ranking.
-                  </p>
                 </div>
 
                 <div className="pt-2.5 border-t border-white/20 flex items-center justify-between text-xs">
@@ -247,9 +241,6 @@ export function HomeScreen({
                   <h3 className="font-head font-extrabold text-xl sm:text-2xl leading-snug text-white">
                     Diyaarinta Jaamacadda
                   </h3>
-                  <p className="mt-1 text-xs sm:text-[13.5px] text-white/90 leading-relaxed">
-                    5 maado (4 Saynis + English), imtixaannada jaamacadaha &amp; JUS, 90 maalmood &amp; Ranking.
-                  </p>
                 </div>
 
                 <div className="pt-2.5 border-t border-white/20 flex items-center justify-between gap-2 text-xs">
@@ -295,9 +286,6 @@ export function HomeScreen({
                   <h3 className="font-head font-extrabold text-xl sm:text-2xl leading-snug text-white">
                     Hagaha Kulliyadda
                   </h3>
-                  <p className="mt-1 text-xs sm:text-[13.5px] text-white/90 leading-relaxed">
-                    Imtixaanka RIASEC ee kuu soo saaraya kulliyadda kuugu habboon (SO/EN/AR).
-                  </p>
                 </div>
 
                 <div className="pt-2.5 border-t border-white/20 flex items-center justify-between text-xs">
@@ -336,7 +324,7 @@ export function HomeScreen({
                 <span className="text-xs font-extrabold text-[#FFE484] tabular-nums">Asbuucle · Bille · Sanadle</span>
               </div>
               <h3 className="font-head font-extrabold text-lg sm:text-xl leading-snug">
-                Khariidadaha, Jaamacadaha &amp; Xirfadaha
+                Khariidadaha, Jaamacadaha &amp; Suuqa Shaqada
               </h3>
             </div>
             <button

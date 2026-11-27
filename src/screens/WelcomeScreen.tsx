@@ -256,12 +256,6 @@ export function WelcomeScreen({
                 <div className="mt-2.5 w-16 h-1 rounded-full bg-[#FFD86B]" />
               </div>
 
-              <p className="text-[15px] sm:text-[16.5px] leading-relaxed text-white/85 max-w-xl">
-                {tr(
-                  "Su’aalo gaagaaban ayaa kaa caawinaya inaad garatid kulliyadda kugu habboon, adigoo ku saleynaya waxa aad jeceshahay, waxa aad bartay iyo waxa kuu muhiim ah."
-                )}
-              </p>
-
               {/* Clean Unboxed Metadata */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] font-semibold text-white/85">
                 <span className="inline-flex items-center gap-1.5">

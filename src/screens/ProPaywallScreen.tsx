@@ -3,16 +3,20 @@ import {
   AlertCircle,
   ArrowLeft,
   ArrowRight,
+  BookOpen,
   Check,
   CheckCircle2,
   Copy,
+  GraduationCap,
   KeyRound,
+  Layers,
   Loader2,
   LockKeyhole,
   MessageCircle,
   Phone,
   RefreshCw,
   ShieldCheck,
+  Target,
   UserCheck,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
@@ -31,19 +35,23 @@ import {
   EVC_PAYMENT_CONFIG,
   generateSecureEvcRef,
   getPaymentCooldownRemainingMs,
-  getProBillingPlan,
+  getProLevelForCycle,
   getRedeemCooldownRemainingMs,
+  getRukunPricing,
   maskPaymentNumber,
   normalizeProInfo,
-  PRO_BILLING_PLANS,
+  PRO_LEVEL_PLANS,
   recordPaymentAttempt,
   recordRedeemFailure,
+  RUKUN_PLANS,
   sanitizeCheckoutName,
   saveRequestedProItem,
+  saveRequestedProLevel,
   saveRequestedProScope,
   validateEvcPhone,
   type ProBillingCycle,
   type ProItemKey,
+  type ProScope,
 } from "../lib/proSecurity";
 
 interface Msg {
@@ -68,7 +76,32 @@ function errKey(code: string): string {
   }
 }
 
-export type ProPlanType = "total" | "departments" | "languages" | "school_subject" | "bridge_exam";
+export type ProPlanType =
+  | "school"
+  | "jus"
+  | "university"
+  | "total"
+  | "departments"
+  | "languages"
+  | "school_subject"
+  | "bridge_exam";
+
+export type StageChoice = "school" | "jus" | "university" | "total";
+
+function initialStageFromPlan(plan: ProPlanType): StageChoice {
+  if (plan === "school" || plan === "school_subject") return "school";
+  if (plan === "jus" || plan === "bridge_exam") return "jus";
+  if (plan === "total") return "total";
+  return "university";
+}
+
+function scopeFromPlan(stage: StageChoice, initialPlan: ProPlanType): ProScope {
+  if (stage === "total") return "full";
+  if (stage === "school") return "school";
+  if (stage === "jus") return "jus";
+  if (initialPlan === "languages") return "languages";
+  return "university";
+}
 
 function currentHHMM(): string {
   const now = new Date();
@@ -77,15 +110,50 @@ function currentHHMM(): string {
 
 const CYCLE_ORDER: ProBillingCycle[] = ["weekly", "monthly", "yearly"];
 
-const UNIFIED_PRO_BENEFITS = [
-  "Qalabka Ardayga: Xisaabiyaha Darajada & GPA, Jadwalka Toddobaadlaha & Saacadda Focus-ka",
-  "Hagaha Waaxda (70 Su'aalood), Khariidadaha Xirfadaha & Isbarbardhigga Kulliyadaha",
-  "Sirta Ardayda Top-10, Predict Exams (12 Maado Form 4 + 5 Maado Gelitaan) & Kaalmaha Sare",
-  "Jaamacadaha Soomaaliya, Shaqooyinka Mustaqbalka, Xirfadaha Dakhliga & Luqadaha (EN/AR)",
+const STAGE_BUTTONS: {
+  id: Exclude<StageChoice, "total">;
+  label: string;
+  items: string[];
+  icon: React.ComponentType<{ className?: string }>;
+  activeCls: string;
+}[] = [
+  {
+    id: "school",
+    label: "School",
+    items: [
+      "Form 4 Predict (12 Maado)",
+      "Sirta Top-10 & Maaddooyinka",
+      "Ranking (Kaalmaha Sare)",
+    ],
+    icon: BookOpen,
+    activeCls: "border-cyan-500 bg-cyan-500/15 text-cyan-800 dark:text-cyan-200 ring-1 ring-cyan-500",
+  },
+  {
+    id: "jus",
+    label: "Diyaarinta",
+    items: [
+      "5 Maado Gelitaan (Oct 2027)",
+      "Qorshaha 90 Maalmood & Caqabadaha",
+      "Ranking Gelitaanka",
+    ],
+    icon: Target,
+    activeCls: "border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-200 ring-1 ring-emerald-500",
+  },
+  {
+    id: "university",
+    label: "University",
+    items: [
+      "Qalabka Ardayga & Hagaha Waaxda",
+      "Jaamacadaha & Khariidadaha",
+      "Suuqa Shaqada & Luqadaha",
+    ],
+    icon: GraduationCap,
+    activeCls: "border-indigo-500 bg-indigo-500/15 text-indigo-800 dark:text-indigo-200 ring-1 ring-indigo-500",
+  },
 ];
 
 export function ProPaywallScreen({
-  initialPlan = "total",
+  initialPlan = "university",
   initialBilling = "monthly",
   initialItemKey,
   onBack,
@@ -95,13 +163,14 @@ export function ProPaywallScreen({
   initialBilling?: ProBillingCycle;
   initialItemKey?: ProItemKey;
   onBack: () => void;
-  onUnlocked: (unlockedItemKey?: ProItemKey) => void;
+  onUnlocked: (unlockedItemKey?: ProItemKey, unlockedStage?: StageChoice) => void;
 }) {
   const { darkMode, tr, rtl, userName, deviceId, pendingAt, setPendingAt, setProUntil, refreshPro, showToast } =
     useApp();
 
   const [info, setInfo] = useState<ProInfo>(() => normalizeProInfo());
   const [loadingInfo, setLoadingInfo] = useState(true);
+  const [stage, setStage] = useState<StageChoice>(() => initialStageFromPlan(initialPlan));
   const [cycle, setCycle] = useState<ProBillingCycle>(initialBilling);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [checkoutTab, setCheckoutTab] = useState<"evc" | "code">("evc");
@@ -129,7 +198,31 @@ export function ProPaywallScreen({
     Math.ceil(getRedeemCooldownRemainingMs(localStorage, deviceId) / 1000)
   );
 
-  const activeBilling = getProBillingPlan(cycle);
+  const isTotal = stage === "total";
+  const rukun = getRukunPricing(cycle, isTotal);
+  const selectedLevel = getProLevelForCycle(cycle);
+  const levelMeta = PRO_LEVEL_PLANS[selectedLevel];
+  const targetScope = scopeFromPlan(stage, initialPlan);
+
+  const stageLabel =
+    stage === "school"
+      ? "School"
+      : stage === "jus"
+        ? "Diyaarinta"
+        : stage === "total"
+          ? "Total (3-da Qeyb · -20%)"
+          : initialPlan === "languages"
+            ? "Luqadaha (EN/AR)"
+            : "University";
+
+  const activeItemsList =
+    stage === "total"
+      ? [
+          "School: Form 4 (12 Maado), Sirta Top-10 & Ranking",
+          "Diyaarinta: 5 Maado, 90 Maalmood & Ranking",
+          "University: Qalabka, Waaxaha, Jaamacadaha & Khariidadaha",
+        ]
+      : STAGE_BUTTONS.find((b) => b.id === stage)?.items ?? STAGE_BUTTONS[2].items;
 
   useEffect(() => {
     if (payCooldownSec <= 0 && redeemLockSec <= 0) return;
@@ -158,7 +251,7 @@ export function ProPaywallScreen({
 
   const handleUnlocked = () => {
     showToast(tr("HIRAAL Pro waa la furay!"));
-    onUnlocked(initialItemKey);
+    onUnlocked(initialItemKey, stage);
   };
 
   const revealPaymentNumber = canRevealPaymentDetails({
@@ -183,16 +276,21 @@ export function ProPaywallScreen({
     const clean = sanitizeCheckoutName(name);
     const letters = clean.match(/\p{L}/gu);
     if (!letters || letters.length < 2) {
-      setStep2Error("Fadlan qor magacaaga buuxa si aan u xaqiijinno codsigaaga.");
+      setStep2Error("Fadlan qor magacaaga buuxa.");
       return;
     }
     if (!committed) {
-      setStep2Error("Fadlan calaamadee sanduuqa ballanqaadka si aad u aragto lambarka lacag-bixinta.");
+      setStep2Error("Calaamadee sanduuqa xaqiijinta.");
       return;
     }
     setStep2Error(null);
     setStep(3);
   };
+
+  const useSingleItemOnly =
+    Boolean(initialItemKey) &&
+    ((initialPlan === "school_subject" && stage === "school") ||
+      (initialPlan === "bridge_exam" && stage === "jus"));
 
   const handleSendRequest = async () => {
     if (!revealPaymentNumber) {
@@ -215,30 +313,32 @@ export function ProPaywallScreen({
 
     const cleanName = sanitizeCheckoutName(name);
     const autoTime = currentHHMM();
-    const tag = cycle.toUpperCase();
+    const tag = `${stage.toUpperCase()}_${cycle.toUpperCase()}`;
     const generatedRef = generateSecureEvcRef(deviceId, autoTime, phoneCheck.normalized, tag);
-    const methodLabel = `EVC ${activeBilling.id.toUpperCase()} (${activeBilling.priceText} · ${activeBilling.durationLabel})`;
+    const methodLabel = `EVC ${stage.toUpperCase()} L${selectedLevel} (${rukun.priceFormatted} · ${rukun.periodText})`;
 
     setSending(true);
     setReqMsg(null);
     try {
-      saveRequestedProScope(localStorage, deviceId, "full");
-      if (initialItemKey) {
+      saveRequestedProScope(localStorage, deviceId, targetScope);
+      if (useSingleItemOnly && initialItemKey) {
         saveRequestedProItem(localStorage, deviceId, initialItemKey);
       }
+      saveRequestedProLevel(localStorage, deviceId, selectedLevel);
+
       await submitProRequest({
         deviceId,
         phone: phoneCheck.normalized,
         method: methodLabel,
         txn: generatedRef,
-        amount: `${activeBilling.priceText} (${activeBilling.durationLabel})`,
+        amount: `${rukun.priceFormatted} (${stageLabel} · ${levelMeta.badge})`,
         name: cleanName || undefined,
       });
       recordPaymentAttempt(localStorage, deviceId);
       setPayCooldownSec(Math.ceil(getPaymentCooldownRemainingMs(localStorage, deviceId) / 1000));
       setPendingAt(Date.now());
       setReqMsg({
-        key: "Codsigaaga waa la diray. Markii la xaqiijiyo, riix “Hubi xaaladda” si uu kuugu furmo.",
+        key: "Codsigaaga waa la diray. Markii la xaqiijiyo, riix “Hubi xaaladda”.",
         ok: true,
       });
     } catch (e) {
@@ -257,7 +357,7 @@ export function ProPaywallScreen({
         handleUnlocked();
       } else {
         setStatMsg({
-          key: "Weli lama xaqiijin. Fadlan sug wax yar ama la xiriir taageerada WhatsApp.",
+          key: "Weli lama xaqiijin. Sug wax yar ama la xiriir WhatsApp.",
           ok: false,
         });
       }
@@ -289,11 +389,16 @@ export function ProPaywallScreen({
       if (res.ok) {
         clearRedeemFailures(localStorage);
         setRedeemLockSec(0);
-        const fallbackExp = res.expiresMs || Date.now() + activeBilling.days * 86400 * 1000;
+        const fallbackExp = res.expiresMs || Date.now() + rukun.days * 86400 * 1000;
         if (res.scope || (res.unlockedItems && res.unlockedItems.length > 0)) {
           await refreshPro();
         } else {
-          setProUntil(fallbackExp, "full", initialItemKey);
+          setProUntil(
+            fallbackExp,
+            useSingleItemOnly ? "none" : targetScope,
+            useSingleItemOnly ? initialItemKey : undefined,
+            selectedLevel
+          );
         }
         handleUnlocked();
       } else {
@@ -329,18 +434,16 @@ export function ProPaywallScreen({
 
   const whatsappConfirmHref = buildSafeWhatsappUrl(
     info.whatsapp,
-    `Salaan, waxaan bixiyay lacagta HIRAAL Pro (${activeBilling.title} · ${activeBilling.priceText} · ${activeBilling.durationLabel}).\n` +
+    `Salaan, waxaan bixiyay HIRAAL Pro (${stageLabel} · ${levelMeta.title} · ${rukun.priceFormatted}).\n` +
       `Tel: ${validateEvcPhone(phone).normalized || "-"}\n` +
       `Magac: ${sanitizeCheckoutName(name) || "-"}`
   );
 
   const ussdHref = revealPaymentNumber
-    ? buildSafeTelUssdUrl(evcMethod.number, activeBilling.ussdAmount)
+    ? buildSafeTelUssdUrl(evcMethod.number, rukun.ussdAmount)
     : undefined;
 
-  const pageBg = darkMode
-    ? "bg-[#0B1324] text-slate-100"
-    : "bg-slate-50 text-slate-900";
+  const pageBg = darkMode ? "bg-[#0B1324] text-slate-100" : "bg-slate-50 text-slate-900";
   const cardCls = darkMode
     ? "bg-[#111C33] border-white/10 text-slate-100"
     : "bg-white border-slate-200 text-slate-900 shadow-xs";
@@ -369,8 +472,7 @@ export function ProPaywallScreen({
     );
 
   return (
-    <div className={`min-h-screen flex flex-col ${pageBg}`}>
-      {/* Clean Header without Device ID or Time Clutter */}
+    <div dir="ltr" className={`min-h-screen flex flex-col ${pageBg}`}>
       <header
         className={`border-b sticky top-0 z-20 backdrop-blur-xl ${
           darkMode ? "bg-[#0B1324]/92 border-white/10" : "bg-white/92 border-slate-200"
@@ -391,76 +493,70 @@ export function ProPaywallScreen({
               {rtl ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
             </button>
             <h1 className="font-head font-bold text-lg sm:text-xl tracking-tight truncate">
-              HIRAAL Pro · Furitaanka Ammaanka ah
+              Lacag-bixinta
             </h1>
           </div>
 
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 whitespace-nowrap shrink-0">
             <ShieldCheck className="w-4 h-4" />
-            <span>Lacag-bixin Xaqiijisan</span>
+            <span>Rukun · {stageLabel}</span>
           </span>
         </div>
       </header>
 
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-16 space-y-6">
         {/* Clean 3-Step Guided Progress */}
-        <div className={`rounded-2xl p-3.5 sm:px-5 border ${cardCls} flex items-center justify-between gap-2 overflow-x-auto hide-scrollbar`}>
+        <div
+          className={`rounded-2xl p-2 sm:p-3 border ${cardCls} grid grid-cols-3 gap-1.5`}
+        >
           {[
-            { n: 1 as const, label: "1. Dooro Xirmada" },
-            { n: 2 as const, label: "2. Xogta & Ballanqaadka" },
-            { n: 3 as const, label: "3. Lambarka & Bixinta" },
-          ].map((st, idx) => {
+            { n: 1 as const, label: "Qeybta" },
+            { n: 2 as const, label: "Xogta" },
+            { n: 3 as const, label: "Bixinta" },
+          ].map((st) => {
             const done = step > st.n;
             const current = step === st.n;
             const canJump = st.n < step;
             return (
-              <React.Fragment key={st.n}>
-                <button
-                  type="button"
-                  disabled={!canJump}
-                  onClick={() => canJump && setStep(st.n)}
-                  className={`flex items-center gap-2 whitespace-nowrap shrink-0 ${
-                    canJump ? "cursor-pointer" : "cursor-default"
+              <button
+                key={st.n}
+                type="button"
+                disabled={!canJump}
+                onClick={() => canJump && setStep(st.n)}
+                className={`px-2 py-1.5 rounded-xl flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                  current ? "bg-blue-600/12" : ""
+                } ${canJump ? "cursor-pointer" : "cursor-default"}`}
+              >
+                <span
+                  className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full text-[11px] font-head font-bold flex items-center justify-center shrink-0 transition-colors ${
+                    done
+                      ? "bg-emerald-600 text-white"
+                      : current
+                        ? "bg-blue-600 text-white"
+                        : darkMode
+                          ? "bg-white/10 text-slate-400"
+                          : "bg-slate-200 text-slate-500"
                   }`}
                 >
-                  <span
-                    className={`w-6 h-6 rounded-full text-xs font-head font-bold flex items-center justify-center transition-colors ${
-                      done
-                        ? "bg-emerald-600 text-white"
-                        : current
-                          ? "bg-blue-600 text-white"
-                          : darkMode
-                            ? "bg-white/10 text-slate-400"
-                            : "bg-slate-200 text-slate-500"
-                    }`}
-                  >
-                    {done ? <Check className="w-3.5 h-3.5" /> : st.n}
-                  </span>
-                  <span
-                    className={`text-xs sm:text-sm font-semibold ${
-                      current
-                        ? "text-blue-600 dark:text-amber-400"
-                        : done
-                          ? "text-emerald-700 dark:text-emerald-400"
-                          : mutedCls
-                    }`}
-                  >
-                    {st.label}
-                  </span>
-                </button>
-                {idx < 2 && (
-                  <div
-                    className={`h-[1px] flex-1 min-w-[20px] ${
-                      darkMode ? "bg-white/10" : "bg-slate-200"
-                    }`}
-                  />
-                )}
-              </React.Fragment>
+                  {done ? <Check className="w-3.5 h-3.5" /> : st.n}
+                </span>
+                <span
+                  className={`text-[11px] sm:text-sm font-semibold truncate ${
+                    current
+                      ? "text-blue-600 dark:text-amber-400"
+                      : done
+                        ? "text-emerald-700 dark:text-emerald-400"
+                        : mutedCls
+                  }`}
+                >
+                  {st.label}
+                </span>
+              </button>
             );
           })}
         </div>
 
-        {/* Method Toggle: EVC Plus Guided Checkout vs Activation Code */}
+        {/* Method Toggle */}
         <div
           className={`max-w-md rounded-xl p-1 border grid grid-cols-2 gap-1 ${
             darkMode ? "bg-[#111C33] border-white/10" : "bg-white border-slate-200"
@@ -494,12 +590,7 @@ export function ProPaywallScreen({
 
         {checkoutTab === "code" ? (
           <section className={`max-w-xl rounded-2xl p-6 border ${cardCls} space-y-4`}>
-            <div>
-              <h2 className="font-head font-bold text-xl">Geli Koodhkaaga Furitaanka</h2>
-              <p className={`text-sm mt-1 ${mutedCls}`}>
-                Haddii laguu soo diray koodhka HIRAAL Pro, halkan ku qor si uu isla markiiba kuugu furmo.
-              </p>
-            </div>
+            <h2 className="font-head font-bold text-xl">Geli Koodhkaaga Furitaanka</h2>
             <div>
               <label htmlFor="pro-redeem-code" className={`block text-xs font-semibold mb-1.5 ${mutedCls}`}>
                 Koodhka Furitaanka
@@ -524,35 +615,41 @@ export function ProPaywallScreen({
               ) : redeemLockSec > 0 ? (
                 <span className="tabular-nums">Sug {redeemLockSec}s...</span>
               ) : (
-                <span>Fur HIRAAL Pro</span>
+                <span>Fur {stageLabel}</span>
               )}
             </button>
             <MsgView msg={codeMsg} />
           </section>
         ) : (
           <div className="grid lg:grid-cols-12 gap-6 items-start">
-            {/* Left Column: Selected Plan Summary & Unified Benefits */}
+            {/* Left Column: Selected Stage + Level Summary */}
             <aside className={`lg:col-span-5 rounded-2xl p-6 border ${cardCls} space-y-5`}>
               <div className="space-y-1">
-                <div className="text-xs font-semibold text-blue-600 dark:text-amber-400">
-                  Hal Furitaan · Dhammaan Qeybaha Pro
+                <div className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-amber-400">
+                  {stageLabel} · {levelMeta.badge}
                 </div>
-                <h2 className="font-head font-bold text-xl">{activeBilling.title}</h2>
+                <h2 className="font-head font-bold text-xl">
+                  {rukun.label} ({rukun.periodText})
+                </h2>
                 <div className="flex items-baseline gap-2 pt-1">
                   <span className="font-head font-extrabold text-3xl tabular-nums text-blue-600 dark:text-amber-400">
-                    {activeBilling.priceText}
+                    {rukun.priceFormatted}
                   </span>
+                  {isTotal && (
+                    <span className="text-xs font-bold line-through opacity-50 tabular-nums">
+                      {rukun.originalFormatted}
+                    </span>
+                  )}
                   <span className={`text-sm font-medium ${mutedCls}`}>
-                    / {activeBilling.durationLabel}
+                    / {rukun.periodText}
                   </span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-200 dark:border-white/10 space-y-3">
-                <div className="text-xs font-bold">Waxa kuu furmaya dhammaan:</div>
-                {UNIFIED_PRO_BENEFITS.map((item) => (
-                  <div key={item} className="flex items-start gap-2.5 text-sm leading-relaxed">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-1" />
+              <div className="pt-4 border-t border-slate-200 dark:border-white/10 space-y-2.5">
+                {activeItemsList.map((item) => (
+                  <div key={item} className="flex items-start gap-2.5 text-sm leading-snug">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                     <span className={mutedCls}>{item}</span>
                   </div>
                 ))}
@@ -560,19 +657,18 @@ export function ProPaywallScreen({
 
               {/* Masked Security Notice (Number strictly hidden until Step 3) */}
               <div
-                className={`rounded-xl p-4 border text-xs leading-relaxed flex items-start gap-2.5 ${
+                className={`rounded-xl p-3.5 border text-xs flex items-center gap-2.5 ${
                   darkMode
                     ? "bg-[#0B1324] border-white/10 text-slate-300"
                     : "bg-slate-50 border-slate-200 text-slate-600"
                 }`}
               >
-                <LockKeyhole className="w-4 h-4 text-blue-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-slate-900 dark:text-white">Amniga Lambarka Lacag-bixinta:</strong>{" "}
+                <LockKeyhole className="w-4 h-4 text-blue-600 dark:text-amber-400 shrink-0" />
+                <span>
                   {revealPaymentNumber
-                    ? "Waxaad joogtaa tallaabada ugu dambeysa; lambarka rasmiga ah hadda ayuu kuu furan yahay."
-                    : `Lambarka EVC Plus (${maskPaymentNumber(evcMethod.number)}) wuxuu furmayaa oo keliya tallaabada 3aad si looga ilaaliyo dadka aan dhabta ka ahayn.`}
-                </div>
+                    ? `Lambarka EVC: ${evcMethod.number}`
+                    : `Lambarka EVC (${maskPaymentNumber(evcMethod.number)}) · Tallaabada 3aad`}
+                </span>
               </div>
             </aside>
 
@@ -580,61 +676,113 @@ export function ProPaywallScreen({
             <section className={`lg:col-span-7 rounded-2xl p-5 sm:p-6 border ${cardCls} space-y-6`}>
               {step === 1 && (
                 <div className="space-y-5">
-                  <div>
-                    <h2 className="font-head font-bold text-xl">
-                      1. Dooro Mudada Kuugu Habboon (Weekly, Monthly, Yearly)
+                  {/* Step 1A: 3 Stage Buttons + Optional Total (-20%) */}
+                  <div className="space-y-2.5">
+                    <h2 className="font-head font-bold text-lg sm:text-xl">
+                      1. Dooro Qeybta (Hal Qeyb Gooni ah)
                     </h2>
-                    <p className={`text-sm mt-1 ${mutedCls}`}>
-                      Dhammaan xirmooyinku waxay furaan awoodda buuxda ee HIRAAL Pro. Dooro muddada ku habboon qorshahaaga.
-                    </p>
+
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {STAGE_BUTTONS.map((btn) => {
+                        const Icon = btn.icon;
+                        const active = stage === btn.id;
+                        return (
+                          <button
+                            key={btn.id}
+                            type="button"
+                            onClick={() => setStage(btn.id)}
+                            className={`min-h-[64px] rounded-2xl p-3 border flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all ${
+                              active
+                                ? btn.activeCls
+                                : darkMode
+                                  ? "border-white/12 bg-[#0B1324] text-slate-300 hover:border-white/30"
+                                  : "border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300"
+                            }`}
+                          >
+                            <Icon className="w-5 h-5 shrink-0" />
+                            <span className="font-head font-extrabold text-xs sm:text-sm">
+                              {btn.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setStage("total")}
+                      className={`w-full rounded-xl px-4 py-3 border flex items-center justify-between gap-2 cursor-pointer transition-all ${
+                        isTotal
+                          ? "border-amber-400 bg-amber-500/15 text-amber-900 dark:text-amber-200 ring-1 ring-amber-400"
+                          : darkMode
+                            ? "border-white/12 bg-[#0B1324] text-slate-300 hover:border-amber-400/50"
+                            : "border-slate-200 bg-slate-50 text-slate-800 hover:border-amber-400"
+                      }`}
+                    >
+                      <span className="inline-flex items-center gap-2 font-head font-bold text-xs sm:text-sm">
+                        <Layers className="w-4 h-4 text-amber-500 shrink-0" />
+                        <span>Total · Dhammaan 3-da Qeybood</span>
+                      </span>
+                      <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                        -20% Discount
+                      </span>
+                    </button>
                   </div>
 
-                  <div className="grid sm:grid-cols-3 gap-3">
-                    {CYCLE_ORDER.map((id) => {
-                      const planOpt = PRO_BILLING_PLANS[id];
-                      const selected = cycle === id;
-                      return (
-                        <button
-                          key={id}
-                          type="button"
-                          onClick={() => setCycle(id)}
-                          className={`text-start rounded-2xl p-4 border transition-all cursor-pointer flex flex-col justify-between gap-3 ${
-                            selected
-                              ? "border-blue-600 dark:border-amber-400 bg-blue-50/70 dark:bg-amber-400/10 ring-1 ring-blue-600 dark:ring-amber-400"
-                              : darkMode
-                                ? "border-white/12 bg-[#0B1324] hover:border-white/25"
-                                : "border-slate-200 bg-slate-50 hover:border-slate-300"
-                          }`}
-                        >
-                          <div className="space-y-1">
-                            <div className="text-xs font-semibold text-blue-600 dark:text-amber-400">
-                              {planOpt.badge ?? planOpt.durationLabel}
-                            </div>
-                            <div className="font-head font-bold text-base">
-                              {planOpt.title}
-                            </div>
-                            <div className={`text-xs leading-relaxed ${mutedCls}`}>
-                              {planOpt.subtitle}
-                            </div>
-                          </div>
+                  {/* Step 1B: Weekly (Level 1) / Monthly (Level 2) / Yearly (Level 3+) */}
+                  <div className="space-y-2.5 pt-2 border-t border-slate-200 dark:border-white/10">
+                    <h3 className="font-head font-bold text-base sm:text-lg">
+                      Dooro Heerka Rukun-ka (Asbuucle · Bille · Sanadle)
+                    </h3>
 
-                          <div className="pt-2 border-t border-slate-200/80 dark:border-white/10 flex items-baseline justify-between gap-2">
-                            <span className="font-head font-extrabold text-2xl tabular-nums">
-                              {planOpt.priceText}
-                            </span>
-                            {planOpt.savingsLabel ? (
-                              <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                                {planOpt.savingsLabel}
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      {CYCLE_ORDER.map((id) => {
+                        const meta = RUKUN_PLANS[id];
+                        const lvl = getProLevelForCycle(id);
+                        const lvlInfo = PRO_LEVEL_PLANS[lvl];
+                        const priceInfo = getRukunPricing(id, isTotal);
+                        const selected = cycle === id;
+                        const levelAccent =
+                          lvl === 1
+                            ? "text-sky-600 dark:text-sky-400"
+                            : lvl === 2
+                              ? "text-emerald-600 dark:text-emerald-400"
+                              : "text-amber-600 dark:text-amber-400";
+
+                        return (
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => setCycle(id)}
+                            className={`text-start rounded-2xl p-4 border transition-all cursor-pointer flex flex-col justify-between gap-3 ${
+                              selected
+                                ? "border-blue-600 dark:border-amber-400 bg-blue-50/70 dark:bg-amber-400/10 ring-1 ring-blue-600 dark:ring-amber-400"
+                                : darkMode
+                                  ? "border-white/12 bg-[#0B1324] hover:border-white/25"
+                                  : "border-slate-200 bg-slate-50 hover:border-slate-300"
+                            }`}
+                          >
+                            <div className="space-y-1">
+                              <div className={`text-xs font-extrabold ${levelAccent}`}>
+                                {lvlInfo.badge}
+                              </div>
+                              <div className="font-head font-bold text-base">
+                                {meta.label}
+                              </div>
+                            </div>
+
+                            <div className="pt-2 border-t border-slate-200/80 dark:border-white/10 flex items-baseline justify-between gap-2">
+                              <span className="font-head font-extrabold text-2xl tabular-nums">
+                                {priceInfo.priceFormatted}
                               </span>
-                            ) : (
                               <span className={`text-xs font-medium ${mutedCls}`}>
-                                {planOpt.durationLabel}
+                                {meta.periodText}
                               </span>
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   <button
@@ -642,7 +790,9 @@ export function ProPaywallScreen({
                     onClick={() => setStep(2)}
                     className="w-full min-h-[48px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-head font-bold text-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
                   >
-                    <span>Sii wad: Gali Xogtaada ({activeBilling.priceText})</span>
+                    <span>
+                      Sii wad: {stageLabel} · {rukun.priceFormatted}
+                    </span>
                     {rtl ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
                   </button>
                 </div>
@@ -650,14 +800,9 @@ export function ProPaywallScreen({
 
               {step === 2 && (
                 <div className="space-y-5">
-                  <div>
-                    <h2 className="font-head font-bold text-xl">
-                      2. Xaqiiji Magacaaga &amp; Lambarkaaga EVC
-                    </h2>
-                    <p className={`text-sm mt-1 ${mutedCls}`}>
-                      Lambarka lacagta lagu diro wuxuu si ammaan ah kuugu soo baxayaa tallaabada xigta marka aad xaqiijiso inaad diyaar u tahay bixinta.
-                    </p>
-                  </div>
+                  <h2 className="font-head font-bold text-xl">
+                    2. Xaqiiji Magacaaga &amp; Lambarkaaga EVC
+                  </h2>
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
@@ -716,9 +861,9 @@ export function ProPaywallScreen({
                       className="mt-1 w-4 h-4 accent-blue-600 cursor-pointer shrink-0"
                     />
                     <span className="text-xs sm:text-sm leading-relaxed">
-                      Waxaan si dhab ah diyaar ugu ahay inaan hadda bixiyo{" "}
-                      <strong className="tabular-nums">{activeBilling.priceText}</strong> (Xirmada{" "}
-                      <strong>{activeBilling.title}</strong>) ee EVC Plus si ay iigu furanto HIRAAL Pro.
+                      Waxaan diyaar u ahay bixinta{" "}
+                      <strong className="tabular-nums">{rukun.priceFormatted}</strong> ({stageLabel} ·{" "}
+                      {levelMeta.badge}) si loogu furo qalabkeyga keliya.
                     </span>
                   </label>
 
@@ -750,7 +895,7 @@ export function ProPaywallScreen({
                       className="flex-1 min-h-[48px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-head font-bold text-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
                     >
                       <UserCheck className="w-4 h-4" />
-                      <span>Xaqiiji oo Fur Lambarka Lacag-bixinta</span>
+                      <span>Fur Lambarka Lacag-bixinta</span>
                     </button>
                   </div>
                 </div>
@@ -761,10 +906,10 @@ export function ProPaywallScreen({
                   <div className="flex items-start justify-between gap-3 flex-wrap">
                     <div>
                       <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                        Tallaabada Ugu Dambeysa · Xogta Lacag-bixinta
+                        Tallaabada 3aad · {stageLabel} · {levelMeta.badge}
                       </div>
                       <h2 className="font-head font-bold text-xl mt-0.5">
-                        Ku dir {activeBilling.priceText} EVC Plus
+                        Ku dir {rukun.priceFormatted} EVC Plus
                       </h2>
                     </div>
                     <button
@@ -779,9 +924,7 @@ export function ProPaywallScreen({
                   {/* Protected Merchant Number Card - Rendered ONLY at Step 3 */}
                   <div
                     className={`rounded-2xl p-5 border ${
-                      darkMode
-                        ? "bg-[#0B1324] border-amber-400/35"
-                        : "bg-blue-50/60 border-blue-200"
+                      darkMode ? "bg-[#0B1324] border-amber-400/35" : "bg-blue-50/60 border-blue-200"
                     } space-y-4`}
                   >
                     <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -814,7 +957,7 @@ export function ProPaywallScreen({
 
                     <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between gap-2 flex-wrap text-xs">
                       <span className={`font-medium tabular-nums ${mutedCls}`}>
-                        Xirmada: {activeBilling.title} ({activeBilling.priceText})
+                        {stageLabel} · {rukun.label} ({rukun.priceFormatted})
                       </span>
                       {ussdHref && (
                         <a
@@ -826,7 +969,7 @@ export function ProPaywallScreen({
                           }`}
                         >
                           <Phone className="w-3.5 h-3.5" />
-                          <span>*712*{evcMethod.number}*{activeBilling.ussdAmount}#</span>
+                          <span>*712*{evcMethod.number}*{rukun.ussdAmount}#</span>
                         </a>
                       )}
                     </div>
@@ -834,7 +977,7 @@ export function ProPaywallScreen({
 
                   {pending && !reqMsg && (
                     <div className="rounded-xl px-4 py-3 bg-amber-500/12 border border-amber-500/35 text-xs text-amber-800 dark:text-amber-200">
-                      Codsi hore ayaa socda; markii aad lacagta dirto riix “Hubi xaaladda”.
+                      Codsi hore ayaa socda; riix “Hubi xaaladda”.
                     </div>
                   )}
 
@@ -865,16 +1008,13 @@ export function ProPaywallScreen({
                       }`}
                     >
                       <MessageCircle className="w-4 h-4" />
-                      <span>U dir caddaynta WhatsApp (Degdeg)</span>
+                      <span>U dir caddaynta WhatsApp</span>
                     </a>
                   </div>
 
                   <MsgView msg={reqMsg} />
 
                   <div className="pt-4 border-t border-slate-200 dark:border-white/10 space-y-2.5">
-                    <div className={`text-xs font-medium ${mutedCls}`}>
-                      Ma dirtay lacagta? Riix badhanka hoose si toos loogu furo akoonkaaga:
-                    </div>
                     <button
                       type="button"
                       disabled={checking}

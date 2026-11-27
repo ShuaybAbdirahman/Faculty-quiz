@@ -22,20 +22,17 @@ import {
 
 function IntegrityBanner() {
   return (
-    <div className="rounded-2xl p-4 sm:p-5 border border-emerald-400/40 bg-emerald-500/12 flex items-start gap-3">
+    <div className="rounded-2xl p-4 sm:p-5 border border-emerald-400/40 bg-emerald-500/12 flex items-center gap-3">
       <span className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/45 text-emerald-300 flex items-center justify-center shrink-0">
         <ShieldCheck className="w-5 h-5" />
       </span>
-      <div className="space-y-1 min-w-0">
+      <div className="space-y-0.5 min-w-0">
         <div className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-300">
           {HIRAAL_INTEGRITY_CHARTER.badge}
         </div>
         <h3 className="font-head font-extrabold text-sm sm:text-base text-white leading-snug">
           {HIRAAL_INTEGRITY_CHARTER.headline}
         </h3>
-        <p className="text-xs sm:text-[13px] text-white/80 leading-relaxed">
-          {HIRAAL_INTEGRITY_CHARTER.body}
-        </p>
       </div>
     </div>
   );
@@ -44,11 +41,9 @@ function IntegrityBanner() {
 function LockedUnlockBanner({ onUnlock }: { onUnlock: () => void }) {
   return (
     <div className="mt-4 rounded-2xl p-4 border border-[#FFC93C]/40 bg-[#FFC93C]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div className="flex items-start gap-2.5 text-xs text-[#FFE599] leading-relaxed">
-        <Lock className="w-4 h-4 text-[#FFD86B] shrink-0 mt-0.5" />
-        <span>
-          Fur HIRAAL Pro (Toddobaadle $0.50 · Bille $1.20 · Sannadle $5.00) si aad u hesho dhammaan xeeladaha Top-10 iyo sirta xalaasha ah ee 12-ka maado.
-        </span>
+      <div className="flex items-center gap-2.5 text-xs text-[#FFE599] font-semibold">
+        <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
+        <span>School Unlock+ · Rukun $0.25+</span>
       </div>
       <button
         type="button"
@@ -56,7 +51,7 @@ function LockedUnlockBanner({ onUnlock }: { onUnlock: () => void }) {
         className="shrink-0 px-4 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs inline-flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
       >
         <LockOpen className="w-3.5 h-3.5" />
-        <span>Fur HIRAAL Pro (laga bilaabo $0.50)</span>
+        <span>Fur School ($0.25+)</span>
       </button>
     </div>
   );
@@ -86,9 +81,6 @@ export function Top10TricksSection({
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
           {tr("Sida Ardayda Kaalmaha Sare Galaan U Diyaar-garoobaan")}
         </h2>
-        <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Habab waxbarasho oo cilmiyeysan iyo xeeladaha maareynta waqtiga gudaha hoolka imtixaanka, iyadoon wax qish ah jirin.")}
-        </p>
       </div>
 
       <IntegrityBanner />
@@ -196,9 +188,6 @@ export function ExamHallRulesSection() {
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
           Anshaxa & Maamulka Waqtiga Hoolka
         </h2>
-        <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          Tallaabooyinka xalaasha ah ee ku siiya degganaan, nidaam qoraal oo nadiif ah, iyo dhibcaha qaybta ah (Partial Credit).
-        </p>
       </div>
 
       <IntegrityBanner />
@@ -252,9 +241,6 @@ export function LegalSubjectSecretsSection({
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
           {tr("Meelaha Dhibcaha Laga Helo Maaddo Kasta (12 Maado)")}
         </h2>
-        <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Ogow waxa macallimiinta saxa imtixaannadu eegaan, mowduucyada soo noqnoqda, iyo khaladaadka yaryar ee dhibcaha lumiya, si xalaal ah oo sharci ah.")}
-        </p>
       </div>
 
       <IntegrityBanner />

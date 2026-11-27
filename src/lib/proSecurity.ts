@@ -15,39 +15,84 @@ export interface ProBillingPlan {
   savingsLabel?: string;
 }
 
+export type ProLevel = 1 | 2 | 3;
+
+export interface ProLevelMeta {
+  level: ProLevel;
+  cycle: ProBillingCycle;
+  title: string;
+  badge: string;
+  durationLabel: string;
+}
+
+export const PRO_LEVEL_PLANS: Record<ProLevel, ProLevelMeta> = {
+  1: {
+    level: 1,
+    cycle: "weekly",
+    title: "Heerka 1aad · Asbuucle",
+    badge: "Heerka 1",
+    durationLabel: "7 Maalmood",
+  },
+  2: {
+    level: 2,
+    cycle: "monthly",
+    title: "Heerka 2aad · Bille",
+    badge: "Heerka 2",
+    durationLabel: "30 Maalmood",
+  },
+  3: {
+    level: 3,
+    cycle: "yearly",
+    title: "Heerka 3aad+ · Sanadle",
+    badge: "Heerka 3+",
+    durationLabel: "365 Maalmood",
+  },
+};
+
+export function getProLevelForCycle(cycle: ProBillingCycle = "monthly"): ProLevel {
+  if (cycle === "weekly") return 1;
+  if (cycle === "monthly") return 2;
+  return 3;
+}
+
+export function isValidProLevel(raw: unknown): raw is ProLevel {
+  return raw === 1 || raw === 2 || raw === 3;
+}
+
 export const PRO_BILLING_PLANS: Record<ProBillingCycle, ProBillingPlan> = {
   weekly: {
     id: "weekly",
     title: "Todobaadle (Weekly)",
-    subtitle: "Ku tijaabi dhammaan qeybaha Pro muddo 7 maalmood ah",
+    subtitle: "Heerka 1aad · 7 Maalmood",
     amount: 0.5,
     priceText: "$0.50",
     ussdAmount: "0.5",
     days: 7,
     durationLabel: "7 Maalmood",
+    badge: "Heerka 1",
   },
   monthly: {
     id: "monthly",
     title: "Bille (Monthly)",
-    subtitle: "Doorashada ugu caansan ardayda · Xirfad, Imtixaan & Jaamacad",
+    subtitle: "Heerka 2aad · 30 Maalmood",
     amount: 1.2,
     priceText: "$1.20",
     ussdAmount: "1.2",
     days: 30,
     durationLabel: "30 Maalmood",
-    badge: "Ugu Caansan",
+    badge: "Heerka 2",
     savingsLabel: "Kaydi 40%",
   },
   yearly: {
     id: "yearly",
     title: "Sanadle (Yearly)",
-    subtitle: "Helitaan buuxa sanadka oo dhan (Form 4, Diyaarinta & Jaamacad)",
+    subtitle: "Heerka 3aad+ · 365 Maalmood",
     amount: 5.0,
     priceText: "$5.00",
     ussdAmount: "5",
     days: 365,
     durationLabel: "365 Maalmood",
-    badge: "Qiimo Dhimis Weyn",
+    badge: "Heerka 3+",
     savingsLabel: "Kaydi 65%",
   },
 };
@@ -210,6 +255,7 @@ export const LEGACY_PRO_UNTIL_KEY = "pro_until";
 
 export const REQUESTED_SCOPE_STORAGE_KEY = "hk_pro_requested_scope_v2";
 export const REQUESTED_ITEM_STORAGE_KEY = "hk_pro_requested_item_v1";
+export const REQUESTED_LEVEL_STORAGE_KEY = "hk_pro_requested_level_v1";
 
 /** Re-verify with Supabase if local cache is older than 5 minutes. */
 export const MAX_ENTITLEMENT_STALE_MS = 5 * 60 * 1000;
@@ -223,6 +269,7 @@ export interface ProEntitlement {
   expiresAt: number;
   verifiedAt: number;
   scope?: ProScope;
+  level?: ProLevel;
   unlockedItems?: string[];
   sig?: string;
 }
@@ -303,7 +350,8 @@ const MAX_CLOCK_SKEW_MS = 60_000;
 
 export function computeEntitlementSignature(ent: Omit<ProEntitlement, "sig">): string {
   const items = [...(ent.unlockedItems ?? [])].sort().join(",");
-  const payload = `hiraal_v2|${ent.deviceId}|${ent.expiresAt}|${ent.verifiedAt}|${ent.scope ?? "full"}|${items}`;
+  const level = isValidProLevel(ent.level) ? ent.level : 3;
+  const payload = `hiraal_v2|${ent.deviceId}|${ent.expiresAt}|${ent.verifiedAt}|${ent.scope ?? "full"}|${level}|${items}`;
   let h1 = 0x811c9dc5;
   let h2 = 0x9e3779b9;
   for (let i = 0; i < payload.length; i++) {
@@ -346,8 +394,16 @@ export function readStoredEntitlement(
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw) as Partial<ProEntitlement>;
-    const rawScope = parsed.scope;
-    const scope: ProScope = isValidProScope(rawScope) ? rawScope : "full";
+    if (parsed.scope !== undefined && !isValidProScope(parsed.scope)) {
+      storage.removeItem(ENTITLEMENT_STORAGE_KEY);
+      return null;
+    }
+    if (parsed.level !== undefined && !isValidProLevel(parsed.level)) {
+      storage.removeItem(ENTITLEMENT_STORAGE_KEY);
+      return null;
+    }
+    const scope: ProScope = isValidProScope(parsed.scope) ? parsed.scope : "full";
+    const level: ProLevel = isValidProLevel(parsed.level) ? parsed.level : 3;
     const unlockedItems = Array.isArray(parsed.unlockedItems)
       ? parsed.unlockedItems.filter((item): item is string => isValidProItemKey(item))
       : [];
@@ -356,6 +412,7 @@ export function readStoredEntitlement(
       expiresAt: Number(parsed.expiresAt ?? 0),
       verifiedAt: Number(parsed.verifiedAt ?? 0),
       scope,
+      level,
       unlockedItems,
       sig: typeof parsed.sig === "string" ? parsed.sig : undefined,
     };
@@ -393,6 +450,24 @@ export function readRequestedProScope(storage: StorageLike, deviceId: string): P
     if (isValidProScope(parsed.scope) && parsed.scope !== "none") {
       return parsed.scope;
     }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveRequestedProLevel(storage: StorageLike, deviceId: string, level: ProLevel): void {
+  if (!isValidDeviceId(deviceId) || !isValidProLevel(level)) return;
+  storage.setItem(REQUESTED_LEVEL_STORAGE_KEY, JSON.stringify({ deviceId, level }));
+}
+
+export function readRequestedProLevel(storage: StorageLike, deviceId: string): ProLevel | null {
+  const raw = storage.getItem(REQUESTED_LEVEL_STORAGE_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { deviceId?: string; level?: unknown };
+    if (parsed.deviceId !== deviceId) return null;
+    if (isValidProLevel(parsed.level)) return parsed.level;
     return null;
   } catch {
     return null;
@@ -462,6 +537,21 @@ export function hasDepartmentsAccess(ent: ProEntitlement | null, deviceId: strin
   return hasUniversityStageAccess(ent, deviceId, now);
 }
 
+export function getActiveProLevel(ent: ProEntitlement | null, deviceId: string, now: number = Date.now()): ProLevel | 0 {
+  if (!isEntitlementValidForDevice(ent, deviceId, now)) return 0;
+  return isValidProLevel(ent?.level) ? ent.level : 3;
+}
+
+export function hasProLevelAccess(
+  ent: ProEntitlement | null,
+  deviceId: string,
+  requiredLevel: ProLevel,
+  now: number = Date.now()
+): boolean {
+  const current = getActiveProLevel(ent, deviceId, now);
+  return current >= requiredLevel;
+}
+
 export function hasUnlockedItem(
   ent: ProEntitlement | null,
   deviceId: string,
@@ -497,8 +587,17 @@ export interface ServerEntitlementPayload {
   active: boolean;
   expiresAt: number;
   scope?: ProScope;
+  level?: ProLevel;
   unlockedItems?: string[];
   hasServerScopeMetadata?: boolean;
+}
+
+function stageKeyFromScope(scope: ProScope | null | undefined): ProItemKey | null {
+  if (scope === "school") return "stage:school";
+  if (scope === "jus") return "stage:jus";
+  if (scope === "university" || scope === "departments") return "stage:university";
+  if (scope === "languages") return "stage:languages";
+  return null;
 }
 
 export function writeStoredEntitlement(
@@ -507,7 +606,8 @@ export function writeStoredEntitlement(
   expiresAt: number,
   now: number = Date.now(),
   explicitScope?: ProScope,
-  explicitItem?: ProItemKey
+  explicitItem?: ProItemKey,
+  explicitLevel?: ProLevel
 ): ProEntitlement | null {
   storage.removeItem(LEGACY_PRO_UNTIL_KEY);
   if (!isValidDeviceId(deviceId) || !Number.isFinite(expiresAt) || expiresAt <= now) {
@@ -517,25 +617,46 @@ export function writeStoredEntitlement(
   const existing = readStoredEntitlement(storage, deviceId, now, Number.MAX_SAFE_INTEGER);
   const requestedScope = readRequestedProScope(storage, deviceId);
   const requestedItem = readRequestedProItem(storage, deviceId);
+  const requestedLevel = readRequestedProLevel(storage, deviceId);
+
+  const nextScopeCandidate = explicitScope ?? requestedScope;
+  const resolvedScope: ProScope = nextScopeCandidate
+    ? mergeProScope(existing?.scope ?? null, nextScopeCandidate)
+    : requestedItem
+    ? existing?.scope ?? "none"
+    : existing?.scope ?? "full";
+
+  // Preserve previous single-stage unlocks inside unlockedItems when another distinct stage is unlocked separately
+  const preservedStageItems: string[] = [];
+  if (existing?.scope && nextScopeCandidate && resolvedScope !== "full") {
+    const prevKey = stageKeyFromScope(existing.scope);
+    const nextKey = stageKeyFromScope(nextScopeCandidate);
+    if (prevKey) preservedStageItems.push(prevKey);
+    if (nextKey) preservedStageItems.push(nextKey);
+  }
 
   const itemToAdd = explicitItem ?? requestedItem;
   const mergedItems = Array.from(
-    new Set([...(existing?.unlockedItems ?? []), ...(itemToAdd && isValidProItemKey(itemToAdd) ? [itemToAdd] : [])])
+    new Set([
+      ...(existing?.unlockedItems ?? []),
+      ...preservedStageItems,
+      ...(itemToAdd && isValidProItemKey(itemToAdd) ? [itemToAdd] : []),
+    ])
   );
 
-  const resolvedScope: ProScope = explicitScope
-    ? mergeProScope(existing?.scope ?? null, explicitScope)
-    : requestedScope
-    ? mergeProScope(existing?.scope ?? null, requestedScope)
-    : itemToAdd
-    ? existing?.scope ?? "none"
-    : existing?.scope ?? "full";
+  const nextLevelCandidate = explicitLevel ?? requestedLevel;
+  const resolvedLevel: ProLevel = nextLevelCandidate
+    ? existing?.level
+      ? (Math.max(existing.level, nextLevelCandidate) as ProLevel)
+      : nextLevelCandidate
+    : existing?.level ?? 3;
 
   const unsignedEnt: Omit<ProEntitlement, "sig"> = {
     deviceId,
     expiresAt: Math.min(expiresAt, now + MAX_FUTURE_EXPIRY_MS),
     verifiedAt: now,
     scope: resolvedScope,
+    level: resolvedLevel,
     unlockedItems: mergedItems,
   };
   const ent: ProEntitlement = {
@@ -546,6 +667,7 @@ export function writeStoredEntitlement(
   // Consume pending request markers so they cannot be replayed across status refreshes
   storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
   storage.removeItem(REQUESTED_ITEM_STORAGE_KEY);
+  storage.removeItem(REQUESTED_LEVEL_STORAGE_KEY);
   return ent;
 }
 
@@ -571,12 +693,14 @@ export function syncServerEntitlement(
       : validItems.length > 0
       ? "none"
       : "departments";
+    const resolvedLevel: ProLevel = isValidProLevel(server.level) ? server.level : 3;
 
     const unsignedEnt: Omit<ProEntitlement, "sig"> = {
       deviceId,
       expiresAt: Math.min(server.expiresAt, now + MAX_FUTURE_EXPIRY_MS),
       verifiedAt: now,
       scope: resolvedScope,
+      level: resolvedLevel,
       unlockedItems: validItems,
     };
     const ent: ProEntitlement = {
@@ -586,6 +710,7 @@ export function syncServerEntitlement(
     storage.setItem(ENTITLEMENT_STORAGE_KEY, JSON.stringify(ent));
     storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
     storage.removeItem(REQUESTED_ITEM_STORAGE_KEY);
+    storage.removeItem(REQUESTED_LEVEL_STORAGE_KEY);
     return ent;
   }
 
@@ -598,6 +723,7 @@ export function syncServerEntitlement(
       expiresAt: Math.min(server.expiresAt, now + MAX_FUTURE_EXPIRY_MS),
       verifiedAt: now,
       scope: existing.scope ?? "departments",
+      level: existing.level ?? 3,
       unlockedItems: existing.unlockedItems ?? [],
     };
     const ent: ProEntitlement = {
@@ -607,6 +733,7 @@ export function syncServerEntitlement(
     storage.setItem(ENTITLEMENT_STORAGE_KEY, JSON.stringify(ent));
     storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
     storage.removeItem(REQUESTED_ITEM_STORAGE_KEY);
+    storage.removeItem(REQUESTED_LEVEL_STORAGE_KEY);
     return ent;
   }
 
@@ -619,6 +746,7 @@ export function clearStoredEntitlement(storage: StorageLike): void {
   storage.removeItem(LEGACY_PRO_UNTIL_KEY);
   storage.removeItem(REQUESTED_SCOPE_STORAGE_KEY);
   storage.removeItem(REQUESTED_ITEM_STORAGE_KEY);
+  storage.removeItem(REQUESTED_LEVEL_STORAGE_KEY);
 }
 
 export function formatShortDeviceId(deviceId: string): string {

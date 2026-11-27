@@ -107,9 +107,6 @@ export function FacultyFunPromptCard({ top }: { top: FacultyMatch[] }) {
             {tx(prompt.question)}
           </h3>
         </div>
-        <p className="mt-1 text-xs opacity-65">
-          {tr("Taabo mid ka mid ah 3-da doorasho si aad isla markiiba u aragto jawaabta gaarka ah.")}
-        </p>
 
         <div className="mt-4 grid sm:grid-cols-3 gap-2.5">
           {options.map((opt, idx) => {

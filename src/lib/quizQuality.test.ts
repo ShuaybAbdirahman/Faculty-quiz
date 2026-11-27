@@ -325,6 +325,9 @@ describe("CAAWIYE School (June 2027) & Diyaarinta Jaamacadda (Oct 2027) Clean Pr
       [/Bricolage Grotesque/i, "Legacy Bricolage Grotesque font"],
       [/\bDM Sans\b/i, "Legacy DM Sans font"],
       [/Instrument Serif/i, "Legacy Instrument Serif font"],
+      [/Barona?\s+Xirfad/i, "False skill-teaching promise"],
+      [/Baro\s+Adigoo\s+Arday\s+ah/i, "False learn-skill promise"],
+      [/Monetizable\s+Digital\s+Skills/i, "False monetizable skills label"],
     ];
 
     for (const filePath of filesToCheck) {

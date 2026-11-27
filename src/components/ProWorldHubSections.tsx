@@ -93,9 +93,6 @@ export function WorldPioneersSection({
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
           {tr("Kulliyadaha iyo Dadka Heerka Sare ka Gaaray Qarnigan")}
         </h2>
-        <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Baro shakhsiyaad nool ama qarnigan magac ku yeeshay Soomaaliya iyo adduunka, shahaadadii ay qaateen, iyo casharka ardaygu ka baran karo.")}
-        </p>
       </div>
 
       {/* Primary Region Split: Soomaaliya vs Adduunka (World) */}
@@ -123,8 +120,8 @@ export function WorldPioneersSection({
         ))}
       </div>
 
-      {/* Faculty Filter Row */}
-      <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1">
+      {/* Faculty Filter Row - Wraps cleanly on mobile so no label like Engi gets cut off */}
+      <div className="flex flex-wrap items-center gap-2 pb-1">
         {[
           { id: "all", label: tr("Dhammaan") },
           { id: "cs", label: "CS & AI" },
@@ -235,9 +232,6 @@ export function FutureJobsNewsSection({
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
           {tr("Shaqooyinka Ugu Kororka Badan Adduunka & Fursadda Soomaaliya")}
         </h2>
-        <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Xog rasmi ah oo laga soo xigtay warbixinta suuqa shaqada adduunka: 170 milyan oo shaqo cusub ayaa abuurmaya sannadaha soo socda, 86% shirkaduhuna waxay adeegsanayaan tiknoolajiyada casriga ah.")}
-        </p>
       </div>
 
       {/* Key Macro Stats */}
@@ -336,14 +330,11 @@ export function HighIncomeSkillsSection({
       <div>
         <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FFD86B]">
           <Wrench className="w-4 h-4" />
-          <span>{tr("Xirfadaha Dakhliga Sare (Baro Adigoo Arday ah)")}</span>
+          <span>Xogta Suuqa Shaqada &amp; Fursadaha</span>
         </div>
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
-          {tr("Xirfadaha Lacagta Laga Sameeyo (Video Editing, Design, Web & AI)")}
+          Qeybaha Loogu Baahida Badan Yahay (Video, Design, Web &amp; AI)
         </h2>
-        <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Xirfado waxtar leh oo aad barbar baran karto jaamacadda, adigoo adeegsanaya koorsooyin bilaash ah oo rasmi ah si aad dakhli ugu samayso gudaha Soomaaliya iyo caalamkaba.")}
-        </p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
@@ -371,7 +362,7 @@ export function HighIncomeSkillsSection({
                     className="w-full text-start rounded-xl p-3 bg-white/[0.04] hover:bg-[#FFC93C]/10 border border-white/10 hover:border-[#FFC93C]/35 text-xs text-white/70 flex items-center gap-2 cursor-pointer transition-colors"
                   >
                     <Lock className="w-4 h-4 text-[#FFD86B] shrink-0" />
-                    <span>{tr("Fur Unlock+ si aad u aragto qorshaha 30-ka maalmood, sida lacag looga sameeyo, iyo koorsada bilaashka ah.")}</span>
+                    <span>Fur University Unlock+ si aad u aragto xogta suuqa &amp; tixraacyada.</span>
                   </button>
                 ) : (
                   <>
@@ -389,7 +380,7 @@ export function HighIncomeSkillsSection({
                     </div>
 
                     <div className="space-y-1.5">
-                      <div className="text-xs font-bold text-white/75">{tr("Qorshaha 30-ka Maalmood:")}</div>
+                      <div className="text-xs font-bold text-white/75">Jihaynta 30-ka Maalmood:</div>
                       {skill.monthPlan.map((step, sIdx) => (
                         <div key={sIdx} className="flex items-start gap-2 text-xs text-white/85 leading-relaxed">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
@@ -401,7 +392,7 @@ export function HighIncomeSkillsSection({
                     <div className="rounded-xl p-3 bg-emerald-500/10 border border-emerald-400/25 text-xs text-emerald-100 leading-relaxed">
                       <strong className="text-emerald-300 flex items-center gap-1 mb-0.5">
                         <Briefcase className="w-3.5 h-3.5" />
-                        {tr("Sida Ardaygu Lacag Uga Sameeyo:")}
+                        Fursadda Suuqa:
                       </strong>
                       {tx(skill.howToEarn)}
                     </div>
@@ -443,9 +434,6 @@ export function SomaliaGrowthSection({
         <h2 className="mt-1 font-head font-extrabold text-2xl sm:text-3xl text-white">
           {tr("Sidee Ardayga Soomaaliya Heer Caalami ah u Gaari Karaa?")}
         </h2>
-        <p className="mt-1.5 text-sm text-white/75 leading-relaxed">
-          {tr("Tallaabooyin dhab ah oo ku salaysan warbixinnada Bangiga Adduunka (DE4A & Rajo Kaaba) iyo deeqaha waxbarasho ee rasmiga ah ee u furan ardayda Soomaaliya.")}
-        </p>
       </div>
 
       <div className="space-y-4">

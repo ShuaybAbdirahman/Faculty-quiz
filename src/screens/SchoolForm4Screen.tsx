@@ -45,7 +45,7 @@ export function SchoolForm4Screen({
   onUnlockSubject: (subject: Form4Subject) => void;
   onOpenPaywall: () => void;
 }) {
-  const { hasSchoolAccess, proSchoolActive, deviceId, userName } = useApp();
+  const { hasSchoolAccess, proSchoolActive, proLevel, hasProLevel, deviceId, userName } = useApp();
   const [stageTab, setStageTab] = useState<SchoolStageTab>("subjects");
   const [groupFilter, setGroupFilter] = useState<"all" | SchoolSubjectGroup>("all");
   const [selectedId, setSelectedId] = useState<string>(initialSubjectId || form4Subjects[0].id);
@@ -445,11 +445,31 @@ export function SchoolForm4Screen({
             ) : (
               <ProContentShield
                 active={proSchoolActive}
-                sectionLabel="Qeybta 1aad · School (Sirta Top-10 & 12-ka Maado)"
+                sectionLabel={`Qeybta 1aad · School · Heerka ${proLevel || 1}`}
               >
-                <div className="space-y-10">
+                <div className="space-y-8">
                   <Top10TricksSection isPro={true} onUnlock={onOpenPaywall} />
-                  <LegalSubjectSecretsSection isPro={true} onUnlock={onOpenPaywall} />
+                  {hasProLevel(2) ? (
+                    <LegalSubjectSecretsSection isPro={true} onUnlock={onOpenPaywall} />
+                  ) : (
+                    <div className="rounded-3xl p-6 border border-emerald-400/40 bg-emerald-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <div className="text-xs font-extrabold uppercase tracking-wider text-emerald-300">
+                          Heerka 2aad · Bille
+                        </div>
+                        <h3 className="font-head font-extrabold text-lg text-white mt-0.5">
+                          Sirta 12-ka Maado (Form 4)
+                        </h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={onOpenPaywall}
+                        className="px-5 py-2.5 rounded-xl bg-[#FFC93C] hover:bg-[#FFD55A] text-[#050A1C] font-head font-extrabold text-xs cursor-pointer shrink-0"
+                      >
+                        U Gudub Heerka 2
+                      </button>
+                    </div>
+                  )}
                 </div>
               </ProContentShield>
             )}

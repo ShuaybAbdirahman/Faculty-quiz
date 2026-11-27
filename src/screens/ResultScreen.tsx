@@ -215,8 +215,7 @@ function ResultCard({
         {m.reasons.length > 0 && (
           <div className="mt-3.5">
             <Heading icon={<CheckSquare className="w-4 h-4" />} label="Sababta natiijada" />
-            <p className="mt-1 text-xs opacity-65">{tr("Jawaabaha ugu saameeyay:")}</p>
-            <ul className="mt-1 space-y-1 text-sm opacity-90">
+            <ul className="mt-1.5 space-y-1 text-sm opacity-90">
               {m.reasons.map((r, idx) => (
                 <li key={idx} className="leading-snug">
                   {r}
@@ -330,7 +329,6 @@ export function ResultScreen({
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
           <div>
             <h1 className="font-head font-extrabold text-[22px] leading-tight">{tr("Natiijadaada")}</h1>
-            <p className="text-xs opacity-65">{tr("Saddexda kulliyadood ee kugu habboon")}</p>
           </div>
           <button
             type="button"
